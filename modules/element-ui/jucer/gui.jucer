@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="bvm0Bt" name="Element GUI" projectType="dll" version="0.0.1"
+              bundleIdentifier="org.element-project.ElementGUI" jucerVersion="3.1.0"
+              companyName="BKE, LLC">
+  <MAINGROUP id="JMWTSy" name="Element GUI">
+    <FILE id="nrV9rl" name="commands.hpp" compile="0" resource="0" file="../commands.hpp"/>
+    <FILE id="z3G7rY" name="editors.hpp" compile="0" resource="0" file="../editors.hpp"/>
+    <FILE id="Qrwd7L" name="guiapp.cpp" compile="1" resource="0" file="../guiapp.cpp"/>
+    <FILE id="RCmcwl" name="guiapp.hpp" compile="0" resource="0" file="../guiapp.hpp"/>
+    <FILE id="yUpLuM" name="main-window.cpp" compile="1" resource="0" file="../main-window.cpp"/>
+    <FILE id="jbV3G1" name="main-window.hpp" compile="0" resource="0" file="../main-window.hpp"/>
+    <FILE id="cSqSZz" name="preferences-widget.cpp" compile="1" resource="0"
+          file="../preferences-widget.cpp"/>
+    <FILE id="oUEdtL" name="preferences-widget.h" compile="0" resource="0"
+          file="../preferences-widget.h"/>
+    <FILE id="MqPxgF" name="preferences.cpp" compile="1" resource="0" file="../preferences.cpp"/>
+    <FILE id="ydOxJy" name="preferences.hpp" compile="0" resource="0" file="../preferences.hpp"/>
+    <FILE id="LWtLej" name="window-manager.cpp" compile="1" resource="0"
+          file="../window-manager.cpp"/>
+    <FILE id="NxJCT6" name="window-manager.hpp" compile="0" resource="0"
+          file="../window-manager.hpp"/>
+    <FILE id="fCZcpT" name="window.cpp" compile="1" resource="0" file="../window.cpp"/>
+    <FILE id="w4jIN4" name="window.hpp" compile="0" resource="0" file="../window.hpp"/>
+    <FILE id="jLE4h1" name="wscript_build" compile="0" resource="0" file="../wscript_build"/>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_gui_audio" showAllCode="1" useLocalCopy="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
+  </MODULES>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX" juceFolder="../../../libs/juce/modules">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="1" optimisation="1" targetName="Element GUI"/>
+        <CONFIGURATION name="Release" osxSDK="default" osxCompatibility="default" osxArchitecture="default"
+                       isDebug="0" optimisation="2" targetName="Element GUI"/>
+      </CONFIGURATIONS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <JUCEOPTIONS/>
+</JUCERPROJECT>

@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import element
+
+if element.is_mac():
+    muse = ['ELEMENT']
+else:
+    muse = ['element-0']
+
+obj = bld.shlib (
+    source       = bld.path.ant_glob ('**/*.cpp'),
+    includes     = [".", "..", "../../libs", "../../libs/juce",
+                    "../../element", "../build/modules"],
+    name         = "Element GUI",
+    target       = "../../modules/element-ui",
+    use          = muse,
+    install_path = None,
+    env = element.module_environ (bld)
+)

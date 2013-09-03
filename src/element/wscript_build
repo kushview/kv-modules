@@ -1,0 +1,15 @@
+
+import element
+
+element_program = bld.program (
+    source      = "main.cpp",
+    includes    = ["../..", "../../element", "../../libs/juce"],
+    name        = "element",
+    target      = "element",
+    use         = "element-engines-0"
+)
+
+if element.is_mac():
+    element_program.use = "ELEMENT"
+    element_program.mac_package = True
+    element_program.target = "../../Applications/Element"

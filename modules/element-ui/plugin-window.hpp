@@ -1,0 +1,4 @@
+#ifndef PLUGINWINDOW_HPP
+#define PLUGINWINDOW_HPP
+
+#endif // PLUGINWINDOW_HPP
