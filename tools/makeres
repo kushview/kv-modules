@@ -1,0 +1,32 @@
+#!/bin/bash
+
+/Applications/Xcode-4.3.app/Contents/Developer/usr/bin/Rez \
+-o juce_AU_Resources.rsrc \
+-arch x86_64 \
+-useDF \
+-script Roman \
+-define ELEMENT_PLUGIN=1 \
+-d "ppc_$ppc" \
+-d "i386_$i386" \
+-d "ppc64_$ppc64" \
+-d x86_64_YES \
+-d SystemSevenOrLater=1 \
+-I /System/Library/Frameworks/CoreServices.framework/Frameworks/CarbonCore.framework/Versions/A/Headers \
+-I /Applications/Xcode-4.3.app/Contents/Developer/Extras/CoreAudio/AudioUnits/AUPublic/AUBase \
+-I /Applications/Xcode-4.3.app/Contents/Developer/Extras/CoreAudio/AudioUnits/AUPublic/AUCarbonViewBase \
+-I /Applications/Xcode-4.3.app/Contents/Developer/Extras/CoreAudio/AudioUnits/AUPublic/AUBase \
+-I element/juce \
+-I libs/juce/modules/juce_audio_plugin_client \
+-I libs/juce/modules/juce_audio_plugin_client/RTAS \
+-I libs/juce/modules/juce_audio_plugin_client/utility \
+-I /Applications/Xcode-4.3.app/Contents/Developer/Extras/CoreAudio/AudioUnits/AUPublic/OtherBases \
+-I /Applications/Xcode-4.3.app/Contents/Developer/Extras/CoreAudio/AudioUnits/AUPublic/AUViewBase \
+-I /Applications/Xcode-4.3.app/Contents/Developer/Extras/CoreAudio/PublicUtility \
+-I /Applications/Xcode-4.3.app/Contents/Developer/Extras/CoreAudio/AudioUnits/AUPublic/Utility \
+-I /Applications/Xcode-4.3.app/Contents/Developer/Extras/CoreAudio/PublicUtility \
+-I /Applications/Xcode-4.3.app/Contents/Developer/Extras/CoreAudio/AudioUnits/AUPublic/Utility \
+-I /Applications/Xcode-4.3.app/Contents/Developer/Extras/CoreAudio/AudioUnits/AUPublic/AUBase \
+-isysroot /Applications/Xcode-4.3.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.7.sdk \
+libs/juce/modules/juce_audio_plugin_client/AU/juce_AU_Resources.r
+
+

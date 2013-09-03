@@ -1,0 +1,33 @@
+#!/bin/bash
+
+appname=$0
+
+function die {
+    echo "$1"
+    echo "usage: $appname <old namespace> <new namespace>"
+    exit 1
+}
+
+srcdir="libs/juce"
+
+oldns=$1
+if [ -z "$oldns" ]; then
+    die "You must specify the CURRENT namespace"
+fi
+
+newns=$2
+if [ -z "$newns" ]; then
+    die "You must specify the NEW namespace"
+fi
+
+IFS=$'\n'
+
+echo -n "Setting namespace to '$newns' "
+for f in `grep -l -R --include="*.h" --include="*.cpp" --include="*.mm" "$oldns" "$srcdir"`; do
+    echo -n "."
+    sed -i "" "s|namespace $oldns|namespace $newns|g" "$f"
+    sed -i "" "s|$oldns::|$newns::|g" "$f"
+done
+
+echo " finished"
+exit 0

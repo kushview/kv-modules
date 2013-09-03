@@ -1,0 +1,52 @@
+#!/bin/bash
+# Generate a version header
+
+header="build/version.h"
+version=`tools/version normal`
+version_git=`tools/version git`
+
+cat > $header << EOF
+
+/* This file is part of Element */
+
+#ifndef ELEMENT_VERSION_$version
+#define ELEMENT_VERSION_$version
+
+// THIS IS A GENERATED HEADER, ALL MODIFICATIONS WILL BE LOST
+
+namespace element {
+
+static const char*
+version_string()
+{
+    static const char* vers = "$version";
+    return vers;
+}
+
+static const char*
+version_string_verbose()
+{
+    static const char* vvers = "`tools/version verbose`";
+}
+
+
+static const char*
+revision_string()
+{
+    static const char* gitvers = "$version_git";
+    return gitvers;
+}
+
+static const char*
+appname()
+{
+    static const char* appname = "Element";
+    return appname;
+}
+
+}
+
+#endif
+
+EOF
+exit 0

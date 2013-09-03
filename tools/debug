@@ -1,0 +1,16 @@
+#!/bin/bash
+
+export ELEMENT_MODULE_PATH=`pwd`/build/modules
+export DYLD_LIBRARY_PATH=`pwd`/build/Frameworks
+export LD_LIBRARY_PATH=`pwd`/build
+
+runner=$1
+if [ -z "$runner" ]; then
+    runner=exec
+fi
+
+if [ -d "build/Applications/Element.app" ]; then
+    $runner build/Applications/Element.app/Contents/MacOS/Element
+else
+    $runner build/src/element/element
+fi

@@ -1,0 +1,7 @@
+#!/usr/bin/env python
+
+tools_subdirs = '''
+'''
+
+for d in tools_subdirs:
+    bld.recurse (d)

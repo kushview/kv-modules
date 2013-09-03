@@ -1,0 +1,98 @@
+#!/bin/bash
+
+set -e
+
+here=`pwd`
+parent="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+topdir=$parent/..
+cd $topdir
+
+PATH=$topdir/tools:$PATH
+
+appname="Element"
+descrip="Element Sound Library"
+
+major="0"
+minor="0"
+micro="0"
+lastrev=""
+cnt="0"
+
+IFS='.' read -ra vars <<< "`cat tools/version.txt`"
+for i in "${vars[@]}"; do
+    if [ $cnt = "0" ]; then major="$i"; fi
+    if [ $cnt = "1" ]; then minor="$i"; fi
+    if [ $cnt = "2" ]; then micro="$i"; fi
+    if [ $cnt = "3" ]; then lastrev="$i"; fi
+    cnt=`expr $cnt + 1`
+done
+
+version_string=$major.$minor.$micro
+
+function usage {
+    echo "version <mode> <start> <end>"
+}
+
+function die {
+    echo "$1"
+    usage
+    cd $here
+    exit 1
+}
+
+if [ -z "$1" ]; then
+    echo "Failed. you must choose a mode:"
+    die "Choices: git tagstring major minor micro build verbose commit hashcode"
+fi
+
+start=$lastrev
+if [ ! -z "$2" ]; then
+    start="$2"
+fi
+
+if [ ! -z "$start" ]; then
+    start="$start..."
+fi
+
+end="$3"
+if [ -z "$end" ]; then
+    end="HEAD"
+fi
+
+build=`git rev-list $start$end | wc -l | sed -e 's/ *//g'`
+branch=`git branch | grep '*' | sed "s| ||g" | sed "s|*||g"`
+commit=`git show --abbrev-commit HEAD | grep '^commit' | sed -e 's/commit //'`
+hashcode=`git show HEAD | grep '^commit' | sed -e 's/commit //'`
+
+if [ "$1" = "git" ]; then
+   echo $major.$minor.$micro-$commit
+elif [ "$1" = "tagstring" ]; then
+   echo "Version: $major.$minor.$micro (build $build)"
+elif [ "$1" = "major" ]; then
+   echo "$major"
+elif [ "$1" = "beta" ]; then
+   echo -n $version_string
+   echo '-b'$build
+elif [ "$1" = "final" ]; then
+   echo -n $version_string
+   echo '-rc'$build
+elif [ "$1" = "minor" ]; then
+   echo "$minor"
+elif [ "$1" = "micro" ]; then
+   echo "$micro"
+elif [ "$1" = "build" ]; then
+   echo "$build"
+elif [ "$1" = "verbose" ]; then
+   echo $appname version $major.$minor.$micro "(build $build, rev $commit)"
+elif [ "$1" = "description" ]; then
+   echo $appname version $major.$minor.$micro "(build $build, rev $commit)"
+elif [ "$1" = "commit" ]; then
+   echo "$commit"
+elif [ "$1" = "hashcode" ]; then
+  echo "$hashcode"
+else
+   echo $major.$minor.$micro
+fi
+
+cd $here
+exit 0

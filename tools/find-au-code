@@ -1,0 +1,39 @@
+#!/usr/bin/env python
+
+code = '''
+AUBase.cpp
+AUBuffer.cpp
+AUCarbonViewBase.cpp
+AUCarbonViewControl.cpp
+AUCarbonViewDispatch.cpp
+AUDispatch.cpp
+AUEffectBase.cpp
+AUInputElement.cpp
+AUMIDIBase.cpp
+AUMIDIEffectBase.cpp
+AUOutputBase.cpp
+AUOutputElement.cpp
+AUResources.r
+AUScopeElement.cpp
+CAAudioChannelLayout.cpp
+CAAUParameter.cpp
+CAMutex.cpp
+CarbonEventHandler.cpp
+CAStreamBasicDescription.cpp
+CAVectorUnit.cpp
+ComponentBase.cpp
+MusicDeviceBase.cpp
+'''.split()
+
+
+import fnmatch
+import os
+
+matches = []
+
+for c in code:
+    for root, dirnames, filenames in os.walk('/opt/element/sdks/CoreAudio'):
+        for filename in fnmatch.filter(filenames, c):
+            matches.append(os.path.join(root, filename))
+
+print matches
