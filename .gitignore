@@ -1,0 +1,7 @@
+dst
+libs/vst*
+.waf-*
+.lock*
+build/
+*.pyc
+.DS_Store
