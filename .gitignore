@@ -1,3 +1,4 @@
+modules/element-ui/jucer/Builds
 dst
 libs/vst*
 .waf-*

@@ -147,9 +147,10 @@ namespace gui {
         }
 
 
-        class TestItem : public Component
+        class TestItem :  public Component
         {
         public:
+
             TestItem (Timeline& parent) : timeline (parent)
             {
                 start = 0; duration = 10;
@@ -160,7 +161,7 @@ namespace gui {
                 g.fillAll (Colours::whitesmoke);
                 g.setColour (Colours::lightgrey);
                 g.setOpacity (0.80);
-                g.drawRect(0,0,getWidth(),getHeight(),2);
+                g.drawRect (0, 0, getWidth(), getHeight(), 2);
             }
 
             bool isInVisibleRange()

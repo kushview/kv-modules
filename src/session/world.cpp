@@ -26,7 +26,6 @@
 #include "element/session/device-manager.hpp"
 #include "element/session/module.hpp"
 #include "element/session/plugin-manager.hpp"
-#include "element/session/session.hpp"
 #include "element/session/world.hpp"
 
 #include "lv2world.hpp"
@@ -88,30 +87,32 @@ namespace element {
         Private()
             : symbols(),
               lv2 (new LV2World (symbols)),
-              session (Session::create()),
-              plugins (*lv2),
-              storage (make_sptr<NodeStore>())
+              plugins (new PluginManager (*lv2)),
+              settings (new Settings())
         {
-
-            devices.reset (new DeviceManager());
+            devices = new DeviceManager();
 
             {
                 PropertiesFile::Options opts;
                 opts.applicationName     = "Element";
                 opts.filenameSuffix      = "conf";
-                opts.folderName          = "Element";
+                opts.folderName          = opts.applicationName;
                 opts.osxLibrarySubFolder = "Application Support";
                 opts.storageFormat       = PropertiesFile::storeAsXML;
-                settings.setStorageParameters (opts);
+                settings->setStorageParameters (opts);
             }
 
-            plugins.restoreUserPlugins (settings);
+            plugins->restoreUser (*settings);
         }
 
         ~Private()
         {
+            devices = nullptr;
+            engine.reset();
+            plugins  = nullptr;
+            settings = nullptr;
 
-
+            // kill all loaded modules
             OwnedArray<DynamicLibrary> libs;
             for (auto& mod : mods)
             {
@@ -120,22 +121,21 @@ namespace element {
             }
 
             mods.clear();
+
+            for (DynamicLibrary* l : libs)
+                l->close();
             libs.clear (true);
 
-            engine.reset();
-            devices.reset();
-
-            delete lv2;
+            lv2 = nullptr;
         }
 
-        SymbolMap       symbols;
-        LV2World*       lv2;
-        Session*        session;
-        PluginManager   plugins;
-        Settings        settings;
+        SymbolMap symbols;
+        ScopedPointer<LV2World>      lv2;
+        ScopedPointer<PluginManager> plugins;
+        ScopedPointer<Settings>      settings;
+        ScopedPointer<DeviceManager> devices;
 
-        Shared<DeviceManager> devices;
-        Shared<Engine>        engine;
+        Shared<Engine>               engine;
 
         map<const String, Module*> mods;
 
@@ -186,7 +186,7 @@ namespace element {
     Settings&
     World::settings()
     {
-        return priv->settings;
+        return *priv->settings;
     }
 
     DeviceManager&
@@ -214,14 +214,7 @@ namespace element {
     PluginManager&
     World::plugins()
     {
-        return priv->plugins;
-    }
-
-    Session&
-    World::session()
-    {
-        assert (priv->session);
-        return *priv->session;
+        return *priv->plugins;
     }
 
     SymbolMap&

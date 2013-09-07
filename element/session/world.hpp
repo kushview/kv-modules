@@ -20,9 +20,9 @@
 #ifndef ELEMENT_WORLD_HPP
 #define ELEMENT_WORLD_HPP
 
-#include "element/core.hpp"
-#include "../../libs/juce/modules/juce_data_structures/juce_data_structures.h"
+#include "element/juce.hpp"
 #include "element/pointer.hpp"
+#include "element/session/stored-settings.hpp"
 
 namespace element {
 
@@ -34,12 +34,19 @@ namespace element {
     class SymbolMap;
     class URIs;
 
+    class World;
 
     class Settings : public  ApplicationProperties
     {
     public:
-        Settings() { }
+
+        Settings()  { }
         ~Settings() { }
+
+    private:
+
+        String appName;
+
     };
 
     /** A 'global' collection of an appilcation/plugin's data */
@@ -55,17 +62,20 @@ namespace element {
         Settings&       settings();
         DeviceManager&  devices();
         PluginManager&  plugins();
-        Session&        session();
         SymbolMap&      symbols();
 
         Shared<Engine>  engine();
         void setEngine (Shared<Engine> engine);
+
+        void setAppName (const String& name) { appName = name; }
+        virtual const String& getAppName() const { return appName; }
 
     private:
 
         class Private;
         Scoped<Private> priv;
 
+        String appName;
     };
 
 }

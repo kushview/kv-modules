@@ -131,6 +131,7 @@ element_modules = '''
     juce_audio_devices
     juce_audio_processors
     juce_audio_utils
+    juce_cryptography
     juce_data_structures
     juce_events
     juce_graphics
@@ -142,6 +143,15 @@ def wipe (ctx):
     if element.is_mac(): wipe_mac_packages (ctx)
 
 def build(bld):
+
+    # Let these headers appear as if they lived inside the juce folder
+    bld(rule="cp ${SRC} ${TGT}", source="element/juce/JuceHeader.h",
+                                 target="libs/juce/JuceHeader.h")
+    bld(rule="cp ${SRC} ${TGT}", source="element/juce/AppConfig.h",
+                                 target="libs/juce/AppConfig.h")
+
+    bld.add_group()
+
     glob = bld.path.ant_glob
 
     # The main element library/framework
@@ -159,6 +169,8 @@ def build(bld):
 
     juce_extras = "libs/juce/extras"
     introjucer  = os.path.join (juce_extras, "Introjucer")
+
+
 
     install_headers (bld)
 

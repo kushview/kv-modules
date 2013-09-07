@@ -295,7 +295,7 @@ public:
         }
         else if (! e.mouseWasClicked())
         {
-            graph.setChangedFlag (true);
+            //graph.setChangedFlag (true);
         }
     }
 

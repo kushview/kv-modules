@@ -23,7 +23,6 @@
 #include "element/session/device-manager.hpp"
 #include "element/session/module.hpp"
 #include "element/session/plugin-manager.hpp"
-#include "element/session/session.hpp"
 #include "element/session/world.hpp"
 
 #endif  /* ELEMENT_SESSION_HEADERS_HPP */

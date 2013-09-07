@@ -261,7 +261,7 @@ namespace gui {
          body.setBounds (trackWidth, headerHeight, w - scrollBarWidth - trackWidth, h - scrollBarWidth - headerHeight);
          vscroll.setBounds (w - scrollBarWidth, headerHeight, scrollBarWidth, h - scrollBarWidth - headerHeight);
          vscroll.setRangeLimits (0,1);
-         vscroll.setCurrentRange(0,.999999);
+         vscroll.setCurrentRange (0, .999999);
          
          hscroll.setBounds (body.getBounds().getX(), h - scrollBarWidth, body.getWidth(), scrollBarWidth);
          hscroll.setRangeLimits (begin, begin + duration);

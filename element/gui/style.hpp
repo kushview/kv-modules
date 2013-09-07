@@ -4,8 +4,16 @@
 
 #include "element/juce.hpp"
 
+
 namespace element {
 namespace gui {
+
+    enum ColourIds
+    {
+        mainBackgroundColourId          = 0x2340000,
+        treeviewHighlightColourId       = 0x2340002,
+    };
+
 
     class Style :  public LookAndFeel
     {

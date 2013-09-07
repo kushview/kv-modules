@@ -22,7 +22,9 @@
 
 namespace element {
     
-    class Controller { };
+    class Controller
+    {
+    };
     
 }
 

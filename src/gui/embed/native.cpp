@@ -10,9 +10,6 @@ namespace {
 }
 #endif
 
-
-#define Signal boost::signal
-
 namespace element {
 
    typedef NativeComponent::Attachment    Attachment;

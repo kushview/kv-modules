@@ -67,7 +67,11 @@ namespace element {
         priv.reset (new Private());
     }
 
-    DeviceManager::~DeviceManager() { }
+    DeviceManager::~DeviceManager()
+    {
+        closeAudioDevice();
+        attach (Shared<Engine>());
+    }
 
     void
     DeviceManager::attach (Shared<Engine> engine)
@@ -85,6 +89,8 @@ namespace element {
 
         if (engine)
             addAudioCallback (&engine->callback());
+        else
+            closeAudioDevice();
 
         priv->activeEngine = engine;
     }

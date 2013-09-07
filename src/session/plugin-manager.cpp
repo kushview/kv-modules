@@ -42,7 +42,9 @@ namespace element {
     }
 
     PluginManager::~PluginManager()
-    { }
+    {
+        priv.reset (nullptr);
+    }
 
     AudioPluginFormat*
     PluginManager::format (const String& name)
@@ -71,7 +73,7 @@ namespace element {
     }
 
     void
-    PluginManager::restoreUserPlugins (Settings& settings)
+    PluginManager::restoreUser (Settings& settings)
     {
         ScopedXml xml (settings.getUserSettings()->getXmlValue ("plugin-list"));
         if (xml)

@@ -30,6 +30,5 @@ namespace element {
     AppController::~AppController()
     { }
 
-    Session& AppController::session()   { return elementWorld.session(); }
     World& AppController::world()       { return elementWorld; }
 }

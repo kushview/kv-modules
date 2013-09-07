@@ -17,6 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+int main() { return 0; }
+
+#if 0
 #include "element/juce.hpp"
 #include "element/session.hpp"
 
@@ -87,3 +90,4 @@ namespace element {
 }
 
 START_JUCE_APPLICATION (element::Main)
+#endif

@@ -21,9 +21,9 @@
 
 #include "element/core.hpp"
 
-#define ELEMENT_FORCE_BOOST_SHARED_PTR 0
+#define ELEMENT_FORCE_BOOST_SHARED_PTR 1
 
-#if ! ELEMENT_USE_BOOST_SHARED_PTR
+#if ! ELEMENT_FORCE_BOOST_SHARED_PTR
     #if __cplusplus >= 201103L
         #include <memory>
         template<class T> using Unique = std::unique_ptr<T>;
@@ -66,7 +66,7 @@ template <class T, class U>
 inline Shared<T>
 dynamic_ptr_cast (const Shared<U>& sp)
 {
-#if __cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__
+#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
     return std::dynamic_pointer_cast<T> (sp);
 #elif ELEMENT_USE_TR1
     return std::tr1::dynamic_pointer_cast<T> (sp);
@@ -80,7 +80,7 @@ template <class T, class U>
 inline Shared<T>
 const_ptr_cast (const Shared<U>& sp)
 {
-#if __cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__
+#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
     return std::const_pointer_cast<T> (sp);
 #elif ELEMENT_USE_TR1
     return std::tr1::const_pointer_cast<T> (sp);
@@ -93,7 +93,7 @@ template <class T, class U>
 inline Shared<T>
 static_ptr_cast (const Shared<U>& sp)
 {
-#if __cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__
+#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
     return std::static_pointer_cast<T> (sp);
 #elif ELEMENT_USE_TR1
     return std::tr1::static_pointer_cast<T> (sp);
@@ -102,7 +102,7 @@ static_ptr_cast (const Shared<U>& sp)
 #endif
 }
 
-#if __cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__
+#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
 template <class T>
 inline Shared<T> make_sptr()
 {
@@ -127,6 +127,36 @@ inline Shared<T> make_sptr (A0& a0, A1& a1, A2& a2)
     return std::make_shared<T> (a0, a1, a2);
 }
 #else
+template <class T>
+inline Shared<T> make_sptr()
+{
+    return Shared<T> (new T());
+}
+
+template <class T, class A0>
+inline Shared<T> make_sptr(A0& a0)
+{
+    return Shared<T> (new T(a0));
+}
+
+template <class T, class A0, class A1>
+inline Shared<T> make_sptr (A0& a0, A1& a1)
+{
+    return Shared<T> (new T(a0, a1));
+}
+
+template <class T, class A0, class A1, class A2>
+inline Shared<T> make_sptr (A0& a0, A1& a1, A2& a2)
+{
+    return Shared<T> (new T(a0, a1, a2));
+}
+
+template <class T, class A0, class A1, class A2, class A3>
+inline Shared<T> make_sptr (A0& a0, A1& a1, A2& a2, A3& a3)
+{
+    return Shared<T> (new T(a0, a1, a2, a3));
+}
+
 #endif
 
 }  /* namespace element */

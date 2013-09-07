@@ -4,6 +4,9 @@
               bundleIdentifier="org.element-project.ElementGUI" jucerVersion="3.1.0"
               companyName="BKE, LLC">
   <MAINGROUP id="JMWTSy" name="Element GUI">
+    <FILE id="orsMAo" name="timeline-view.cpp" compile="1" resource="0"
+          file="../timeline-view.cpp"/>
+    <FILE id="ZYW2Nq" name="timeline-view.h" compile="0" resource="0" file="../timeline-view.h"/>
     <FILE id="nrV9rl" name="commands.hpp" compile="0" resource="0" file="../commands.hpp"/>
     <FILE id="z3G7rY" name="editors.hpp" compile="0" resource="0" file="../editors.hpp"/>
     <FILE id="Qrwd7L" name="guiapp.cpp" compile="1" resource="0" file="../guiapp.cpp"/>

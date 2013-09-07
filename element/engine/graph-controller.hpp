@@ -26,7 +26,9 @@
 #define __FILTERGRAPH_JUCEHEADER__
 
 #include "element/juce.hpp"
+#include "element/controller.hpp"
 #include "element/session.hpp"
+#include "element/signal.hpp"
 #include "element/engine/graph-processor.hpp"
 
 
@@ -35,30 +37,32 @@ namespace element {
 class FilterInGraph;
 class GraphController;
 
-const char* const filenameSuffix   = ".graph";
-const char* const filenameWildcard = "*.graph";
+
 
 //==============================================================================
 /**
     A collection of filters and some connections between them.
 */
-class GraphController   : public FileBasedDocument
+class GraphController :  public Controller
 {
 public:
 
-    typedef GraphProcessor::Connection Circuit;
+    typedef GraphProcessor::Node::Ptr NodePtr;
 
     //==============================================================================
     GraphController (GraphProcessor&, PluginManager&);
     ~GraphController();
 
     //==============================================================================
-    GraphProcessor& getGraph() noexcept         { return graph; }
+    GraphProcessor& getGraph() noexcept         { return processor; }
+    GraphProcessor& graph() { return getGraph(); }
+
+    PluginManager& plugins() { return pluginManager; }
 
     int getNumFilters() const noexcept;
 
-    const GraphProcessor::Node::Ptr getNode (const int index) const noexcept;
-    const GraphProcessor::Node::Ptr getNodeForId (const uint32 uid) const noexcept;
+    const NodePtr getNode (const int index) const noexcept;
+    const NodePtr getNodeForId (const uint32 uid) const noexcept;
 
     void addFilter (const PluginDescription* desc, double x, double y);
 
@@ -90,28 +94,23 @@ public:
 
     void clear();
 
-    XmlElement* createXml() const;
-    void restoreFromXml (const XmlElement& xml);
-
-    String getDocumentTitle();
-    Result loadDocument (const File& file);
-    Result saveDocument (const File& file);
-    File getLastDocumentOpened();
-    void setLastDocumentOpened (const File& file);
+    Signal& signalChanged() { return changedSignal; }
 
     /** The special channel index used to refer to a filter's midi channel.
     */
     static const int midiChannelNumber;
 
+
 private:
 
     PluginManager& pluginManager;
-    GraphProcessor& graph;
+    GraphProcessor& processor;
+
+    Signal changedSignal;
 
     uint32 lastUID;
     uint32 getNextUID() noexcept;
-
-    void createNodeFromXml (const XmlElement& xml);
+    inline void changed() { changedSignal(); /* emit signal */ }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphController)
 };

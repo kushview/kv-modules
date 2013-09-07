@@ -20,6 +20,6 @@
 #ifndef ELEMENT_JUCE_HPP
 #define ELEMENT_JUCE_HPP
 
-#include "juce/JuceHeader.h"
+#include "../libs/juce/JuceHeader.h"
 
 #endif // ELEMENT_JUCE_HPP

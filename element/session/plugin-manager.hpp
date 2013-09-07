@@ -20,7 +20,7 @@ namespace element {
         KnownPluginList& allPlugins();
 
         void saveUserPlugins (Settings&);
-        void restoreUserPlugins (Settings&);
+        void restoreUser (Settings&);
 
     private:
 

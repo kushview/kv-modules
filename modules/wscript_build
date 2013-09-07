@@ -1,61 +1,63 @@
 
 import element, os
 
-modules_to_build = '''
-    audio-engine
-'''.split()
+build_modules = False
+if build_modules:
+    modules_to_build = '''
+        audio-engine
+    '''.split()
 
-# make 'libmodule.so' into 'module.so'
-modenv = bld.env.derive()
-modenv['cxxshlib_PATTERN'] = \
-    modenv['cshlib_PATTERN'] = bld.env['modulelib_PATTERN']
+    # make 'libmodule.so' into 'module.so'
+    modenv = bld.env.derive()
+    modenv['cxxshlib_PATTERN'] = \
+        modenv['cshlib_PATTERN'] = bld.env['modulelib_PATTERN']
 
-# make up an install path
-modenv.LIBDIR += "/element/modules"
+    # make up an install path
+    modenv.LIBDIR += "/element/modules"
 
-def module_useflags (mod, is_gui):
-    flags = []
-
-
-    if element.is_mac():
-        flags += ['ELEMENT']
-    else:
-        flags.append ('element-0')
-
-    if is_gui:
-        flags.append ('QT5WIDGETS')
-
-    if mod == "composer": flags.append ('LILV')
-    if mod == 'jack-device': flags.append ('JACK')
-
-    return flags
+    def module_useflags (mod, is_gui):
+        flags = []
 
 
-def e_append_module (modules, module):
-    if not module in modules:
-        modules.append (module)
+        if element.is_mac():
+            flags += ['ELEMENT']
+        else:
+            flags.append ('element-0')
 
-if modenv.HAVE_JACK:
-    e_append_module (modules_to_build, "jack-device")
+        if is_gui:
+            flags.append ('QT5WIDGETS')
 
-for module in modules_to_build:
-    src_pattern = "%s/**/*.cpp" % module
-    source =  bld.path.ant_glob (src_pattern)
-    features = ['cxx']
+        if mod == "composer": flags.append ('LILV')
+        if mod == 'jack-device': flags.append ('JACK')
 
-    obj = bld.shlib (
-        features     = features,
-        source       = source,
-        includes     = [module, "..", "../libs", "../libs/juce", "../element", "../build/modules"],
-        name         = module,
-        target       = module,
-        use          = module_useflags (module, False),
-        env          = modenv,
-        install_path = modenv.MODULEDIR,
-    )
+        return flags
+
+
+    def e_append_module (modules, module):
+        if not module in modules:
+            modules.append (module)
+
+    if modenv.HAVE_JACK:
+        e_append_module (modules_to_build, "jack-device")
+
+    for module in modules_to_build:
+        src_pattern = "%s/**/*.cpp" % module
+        source =  bld.path.ant_glob (src_pattern)
+        features = ['cxx']
+
+        obj = bld.shlib (
+            features     = features,
+            source       = source,
+            includes     = [module, "..", "../libs", "../libs/juce", "../element", "../build/modules"],
+            name         = module,
+            target       = module,
+            use          = module_useflags (module, False),
+            env          = modenv,
+            install_path = modenv.MODULEDIR,
+        )
+
+        bld.add_group()
 
     bld.add_group()
-
-bld.add_group()
-bld.recurse ('element-ui')
+    bld.recurse ('element-ui')
 
