@@ -146,10 +146,10 @@ def wipe (ctx):
 def build(bld):
 
     # Let these headers appear as if they lived inside the juce folder
-    bld(rule="cp ${SRC} ${TGT}", source="element/juce/JuceHeader.h",
-                                 target="libs/juce/JuceHeader.h")
-    bld(rule="cp ${SRC} ${TGT}", source="element/juce/AppConfig.h",
-                                 target="libs/juce/AppConfig.h")
+    #bld(rule="cp -f ${SRC} ${TGT}", source="element/juce/JuceHeader.h",
+    #                            target="libs/juce/JuceHeader.h")
+    #bld(rule="cp -f ${SRC} ${TGT}", source="element/juce/AppConfig.h",
+    #                             target="libs/juce/AppConfig.h")
 
     bld.add_group()
 
