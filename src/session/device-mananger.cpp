@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "juce/AppConfig.h"
-#include "../../../libs/juce/modules/juce_audio_devices/juce_audio_devices.h"
+#include "element/juce.hpp"
 #include "element/session/device-manager.hpp"
 #include "element/engine.hpp"
 

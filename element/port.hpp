@@ -17,8 +17,6 @@
 #include "element/core.hpp"
 #include "element/node.hpp"
 
-#include "../../libs/juce/modules/juce_audio_processors/juce_audio_processors.h"
-
 #define ELEMENT_INVALID_PORT JUCE_INVALID_PORT
 
 namespace element {

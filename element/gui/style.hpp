@@ -31,16 +31,17 @@ namespace gui {
                                                            const bool flatOnTop,
                                                            const bool flatOnBottom) noexcept;
 
-        void drawPopupMenuBackground (Graphics& g, int width, int height);
 
+
+        void drawPopupMenuBackground (Graphics& g, int width, int height);
+        Font getPopupMenuFont() { return juce::Font (12); }
+
+        Font getComboBoxFont() { return juce::Font (13); }
         virtual void drawComboBox (Graphics&, int width, int height,
                                    bool isButtonDown,
                                    int buttonX, int buttonY,
                                    int buttonW, int buttonH,
                                    ComboBox& box);
-
-        void fillWithBackgroundTexture (Graphics&);
-        static void fillWithBackgroundTexture (Component&, Graphics&);
 
         int getTabButtonOverlap (int tabDepth);
         int getTabButtonSpaceAroundImage();
@@ -49,7 +50,7 @@ namespace gui {
         void drawTabButton (TabBarButton& button, Graphics& g, bool isMouseOver, bool isMouseDown);
 
         Rectangle<int> getTabButtonExtraComponentBounds (const TabBarButton& button, Rectangle<int>& textArea, Component& comp);
-        void drawTabAreaBehindFrontButton (TabbedButtonBar&, Graphics&, int, int) {}
+        void drawTabAreaBehindFrontButton (TabbedButtonBar&, Graphics&, int, int) { }
 
         void drawStretchableLayoutResizerBar (Graphics& g, int /*w*/, int /*h*/, bool /*isVerticalBar*/, bool isMouseOver, bool isMouseDragging);
         Rectangle<int> getPropertyComponentContentPosition (PropertyComponent&);

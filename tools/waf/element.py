@@ -70,8 +70,8 @@ def configure (conf):
         conf.env.FRAMEWORK_QUARTZ_CORE = 'QuartzCore'
         conf.env.FRAMEWORK_WEB_KIT = 'WebKit'
         conf.env.FRAMEWORK_ELEMENT = 'Element'
-        conf.env.LINKFLAGS += ['-F', 'Frameworks']
         conf.env.ARCH_COCOA = ['x86_64']
+
     elif "Windows" in platform.system():
         pass
     elif "Linux" in platform.system():

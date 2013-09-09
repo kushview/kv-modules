@@ -47,11 +47,11 @@ namespace gui {
             TreeView::backgroundColourId,               0x00000000,
             TreeView::dragAndDropIndicatorColourId,     0x80ff0000,
 
-            PopupMenu::backgroundColourId,              0xff515151,
-            PopupMenu::textColourId,                    0xffffffff,
+            PopupMenu::backgroundColourId,              0xff999999,
+            PopupMenu::textColourId,                    0xff333333,
             PopupMenu::headerTextColourId,              0xff000000,
             PopupMenu::highlightedTextColourId,         0xffffffff,
-            PopupMenu::highlightedBackgroundColourId,   0x88000000,
+            PopupMenu::highlightedBackgroundColourId,   0xff000000,
 
             ComboBox::buttonColourId,                   0xff212121,
             ComboBox::outlineColourId,                  standardOutlineColour,
@@ -235,10 +235,10 @@ namespace gui {
     {
         const Colour background (findColour (PopupMenu::backgroundColourId));
         g.setColour (background);
-        g.fillRoundedRectangle (0, 0, width, height, 4);
+        g.fillRect (0, 0, width, height);
 
-        //g.setColour (Colours::grey);
-        //g.drawRoundedRectangle (0, 0, width, height, 4, 1);
+        g.setColour (Colours::black);
+        g.drawRect (Rectangle<float> (0, 0, width, height), 0.80f);
     }
 
 
@@ -372,46 +372,6 @@ namespace gui {
         return Range<float> (minB, maxB);
     }
 
-    void Style::fillWithBackgroundTexture (Graphics& g)
-    {
-#if 0
-        const Colour bkg (findColour (mainBackgroundColourId));
-
-        if (backgroundTextureBaseColour != bkg)
-        {
-            backgroundTextureBaseColour = bkg;
-
-            //const Image original (ImageCache::getFromMemory (BinaryData::background_tile_png,
-              //                                               BinaryData::background_tile_pngSize));
-            const int w = original.getWidth();
-            const int h = original.getHeight();
-
-            backgroundTexture = Image (Image::RGB, w, h, false);
-
-            const Range<float> brightnessRange (getBrightnessRange (original));
-            const float brightnessOffset = (brightnessRange.getStart() + brightnessRange.getEnd()) / 2.0f;
-            const float brightnessScale = 0.025f / brightnessRange.getLength();
-            const float bkgB = bkg.getBrightness();
-
-            for (int y = 0; y < h; ++y)
-            {
-                for (int x = 0; x < w; ++x)
-                {
-                    const float b = (original.getPixelAt (x, y).getBrightness() - brightnessOffset) * brightnessScale;
-                    backgroundTexture.setPixelAt (x, y, bkg.withBrightness (jlimit (0.0f, 1.0f, bkgB + b)));
-                }
-            }
-        }
-
-        g.setTiledImageFill (backgroundTexture, 0, 0, 1.0f);
-        g.fillAll();
-#endif
-    }
-
-    void Style::fillWithBackgroundTexture (Component& c, Graphics& g)
-    {
-        // dynamic_cast<IntrojucerLookAndFeel&> (c.getLookAndFeel()).fillWithBackgroundTexture (g);
-    }
 
     void Style::drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
                                                            bool isMouseOver, bool /*isMouseDown*/,

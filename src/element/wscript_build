@@ -6,10 +6,12 @@ element_program = bld.program (
     includes    = ["../..", "../../element", "../../libs/juce"],
     name        = "element",
     target      = "element",
-    use         = "element-engines-0"
+    use         = "element-0"
 )
 
-if element.is_mac():
+build_frameworks = False
+
+if element.is_mac() and build_frameworks:
     element_program.use = "ELEMENT"
     element_program.mac_package = True
     element_program.target = "../../Applications/Element"

@@ -55,12 +55,14 @@ const GraphProcessor::Node::Ptr GraphController::getNode (const int index) const
     return processor.getNode (index);
 }
 
-const GraphProcessor::Node::Ptr GraphController::getNodeForId (const uint32 uid) const noexcept
+const GraphProcessor::Node::Ptr
+GraphController::getNodeForId (const uint32 uid) const noexcept
 {
     return processor.getNodeForId (uid);
 }
 
-void GraphController::addFilter (const PluginDescription* desc, double x, double y)
+void
+GraphController::addFilter (const PluginDescription* desc, double x, double y)
 {
     if (desc != nullptr)
     {
@@ -87,7 +89,8 @@ void GraphController::addFilter (const PluginDescription* desc, double x, double
     }
 }
 
-void GraphController::removeFilter (const uint32 uid)
+void
+GraphController::removeFilter (const uint32 uid)
 {
   //  PluginWindow::closeCurrentlyOpenWindowsFor (uid);
 
@@ -146,14 +149,14 @@ const GraphProcessor::Connection* GraphController::getConnectionBetween (uint32 
                                                                           uint32 destFilterUID, int destFilterChannel) const noexcept
 {
     return processor.getConnectionBetween (sourceFilterUID, sourceFilterChannel,
-                                       destFilterUID, destFilterChannel);
+                                           destFilterUID, destFilterChannel);
 }
 
 bool GraphController::canConnect (uint32 sourceFilterUID, int sourceFilterChannel,
-                              uint32 destFilterUID, int destFilterChannel) const noexcept
+                                  uint32 destFilterUID, int destFilterChannel) const noexcept
 {
     return processor.canConnect (sourceFilterUID, sourceFilterChannel,
-                             destFilterUID, destFilterChannel);
+                                 destFilterUID, destFilterChannel);
 }
 
 bool GraphController::addConnection (uint32 sourceFilterUID, int sourceFilterChannel,
@@ -178,7 +181,7 @@ void GraphController::removeConnection (uint32 sourceFilterUID, int sourceFilter
                                     uint32 destFilterUID, int destFilterChannel)
 {
     if (processor.removeConnection (sourceFilterUID, sourceFilterChannel,
-                                destFilterUID, destFilterChannel))
+                                    destFilterUID, destFilterChannel))
         changed();
 }
 

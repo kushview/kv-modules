@@ -116,7 +116,7 @@ def create_task_local_framework_symlinks (self):
         # create a link from framework binary to framework root path
         linktarget = dir.find_or_declare(out.name).abspath()
         if os.path.exists (linktarget):
-            return
+            os.unlink (linktarget)
 
         linksource = join (join ("Versions", framework_version), out.name)
         os.symlink (linksource, linktarget)

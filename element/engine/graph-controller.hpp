@@ -43,7 +43,8 @@ class GraphController;
 /**
     A collection of filters and some connections between them.
 */
-class GraphController :  public Controller
+class GraphController :  public Controller,
+                         public ChangeBroadcaster
 {
 public:
 

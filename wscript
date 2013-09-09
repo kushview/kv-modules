@@ -34,7 +34,7 @@ def configure (conf):
     pkg_defs = ['HAVE_LILV', 'HAVE_JACK', 'HAVE_SUIL', 'HAVE_LV2']
     for d in pkg_defs: conf.env[d] = conf.is_defined (d)
 
-    conf.env.VERSION_STRING = version_string()
+    conf.env.ELEMENT_VERSION_STRING = version_string()
     conf.define ("ELEMENT_VERSION_STRING", conf.env.VERSION_STRING)
 
     if element.is_mac():
@@ -96,11 +96,12 @@ def make_library (bld, name, libname, mods):
     thelib = juce.create_unified_lib (bld, libname, mods)
     thelib.includes += [".", "element", "libs"]
 
-    if element.is_mac():
+    build_frameworks = False
+    if element.is_mac() and build_frameworks:
         thelib.mac_framework = True
         thelib.target = "Frameworks/%s" % name
     else:
-        thelib.vnum = bld.env.VERSION_STRING
+        thelib.vnum = bld.env.ELEMENT_VERSION_STRING
 
     build_pc_file (bld, name, libname)
     install_module_headers (bld, mods)
