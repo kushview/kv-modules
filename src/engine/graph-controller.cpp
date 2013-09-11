@@ -36,7 +36,7 @@ GraphController::GraphController (GraphProcessor& pg, PluginManager& pm)
 
 GraphController::~GraphController()
 {
-    processor.clear();
+    //processor.clear();
 }
 
 uint32 GraphController::getNextUID() noexcept
