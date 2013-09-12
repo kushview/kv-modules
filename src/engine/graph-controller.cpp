@@ -92,8 +92,6 @@ GraphController::addFilter (const PluginDescription* desc, double x, double y)
 void
 GraphController::removeFilter (const uint32 uid)
 {
-  //  PluginWindow::closeCurrentlyOpenWindowsFor (uid);
-
     if (processor.removeNode (uid))
         changed();
 }
