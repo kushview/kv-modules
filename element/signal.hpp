@@ -25,8 +25,12 @@ namespace boost
 #  define signals protected
 #endif
 
+#include <element/juce.hpp>
+
 namespace element {
     typedef boost::sig::signal<void()> Signal;
+    typedef boost::sig::signal<void(float)> FloatSignal;
+    typedef boost::sig::signal<void(const String&)> StringSignal;
 }
 
 #endif
