@@ -62,7 +62,7 @@ DecibelScaleComponent::~DecibelScaleComponent ()
 void DecibelScaleComponent::paint (Graphics& g)
 {
     g.setFont (font);
-    g.setColour (Colours::black);
+    g.setColour (Colours::lightgrey);
 
     lastY = 0;
 

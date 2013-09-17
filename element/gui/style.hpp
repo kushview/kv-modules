@@ -11,7 +11,7 @@ namespace gui {
     enum ColourIds
     {
         mainBackgroundColourId          = 0x2340000,
-        treeviewHighlightColourId       = 0x2340002,
+        treeviewHighlightColourId       = 0x2340002
     };
 
 

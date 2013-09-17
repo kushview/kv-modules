@@ -4,10 +4,13 @@
 namespace element {
 namespace gui {
 
-#define mainBackgroundColourId 0xff666666
 
     Style::Style()
     {
+
+        setColour (mainBackgroundColourId, Colours::darkgrey);
+        setColour (treeviewHighlightColourId, Colours::transparentBlack);
+
         // set up the standard set of colours..
         const uint32 textButtonColour      = 0xff555555;
         const uint32 textHighlightColour   = 0x30000000;
@@ -145,7 +148,7 @@ namespace gui {
             FileSearchPathListComponent::backgroundColourId,        0xff515151,
 
             FileChooserDialogBox::titleTextColourId,                0xffffffff,
-
+            FileChooserDialogBox::backgroundColourId,               0xff333333,
             DrawableButton::textColourId,                           0xff000000,
         };
 
