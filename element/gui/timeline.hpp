@@ -71,6 +71,7 @@ namespace gui {
         void resized();
 
     private:
+
         Timeline &owner;
 
         int middle;
@@ -83,8 +84,9 @@ namespace gui {
     class TimelineItem : public Component
     {
     public:
-        TimelineItem() {}
-        ~TimelineItem() {}
+
+        TimelineItem() { }
+        virtual ~TimelineItem() { }
 
         void paint (Graphics& g)
         {
@@ -120,13 +122,12 @@ namespace gui {
 
         ~Timeline();
 
-        void paint (Graphics& g);
+        virtual void paint (Graphics& g);
 
         void scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRangeStart);
-
         void sliderValueChanged (Slider* slider);
 
-        void resized();
+        virtual void resized();
 
         double getBegin() const { return begin; }
         double getOffset() const { return offset; }
@@ -137,7 +138,7 @@ namespace gui {
 
         enum ColourIDs {
             bodybackgroundColourId      = 0x9900001,
-            headerBackgroundColourId    = 0x9900002,
+            headerBackgroundColourId    = 0x9900002
         };
 
         void getVisibleRange (double &in, double &out)
@@ -198,7 +199,6 @@ namespace gui {
         };
 
         ScopedPointer<TestItem> testItem;
-
 
         inline void setTrackWidth (int newWidth) { trackWidth = newWidth; }
 

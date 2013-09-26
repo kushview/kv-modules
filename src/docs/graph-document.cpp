@@ -12,7 +12,9 @@ namespace element {
         : FileBasedDocument (graphSuffix, graphWildcard,
                              "Load a graph", "Save a graph"),
           graph (g), plugins (p)
-    { }
+    {
+        rootTag = "graph";
+    }
 
     GraphDocument::~GraphDocument() { }
 
@@ -30,7 +32,7 @@ namespace element {
             XmlElement* e = new XmlElement ("arc");
             e->setAttribute ("source-block", (int) fc->sourceNode);
             e->setAttribute ("source-port", (int) fc->sourcePort);
-            e->setAttribute ("dest-node", (int) fc->destNode);
+            e->setAttribute ("dest-block", (int) fc->destNode);
             e->setAttribute ("dest-port", (int) fc->destPort);
 
             xml->addChildElement (e);
@@ -42,8 +44,7 @@ namespace element {
     void GraphDocument::restoreFromXml (const XmlElement& xml)
     {
         graph.clear();
-
-        forEachXmlChildElementWithTagName (xml, e, "FILTER")
+        forEachXmlChildElementWithTagName (xml, e, "node")
         {
             createNodeFromXml (*e);
             changed();
@@ -51,10 +52,15 @@ namespace element {
 
         forEachXmlChildElementWithTagName (xml, e, "arc")
         {
-            graph.addConnection ((uint32) e->getIntAttribute ("source-block"),
+            std::clog << "connecting " <<
+            graph.addConnection ((uint32)e->getIntAttribute ("source-block"),
                                  e->getIntAttribute ("source-port"),
-                                 (uint32) e->getIntAttribute ("dest-block"),
-                                 e->getIntAttribute ("dest-port"));
+                                 (uint32)e->getIntAttribute ("dest-block"),
+                                 e->getIntAttribute ("dest-port")) << std::endl;
+            std::clog << e->getIntAttribute ("source-block") << " "
+                      << e->getIntAttribute ("source-port") << " "
+                      << e->getIntAttribute ("dest-block") << " "
+                      << e->getIntAttribute ("dest-port") << std::endl;
         }
 
         graph.removeIllegalConnections();
@@ -71,8 +77,7 @@ namespace element {
 
     Result GraphDocument::loadDocument (const File& file)
     {
-        XmlDocument doc (file);
-        ScopedPointer<XmlElement> xml (doc.getDocumentElement());
+        ScopedPointer<XmlElement> xml (XmlDocument::parse (file));
 
         if (xml == nullptr || ! xml->hasTagName (rootTag))
             return Result::fail ("Not a valid file");
@@ -104,7 +109,6 @@ namespace element {
     static XmlElement* createNodeXml (GraphProcessor::Node* const node) noexcept
     {
         AudioPluginInstance* plugin = dynamic_cast <AudioPluginInstance*> (node->getProcessor());
-
         if (plugin == nullptr)
         {
             jassertfalse
@@ -112,6 +116,7 @@ namespace element {
         }
 
         XmlElement* e = new XmlElement ("node");
+
         e->setAttribute ("uid", (int) node->nodeId);
         e->setAttribute ("x", node->properties ["x"].toString());
         e->setAttribute ("y", node->properties ["y"].toString());
@@ -120,11 +125,11 @@ namespace element {
 
         PluginDescription pd;
         plugin->fillInPluginDescription (pd);
-
         e->addChildElement (pd.createXml());
 
-        XmlElement* state = new XmlElement ("STATE");
+        std::clog << "saving: " << pd.name << std::endl;
 
+        XmlElement* state = new XmlElement ("state");
         MemoryBlock m;
         node->getProcessor()->getStateInformation (m);
         state->addTextElement (m.toBase64Encoding());
@@ -135,6 +140,7 @@ namespace element {
 
     void GraphDocument::createNodeFromXml (const XmlElement& xml)
     {
+        std::clog << "GraphDocument::createNodeFromXml\n";
         PluginDescription pd;
 
         forEachXmlChildElement (xml, e)
@@ -157,6 +163,8 @@ namespace element {
 
         GraphProcessor::Node::Ptr node (
                     graph.getGraph().addNode (instance, xml.getIntAttribute ("uid")));
+
+        std::clog << "node loaded: " << node->getProcessor()->getName() << std::endl;
 
         if (const XmlElement* const state = xml.getChildByName ("state"))
         {

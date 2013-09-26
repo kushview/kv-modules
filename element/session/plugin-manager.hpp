@@ -17,6 +17,16 @@ namespace element {
         ~PluginManager();
 
         AudioPluginFormat* format (const String& fmt);
+
+        template<class FormatType>
+        inline FormatType* format()
+        {
+            for (int i = 0; i < getNumFormats(); ++i)
+                if (FormatType* fmt = dynamic_cast<FormatType*> (getFormat(i)))
+                    return fmt;
+            return nullptr;
+        }
+
         KnownPluginList& allPlugins();
 
         void saveUserPlugins (Settings&);

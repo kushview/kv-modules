@@ -65,7 +65,7 @@ namespace element {
         SymbolMap&      symbols();
 
         Shared<Engine>  engine();
-        void setEngine (Shared<Engine> engine);
+        virtual void setEngine (Shared<Engine> engine);
 
         void setAppName (const String& name) { appName = name; }
         virtual const String& getAppName() const { return appName; }

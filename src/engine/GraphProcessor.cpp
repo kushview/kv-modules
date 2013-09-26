@@ -16,7 +16,7 @@
 */
 
 #include "element/port.hpp"
-#include "element/engine/port-processor.hpp"
+#include "element/engine/PortProcessor.h"
 #include "element/engine/graph-processor.hpp"
 
 namespace element {
@@ -223,6 +223,26 @@ public:
 #endif
     }
 
+    ProcessBufferOp (const GraphProcessor::Node::Ptr& node_,
+                     const Array <int>& audioChannelsToUse_,
+                     const int totalChans_,
+                     const int midiBufferToUse_,
+                     const Array <int> chans [PortType::Unknown])
+        : node (node_),
+          processor (node_->getProcessor()),
+          audioChannelsToUse (audioChannelsToUse_),
+          totalChans (jmax (1, totalChans_)),
+          midiBufferToUse (midiBufferToUse_)
+    {
+        channels.calloc ((size_t) totalChans);
+
+        while (audioChannelsToUse.size() < totalChans)
+            audioChannelsToUse.add (0);
+
+        if (chans[PortType::Atom].size() > 0)
+            midiBufferToUse = chans[PortType::Atom].getFirst();
+    }
+
     void perform (AudioSampleBuffer& sharedBufferChans, const OwnedArray <MidiBuffer>& sharedMidiBuffers, const int numSamples)
     {
         for (int i = totalChans; --i >= 0;) {
@@ -230,7 +250,6 @@ public:
         }
 
         AudioSampleBuffer buffer (channels, totalChans, numSamples);
-
         processor->processBlock (buffer, *sharedMidiBuffers.getUnchecked (midiBufferToUse));
     }
 
@@ -577,8 +596,9 @@ private:
 #if 1
         int totalChans = jmax (proc->getNumPorts (PortType::Audio, true),
                                proc->getNumPorts (PortType::Audio, false));
+
         renderingOps.add (new ProcessBufferOp (node, channelsToUse [PortType::Audio],
-                                               totalChans, 0));
+                                               totalChans, 0, channelsToUse));
 #endif
     }
 
@@ -686,6 +706,12 @@ GraphProcessor::Node::Node (const uint32 nodeId_, AudioProcessor* const processo
     jassert (processor != nullptr);
 }
 
+bool
+GraphProcessor::Node::isSubgraph() const noexcept
+{
+    return (dynamic_cast<GraphProcessor*> (processor.get()) != nullptr);
+}
+
 void
 GraphProcessor::Node::prepare (const double sampleRate, const int blockSize,
                                          GraphProcessor* const graph)
@@ -738,7 +764,7 @@ GraphProcessor::~GraphProcessor()
 const String
 GraphProcessor::getName() const
 {
-    return "Processor Graph";
+    return "Processing Graph";
 }
 
 //==============================================================================
@@ -797,8 +823,7 @@ GraphProcessor::addNode (AudioProcessor* const newProcessor, uint32 nodeId)
     nodes.add (n);
     n->setParentGraph (this);
 
-    //triggerAsyncUpdate();
-    handleAsyncUpdate();
+    triggerAsyncUpdate();
 
     return n;
 }
@@ -813,9 +838,7 @@ bool GraphProcessor::removeNode (const uint32 nodeId)
         {
             nodes.getUnchecked(i)->setParentGraph (nullptr);
             nodes.remove (i);
-            //triggerAsyncUpdate();
-            handleAsyncUpdate();
-
+            triggerAsyncUpdate();
             return true;
         }
     }
@@ -900,16 +923,14 @@ GraphProcessor::addConnection (const uint32 sourceNode,
     ArcSorter sorter;
     connections.addSorted (sorter, new Connection (sourceNode, sourcePort,
                                                    destNode, destPort));
-    //triggerAsyncUpdate();
-    handleAsyncUpdate();
+    triggerAsyncUpdate();
     return true;
 }
 
 void GraphProcessor::removeConnection (const int index)
 {
     connections.remove (index);
-    //triggerAsyncUpdate();
-    handleAsyncUpdate();
+    triggerAsyncUpdate();
 }
 
 bool GraphProcessor::removeConnection (const uint32 sourceNode, const uint32 sourcePort,
@@ -1060,9 +1081,6 @@ void GraphProcessor::buildRenderingSequence()
 
         numRenderingBuffersNeeded = calculator.buffersNeeded (PortType::Audio);
         numMidiBuffersNeeded      = calculator.buffersNeeded (PortType::Atom);
-
-        std::clog << "Graph compiled " << numRenderingBuffersNeeded << " audio "
-                  << numMidiBuffersNeeded << " midi/atom\n";
     }
 
     {
@@ -1169,9 +1187,22 @@ bool GraphProcessor::silenceInProducesSilenceOut() const               { return 
 double GraphProcessor::getTailLengthSeconds() const                    { return 0; }
 bool GraphProcessor::acceptsMidi() const   { return true; }
 bool GraphProcessor::producesMidi() const  { return true; }
-void GraphProcessor::getStateInformation (juce::MemoryBlock& /*destData*/)   {}
-void GraphProcessor::setStateInformation (const void* /*data*/, int /*sizeInBytes*/)   {}
+void GraphProcessor::getStateInformation (juce::MemoryBlock& /*destData*/) { }
+void GraphProcessor::setStateInformation (const void* /*data*/, int /*sizeInBytes*/) { }
 
+void
+GraphProcessor::fillInPluginDescription (PluginDescription& d) const
+{
+    d.name = getName();
+    d.uid = d.name.hashCode();
+    d.category = "Graphs";
+    d.pluginFormatName = "Internal";
+    d.manufacturerName = "BKE, LLC";
+    d.version = "1.0";
+    d.isInstrument = acceptsMidi();
+    d.numInputChannels = getNumInputChannels();
+    d.numOutputChannels = getNumOutputChannels();
+}
 
 //==============================================================================
 GraphProcessor::AudioGraphIOProcessor::AudioGraphIOProcessor (const IODeviceType type_)
@@ -1352,12 +1383,10 @@ void GraphProcessor::AudioGraphIOProcessor::setParentGraph (GraphProcessor* cons
 
     if (graph != nullptr)
     {
-#if 1
         setPlayConfigDetails (type == audioOutputNode ? graph->getNumOutputChannels() : 0,
                               type == audioInputNode ? graph->getNumInputChannels() : 0,
                               getSampleRate(),
                               getBlockSize());
-#endif
         updateHostDisplay();
     }
 }

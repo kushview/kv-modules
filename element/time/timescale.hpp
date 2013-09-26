@@ -58,7 +58,7 @@ public:
 
 	// Sample rate (frames per second)
     void setSampleRate (unsigned int rate) { m_sample_rate = rate; }
-    unsigned int samplerate() const { return m_sample_rate; }
+    unsigned int sampleRate() const { return m_sample_rate; }
 
 	// Resolution (ticks per quarter note; PPQN)
     void setTicksPerBeat (unsigned short ticks) { m_ticks_per_beat = ticks; }

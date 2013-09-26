@@ -48,6 +48,8 @@ class GraphController :  public Controller,
 {
 public:
 
+    static const uint32 invalidNodeId = (uint32)-1;
+
     typedef GraphProcessor::Node::Ptr NodePtr;
 
     //==============================================================================
@@ -65,7 +67,7 @@ public:
     const NodePtr getNode (const int index) const noexcept;
     const NodePtr getNodeForId (const uint32 uid) const noexcept;
 
-    void addFilter (const PluginDescription* desc, double x, double y);
+    uint32 addFilter (const PluginDescription* desc, double x = 0.0f, double y = 0.0f);
 
     void removeFilter (const uint32 filterUID);
     void disconnectFilter (const uint32 filterUID);

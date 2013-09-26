@@ -11,6 +11,18 @@ namespace gui {
         setColour (mainBackgroundColourId, Colours::darkgrey);
         setColour (treeviewHighlightColourId, Colours::transparentBlack);
 
+#if 0
+        setColour (MidiGrid::blackKeyColourId, Colours::darkgrey);
+        setColour (MidiGrid::blackKeyBrightColourId, Colours::darkgrey);
+        setColour (MidiGrid::whiteKeyColourId, Colours::grey);
+        setColour (MidiGrid::whiteKeyBrightColourId, Colours::grey);
+        setColour (MidiGrid::backGridColourId, Colours::lightgrey);
+        setColour (MidiGrid::headerColourId , Colours::darkgrey);
+        setColour (MidiGrid::indicatorColourId, Colours::red);
+        setColour (MidiGrid::noteFillColourId, Colours::red);
+        setColour (MidiGrid::noteBorderColourId, Colours::lightgrey);
+#endif
+
         // set up the standard set of colours..
         const uint32 textButtonColour      = 0xff555555;
         const uint32 textHighlightColour   = 0x30000000;
@@ -280,7 +292,7 @@ namespace gui {
         const Colour bkg (button.findColour (mainBackgroundColourId).contrasting (0.15f));
 
         if (button.isFrontTab())
-            return bkg.overlaidWith (Colours::yellow.withAlpha (0.5f));
+            return bkg.overlaidWith (Colours::orange.withAlpha (0.5f));
 
         return bkg;
     }

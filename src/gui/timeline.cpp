@@ -244,9 +244,8 @@ namespace gui {
       void
       Timeline::paint (Graphics& g)
       {
-         //        g.setColour (Colour (0xff606060));
-         //        g.fillRect (0, 0, getWidth(), getHeight());
-         
+          g.setColour (Colour (0xff606060));
+          g.fillAll();
       }
       
       void

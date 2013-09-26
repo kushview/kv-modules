@@ -61,9 +61,11 @@ GraphController::getNodeForId (const uint32 uid) const noexcept
     return processor.getNodeForId (uid);
 }
 
-void
+uint32
 GraphController::addFilter (const PluginDescription* desc, double x, double y)
 {
+    uint32 nodeId = GraphController::invalidNodeId;
+
     if (desc != nullptr)
     {
         String errorMessage;
@@ -74,10 +76,12 @@ GraphController::addFilter (const PluginDescription* desc, double x, double y)
         if (instance != nullptr)
             node = processor.addNode (instance);
 
+
         if (node != nullptr)
         {
             node->properties.set ("x", x);
             node->properties.set ("y", y);
+            nodeId = node->nodeId;
             changed();
         }
         else
@@ -87,6 +91,8 @@ GraphController::addFilter (const PluginDescription* desc, double x, double y)
                                          errorMessage);
         }
     }
+
+    return nodeId;
 }
 
 void
@@ -160,8 +166,8 @@ bool GraphController::canConnect (uint32 sourceFilterUID, int sourceFilterChanne
 bool GraphController::addConnection (uint32 sourceFilterUID, int sourceFilterChannel,
                                      uint32 destFilterUID, int destFilterChannel)
 {
-    const bool result = processor.addConnection (sourceFilterUID, sourceFilterChannel,
-                                             destFilterUID, destFilterChannel);
+    const bool result = processor.addConnection (sourceFilterUID, (uint32)sourceFilterChannel,
+                                             destFilterUID, (uint32)destFilterChannel);
 
     if (result)
         changed();
