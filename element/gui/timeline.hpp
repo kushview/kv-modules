@@ -119,8 +119,7 @@ namespace gui {
     public:
 
         Timeline();
-
-        ~Timeline();
+        virtual ~Timeline();
 
         virtual void paint (Graphics& g);
 

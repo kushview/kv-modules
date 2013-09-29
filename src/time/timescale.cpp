@@ -27,7 +27,7 @@ namespace element {
 void
 TimeScale::reset()
 {
-    m_nodes.setScoped (true);
+    mNodes.setScoped (true);
     m_markers.setScoped (true);
 
 	// Clear/reset location-markers...
@@ -35,8 +35,8 @@ TimeScale::reset()
     m_marker_cursor.reset();
 
 	// Clear/reset tempo-map...
-	m_nodes.clear();
-	m_cursor.reset();
+	mNodes.clear();
+    mCursor.reset();
 
 	// There must always be one node, always.
     addNode (0);
@@ -50,15 +50,15 @@ TimeScale::reset()
 void
 TimeScale::clear (void)
 {
-    m_snap_per_beat = 4;
-    m_h_zoom = 100;
-    m_v_zoom = 100;
+    mSnapPerBeat = 4;
+    mHorizontalZoom = 100;
+    mVerticalZoom = 100;
 
-    m_display_fmt    = Frames;
+    mDisplayFmt    = Frames;
 
-    m_sample_rate      = 44100;
-    m_ticks_per_beat   = 960;
-    m_pixels_per_beat  = 32;
+    mSampleRate      = 44100;
+    mTicksPerBeat   = 960;
+    mPixelsPerBeat  = 32;
 
 	// Clear/reset tempo-map...
 	reset();
@@ -70,9 +70,9 @@ void
 TimeScale::sync (const TimeScale& ts)
 {
 	// Copy master parameters...
-    m_sample_rate     = ts.m_sample_rate;
-    m_ticks_per_beat  = ts.m_ticks_per_beat;
-    m_pixels_per_beat = ts.m_pixels_per_beat;
+    mSampleRate     = ts.mSampleRate;
+    mTicksPerBeat  = ts.mTicksPerBeat;
+    mPixelsPerBeat = ts.mPixelsPerBeat;
 
 	// Copy location markers...
 	m_markers.clear();
@@ -86,17 +86,17 @@ TimeScale::sync (const TimeScale& ts)
     m_marker_cursor.reset();
 
 	// Copy tempo-map nodes...
-	m_nodes.clear();
+	mNodes.clear();
     Node *other_node = ts.nodes().first();
     while (other_node)
     {
-        m_nodes.append (new Node (this, other_node->frame,
+        mNodes.append (new Node (this, other_node->frame,
                         other_node->tempo, other_node->beat_type,
                         other_node->beats_per_bar, other_node->beat_divisor));
         other_node = other_node->next();
 	}
 
-	m_cursor.reset();
+    mCursor.reset();
     updateScale();
 }
 
@@ -107,14 +107,14 @@ TimeScale::copy (const TimeScale& ts)
 {
     if (&ts != this)
     {
-        m_nodes.setScoped (true);
+        mNodes.setScoped (true);
         m_markers.setScoped (true);
 
-        m_sample_rate      = ts.m_sample_rate;
-        m_snap_per_beat    = ts.m_snap_per_beat;
-        m_h_zoom           = ts.m_h_zoom;
-        m_v_zoom           = ts.m_v_zoom;
-        m_display_fmt      = ts.m_display_fmt;
+        mSampleRate      = ts.mSampleRate;
+        mSnapPerBeat    = ts.mSnapPerBeat;
+        mHorizontalZoom           = ts.mHorizontalZoom;
+        mVerticalZoom           = ts.mVerticalZoom;
+        mDisplayFmt      = ts.mDisplayFmt;
 
 		// Sync/copy tempo-map nodes...
         sync (ts);
@@ -366,12 +366,12 @@ TimeScale::addNode (unsigned long frame_, float tempo_, unsigned short beat_type
     Node *node	= 0;
 
 	// Seek for the nearest preceding node...
-    Node *prev = m_cursor.seekFrame (frame_);
+    Node *prev = mCursor.seekFrame (frame_);
 	// Snap frame to nearest bar...
     if (prev)
     {
         frame_ = prev->frameSnapToBar (frame_);
-        prev   = m_cursor.seekFrame (frame_);
+        prev   = mCursor.seekFrame (frame_);
 	}
 
 	// Either update existing node or add new one...
@@ -408,9 +408,9 @@ TimeScale::addNode (unsigned long frame_, float tempo_, unsigned short beat_type
 		// Add/insert a new node...
         node = new Node (this, frame_, tempo_, beat_type_, beats_per_bar_, beat_divisor_);
         if (prev)
-            m_nodes.insertAfter (node, prev);
+            mNodes.insertAfter (node, prev);
 		else
-            m_nodes.append (node);
+            mNodes.append (node);
 	}
 
 	// Update coefficients and positioning thereafter...
@@ -427,7 +427,7 @@ TimeScale::updateNode (TimeScale::Node *node)
     node->update();
 
 	// Relocate internal cursor...
-    m_cursor.reset (node);
+    mCursor.reset (node);
 
 	// Update positioning on all nodes thereafter...
     Node *next = node;
@@ -455,7 +455,7 @@ TimeScale::removeNode (TimeScale::Node *node)
 		return;
 
 	// Relocate internal cursor...
-    m_cursor.reset(node_prev);
+    mCursor.reset(node_prev);
 
 	// Update positioning on all nodes thereafter...
     Node *prev = node_prev;
@@ -470,7 +470,7 @@ TimeScale::removeNode (TimeScale::Node *node)
 	}
 
 	// Actually remove/unlink the node...
-    m_nodes.remove (node);
+    mNodes.remove (node);
 
 	// Then update marker/bar positions too...
     updateMarkers (prev);
@@ -483,12 +483,12 @@ void
 TimeScale::updateScale()
 {
 	// Update time-map independent coefficients...
-    m_pixel_rate = 1.20f * float (m_h_zoom * m_pixels_per_beat);
-    m_frame_rate = 60.0f * float (m_sample_rate);
+    m_pixel_rate = 1.20f * float (mHorizontalZoom * mPixelsPerBeat);
+    m_frame_rate = 60.0f * float (mSampleRate);
 
 	// Update all nodes thereafter...
     Node *prev = 0;
-    Node *next = m_nodes.first();
+    Node *next = mNodes.first();
     while (next)
     {
         next->update();
@@ -500,7 +500,7 @@ TimeScale::updateScale()
 	}
 
 	// Also update all marker/bar positions too...
-    updateMarkers (m_nodes.first());
+    updateMarkers (mNodes.first());
 }
 
 #if 0
@@ -719,9 +719,9 @@ QStringList TimeScale::snapItems ( int iSnap )
 unsigned long
 TimeScale::frameFromTickRange ( unsigned long iTickStart, unsigned long iTickEnd )
 {
-    Node *pNode = m_cursor.seekTick(iTickStart);
+    Node *pNode = mCursor.seekTick(iTickStart);
     unsigned long iFrameStart = (pNode ? pNode->frameFromTick(iTickStart) : 0);
-    pNode = m_cursor.seekTick(iTickEnd);
+    pNode = mCursor.seekTick(iTickEnd);
     unsigned long iFrameEnd = (pNode ? pNode->frameFromTick(iTickEnd) : 0);
 	return (iFrameEnd > iFrameStart ? iFrameEnd - iFrameStart : 0);
 }
@@ -730,9 +730,9 @@ TimeScale::frameFromTickRange ( unsigned long iTickStart, unsigned long iTickEnd
 unsigned long
 TimeScale::tickFromFrameRange (unsigned long iFrameStart, unsigned long iFrameEnd)
 {
-    Node *pNode = m_cursor.seekFrame(iFrameStart);
+    Node *pNode = mCursor.seekFrame(iFrameStart);
     unsigned long iTickStart = (pNode ? pNode->tickFromFrame(iFrameStart) : 0);
-    pNode = m_cursor.seekFrame(iFrameEnd);
+    pNode = mCursor.seekFrame(iFrameEnd);
     unsigned long iTickEnd = (pNode ? pNode->tickFromFrame(iFrameEnd) : 0);
 	return (iTickEnd > iTickStart ? iTickEnd - iTickStart : 0);
 }
@@ -808,7 +808,7 @@ TimeScale::addMarker (unsigned long target_frame, const std::string& txt,
 	// Snap to nearest bar...
     unsigned short nearest_bar = 0;
 
-    Node *prev = m_cursor.seekFrame (target_frame);
+    Node *prev = mCursor.seekFrame (target_frame);
     if (prev)
     {
         nearest_bar  = prev->barFromFrame (target_frame);
@@ -871,7 +871,7 @@ void
 TimeScale::updateMarkers (TimeScale::Node *pNode)
 {
 	if (pNode == 0)
-		pNode = m_nodes.first();
+		pNode = mNodes.first();
 	if (pNode == 0)
 		return;
 

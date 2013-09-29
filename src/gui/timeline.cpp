@@ -4,7 +4,7 @@
 
 namespace element {
 namespace gui {
-      
+
       class Timeline::Indicator : public Component
       {
       public:
@@ -17,54 +17,54 @@ namespace gui {
             setMouseCursor (MouseCursor::LeftRightResizeCursor);
             pos = parent.getBegin() + 20;
          }
-         
+
          virtual ~Indicator() { }
-         
+
          void paint (Graphics& g)
          {
             g.setColour (Colours::black);
             g.setOpacity (0.30);
             g.drawVerticalLine (0, 0, getHeight());
             g.drawVerticalLine (2, 0, getHeight());
-            
+
             g.setColour (color);
             g.setOpacity (0.98);
             g.drawVerticalLine (1, 0, getHeight());
          }
-         
-         
+
+
          void mouseDown (const MouseEvent& ev)
          {
             dragger.startDraggingComponent (this, ev);
          }
-         
+
          void mouseDrag (const MouseEvent& ev)
          {
             dragger.dragComponent (this, ev, nullptr);
             setBounds (getX(), 0, 3, timeline.getHeight());
             pos = getUnits();
          }
-         
+
          void parentSizeChanged()
          {
             setSize (3, timeline.getHeight());
          }
-         
+
          double getPosition() const { return pos; }
-         
+
       private:
          Timeline&        timeline;
          ComponentDragger dragger;
          Colour           color;
-         
+
          double pos;
-         
+
          double getUnits() const
          {
             return timeline.xToTime (getBoundsInParent().getX() + 1 - timeline.trackWidth);
          }
       };
-      
+
       
       TimelineHeader::TimelineHeader (Timeline& parent)
       : owner (parent)
@@ -197,7 +197,7 @@ namespace gui {
       }
       
       Timeline::Timeline()
-      : vscroll (true), hscroll (false),
+        : vscroll (true), hscroll (false),
       header (*this), body (*this), zoom("zoom", "Zoom")
       {
          ind = new Timeline::Indicator (*this);
@@ -215,7 +215,7 @@ namespace gui {
          
          addAndMakeVisible (&vscroll);
          addAndMakeVisible (&hscroll);
-         this->setBufferedToImage(true);
+         this->setBufferedToImage (true);
          hscroll.addListener (this);
          
          addAndMakeVisible (ind);

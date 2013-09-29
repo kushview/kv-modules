@@ -35,11 +35,14 @@ class TimeScale
 {
 public:
 
-	// Available display-formats.
-	enum DisplayFormat { Frames = 0, Time, BBT };
+    enum DisplayFormat {
+        Frames = 0,
+        Time,
+        BBT
+    };
 
-    TimeScale() : m_display_fmt (Frames), m_cursor (this), m_marker_cursor(this) { clear(); }
-    TimeScale (const TimeScale& ts) : m_cursor (this), m_marker_cursor(this) { copy(ts); }
+    TimeScale() : mDisplayFmt (Frames), mCursor (this), m_marker_cursor(this) { clear(); }
+    TimeScale (const TimeScale& ts) : mCursor (this), m_marker_cursor(this) { copy(ts); }
     TimeScale& operator=(const TimeScale& ts) { return copy(ts); }
 
     /** Reset the node list */
@@ -57,28 +60,28 @@ public:
     TimeScale& copy (const TimeScale& ts);
 
 	// Sample rate (frames per second)
-    void setSampleRate (unsigned int rate) { m_sample_rate = rate; }
-    unsigned int sampleRate() const { return m_sample_rate; }
+    void setSampleRate (unsigned int rate) { mSampleRate = rate; }
+    unsigned int sampleRate() const { return mSampleRate; }
 
 	// Resolution (ticks per quarter note; PPQN)
-    void setTicksPerBeat (unsigned short ticks) { m_ticks_per_beat = ticks; }
-    unsigned short ticksPerBeat() const { return m_ticks_per_beat; }
+    void setTicksPerBeat (unsigned short ticks) { mTicksPerBeat = ticks; }
+    unsigned short ticksPerBeat() const { return mTicksPerBeat; }
 
     // Pixels per beat (width).
-    void setPixelsPerBeat (unsigned short ppb) { m_pixels_per_beat = ppb; }
-    unsigned short pixelsPerBeat() const { return m_pixels_per_beat; }
+    void setPixelsPerBeat (unsigned short ppb) { mPixelsPerBeat = ppb; }
+    unsigned short pixelsPerBeat() const { return mPixelsPerBeat; }
 
 	// Beat divisor (snap) accessors.
-    void setSnapPerBeat (unsigned short snap) { m_snap_per_beat = snap; }
-    unsigned short snapPerBeat() const { return m_snap_per_beat; }
+    void setSnapPerBeat (unsigned short snap) { mSnapPerBeat = snap; }
+    unsigned short snapPerBeat() const { return mSnapPerBeat; }
 
 	// Horizontal zoom factor.
-    void setHorizontalZoom (unsigned short iHorizontalZoom) { m_h_zoom = iHorizontalZoom; }
-    unsigned short horizontalZoom() const { return m_h_zoom; }
+    void setHorizontalZoom (unsigned short hZoom) { mHorizontalZoom = hZoom; }
+    unsigned short horizontalZoom() const { return mHorizontalZoom; }
 
 	// Vertical zoom factor.
-    void setVerticalZoom (unsigned short vzoom) { m_v_zoom = vzoom; }
-    unsigned short verticalZoom() const { return m_v_zoom; }
+    void setVerticalZoom (unsigned short vzoom) { mVerticalZoom = vzoom; }
+    unsigned short verticalZoom() const { return mVerticalZoom; }
 
 	// Fastest rounding-from-float helper.
     static unsigned long uroundf (float x) { return (unsigned long) (x >= 0.0f ? x + 0.5f : x - 0.5f); }
@@ -116,8 +119,8 @@ public:
         void reset (Node *node);
 
 		// Tempo accessor/convertors.
-        void setTempoEx (float fTempo, unsigned short iBeatType = 2);
-        float tempoEx (unsigned short iBeatType = 2) const;
+        void setTempoEx (float tempo, unsigned short beatType = 2);
+        float tempoEx (unsigned short beatType = 2) const;
 
 		// Frame/bar convertors.
         unsigned short barFromFrame (unsigned long iFrame) const { return bar + uroundf ((beat_rate * (iFrame - frame)) / (ts->frameRate() * beats_per_bar)); }
@@ -194,7 +197,7 @@ public:
 	};
 
 	// Node list accessor.
-    const LinkedList<Node>& nodes() const { return m_nodes; }
+    const LinkedList<Node>& nodes() const { return mNodes; }
 
 	// To optimize and keep track of current frame
 	// position, mostly like an sequence cursor/iterator.
@@ -219,7 +222,7 @@ public:
 		Node *node;
 	};
 
-	Cursor& cursor() { return m_cursor; }
+    Cursor& cursor() { return mCursor; }
 
 	// Node list specifics.
     Node *addNode (unsigned long iFrame = 0, float fTempo = 120.0f,
@@ -240,14 +243,14 @@ public:
     unsigned short
     barFromFrame (unsigned long frame)
 	{
-        Node *node = m_cursor.seekFrame (frame);
+        Node *node = mCursor.seekFrame (frame);
         return (node ? node->barFromFrame (frame) : 0);
 	}
 
     unsigned long
     frameFromBar (unsigned short bar)
 	{
-        Node *node = m_cursor.seekBar (bar);
+        Node *node = mCursor.seekBar (bar);
         return (node ? node->frameFromBar (bar) : 0);
 	}
 
@@ -255,44 +258,44 @@ public:
     unsigned int
     beatFromFrame (unsigned long frame)
 	{
-        Node *node = m_cursor.seekFrame (frame);
+        Node *node = mCursor.seekFrame (frame);
         return (node ? node->beatFromFrame (frame) : 0);
 	}
 
     unsigned long
-    frameFromBeat (unsigned int iBeat)
+    frameFromBeat (unsigned int beat)
 	{
-        Node *node = m_cursor.seekBeat(iBeat);
-        return (node ? node->frameFromBeat(iBeat) : 0);
+        Node *node = mCursor.seekBeat (beat);
+        return (node ? node->frameFromBeat (beat) : 0);
 	}
 
 	// Frame/tick general converters.
     unsigned long
-    tickFromFrame (unsigned long iFrame)
+    tickFromFrame (unsigned long frame)
 	{
-        Node *node = m_cursor.seekFrame (iFrame);
-        return (node ? node->tickFromFrame (iFrame) : 0);
+        Node *node = mCursor.seekFrame (frame);
+        return (node ? node->tickFromFrame (frame) : 0);
 	}
 
     unsigned long
-    frameFromTick (unsigned long iTick)
+    frameFromTick (unsigned long tick)
 	{
-        Node *node = m_cursor.seekTick(iTick);
-        return (node ? node->frameFromTick(iTick) : 0);
+        Node *node = mCursor.seekTick (tick);
+        return (node ? node->frameFromTick (tick) : 0);
 	}
 
 	// Tick/pixel general converters.
     unsigned long
     tickFromPixel (int x)
 	{
-        Node *node = m_cursor.seekPixel (x);
+        Node *node = mCursor.seekPixel (x);
         return (node ? node->tickFromPixel (x) : 0);
 	}
 
     int
     pixelFromTick (unsigned long tick)
 	{
-        Node *node = m_cursor.seekTick (tick);
+        Node *node = mCursor.seekTick (tick);
         return (node ? node->pixelFromTick (tick) : 0);
 	}
 
@@ -300,14 +303,14 @@ public:
     unsigned int
     beatFromPixel (int x)
 	{
-        Node *node = m_cursor.seekPixel(x);
+        Node *node = mCursor.seekPixel(x);
         return (node ? node->beatFromPixel(x) : 0);
 	}
 
     int
     pixelFromBeat (unsigned int iBeat)
 	{
-        Node *node = m_cursor.seekBeat (iBeat);
+        Node *node = mCursor.seekBeat (iBeat);
         return (node ? node->pixelFromBeat(iBeat) : 0);
 	}
 
@@ -315,7 +318,7 @@ public:
     bool
     beatIsBar (unsigned int beat)
 	{
-        Node *node = m_cursor.seekBeat (beat);
+        Node *node = mCursor.seekBeat (beat);
         return (node ? node->beatIsBar (beat) : false);
 	}
 
@@ -323,27 +326,27 @@ public:
     unsigned long
     tickSnap (unsigned long iTick)
 	{
-        Node *node = m_cursor.seekTick(iTick);
+        Node *node = mCursor.seekTick(iTick);
         return (node ? node->tickSnap(iTick) : iTick);
 	}
 
     unsigned long
     frameSnap (unsigned long frame)
 	{
-        Node *node = m_cursor.seekFrame (frame);
+        Node *node = mCursor.seekFrame (frame);
         return (node ? node->frameSnap (frame) : frame);
 	}
 
     int
     pixelSnap (int x)
 	{
-        Node *node = m_cursor.seekPixel(x);
+        Node *node = mCursor.seekPixel(x);
         return (node ? node->pixelSnap (x) : x);
 	}
 
 	// Display-format accessors.
-    void set_display_format (DisplayFormat displayFormat) { m_display_fmt = displayFormat; }
-    DisplayFormat display_format() const { return m_display_fmt; }
+    void setDisplayFormat (DisplayFormat dfmt) { mDisplayFmt = dfmt; }
+    DisplayFormat displayFormat() const { return mDisplayFmt; }
 
 #if 0
 	// Convert frames to time string and vice-versa.
@@ -360,7 +363,7 @@ public:
     void
     setTempo (float tempo)
 	{
-        if (Node *node = m_nodes.first())
+        if (Node *node = mNodes.first())
             node->tempo = tempo;
 	}
 
@@ -368,7 +371,7 @@ public:
     float
     tempo() const
 	{
-        Node *node = m_nodes.first();
+        Node *node = mNodes.first();
         return (node ? node->tempo : 120.0f);
 	}
 
@@ -376,14 +379,14 @@ public:
     void
     setTempoEx (float tempo, unsigned short beat_type = 2)
 	{
-        Node *node = m_nodes.first();
+        Node *node = mNodes.first();
         if (node) node->setTempoEx (tempo, beat_type);
 	}
 
     float
     tempoEx (unsigned short iBeatType = 2) const
 	{
-        Node *node = m_nodes.first();
+        Node *node = mNodes.first();
         return (node ? node->tempoEx (iBeatType) : 120.0f);
 	}
 
@@ -391,14 +394,14 @@ public:
     void
     setBeatType (unsigned short beat_type)
 	{
-        Node *node = m_nodes.first();
+        Node *node = mNodes.first();
         if (node) node->beat_type = beat_type;
 	}
 
     unsigned short
     beatType() const
 	{
-        Node *node = m_nodes.first();
+        Node *node = mNodes.first();
         return (node ? node->beat_type : 2);
 	}
 
@@ -407,14 +410,14 @@ public:
     void
     setBeatsPerBar (unsigned short bpb)
 	{
-        if (Node *node = m_nodes.first())
+        if (Node *node = mNodes.first())
             node->beats_per_bar = bpb;
 	}
 
     unsigned short
     beatsPerBar() const
 	{
-        Node *node = m_nodes.first();
+        Node *node = mNodes.first();
         return (node ? node->beats_per_bar : 4);
 	}
 
@@ -422,14 +425,14 @@ public:
     void
     setBeatDivisor (unsigned short divisor)
 	{
-        Node *node = m_nodes.first();
+        Node *node = mNodes.first();
         if (node) node->beat_divisor = divisor;
 	}
 
     unsigned short
     beatDivisor() const
 	{
-        Node *node = m_nodes.first();
+        Node *node = mNodes.first();
         return (node ? node->beat_divisor : 2);
 	}
 
@@ -516,21 +519,21 @@ protected:
 
 private:
 
-    unsigned short m_snap_per_beat;    ///< Snap per beat (divisor).
-    unsigned short m_h_zoom;           ///< Horizontal zoom factor.
-    unsigned short m_v_zoom;           ///< Vertical zoom factor.
+    unsigned short mSnapPerBeat;    ///< Snap per beat (divisor).
+    unsigned short mHorizontalZoom;           ///< Horizontal zoom factor.
+    unsigned short mVerticalZoom;           ///< Vertical zoom factor.
 
-    DisplayFormat  m_display_fmt;      ///< Textual display format.
+    DisplayFormat  mDisplayFmt;      ///< Textual display format.
 
-    unsigned int   m_sample_rate;      ///< Sample rate (frames per second)
-    unsigned short m_ticks_per_beat;   ///< Tticks per quarter note (PPQN)
-    unsigned short m_pixels_per_beat;  ///< Pixels per beat (width).
+    unsigned int   mSampleRate;      ///< Sample rate (frames per second)
+    unsigned short mTicksPerBeat;   ///< Tticks per quarter note (PPQN)
+    unsigned short mPixelsPerBeat;  ///< Pixels per beat (width).
 
 	// Tempo-map node list.
-    LinkedList<Node> m_nodes;
+    LinkedList<Node> mNodes;
 
 	// Internal node cursor.
-	Cursor m_cursor;
+    Cursor mCursor;
 
 	// Tempo-map independent coefficients.
     float m_pixel_rate;

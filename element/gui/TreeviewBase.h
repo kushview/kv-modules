@@ -22,8 +22,8 @@
   ==============================================================================
 */
 
-#ifndef __JUCER_JUCERTREEVIEWBASE_JUCEHEADER__
-#define __JUCER_JUCERTREEVIEWBASE_JUCEHEADER__
+#ifndef ELEMENT_TREEVIEW_BASE_H
+#define ELEMENT_TREEVIEW_BASE_H
 
 #include "element/juce.hpp"
 #include "element/gui/icons.hpp"
@@ -225,4 +225,4 @@ public:
 
 }
 
-#endif   // __JUCER_JUCERTREEVIEWBASE_JUCEHEADER__
+#endif   // ELEMENT_TREEVIEW_BASE_H

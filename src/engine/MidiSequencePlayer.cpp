@@ -32,9 +32,16 @@ MidiSequencePlayer::MidiSequencePlayer()
       doAllNotesOff (false),
       allNotesOff (MidiMessage::allNotesOff (1))
 {
+    lastNoteId = 0;
     enabled = true;
     shuttle = nullptr;
     stopRecording = false;
+
+    insertChannel = 1;
+    insertVelocity = 0.8f;
+    insertLength = 1.0f;
+
+    memset (noteOnStamps, -1, sizeof(int)* 128);
 }
 
 MidiSequencePlayer::~MidiSequencePlayer ()
@@ -63,20 +70,16 @@ void MidiSequencePlayer::renderSequence (int numSamples, MidiBuffer& midiMessage
 
     if (shuttle->isPlaying())
     {
-        const int frameCounter  = shuttle->positionInFrames();
+        const int startFrame = shuttle->positionInFrames();
+        const int endFrame = startFrame + blockSize;
+
         const int framesPerBeat = shuttle->framesPerBeat();
-
         const double framePerBeatDelta = 1.0f / (double) framesPerBeat;
-
-        const int nextBlockFrameNumber = frameCounter + blockSize;
 
         const int seqIndex = loopRepeatIndex();
         const double beatCount = loopBeatPosition();
 
-       // std::clog << "loop: " << seqIndex << " beat: " << beatCount << " transport: " << shuttle->positionInBeats() << std::endl;
-       // return;
-
-        const double frameLenBeatCount = (nextBlockFrameNumber - frameCounter) / (double) framesPerBeat;
+        const double frameLenBeatCount = (endFrame - startFrame) / (double) framesPerBeat;
 		double frameEndBeatCount = beatCount + frameLenBeatCount;
 		if (frameEndBeatCount > getLengthInBeats())
 			frameEndBeatCount -= getLengthInBeats();
@@ -90,33 +93,53 @@ void MidiSequencePlayer::renderSequence (int numSamples, MidiBuffer& midiMessage
                 recordingSequence.clear();
             }
 
+            for (int i = 0; i < 128; ++i)
+            {
+                if (noteOnStamps[i] >= 0)
+                {
+                    noteOnStamps[i] += blockSize;
+                }
+            }
+
             int samplePos = 0;
             MidiMessage msg (0xf4, 0.0);
 
             MidiBuffer::Iterator eventIterator (*midiBuffer);
             while (eventIterator.getNextEvent (msg, samplePos))
             {
-                if (msg.isNoteOnOrOff())
+                if (msg.isNoteOn())
                 {
                     msg.setTimeStamp (beatCount + (samplePos * framePerBeatDelta));
-                    recordingSequence.addEvent (msg);
+                    noteOnStamps[msg.getNoteNumber()] = msg.getTimeStamp() * framesPerBeat;
+                }
+                else if (msg.isNoteOff())
+                {
+                    const int frameOffset = noteOnStamps [msg.getNoteNumber()];
+                    msg.setTimeStamp ((samplePos + startFrame + frameOffset) * framePerBeatDelta);
+                    noteOnStamps [msg.getNoteNumber()] = -1;
+                }
+
+                if (msg.isNoteOnOrOff())
+                {
                     std::clog << "capture: " << msg.getNoteNumber() << " at " << msg.getTimeStamp() << std::endl;
+                    recordingSequence.addEvent (msg);
+                    recordingSequence.updateMatchedPairs();
                 }
             }
         }
 
 		if (frameEndBeatCount > beatCount)
 		{
-			renderEventsInRange(*midiSequence, midiBuffer, beatCount, frameEndBeatCount, frameCounter, framesPerBeat, nextBlockFrameNumber, seqIndex, blockSize);
-			renderEventsInRange(noteOffs, midiBuffer, beatCount, frameEndBeatCount, frameCounter, framesPerBeat, nextBlockFrameNumber, seqIndex, blockSize);
+            renderEventsInRange(*midiSequence, midiBuffer, beatCount, frameEndBeatCount, startFrame, framesPerBeat, endFrame, seqIndex, blockSize);
+            renderEventsInRange(noteOffs, midiBuffer, beatCount, frameEndBeatCount, startFrame, framesPerBeat, endFrame, seqIndex, blockSize);
 			cleanUpNoteOffs(beatCount, frameEndBeatCount);
 		}
 		else
 		{
-            renderEventsInRange (*midiSequence, midiBuffer, beatCount, getLengthInBeats(), frameCounter, framesPerBeat, nextBlockFrameNumber, seqIndex, blockSize);
-            renderEventsInRange (*midiSequence, midiBuffer, 0.00, frameEndBeatCount, frameCounter, framesPerBeat, nextBlockFrameNumber, seqIndex + 1, blockSize);
-            renderEventsInRange (noteOffs, midiBuffer, beatCount, getLengthInBeats(), frameCounter, framesPerBeat, nextBlockFrameNumber, seqIndex, blockSize);
-            renderEventsInRange (noteOffs, midiBuffer, 0.00, frameEndBeatCount, frameCounter, framesPerBeat, nextBlockFrameNumber, seqIndex+1, blockSize);
+            renderEventsInRange (*midiSequence, midiBuffer, beatCount, getLengthInBeats(), startFrame, framesPerBeat, endFrame, seqIndex, blockSize);
+            renderEventsInRange (*midiSequence, midiBuffer, 0.00, frameEndBeatCount, startFrame, framesPerBeat, endFrame, seqIndex + 1, blockSize);
+            renderEventsInRange (noteOffs, midiBuffer, beatCount, getLengthInBeats(), startFrame, framesPerBeat, endFrame, seqIndex, blockSize);
+            renderEventsInRange (noteOffs, midiBuffer, 0.00, frameEndBeatCount, startFrame, framesPerBeat, endFrame, seqIndex + 1, blockSize);
             cleanUpNoteOffs (beatCount, getLengthInBeats());
             cleanUpNoteOffs (0.00, frameEndBeatCount);
 		}
@@ -138,41 +161,43 @@ void MidiSequencePlayer::renderEventsInRange (const MidiMessageSequence& source,
 {
 
 
-    for (int i = source.getNextIndexAtTime(beatCount); i < source.getNumEvents(); ++i)
+    for (int ev = source.getNextIndexAtTime(beatCount); ev < source.getNumEvents(); ++ev)
 	{
-        int timeStampInSeq = roundFloatToInt (source.getEventTime(i) * framesPerBeat);
+        int timeStampInSeq = roundFloatToInt (source.getEventTime(ev) * framesPerBeat);
         int timeStamp = timeStampInSeq + (seqIndex * getLengthInBeats() * framesPerBeat);
 
-        MidiMessage* msg = &source.getEventPointer(i)->message;
+        MidiMessage* msg = &source.getEventPointer(ev)->message;
         if (timeStamp >= nextBlockFrameNumber || ! msg)
-		{
-//            std::clog << "timestamp past next block.\n";
+        {
 			break;
 		}
 
         if (timeStamp >= shuttle->lengthInFrames())
-		{
-//            std::clog << "timestamp out of shuttle range\n";
+        {
 			break;
 		}
 		
-        // now play the event - unless we are disabled (muted), or it is a note off
-        // (always play note offs so we don't get dangling note-ons when user disables
-        // during a note sounding)
+        /* now play the event - unless we are disabled (muted), or it is a note off
+           (always play note offs so we don't get dangling note-ons when user disables
+           during a note sounding) */
         if (msg->isNoteOff() || enabled)
 		{
             midiBuffer->addEvent (*msg, timeStamp - frameCounter);
 
-			// look for matching note off - if it is past the loop end then we need to wrap it and ensure it gets played at the right time
+            /* look for matching note off - if it is past the loop end then we need to
+               wrap it and ensure it gets played at the right time */
             if (msg->isNoteOn())
-			{
-                std::clog << "note on " << msg->getNoteNumber() << " at " << timeStamp << " cycle: " << timeStamp - frameCounter
-                          << " beatCount: " << beatCount << std::endl;
+            {
+                std::clog << "note on\n";
+                MidiMessageSequence::MidiEventHolder* holder
+                        = source.getEventPointer (source.getIndexOfMatchingKeyUp (ev));
 
-                int up = source.getIndexOfMatchingKeyUp (i);
-                if (source.getEventPointer (up)->message.isNoteOff() &&
-                    source.getEventPointer (up)->message.getTimeStamp() > getLengthInBeats())
-                    noteOffs.addEvent (source.getEventPointer (up)->message, - getLengthInBeats());
+                if (holder && holder->message.isNoteOff() &&
+                    holder->message.getTimeStamp() > getLengthInBeats())
+                {
+                    std::clog << "note off past end loop: " << holder->message.getTimeStamp() << std::endl;
+                    noteOffs.addEvent (holder->message, -getLengthInBeats());
+                }
 			}
 		}	
 	}
@@ -211,7 +236,7 @@ void MidiSequencePlayer::timerCallback ()
         // shuttle->resetRecording();
 
         sequence = nullptr;
-        recordingSequence.clear ();
+        recordingSequence.clear();
 
         // sendChangeMessage (this);
 
@@ -241,16 +266,65 @@ bool MidiSequencePlayer::playingPositionChanged (const float absolutePosition)
     return true;
 }
 
-bool MidiSequencePlayer::addNote (const int noteNumber,
-                                  const float beatNumber,
-                                  const float noteLength)
+
+int
+MidiSequencePlayer::noteIndex (const int noteNumber, const float beatNumber, const float noteLength,
+               const int channel, const float velocity)
 {
-    MidiMessage msgOn = MidiMessage::noteOn (NOTE_CHANNEL, noteNumber, NOTE_VELOCITY);
+    double noteOnBeats = beatNumber - NOTE_PREFRAMES;
+    int eventIndex = midiSequence->getNextIndexAtTime (noteOnBeats);
+    while (eventIndex < midiSequence->getNumEvents())
+    {
+        MidiMessage* eventOn = &midiSequence->getEventPointer(eventIndex)->message;
+        if (eventOn->isNoteOn() && eventOn->getNoteNumber() == noteNumber &&
+            eventOn->getChannel() == channel)
+        {
+            // should probably also check velocity and length
+            return eventIndex;
+        }
+        ++eventIndex;
+    }
+
+    return -1;
+}
+
+int
+MidiSequencePlayer::addNote (const int noteNumber, const float beatNumber, const float noteLength,
+                             const int channel, const float velocity)
+{
+    MidiMessage msgOn = MidiMessage::noteOn (channel, noteNumber, velocity);
     msgOn.setTimeStamp (beatNumber);
-    MidiMessage msgOff = MidiMessage::noteOff (NOTE_CHANNEL, noteNumber);
+    MidiMessage msgOff = MidiMessage::noteOff (channel, noteNumber);
+    msgOff.setTimeStamp ((beatNumber + noteLength) - NOTE_PREFRAMES);
+
+    int noteId = 0;
+    MidiSequencePlayer::EventHolder* event = midiSequence->addEvent (msgOn);
+    if (event)
+    {
+        midiSequence->addEvent (msgOff);
+        midiSequence->updateMatchedPairs();
+
+        noteId = ++lastNoteId;
+        notes.set (noteId, event);
+    }
+
+    return noteId;
+
+}
+
+#if 0
+bool
+MidiSequencePlayer::addNote (const int noteNumber, const float beatNumber,
+                             const float noteLength, const int channel,
+                             const float velocity)
+{
+    MidiMessage msgOn = MidiMessage::noteOn (channel, noteNumber, velocity);
+    msgOn.setTimeStamp (beatNumber);
+    MidiMessage msgOff = MidiMessage::noteOff (channel, noteNumber);
     msgOff.setTimeStamp ((beatNumber + noteLength) - NOTE_PREFRAMES);
 
     DBG ("Adding:" + String (noteNumber) + " " + String (beatNumber));
+    std::clog << " channel: " << channel << " velocity " << velocity << " length: " << noteLength << std::endl;
 
     {
         // const ScopedLock sl (parentHost->getCallbackLock ());
@@ -262,7 +336,15 @@ bool MidiSequencePlayer::addNote (const int noteNumber,
 
     DBG ("Added:" + String (noteNumber) + " " + String (beatNumber));
 
+    std::clog << midiSequence->getNumEvents() << " total EVENTS \n";
     return true;
+}
+#endif
+
+bool
+MidiSequencePlayer::addNote (const int noteNumber, const float beatNumber)
+{
+    return 0 != addNote (noteNumber, beatNumber, insertLength, insertChannel, insertVelocity);
 }
 
 bool MidiSequencePlayer::removeNote (const int noteNumber,
@@ -272,20 +354,18 @@ bool MidiSequencePlayer::removeNote (const int noteNumber,
     DBG ("Removing:" + String (noteNumber) + " " + String (beatNumber));
 
     double noteOnBeats = beatNumber - NOTE_PREFRAMES;
-
     int eventIndex = midiSequence->getNextIndexAtTime (noteOnBeats);
     while (eventIndex < midiSequence->getNumEvents ())
     {
         MidiMessage* eventOn = &midiSequence->getEventPointer (eventIndex)->message;
-
-        if (eventOn->isNoteOn () && eventOn->getNoteNumber () == noteNumber)
+        if (eventOn->isNoteOn() && eventOn->getNoteNumber () == noteNumber)
         {
             // TODO - check note off distance == noteLength
             {
-            // const ScopedLock sl (parentHost->getCallbackLock());
+                // const ScopedLock sl (parentHost->getCallbackLock());
 
-            midiSequence->deleteEvent (eventIndex, true);
-            midiSequence->updateMatchedPairs ();
+                midiSequence->deleteEvent (eventIndex, true);
+                midiSequence->updateMatchedPairs ();
             }
 
             DBG ("Removed:" + String (eventIndex) + " > " + String (noteNumber) + " @ " + String (beatNumber));

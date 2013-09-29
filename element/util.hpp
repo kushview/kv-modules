@@ -30,12 +30,30 @@
 
 namespace element {
 
-   /** Convenient typdef for a string vector */
-   typedef std::vector<std::string> StringVec;
+    /** Convenient typdef for a string vector */
+    typedef std::vector<std::string> StringVec;
 
-   /** Value type to for hashing things
-       @note compatible with std/boost hashing */
-   typedef size_t HashValue;
+    /** Value type to for hashing things
+        @note compatible with std/boost hashing */
+    typedef size_t HashValue;
+
+
+    /** Restrict a value between a lower and upper value */
+    template<typename VAL>
+    static inline VAL
+    clamp (const VAL& input, const VAL& lower, const VAL& upper)
+    {
+        if (input < lower) {
+            return lower;
+        }
+
+        if (input >= upper) {
+            return upper;
+        }
+
+        return input;
+    }
+
 
     template<typename SEQ>
     static int64_t

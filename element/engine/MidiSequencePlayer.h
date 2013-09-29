@@ -52,6 +52,8 @@ namespace element {
     {
     public:
 
+        typedef MidiMessageSequence::MidiEventHolder EventHolder;
+
         MidiSequencePlayer();
         ~MidiSequencePlayer();
 
@@ -66,10 +68,31 @@ namespace element {
         bool playingPositionChanged (const float absolutePosition);
 
         /* sequence editing */
-        bool addNote (const int noteNumber, const float beatNumber, const float noteLength);
+
+        inline EventHolder* eventHolder (int noteId) const {
+            assert (notes.contains (noteId));
+            return notes [noteId];
+        }
+
+        inline bool removeNote (EventHolder* ev) {
+            notes.removeValue (ev);
+            return true;
+        }
+
+        int noteIndex (const int noteNumber, const float beatNumber, const float noteLength,
+                       const int channel = 1, const float velocity = 0.8f);
+
+        int addNote (const int noteNumber, const float beatNumber, const float noteLength,
+                              const int channel = 1, const float velocity = 0.8f);
+
+        bool addNote (const int noteNumber, const float beatNumber);
+#if 0
+        bool addNote (const int noteNumber, const float beatNumber, const float noteLength,
+                      const int channel = 1, const float velocity = 0.8f);
+#endif
         bool removeNote (const int noteNumber, const float beatNumber, const float noteLength);
         bool moveNote (const int oldNote, const float oldBeat, const int noteNumber,
-                                const float beatNumber, const float noteLength);
+                       const float beatNumber, const float noteLength);
         bool resizeNote (const int noteNumber, const float beatNumber, const float noteLength);
         bool clearAllNotes();
 
@@ -117,7 +140,7 @@ namespace element {
                                   const int seqIndex,
                                   const int blockSize);
 
-        void cleanUpNoteOffs(double fromTime, double toTime);
+        void cleanUpNoteOffs (double fromTime, double toTime);
 
         MidiMessageSequence noteOffs;
         ScopedPointer<MidiMessageSequence> midiSequence;
@@ -128,13 +151,16 @@ namespace element {
 
     private:
 
+        int lastNoteId;
+        HashMap<int, EventHolder*> notes;
+
         bool stopRecording;
         Shuttle* shuttle;
-
         double currentSampleRate;
         int currentBlockSize;
-
         bool enabled;
+        float insertLength, insertVelocity, insertChannel;
+        int noteOnStamps [128];
 
     };
 
