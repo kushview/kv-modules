@@ -46,7 +46,14 @@ namespace element
 
         const double& tempo() const { return bpmTempo; }
 
-        inline void setBpmTempo (float bpm) { if (bpmTempo != bpm) bpmTempo = bpm; }
+        inline void setBpmTempo (float bpm)
+        {
+            if (bpmTempo != bpm) {
+                std::clog << "Shuttle New Tempo: " << bpm << std::endl;
+                bpmTempo = bpm;
+                mFramesPerBeat = Tempo::framesPerBeat(sampleRate, bpmTempo);
+            }
+        }
 
         inline void setSampleRate (double rate)
         {
