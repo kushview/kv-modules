@@ -42,16 +42,18 @@ namespace element
         bool willStop() const { return false; }
        // bool willStopRecord() const { return true; }
 
-        float framesPerBeat() const { return Tempo::framesPerBeat (sampleRate, bpmTempo); }
+        float framesPerBeat() const { return mFramesPerBeat; }
 
         const double& tempo() const { return bpmTempo; }
 
         inline void setBpmTempo (float bpm)
         {
-            if (bpmTempo != bpm) {
-                std::clog << "Shuttle New Tempo: " << bpm << std::endl;
+            if (bpmTempo != bpm)
+            {
+                double oldTime = positionInBeats();
                 bpmTempo = bpm;
-                mFramesPerBeat = Tempo::framesPerBeat(sampleRate, bpmTempo);
+                mFramesPerBeat = Tempo::framesPerBeat (sampleRate, bpmTempo);
+                framePos = llrint (oldTime * mFramesPerBeat);
             }
         }
 
