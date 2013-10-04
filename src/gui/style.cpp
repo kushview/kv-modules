@@ -331,10 +331,14 @@ namespace gui {
         return textArea.removeFromRight (comp.getWidth());
     }
 
-    void Style::drawStretchableLayoutResizerBar (Graphics& g, int /*w*/, int /*h*/, bool /*isVerticalBar*/, bool isMouseOver, bool isMouseDragging)
+    void Style::drawStretchableLayoutResizerBar (Graphics& g, int w, int h, bool isVerticalBar, bool isMouseOver, bool isMouseDragging)
     {
+        g.fillAll (Colour (0xff636363));
+        LookAndFeel::drawStretchableLayoutResizerBar (g, w, h, isVerticalBar, false, false);
+#if 0
         if (isMouseOver || isMouseDragging)
-            g.fillAll (Colours::yellow.withAlpha (0.4f));
+            g.fillAll (Colours::black.withAlpha (0.3f).darker());
+#endif
     }
 
     void Style::drawScrollbar (Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height,
