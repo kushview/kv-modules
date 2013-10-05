@@ -214,12 +214,12 @@ public:
         Node* seekBar   (unsigned short bar);
         Node* seekBeat  (unsigned int beat);
         Node* seekTick  (unsigned long tick);
-        Node* seekPixel (int x);
+        Node* seekPixel (int x) const;
 
 	protected:
 
 		TimeScale *ts;
-		Node *node;
+        mutable Node *node;
 	};
 
     Cursor& cursor() { return mCursor; }
@@ -338,7 +338,7 @@ public:
 	}
 
     int
-    pixelSnap (int x)
+    pixelSnap (int x) const
 	{
         Node *node = mCursor.seekPixel(x);
         return (node ? node->pixelSnap (x) : x);

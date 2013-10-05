@@ -331,7 +331,7 @@ TimeScale::Cursor::seekTick (unsigned long stick)
 
 // Time-scale cursor node seeker (by pixel).
 TimeScale::Node*
-TimeScale::Cursor::seekPixel (int px)
+TimeScale::Cursor::seekPixel (int px) const
 {
 	if (node == 0) {
 		node = ts->nodes().first();
