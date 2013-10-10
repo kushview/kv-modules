@@ -131,7 +131,7 @@ public:
         addAndMakeVisible (&tree);
         tree.setRootItemVisible (true);
         tree.setDefaultOpenness (true);
-        tree.setColour (TreeView::backgroundColourId, Colours::transparentBlack);
+        tree.setColour (TreeView::backgroundColourId, Colour (0xff202020));
         tree.setIndentSize (14);
         tree.getViewport()->setScrollBarThickness (14);
     }
@@ -163,7 +163,7 @@ public:
     {
         const int fontHeight = 13;
         const Rectangle<int> area (comp.getLocalBounds());
-        //XXX g.setColour (comp.findColour (mainBackgroundColourId).contrasting (0.7f));
+        g.setColour (Colours::black.contrasting (0.7f));
         g.setFont ((float) fontHeight);
         g.drawFittedText (message, area.reduced (4, 2), Justification::centred, area.getHeight() / fontHeight);
     }

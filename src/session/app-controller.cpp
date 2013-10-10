@@ -17,7 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/session/app-controller.hpp"
+#include "element/session/AppController.h"
 #include "element/session/world.hpp"
 
 namespace element {

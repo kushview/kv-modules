@@ -78,15 +78,17 @@ void TreeItemBase::refreshSubItems()
     addSubItems();
 }
 
-Font TreeItemBase::getFont() const
+Font
+TreeItemBase::getFont() const
 {
-    return Font (getItemHeight() * 0.6f);
+    return Font (getItemHeight() * 0.7f);
 }
 
-void TreeItemBase::paintItem (Graphics& g, int /*width*/, int /*height*/)
+void
+TreeItemBase::paintItem (Graphics& g, int /*width*/, int /*height*/)
 {
     if (isSelected())
-        g.fillAll (getOwnerView()->findColour (gui::treeviewHighlightColourId));
+        g.fillAll (Colours::aqua);
 }
 
 float TreeItemBase::getIconSize() const
@@ -107,13 +109,21 @@ void TreeItemBase::paintOpenCloseButton (Graphics& g, int width, int height, boo
     g.fillPath (p);
 }
 
-Colour TreeItemBase::getBackgroundColour() const
+Colour
+TreeItemBase::getBackgroundColour() const
 {
+#if 0
     Colour background (getOwnerView()->findColour (gui::mainBackgroundColourId));
 
     if (isSelected())
         background = background.overlaidWith (getOwnerView()->findColour (gui::treeviewHighlightColourId));
+#else
+    Colour background (Colours::transparentBlack);
 
+    if (isSelected())
+        background = background.overlaidWith (Colours::aqua.darker());
+
+#endif
     return background;
 }
 

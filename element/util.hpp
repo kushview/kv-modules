@@ -39,8 +39,7 @@ namespace element {
 
 
     /** Restrict a value between a lower and upper value */
-    template<typename VAL>
-    static inline VAL
+    template<typename VAL> static inline VAL
     clamp (const VAL& input, const VAL& lower, const VAL& upper)
     {
         if (input < lower) {
@@ -54,6 +53,11 @@ namespace element {
         return input;
     }
 
+    template<typename VAL> static inline bool
+    isWithinRange (const VAL& input, const VAL& lower, const VAL& upper)
+    {
+        return (input >= lower && input < upper);
+    }
 
     template<typename SEQ>
     static int64_t
