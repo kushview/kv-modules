@@ -18,7 +18,7 @@
 */
 
 #include "element/juce.hpp"
-#include "element/session/device-manager.hpp"
+#include "element/session/DeviceManager.h"
 #include "element/engine.hpp"
 
 using namespace element;

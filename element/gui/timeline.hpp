@@ -21,7 +21,7 @@
 #define ELEMENT_GUI_TIMELINE_HPP
 
 #include "element/juce.hpp"
-#include "element/gui/icon-button.hpp"
+#include "element/gui/IconButton.h"
 #include "element/gui/tango.hpp"
 #include "element/parameter.hpp"
 #include "element/pointer.hpp"

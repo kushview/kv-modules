@@ -63,7 +63,7 @@ public:
     uint32_t sampleRate() const;
     void setSampleRate (uint32_t sampleRate);
 
-    inline TrackList&     tracks()              { return m_tracks; }
+    inline TrackList&     tracks()             { return m_tracks; }
     inline track_iterator tracksBegin()        { return m_tracks.begin(); }
     inline track_iterator tracksEnd()          { return m_tracks.end(); }
     inline uint32_t       numTracks()  const   { return m_tracks.size(); }

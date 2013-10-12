@@ -23,7 +23,7 @@
 #include "element/symmap.hpp"
 #include "element/types.h"
 
-#include "element/session/device-manager.hpp"
+#include "element/session/DeviceManager.h"
 #include "element/session/module.hpp"
 #include "element/session/plugin-manager.hpp"
 #include "element/session/world.hpp"

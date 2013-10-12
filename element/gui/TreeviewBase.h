@@ -209,10 +209,8 @@ public:
 
     void paintIcon (Graphics& g)
     {
-#if 0
         item.getIcon().draw (g, Rectangle<float> (4.0f, 2.0f, item.getIconSize(), getHeight() - 4.0f),
                              item.isIconCrossedOut());
-#endif
     }
 
     void resized() override

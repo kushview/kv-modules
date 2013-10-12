@@ -23,12 +23,17 @@
 */
 
 #include "element/gui/icons.hpp"
+#include "element/pointer.hpp"
 
 namespace element
 {
     const Icons& getIcons()
     {
-        assert (false);  // implement this somehow
+        static Icons* __icons = nullptr;
+        if (! __icons) {
+            __icons = new Icons();
+        }
+        return *__icons;
     }
 }
 
@@ -1003,5 +1008,7 @@ Icons::Icons()
     JUCE_LOAD_PATH_DATA (bug);
     JUCE_LOAD_PATH_DATA (juceLogo);
     JUCE_LOAD_PATH_DATA (mainJuceLogo);
+
+    std::clog << "Icons::Icons()\n";
 }
 }

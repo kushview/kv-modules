@@ -20,7 +20,7 @@
 #ifndef ELEMENT_SESSION_HEADERS_HPP
 #define ELEMENT_SESSION_HEADERS_HPP
 
-#include "element/session/device-manager.hpp"
+#include "element/session/DeviceManager.h"
 #include "element/session/module.hpp"
 #include "element/session/plugin-manager.hpp"
 #include "element/session/world.hpp"

@@ -47,9 +47,10 @@ static PropertiesFile* createPropsFile (const String& filename)
     return nullptr;
 }
 
-PropertiesFile& StoredSettings::getProjectProperties (const String& projectUID)
+PropertiesFile&
+StoredSettings::getProjectProperties (const String& projectUID)
 {
-#if 0
+#if 1
     const String filename ("Introjucer_Project_" + projectUID);
 
     for (int i = propertyFiles.size(); --i >= 0;)
@@ -65,7 +66,8 @@ PropertiesFile& StoredSettings::getProjectProperties (const String& projectUID)
 #endif
 }
 
-void StoredSettings::updateGlobalProps()
+void
+StoredSettings::updateGlobalProps()
 {
     Logger::writeToLog ("IMPLEMENT: StoredSettings::updateGlobalProps()");
 #if 0
@@ -89,7 +91,8 @@ void StoredSettings::updateGlobalProps()
 #endif
 }
 
-void StoredSettings::flush()
+void
+StoredSettings::flush()
 {
     updateGlobalProps();
     saveSwatchColours();
@@ -98,7 +101,8 @@ void StoredSettings::flush()
         propertyFiles.getUnchecked(i)->saveIfNeeded();
 }
 
-void StoredSettings::reload()
+void
+StoredSettings::reload()
 {
     propertyFiles.clear();
     propertyFiles.add (createPropsFile ("Introjucer"));
@@ -119,7 +123,8 @@ void StoredSettings::reload()
     loadSwatchColours();
 }
 
-Array<File> StoredSettings::getLastProjects()
+Array<File>
+StoredSettings::getLastProjects()
 {
     StringArray s;
     s.addTokens (getGlobalProperties().getValue ("lastProjects"), "|", "");
@@ -149,7 +154,7 @@ void StoredSettings::loadSwatchColours()
 
     const Colour colours[] =
     {
-        #include "element/gui/colours.hpp"
+        #include "element/gui/Colours.h"
         Colours::transparentBlack
     };
 
