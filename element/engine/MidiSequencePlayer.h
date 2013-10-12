@@ -44,7 +44,7 @@
 
 #include "element/engine/Shuttle.h"
 
-namespace element {
+namespace Element {
 
 
     /** A single track midi sequencer with record functionality */

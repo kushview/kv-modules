@@ -4,7 +4,7 @@
 #include "element/core.hpp"
 #include "element/node.hpp"
 
-namespace element {
+namespace Element {
 
     class EngineGraph;
 

@@ -2,7 +2,7 @@
 #include "element/session.hpp"
 #include "jack.hpp"
 
-namespace element {
+namespace Element {
 namespace jack {
 
     class JackModule : public Module {
@@ -20,9 +20,9 @@ namespace jack {
 }}
 
 extern "C" {
-    element::Module*
+    Element::Module*
     element_module_load()
     {
-        return new element::jack::JackModule();
+        return new Element::jack::JackModule();
     }
 }

@@ -1,7 +1,7 @@
 
 #include "tests.hpp"
 
-using namespace element;
+using namespace Element;
 
 class JackDeviceTest : public UnitTest
 {

@@ -1,7 +1,7 @@
 
 #include "plugin-block.hpp"
 
-namespace element {
+namespace Element {
 
     PluginBlock::PluginBlock (Processor *proc, const Symbol &symbol)
     {

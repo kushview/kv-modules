@@ -19,7 +19,7 @@
 #include "element/engine/PortProcessor.h"
 #include "element/engine/graph-processor.hpp"
 
-namespace element {
+namespace Element {
 
 const int GraphProcessor::midiChannelIndex = 0x1000;
 

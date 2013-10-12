@@ -33,7 +33,7 @@
 #include "element/util/fraction.hpp"
 #include "element/util/range.hpp"
 
-namespace element {
+namespace Element {
 
     class Clip;
     class ClipFactory;
@@ -105,10 +105,10 @@ namespace element {
         hash_value (const Clip& clip)
         {
             size_t seed = 0;
-            element::chained_hash (seed, clip.asset().hash());
-            element::chained_hash (seed, clip.frame_start());
-            element::chained_hash (seed, clip.frame_end());
-            element::chained_hash (seed, clip.offset());
+            Element::chained_hash (seed, clip.asset().hash());
+            Element::chained_hash (seed, clip.frame_start());
+            Element::chained_hash (seed, clip.frame_end());
+            Element::chained_hash (seed, clip.offset());
             return seed;
         }
 

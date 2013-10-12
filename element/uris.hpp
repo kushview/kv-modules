@@ -23,7 +23,7 @@
 
 #include "element/uris-base.hpp"
 
-namespace element {
+namespace Element {
 
 
 }

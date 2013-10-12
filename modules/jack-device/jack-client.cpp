@@ -31,7 +31,7 @@ element_jack_dump_error (const jack_status_t status)
 
 #define return_value_if_null(ptr, val) if (ptr == 0) return val
 
-namespace element {
+namespace Element {
 
 const char* Jack::audioPort = JACK_DEFAULT_AUDIO_TYPE;
 const char* Jack::midiPort  = JACK_DEFAULT_MIDI_TYPE;

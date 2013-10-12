@@ -12,12 +12,12 @@
 #include "element/engine.hpp"
 #include "element/pointer.hpp"
 #include "element/session.hpp"
-#include "element/gui/style.hpp"
+#include "element/gui/Style.h"
 
 #include "preferences.hpp"
 #include "window-manager.hpp"
 
-namespace element {
+namespace Element {
 
     class World;
 
@@ -70,7 +70,7 @@ namespace gui {
 
     protected:
 
-        GuiApp (element::World&);
+        GuiApp (Element::World&);
 
     private:
 
@@ -79,7 +79,7 @@ namespace gui {
 
         Shared<Engine>            audioEngine;
         ApplicationCommandManager commandManager;
-        element::gui::Style       elementStyle;
+        Element::gui::Style       elementStyle;
 
         void showSplash();
 

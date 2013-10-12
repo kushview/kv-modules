@@ -16,7 +16,7 @@
 #endif
 
 
-namespace element {
+namespace Element {
 
 //==============================================================================
 class LV2PluginInstance     : public AudioPluginInstance
@@ -342,7 +342,7 @@ private:
     mutable StringArray programNames;
 
     AudioSampleBuffer tempBuffer;
-    // element::AtomBuffer   atomBuffer;
+    // Element::AtomBuffer   atomBuffer;
 
     ScopedPointer<LV2Module> module;
     //std::vector<Parameter> params;

@@ -7,7 +7,7 @@
 
 #include "clip.hpp"
 
-namespace element {
+namespace Element {
 
     class ClipFactory;
 

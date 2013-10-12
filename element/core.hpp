@@ -3,7 +3,7 @@
 
 #include "../libs/juce/JuceHeader.h"
 
-namespace element {
+namespace Element {
 
 }
 

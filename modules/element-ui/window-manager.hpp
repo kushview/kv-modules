@@ -14,7 +14,7 @@
 #include "commands.hpp"
 #include "window.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
     class GuiApp;

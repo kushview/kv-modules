@@ -89,5 +89,5 @@ namespace element {
    };
 }
 
-START_JUCE_APPLICATION (element::Main)
+START_JUCE_APPLICATION (Element::Main)
 #endif

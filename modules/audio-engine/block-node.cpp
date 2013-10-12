@@ -2,7 +2,7 @@
 #include "block-node.hpp"
 #include "context.hpp"
 
-namespace element {
+namespace Element {
 
     BlockNode::BlockNode()
         : EngineNode (nullptr, String::empty)

@@ -3,7 +3,7 @@
 #include "engine-graph.hpp"
 #include "node.hpp"
 
-namespace element {
+namespace Element {
 
     EngineGraph*
     EngineNode::parentGraph() const

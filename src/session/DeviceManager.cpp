@@ -21,9 +21,9 @@
 #include "element/session/DeviceManager.h"
 #include "element/engine.hpp"
 
-using namespace element;
+using namespace Element;
 
-namespace element {
+namespace Element {
 
     class DeviceManager::Private
     {

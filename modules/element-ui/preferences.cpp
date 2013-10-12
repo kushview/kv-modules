@@ -12,7 +12,7 @@
 #include "guiapp.hpp"
 #include "preferences.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
     PreferencesComponent::PreferencesComponent (GuiApp& gui)

@@ -1,7 +1,7 @@
 
 #include "lv2module.hpp"
 
-namespace element {
+namespace Element {
     
     namespace lv2 {
 

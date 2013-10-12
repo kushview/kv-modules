@@ -55,7 +55,7 @@
 #define Scoped boost::scoped_ptr
 #define ScopedXml boost::scoped_ptr<juce::XmlElement>
 
-namespace element
+namespace Element
 {
 
 /* Shared Pointer wrapper helpers.

@@ -5,7 +5,7 @@
 #include "main-window.hpp"
 #include "element/session/world.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
 
@@ -90,10 +90,10 @@ namespace gui {
 
 extern "C" {
 
-    element::Module*
+    Element::Module*
     element_module_load()
     {
-        return new element::gui::GuiModule();
+        return new Element::gui::GuiModule();
     }
 
 }

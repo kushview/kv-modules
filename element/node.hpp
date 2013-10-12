@@ -26,7 +26,7 @@
 #include "element/pointer.hpp"
 #include "element/uri.hpp"
 
-namespace element {
+namespace Element {
 
     class Connection;
     typedef String Symbol;

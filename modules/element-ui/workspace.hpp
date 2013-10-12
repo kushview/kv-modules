@@ -12,7 +12,7 @@
 #include "element/gui/dock.hpp"
 #include "guiapp.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
 
@@ -48,7 +48,7 @@ namespace gui {
     private:
 
         GuiApp&            gui;
-        element::gui::Dock dock;
+        Element::gui::Dock dock;
 
     };
 

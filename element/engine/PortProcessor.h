@@ -3,7 +3,7 @@
 
 #include "element/processors.hpp"
 
-namespace element {
+namespace Element {
 
 
     class GraphProcessor;

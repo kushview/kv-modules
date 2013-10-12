@@ -20,7 +20,7 @@
 #include "element/core.hpp"
 #include "element/buffer-factory.hpp"
 
-namespace element {
+namespace Element {
 
 
 BufferFactory::BufferFactory()

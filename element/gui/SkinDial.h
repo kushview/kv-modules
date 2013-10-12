@@ -12,7 +12,7 @@
 
 #include "element/juce.hpp"
 
-namespace element {
+namespace Element {
 
    class SkinDial : public Slider
    {

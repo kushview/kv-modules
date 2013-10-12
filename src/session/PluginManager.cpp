@@ -21,7 +21,7 @@
 #include "element/session/world.hpp"
 #include "lv2format.hpp"
 
-namespace element {
+namespace Element {
 
 
     class PluginManager::Private

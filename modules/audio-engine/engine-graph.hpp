@@ -8,7 +8,7 @@
 #include "block-node.hpp"
 #include "port-node.hpp"
 
-namespace element
+namespace Element
 {
 
     class CompiledGraph;

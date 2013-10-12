@@ -34,7 +34,7 @@
 #include <lv2/lv2plug.in/ns/ext/urid/urid.h>
 #include <lv2/lv2plug.in/ns/extensions/units/units.h>
 
-namespace element {
+namespace Element {
 
 
 /** Function type for mapping a URI */

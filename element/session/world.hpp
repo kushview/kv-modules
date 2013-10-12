@@ -24,7 +24,7 @@
 #include "element/pointer.hpp"
 #include "element/session/stored-settings.hpp"
 
-namespace element {
+namespace Element {
 
     class DeviceManager;
     class Engine;

@@ -23,7 +23,7 @@
 #include "element/devices.hpp"
 #include "element/pointer.hpp"
 
-namespace element {
+namespace Element {
 
     class Engine;
 

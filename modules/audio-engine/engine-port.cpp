@@ -2,7 +2,7 @@
 #include "block-node.hpp"
 #include "port-node.hpp"
 
-namespace element {
+namespace Element {
 
     EnginePort::EnginePort (BlockNode *block, const String &name,
                         uint32 index, PortType type)

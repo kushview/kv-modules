@@ -28,7 +28,7 @@
 #include "element/linked-list.hpp"
 #include "element/util.hpp"
 
-namespace element {
+namespace Element {
 
 /** Time scaling helper class */
 class TimeScale

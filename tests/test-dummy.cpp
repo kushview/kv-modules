@@ -1,6 +1,6 @@
 
 #include "element/core.hpp"
-using namespace element;
+using namespace Element;
 #if 1
 class DummyTest : public UnitTest
 {

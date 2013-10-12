@@ -22,7 +22,7 @@
 
 #include <atomic>
 
-namespace element {
+namespace Element {
 
     template<typename ValueType>
     class AtomicValue

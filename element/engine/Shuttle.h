@@ -6,7 +6,7 @@
 #include "element/time/Tempo.h"
 #include "element/time/timescale.hpp"
 
-namespace element
+namespace Element
 {
 
     /** A mini-transport for use in a processable that can loop */

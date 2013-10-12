@@ -13,7 +13,7 @@
 #include "element/juce.hpp"
 #include "element/signal.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
     class GuiApp;

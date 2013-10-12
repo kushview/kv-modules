@@ -13,7 +13,7 @@
 #include "element/core.hpp"
 #include "juce/modules/juce_audio_processors/juce_audio_processors.h"
 
-namespace element {
+namespace Element {
 
     class LV2World;
     class SymbolMap;

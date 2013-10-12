@@ -23,7 +23,7 @@
 #include <cmath>
 #include "element/core.hpp"
 
-namespace element {
+namespace Element {
 
     class Parameter
     {

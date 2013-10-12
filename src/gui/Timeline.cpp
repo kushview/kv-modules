@@ -2,7 +2,7 @@
 
 #include "element/gui/timeline.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
       class Timeline::Indicator : public Component

@@ -2,7 +2,7 @@
 #include "element/engine/GraphPlayer.h"
 #include "element/engine/graph-processor.hpp"
 
-namespace element {
+namespace Element {
 
     GraphPlayer::GraphPlayer()
         : processor (nullptr),

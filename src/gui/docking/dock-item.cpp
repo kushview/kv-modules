@@ -8,7 +8,7 @@
 #include "element/gui/dock.hpp"
 
 
-namespace element {
+namespace Element {
 namespace gui {
 
 

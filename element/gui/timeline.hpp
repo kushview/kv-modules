@@ -26,7 +26,7 @@
 #include "element/parameter.hpp"
 #include "element/pointer.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
     class Timeline;

@@ -10,7 +10,7 @@
 #include "guiapp.hpp"
 #include "window.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
 
@@ -53,4 +53,4 @@ namespace gui {
         closedSignal();
     }
 
-}}  /* namespace element::gui */
+}}  /* namespace Element::gui */

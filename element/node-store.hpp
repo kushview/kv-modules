@@ -6,7 +6,7 @@
 #include "element/core.hpp"
 #include "element/pointer.hpp"
 
-namespace element {
+namespace Element {
 
     class Node;
 

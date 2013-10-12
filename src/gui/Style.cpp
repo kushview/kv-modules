@@ -1,7 +1,7 @@
 
-#include "element/gui/style.hpp"
+#include "element/gui/Style.h"
 
-namespace element {
+namespace Element {
 namespace gui {
 
 

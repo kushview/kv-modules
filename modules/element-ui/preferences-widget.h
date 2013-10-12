@@ -23,7 +23,7 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "element/juce.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
     class GuiApp;
@@ -77,7 +77,7 @@ private:
 };
 
 //[EndFile] You can add extra defines here...
-}}  /* namnespace element::gui */
+}}  /* namnespace Element::gui */
 //[/EndFile]
 
 #endif   // __JUCE_HEADER_48C47CC604E42661__

@@ -22,7 +22,7 @@
 
 #include "element/juce.hpp"
 
-namespace element {
+namespace Element {
 
     class Processor :  public AudioPluginInstance
     {

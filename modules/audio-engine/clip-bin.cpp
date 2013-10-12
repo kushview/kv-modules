@@ -2,7 +2,7 @@
 #include "clip-bin.hpp"
 #include "clip-factory.hpp"
 
-namespace element {
+namespace Element {
 
     ClipBin::ClipBin (ClipFactory& factory)
         : m_factory (factory)

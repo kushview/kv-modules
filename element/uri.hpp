@@ -22,7 +22,7 @@
 
 #include "element/core.hpp"
 
-namespace element {
+namespace Element {
 
     class URI : public String
     {

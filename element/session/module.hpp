@@ -3,7 +3,7 @@
 
 #include "element/core.hpp"
 
-namespace element {
+namespace Element {
 
     class World;
 
@@ -39,7 +39,7 @@ namespace element {
 extern "C" {
 
     /** Entry point for element modules */
-    element::Module* element_module_load();
+    Element::Module* element_module_load();
 
 }
 

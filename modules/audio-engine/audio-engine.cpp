@@ -27,7 +27,7 @@
 #include "engine-graph.hpp"
 #include "internal-format.hpp"
 
-namespace element {
+namespace Element {
 
     class TestPlayer :  public GraphPlayer
     {
@@ -96,10 +96,10 @@ namespace element {
 
 extern "C" {
 
-    element::Module* JUCE_CALLTYPE
+    Element::Module* JUCE_CALLTYPE
     element_module_load()
     {
-        return new element::AudioEngineModule();
+        return new Element::AudioEngineModule();
     }
 
 }

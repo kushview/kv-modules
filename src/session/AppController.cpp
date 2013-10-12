@@ -20,7 +20,7 @@
 #include "element/session/AppController.h"
 #include "element/session/world.hpp"
 
-namespace element {
+namespace Element {
 
     AppController::AppController (World& world)
         : Controller(),

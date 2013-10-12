@@ -21,7 +21,7 @@
 #define ELEMENT_GUI_COMMANDS_HPP
 
 
-namespace element {
+namespace Element {
 namespace gui {
 
    namespace Commands {

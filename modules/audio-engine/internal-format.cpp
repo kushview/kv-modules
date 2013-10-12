@@ -22,7 +22,7 @@
 
 #include "internal-format.hpp"
 
-namespace element {
+namespace Element {
 
 
     //==============================================================================

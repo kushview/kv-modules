@@ -7,7 +7,7 @@
 #include "main-menu.hpp"
 #include "workspace.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
    MainWindow::MainWindow (GuiApp& gui_)

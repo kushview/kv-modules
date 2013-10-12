@@ -22,7 +22,7 @@
 
 #include "element/core.hpp"
 
-namespace element {
+namespace Element {
 
 template<typename T>
 class FrameSpan : public Range<T>

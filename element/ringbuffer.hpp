@@ -23,7 +23,7 @@
 
 #include "core.hpp"
 
-namespace element {
+namespace Element {
 
     class RingBuffer
     {

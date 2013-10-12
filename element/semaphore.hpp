@@ -32,7 +32,7 @@
      typedef sem_t SemType;
 #endif
 
-namespace element {
+namespace Element {
 
 /**
    A counting semaphore.

@@ -15,7 +15,7 @@
 
 #include "lv2_evbuf.h"
 
-namespace element {
+namespace Element {
 
     class LV2Evbuf
     {

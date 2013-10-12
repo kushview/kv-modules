@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-namespace element {
+namespace Element {
 
     /** Convenient typdef for a string vector */
     typedef std::vector<std::string> StringVec;

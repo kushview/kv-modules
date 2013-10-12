@@ -27,7 +27,7 @@
 #include "element/uri.hpp"
 #include "element/util.hpp"
 
-namespace element {
+namespace Element {
 
     class World;
 
@@ -88,7 +88,7 @@ namespace element {
         compute (AssetType t, const String& uuid)
         {
             HashValue seed = hash_string (uuid.toStdString());
-            return element::chained_hash (seed, t);
+            return Element::chained_hash (seed, t);
         }
 
     };

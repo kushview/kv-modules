@@ -21,7 +21,7 @@
 #ifndef ELEMENT_FRACTION_HPP
 #define ELEMENT_FRACTION_HPP
 
-namespace element {
+namespace Element {
 
     struct FractionalGain
     {

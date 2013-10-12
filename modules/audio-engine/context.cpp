@@ -1,7 +1,7 @@
 
 #include "context.hpp"
 
-namespace element {
+namespace Element {
 
 Context::Context (ID id)
     : m_id (id), m_start (0), m_end (0),

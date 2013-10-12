@@ -28,7 +28,7 @@
 #include "element/juce.hpp"
 #include "element/gui/icons.hpp"
 
-namespace element {
+namespace Element {
 
 //==============================================================================
 class TreeItemBase   : public TreeViewItem

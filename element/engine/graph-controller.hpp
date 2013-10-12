@@ -32,7 +32,7 @@
 #include "element/engine/graph-processor.hpp"
 
 
-namespace element {
+namespace Element {
 
 class FilterInGraph;
 class GraphController;

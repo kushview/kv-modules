@@ -6,7 +6,7 @@
 
 using namespace std;
 
-namespace element {
+namespace Element {
 
     NodeStore::NodeStore()
     {

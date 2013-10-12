@@ -27,7 +27,7 @@
 #include "graph-editor.hpp"
 #include "guiapp.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
 //==============================================================================

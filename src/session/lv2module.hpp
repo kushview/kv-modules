@@ -23,7 +23,7 @@
 
 #define LV2_UI__JuceUI           LV2_UI_PREFIX "JuceUI"
 
-namespace element {
+namespace Element {
 
    class LV2Evbuf;
 

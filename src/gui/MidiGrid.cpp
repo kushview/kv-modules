@@ -19,7 +19,7 @@
 
 #include "element/gui/MidiGrid.h"
 
-namespace element {
+namespace Element {
 namespace gui {
 
 

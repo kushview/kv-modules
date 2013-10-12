@@ -20,7 +20,7 @@
 #include "element/asset.hpp"
 #include "element/session/world.hpp"
 
-namespace element {
+namespace Element {
 
 
 const char*

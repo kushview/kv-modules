@@ -25,7 +25,7 @@
 #include <boost/intrusive/list.hpp>
 #include <boost/intrusive/slist_hook.hpp>
 
-namespace element {
+namespace Element {
 
     /** templates for creating fast linked lists.
         'most' list operations happen in constant time */

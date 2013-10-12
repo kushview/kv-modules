@@ -22,7 +22,7 @@
 #include "lv2world.hpp"
 
 
-namespace element {
+namespace Element {
 
     LV2World::LV2World (SymbolMap& s)
         : sym (s)

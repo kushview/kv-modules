@@ -8,7 +8,7 @@
 
 #include "node.hpp"
 
-namespace element {
+namespace Element {
 
     class BlockNode;
     class EnginePort :  public EngineNode,

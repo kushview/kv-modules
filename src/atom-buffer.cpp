@@ -3,7 +3,7 @@
 
 #include "lv2evbuf.hpp"
 
-namespace element {
+namespace Element {
 
 #if 0
         class AtomBuffer::Data : public LV2Evbuf
@@ -40,7 +40,7 @@ namespace element {
 
         AtomBuffer::AtomBuffer (LV2_URID_Map* map, uint32 capacity = 4096)
             : Buffer(Buffer::atomData),
-                     evbuf (capacity, element::LV2Evbuf::lv2Atom,
+                     evbuf (capacity, Element::LV2Evbuf::lv2Atom,
                      map->map (map->handle, LV2_ATOM__Sequence),
                      map->map (map->handle, LV2_ATOM__Chunk)),
               MidiEvent (map->map (map->handle, LV2_MIDI__MidiEvent))

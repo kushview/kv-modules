@@ -11,7 +11,7 @@
 #include "element/juce.hpp"
 #include "guiapp.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
     class MainMenu;

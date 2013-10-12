@@ -19,7 +19,7 @@
 
 #include "element/ringbuffer.hpp"
 
-namespace element {
+namespace Element {
 
 RingBuffer::RingBuffer (uint32 capacity)
     : fifo (0), buffer (nullptr)

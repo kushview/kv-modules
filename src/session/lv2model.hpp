@@ -1,7 +1,7 @@
 #ifndef LV2MODEL_HPP
 #define LV2MODEL_HPP
 
-namespace element {
+namespace Element {
 
     class Model
     {
@@ -152,7 +152,7 @@ namespace element {
                const LilvUI*   thisUI = lilv_uis_get (world.me, iter);
                const LilvNode* type   = nullptr;
 
-               if (lilv_ui_is_supported (thisUI, element::lv2::ui_supported, native, &type))
+               if (lilv_ui_is_supported (thisUI, Element::lv2::ui_supported, native, &type))
                   uis.push_back (std::make_pair (type, thisUI));
             }
         }

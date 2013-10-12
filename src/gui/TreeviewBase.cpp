@@ -18,9 +18,9 @@
 */
 
 #include "element/gui/TreeviewBase.h"
-#include "element/gui/style.hpp"
+#include "element/gui/Style.h"
 
-namespace element {
+namespace Element {
 
 //==============================================================================
 void TreePanelBase::setRoot (TreeItemBase* root)

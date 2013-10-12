@@ -20,7 +20,7 @@
 #define ELEMENT_CONTROLLER_HPP
 
 
-namespace element {
+namespace Element {
     
     class Controller
     {

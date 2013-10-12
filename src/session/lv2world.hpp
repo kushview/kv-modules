@@ -17,7 +17,7 @@
 #include <lv2/lv2plug.in/ns/ext/worker/worker.h>
 #include <lv2/lv2plug.in/ns/extensions/ui/ui.h>
 
-namespace element {
+namespace Element {
 
     class  LV2Module;
     class  SymbolMap;

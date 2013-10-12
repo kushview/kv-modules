@@ -29,7 +29,7 @@
 #include "clip-bin.hpp"
 
 
-namespace element {
+namespace Element {
 
 class Clip;
 class Sequence;

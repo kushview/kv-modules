@@ -13,7 +13,7 @@
 #include "element/core.hpp"
 #include "element/world.hpp"
 
-using namespace element;
+using namespace Element;
 
 static World* __world = nullptr;
 

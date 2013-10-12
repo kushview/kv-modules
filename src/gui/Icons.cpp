@@ -25,7 +25,7 @@
 #include "element/gui/icons.hpp"
 #include "element/pointer.hpp"
 
-namespace element
+namespace Element
 {
     const Icons& getIcons()
     {
@@ -986,7 +986,7 @@ const uint8 mainJuceLogo[] = { 110,109,104,98,101,67,226,177,185,67,98,216,179,8
     DBG (out.toString() << newLine);
 }*/
 
-namespace element {
+namespace Element {
 Icons::Icons()
 {
     #define JUCE_LOAD_PATH_DATA(name) \

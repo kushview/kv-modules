@@ -4,7 +4,7 @@
 #include "element/juce.hpp"
 #include "element/pointer.hpp"
 
-namespace element {
+namespace Element {
 
     class LV2World;
     class Settings;

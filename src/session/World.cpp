@@ -32,7 +32,7 @@
 
 using namespace std;
 
-namespace element {
+namespace Element {
 
     /* Function type for loading an Element module */
     typedef Module* (*ModuleLoadFunc)();
@@ -170,7 +170,7 @@ namespace element {
     bool
     World::loadModule (const char* name)
     {
-        if (element::contains (priv->mods, name))
+        if (Element::contains (priv->mods, name))
             return true;
 
         if (Module* mod = world_load_module (name))

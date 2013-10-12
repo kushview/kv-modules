@@ -3,7 +3,7 @@
 
 #include "element/core.hpp"
 
-namespace element {
+namespace Element {
 
     struct JUCE_API Arc
     {

@@ -3,7 +3,7 @@
 
 #include "main-window.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
     class MainWindow;

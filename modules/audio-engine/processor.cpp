@@ -24,6 +24,6 @@
 
 #include "element/processors.hpp"
 
-namespace element {
+namespace Element {
 
 }

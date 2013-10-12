@@ -3,7 +3,7 @@
 #include "element/engine/PortProcessor.h"
 #include "element/engine/graph-processor.hpp"
 
-namespace element {
+namespace Element {
 
 
     //==============================================================================

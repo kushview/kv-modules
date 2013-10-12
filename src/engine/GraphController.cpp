@@ -25,7 +25,7 @@
 #include "element/juce.hpp"
 #include "element/engine/graph-controller.hpp"
 
-namespace element {
+namespace Element {
 
 //==============================================================================
 const int GraphController::midiChannelNumber = 0x1000;

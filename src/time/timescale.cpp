@@ -21,7 +21,7 @@
 
 #include "element/time/timescale.hpp"
 
-namespace element {
+namespace Element {
 
 
 void

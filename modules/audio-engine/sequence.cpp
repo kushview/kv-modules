@@ -74,7 +74,7 @@ namespace element {
     void
     Sequence::removeCursor (SequenceCursor* cursor)
     {
-        element::removeall (m_cursors, cursor);
+        Element::removeall (m_cursors, cursor);
     }
 
 

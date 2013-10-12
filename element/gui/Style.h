@@ -5,7 +5,7 @@
 #include "element/juce.hpp"
 
 
-namespace element {
+namespace Element {
 namespace gui {
 
     enum ColourIds

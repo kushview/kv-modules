@@ -19,7 +19,7 @@
 
 #define ELEMENT_INVALID_PORT JUCE_INVALID_PORT
 
-namespace element {
+namespace Element {
 
     /** Function type for writing to a port buffer
         Params are in order port, size, protocol, buffer

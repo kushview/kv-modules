@@ -28,7 +28,7 @@
 #include "element/arc.hpp"
 #include "element/engine/graph-controller.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
     class GuiApp;

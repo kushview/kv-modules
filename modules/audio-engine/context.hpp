@@ -4,7 +4,7 @@
 
 #include "element/types.h"
 
-namespace element {
+namespace Element {
 
 class Context
 {

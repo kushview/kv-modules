@@ -4,7 +4,7 @@
 #include "element/engine/graph-controller.hpp"
 #include "element/engine/graph-processor.hpp"
 
-namespace element {
+namespace Element {
 
     static XmlElement* createNodeXml (GraphProcessor::Node* const node) noexcept;
 

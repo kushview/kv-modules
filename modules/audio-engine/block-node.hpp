@@ -6,7 +6,7 @@
 #include "context.hpp"
 #include "node.hpp"
 
-namespace element {
+namespace Element {
 
     class Context;
 

@@ -308,10 +308,10 @@ lv2_evbuf_write(LV2_Evbuf_Iterator* iter,
 #include "element/core.hpp"
 #include "lv2evbuf.hpp"
 
-namespace element {
+namespace Element {
 
         LV2_Evbuf_Iterator
-        findFirst (element::LV2Evbuf& buf, uint32 frame, uint32 /* subframe */)
+        findFirst (Element::LV2Evbuf& buf, uint32 frame, uint32 /* subframe */)
         {
             if (buf.getSize() == 0)
                 return lv2_evbuf_begin (buf);

@@ -3,7 +3,7 @@
 
 #include "element/controller.hpp"
 
-namespace element {
+namespace Element {
 
     class Session;
     class World;

@@ -23,7 +23,7 @@
 #include "element/core.hpp"
 #include "element/types.h"
 
-namespace element {
+namespace Element {
 
 class AssetType
 {

@@ -3,7 +3,7 @@
 
 #include "element/juce.hpp"
 
-namespace element {
+namespace Element {
 
     class GraphController;
     class PluginManager;

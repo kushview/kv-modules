@@ -20,7 +20,7 @@
 #include "element/buffer.hpp"
 #include <boost/intrusive_ptr.hpp>
 
-namespace element {
+namespace Element {
 Buffer::Buffer (DataType dataType_, uint32 subType_)
     : factory (nullptr),
       refs (0),

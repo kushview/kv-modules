@@ -6,7 +6,7 @@
 
 #include "jack.hpp"
 
-namespace element {
+namespace Element {
 
 
     //#if JUCE_DEBUG

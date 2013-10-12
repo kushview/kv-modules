@@ -12,7 +12,7 @@
 #include "element/gui/tango.hpp"
 #include "element/signal.hpp"
 
-namespace element {
+namespace Element {
 namespace gui {
 
     class IconButton : public Button,

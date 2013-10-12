@@ -14,7 +14,7 @@
 
 #include "preferences-widget.h"
 
-namespace element {
+namespace Element {
 namespace gui {
 
     class GuiApp;

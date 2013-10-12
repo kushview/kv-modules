@@ -19,15 +19,15 @@
 #include "element/core.hpp"
 #include <boost/intrusive_ptr.hpp>
 
-namespace element {
+namespace Element {
     class Buffer;
     class BufferFactory;
 }
 
-void intrusive_ptr_add_ref (element::Buffer* b);
-void intrusive_ptr_release (element::Buffer* b);
+void intrusive_ptr_add_ref (Element::Buffer* b);
+void intrusive_ptr_release (Element::Buffer* b);
 
-namespace element {
+namespace Element {
 
 class Buffer
 {

@@ -10,7 +10,7 @@ namespace {
 }
 #endif
 
-namespace element {
+namespace Element {
 
    typedef NativeComponent::Attachment    Attachment;
    typedef NativeComponent::AttachmentPtr AttachmentPtr;

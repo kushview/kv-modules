@@ -3,7 +3,7 @@
 
 #include "element/engine/port-node.hpp"
 
-namespace element {
+namespace Element {
 
     class DuplexPort : public EnginePort
     {

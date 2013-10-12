@@ -19,4 +19,4 @@
 
 #include "element/engine.hpp"
 
-namespace element { }
+namespace Element { }

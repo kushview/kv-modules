@@ -30,7 +30,7 @@
 
 #include "element/util.hpp"
 
-namespace element {
+namespace Element {
     
     /** A function type for mapping uris */
     typedef boost::function<LV2_URID(const char*)> URIMapFunc;
@@ -82,7 +82,7 @@ namespace element {
         inline bool
         contains (const char* uri)
         {
-            return element::contains (mapped, uri);
+            return Element::contains (mapped, uri);
         }
         
         /** Containment test of a URID 
@@ -93,7 +93,7 @@ namespace element {
         inline bool
         contains (LV2_URID urid)
         {
-            return element::contains (unmapped, urid);
+            return Element::contains (unmapped, urid);
         }
         
         /** Unmap an already mapped id to its symbol 

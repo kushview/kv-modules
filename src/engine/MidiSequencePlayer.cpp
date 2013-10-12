@@ -23,7 +23,7 @@
 #define NOTE_VELOCITY      0.8f
 #define NOTE_PREFRAMES     0.001
 
-namespace element {
+namespace Element {
 
 
 

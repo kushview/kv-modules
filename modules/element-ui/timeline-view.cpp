@@ -24,7 +24,7 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
-namespace element {
+namespace Element {
 namespace gui {
 
 //[/MiscUserDefs]
@@ -83,7 +83,7 @@ void TimelineView::resized()
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
 
-}}  /* namespace element::gui */
+}}  /* namespace Element::gui */
 //[/MiscUserCode]
 
 

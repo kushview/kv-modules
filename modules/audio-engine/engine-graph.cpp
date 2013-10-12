@@ -2,7 +2,7 @@
 #include "compiled-graph.hpp"
 #include "engine-graph.hpp"
 
-namespace element {
+namespace Element {
 
     void
     EngineGraph::addBlock (BlockNode& block)

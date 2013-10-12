@@ -3,7 +3,7 @@
 
 #include "block-node.hpp"
 
-namespace element {
+namespace Element {
 
     class Processor;
 

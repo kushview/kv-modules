@@ -48,7 +48,7 @@ namespace element {
 
     ClipFactory::~ClipFactory()
     {
-        m_free.m_clips.clear_and_dispose (element::clip_dispose);
+        m_free.m_clips.clear_and_dispose (Element::clip_dispose);
 #if 0
         for (int i =0; i < m_max_threads; ++i)
         {

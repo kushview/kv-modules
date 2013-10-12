@@ -24,7 +24,7 @@
 
 #include "element/session/stored-settings.hpp"
 
-namespace element {
+namespace Element {
 
 //==============================================================================
 StoredSettings::StoredSettings()

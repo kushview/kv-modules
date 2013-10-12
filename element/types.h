@@ -29,7 +29,7 @@ typedef uint32_t SampleCount;
 typedef uint32_t FrameTime;
 typedef uint16_t Channel;
 
-namespace element {
+namespace Element {
 
     enum PluginFormat
     {

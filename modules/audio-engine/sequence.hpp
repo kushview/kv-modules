@@ -31,7 +31,7 @@
 #include "element/engine/track.hpp"
 #include "element/time/timescale.hpp"
 
-namespace element {
+namespace Element {
 
 class Session;
 class SequenceCursor;

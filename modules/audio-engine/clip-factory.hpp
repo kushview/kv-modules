@@ -23,7 +23,7 @@
 #include "clip.hpp"
 #include "clip-bin.hpp"
 
-namespace element {
+namespace Element {
 
     class Session;
 

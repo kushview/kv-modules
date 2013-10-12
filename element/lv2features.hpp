@@ -13,7 +13,7 @@
 #include "element/core.hpp"
 #include <lv2/lv2plug.in/ns/lv2core/lv2.h>
 
-namespace element {
+namespace Element {
 
 class LV2Feature
 {

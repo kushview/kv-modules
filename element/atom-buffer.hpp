@@ -26,7 +26,7 @@
 #include <lv2/lv2plug.in/ns/ext/midi/midi.h>
 #include <lv2/lv2plug.in/ns/ext/urid/urid.h>
 
-namespace element {
+namespace Element {
 
     class AtomBuffer {
     public:

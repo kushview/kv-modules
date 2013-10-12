@@ -18,7 +18,7 @@
 */
 
 //[Headers] You can add your own extra header files here...
-#include "element/gui/style.hpp"
+#include "element/gui/Style.h"
 #include "guiapp.hpp"
 //[/Headers]
 
@@ -26,7 +26,7 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
-namespace element {
+namespace Element {
 namespace gui {
 
 
@@ -212,7 +212,7 @@ void PreferencesWidget::setPage (const String& uri)
     addAndMakeVisible (pageComponent);
 }
 
-}} /* namespace element::gui */
+}} /* namespace Element::gui */
 //[/MiscUserCode]
 
 

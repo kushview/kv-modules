@@ -20,7 +20,7 @@ namespace juce {
      class AudioIODeviceType;
 }
 
-namespace element {
+namespace Element {
 
 
     class JackCallback;

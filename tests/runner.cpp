@@ -3,7 +3,7 @@
 #include "element/engine/plugin-manager.hpp"
 #include "element/engine/world.hpp"
 
-using namespace element;
+using namespace Element;
 
 int main()
 {

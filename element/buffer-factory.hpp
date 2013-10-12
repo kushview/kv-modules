@@ -23,7 +23,7 @@
 #include "element/core.hpp"
 #include "element/buffer.hpp"
 
-namespace element {
+namespace Element {
 
 class BufferFactory
 {

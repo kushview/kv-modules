@@ -8,7 +8,7 @@
 #ifndef STOCK_HPP_
 #define STOCK_HPP_
 
-namespace element {
+namespace Element {
 namespace gui {
 
     class Stock

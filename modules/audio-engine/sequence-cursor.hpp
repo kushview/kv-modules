@@ -26,7 +26,7 @@
 #include "element/engine/sequence.hpp"
 #include "element/types.h"
 
-namespace element {
+namespace Element {
 
 class Clip;
 class Sequence;
