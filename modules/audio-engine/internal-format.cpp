@@ -18,7 +18,7 @@
 */
 
 #include "element/juce.hpp"
-#include "element/engine/graph-processor.hpp"
+#include "element/engine/GraphProcessor.h"
 
 #include "internal-format.hpp"
 

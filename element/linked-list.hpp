@@ -33,7 +33,7 @@ class LinkedList
 public:
 
 	// Default constructor.
-    LinkedList() : p_first(0), p_last(0), m_count(0), p_free_list(0), m_scoped(false) { }
+    LinkedList() : p_first(0), p_last(0), m_count(0), pFreeList(0), m_scoped(false) { }
 
 	// Default destructor.
     ~LinkedList() { clear(); }
@@ -49,8 +49,8 @@ public:
     bool isScoped() const { return m_scoped; }
 
 	// Insert methods.
-    void insertAfter  (Node *node, Node *prev = 0);
-    void insertBefore (Node *node, Node *next = 0);
+    void insertAfter  (Node *node, Node *prev = nullptr);
+    void insertBefore (Node *node, Node *next = nullptr);
 
 	// Unlink/remove methods.
     void unlink (Node *node);
@@ -64,7 +64,7 @@ public:
 
 	// Aliased methods and operators.
     void prepend (Node *node) { insertBefore (node); }
-    void append (Node *node)  { insertAfter (node);  }
+    void append (Node *node)  { insertAfter (node); }
 
     Node *operator[] (int index) const { return at(index); }
 
@@ -77,66 +77,74 @@ public:
 	public:
 
 		// Constructor.
-        Link() : p_prev(0), p_next(0), p_next_free(0) {}
+        Link() : prevNode (nullptr),
+                 nextNode (nullptr),
+                 nextFreeNode (nullptr) { }
 
 		// Linked node getters.
-        Node *prev() const { return p_prev; }
-        Node *next() const { return p_next; }
+        Node *prev() const { return prevNode; }
+        Node *next() const { return nextNode; }
 
 		// Linked node setters.
-        void set_prev (Node *prev) { p_prev = prev; }
-        void set_next (Node *next) { p_next = next; }
+        void setPrevious (Node *prev) { prevNode = prev; }
+        void setNext (Node *next) { nextNode = next; }
 
 		// Linked free node accessors.
-        Node *next_free() const { return p_next_free; }
-        void set_next_free (Node *pnext_free) { p_next_free = pnext_free; }
+        Node *nextFree() const { return nextFreeNode; }
+        void setNextFree (Node *node) { nextFreeNode = node; }
 
 	private:
 
-        Node *p_prev;
-        Node *p_next;
-        Node *p_next_free;
-	};
+        Node *prevNode;
+        Node *nextNode;
+        Node *nextFreeNode;
 
-	//----------------------------------------------------------------------
-	// class List<Node>::Iterator -- List iterator (aka cursor).
-	//
+	};
 
     class iterator
 	{
 	public:
 
-        /* ctors */
-        iterator(LinkedList<Node>& list)   : m_list(list), p_node(0) { }
-        iterator(const iterator& it) : m_list(it.list()), p_node(it.node()) { }
+        inline iterator (LinkedList<Node>& list, Node* ptr) : nodes(list), nodePtr (ptr) { }
+        inline iterator (const iterator& it) : nodes (it.nodes), nodePtr (it.nodePtr) { }
 
-        /* methods */
-        iterator& first() { p_node = m_list.first(); return *this; }
-        iterator& next()  { p_node = p_node->next(); return *this; }
-        iterator& prev()  { p_node = p_node->prev(); return *this; }
-        iterator& last()  { p_node = m_list.last(); return *this; }
+        inline iterator& first() { nodePtr = nodes.first(); return *this; }
+        inline iterator& next()  { nodePtr = nodePtr != nullptr ? nodePtr->next() : nullptr; return *this; }
+        inline iterator& prev()  { nodePtr = nodePtr == nullptr ? this->last() : nodePtr->prev(); return *this; }
+        inline iterator& last()  { nodePtr = nodes.last(); return *this; }
 
         /* Operators */
-        iterator& operator= (const iterator& iter) { p_node = iter.p_node; return *this; }
-        iterator& operator= (Node *pNode) { p_node = pNode; return *this; }
+        inline bool operator== (const iterator& other) const { return nodePtr == other.nodePtr; }
+        inline bool operator!= (const iterator& other) const { return nodePtr != other.nodePtr; }
 
-        iterator& operator++ () { return next(); }
-        iterator  operator++ (int) { iterator it(*this); next(); return it; }
+        inline iterator& operator= (const iterator& iter) { nodePtr = iter.nodePtr; return *this; }
+        inline iterator& operator= (Node *pNode) { nodePtr = pNode; return *this; }
 
-        iterator& operator-- () { return prev(); }
-        iterator  operator-- (int) { iterator it(*this); prev(); return it; }
+        inline iterator& operator++ () { return next(); }
+        inline iterator  operator++ (int) { iterator it(*this); next(); return it; }
+
+        inline iterator& operator-- () { return prev(); }
+        inline iterator  operator-- (int) { iterator it(*this); prev(); return it; }
+
+        inline Node* operator->() { return nodePtr; }
+        inline const Node* operator->() const { return nodePtr; }
+
+        inline Node* operator*() { return nodePtr; }
+        inline const Node* operator*() const { return nodePtr; }
 
         /* Access */
-        const LinkedList<Node>& list() const { return m_list; }
-        Node *node() const { return p_node; }
+        const LinkedList<Node>& list() const { return nodes; }
+        Node *node() const { return nodePtr; }
 
 	private:
 
-		// Instance variables.
-        LinkedList<Node>& m_list;
-		// Current cursory node reference.
-        Node *p_node;
+        LinkedList<Node>& nodes;
+        Node *nodePtr;
+
 	};
+
+    iterator begin() { return iterator (*this, first()); }
+    iterator end() { return iterator (*this, nullptr); }
 
 private:
 
@@ -146,7 +154,7 @@ private:
     int m_count;
 
 	// The reclaimed freelist.
-    Node *p_free_list;
+    Node *pFreeList;
     bool m_scoped;
 };
 
@@ -160,20 +168,20 @@ LinkedList<Node>::insertAfter (Node *node, Node *previous)
     if (previous == 0)
         previous = p_last;
 	
-    node->set_prev (previous);
+    node->setPrevious (previous);
     if (previous)
     {
-        node->set_next (previous->next());
+        node->setNext (previous->next());
         if (previous->next())
-            (previous->next())->set_prev (node);
+            (previous->next())->setPrevious (node);
 		else
             p_last = node;
-        previous->set_next (node);
+        previous->setNext (node);
     }
     else
     {
         p_first = p_last = node;
-        node->set_next(0);
+        node->setNext(0);
 	}
 
     ++m_count;
@@ -185,21 +193,21 @@ void LinkedList<Node>::insertBefore (Node *node, Node *next_node)
     if (next_node == 0)
         next_node = p_first;
 
-    node->set_next (next_node);
+    node->setNext (next_node);
 
     if (next_node)
     {
-        node->set_prev (next_node->prev());
+        node->setPrevious (next_node->prev());
         if (next_node->prev())
-            (next_node->prev())->set_next(node);
+            (next_node->prev())->setNext(node);
 		else
             p_first = node;
-        next_node->set_prev (node);
+        next_node->setPrevious (node);
     }
     else
     {
         p_last = p_first = node;
-        node->set_prev (0);
+        node->setPrevious (0);
 	}
 
     ++m_count;
@@ -211,12 +219,12 @@ template <class Node>
 void LinkedList<Node>::unlink (Node *node)
 {
     if (node->prev())
-        (node->prev())->set_next(node->next());
+        (node->prev())->setNext(node->next());
 	else
         p_first = node->next();
 
     if (node->next())
-        (node->next())->set_prev (node->prev());
+        (node->next())->setPrevious (node->prev());
 	else
         p_last = node->prev();
 
@@ -234,9 +242,9 @@ LinkedList<Node>::remove (Node *node)
 	// Add it to the alternate free list.
     if (m_scoped)
     {
-        Node *pnext_free = p_free_list;
-        node->set_next_free (pnext_free);
-        p_free_list = node;
+        Node *pnextFree = pFreeList;
+        node->setNextFree (pnextFree);
+        pFreeList = node;
 	}
 }
 
@@ -255,18 +263,18 @@ LinkedList<Node>::clear (void)
 	}
 
 	// Free the free-list altogether...
-    Node *free_list = p_free_list;
+    Node *free_list = pFreeList;
     while (free_list)
     {
-        Node *next_free = free_list->next_free();
+        Node *nextFree = free_list->nextFree();
         delete free_list;
-        free_list = next_free;
+        free_list = nextFree;
 	}
 
     // Force clean up.
     p_first = p_last = 0;
     m_count = 0;
-    p_free_list = 0;
+    pFreeList = 0;
 }
 
 

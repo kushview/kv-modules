@@ -25,7 +25,7 @@
 #ifndef ELEMENT_INTERNAL_FORMAT_HPP
 #define ELEMENT_INTERNAL_FORMAT_HPP
 
-#include "element/engine/graph-processor.hpp"
+#include "element/engine/GraphProcessor.h"
 #include "element/engine/port-processor.hpp"
 
 namespace Element

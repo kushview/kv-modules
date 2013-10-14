@@ -71,7 +71,11 @@ public:
         const uint32 nodeId;
 
         /** The actual processor object that this node represents. */
-        AudioProcessor* getProcessor() const noexcept           { return processor; }
+        AudioProcessor* audioProcessor() const noexcept           { return proc; }
+
+        /** The actual processor object dynamic_cast'd to ProcType */
+        template<class ProcType>
+        inline ProcType* processor() const { return dynamic_cast<ProcType*> (proc.get()); }
 
         /** A set of user-definable properties that are associated with this node.
 
@@ -92,7 +96,7 @@ public:
         //==============================================================================
         friend class GraphProcessor;
 
-        const ScopedPointer<AudioProcessor> processor;
+        const ScopedPointer<AudioProcessor> proc;
         bool isPrepared;
 
         Node (uint32 nodeId, AudioProcessor*) noexcept;
@@ -331,7 +335,7 @@ public:
     //==============================================================================
     // AudioProcessor methods:
 
-    const String getName() const;
+    virtual const String getName() const;
 
     virtual void prepareToPlay (double sampleRate, int estimatedBlockSize);
     virtual void releaseResources();
@@ -368,6 +372,11 @@ public:
     virtual void setStateInformation (const void* data, int sizeInBytes);
 
     virtual void fillInPluginDescription (PluginDescription& d) const;
+
+protected:
+
+    virtual void preRenderNodes() { }
+    virtual void postRenderNodes() { }
 
 private:
     //==============================================================================

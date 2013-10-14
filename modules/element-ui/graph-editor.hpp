@@ -26,7 +26,7 @@
 #define ELEMENT_GUI_GRAPH_EDITOR_HPP
 
 #include "element/arc.hpp"
-#include "element/engine/graph-controller.hpp"
+#include "element/engine/GraphController.h"
 
 namespace Element {
 namespace gui {

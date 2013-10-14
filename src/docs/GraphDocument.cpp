@@ -1,8 +1,8 @@
 
 
-#include "element/docs/graph-document.hpp"
-#include "element/engine/graph-controller.hpp"
-#include "element/engine/graph-processor.hpp"
+#include "element/docs/GraphDocument.h"
+#include "element/engine/GraphController.h"
+#include "element/engine/GraphProcessor.h"
 
 namespace Element {
 
@@ -108,7 +108,7 @@ namespace Element {
     //==============================================================================
     static XmlElement* createNodeXml (GraphProcessor::Node* const node) noexcept
     {
-        AudioPluginInstance* plugin = dynamic_cast <AudioPluginInstance*> (node->getProcessor());
+        AudioPluginInstance* plugin = dynamic_cast <AudioPluginInstance*> (node->audioProcessor());
         if (plugin == nullptr)
         {
             jassertfalse
@@ -131,7 +131,7 @@ namespace Element {
 
         XmlElement* state = new XmlElement ("state");
         MemoryBlock m;
-        node->getProcessor()->getStateInformation (m);
+        node->audioProcessor()->getStateInformation (m);
         state->addTextElement (m.toBase64Encoding());
         e->addChildElement (state);
 
@@ -164,13 +164,13 @@ namespace Element {
         GraphProcessor::Node::Ptr node (
                     graph.getGraph().addNode (instance, xml.getIntAttribute ("uid")));
 
-        std::clog << "node loaded: " << node->getProcessor()->getName() << std::endl;
+        std::clog << "node loaded: " << node->audioProcessor()->getName() << std::endl;
 
         if (const XmlElement* const state = xml.getChildByName ("state"))
         {
             MemoryBlock m;
             m.fromBase64Encoding (state->getAllSubText());
-            node->getProcessor()->setStateInformation (m.getData(), (int) m.getSize());
+            node->audioProcessor()->setStateInformation (m.getData(), (int) m.getSize());
         }
 
         node->properties.set ("x", xml.getDoubleAttribute ("x"));

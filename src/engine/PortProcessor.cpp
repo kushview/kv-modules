@@ -1,7 +1,7 @@
 
 #include "element/core.hpp"
 #include "element/engine/PortProcessor.h"
-#include "element/engine/graph-processor.hpp"
+#include "element/engine/GraphProcessor.h"
 
 namespace Element {
 

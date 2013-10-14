@@ -3,7 +3,7 @@
 
 #include <boost/intrusive/slist.hpp>
 
-#include "element/engine/graph-processor.hpp"
+#include "element/engine/GraphProcessor.h"
 
 #include "block-node.hpp"
 #include "port-node.hpp"

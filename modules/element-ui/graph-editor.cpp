@@ -85,18 +85,18 @@ PluginWindow* PluginWindow::getWindowFor (GraphProcessor::Node* node,
 
     if (! useGenericView)
     {
-        ui = node->getProcessor()->createEditorIfNeeded();
+        ui = node->audioProcessor()->createEditorIfNeeded();
 
         if (ui == nullptr)
             useGenericView = true;
     }
 
     if (useGenericView)
-        ui = new GenericAudioProcessorEditor (node->getProcessor());
+        ui = new GenericAudioProcessorEditor (node->audioProcessor());
 
     if (ui != nullptr)
     {
-        if (AudioPluginInstance* const plugin = dynamic_cast <AudioPluginInstance*> (node->getProcessor()))
+        if (AudioPluginInstance* const plugin = dynamic_cast <AudioPluginInstance*> (node->audioProcessor()))
             ui->setName (plugin->getName());
 
         return new PluginWindow (ui, node, useGenericView);
@@ -139,9 +139,9 @@ public:
             String tip;
 
             if (isInput)
-                tip = node->getProcessor()->getInputChannelName (index_);
+                tip = node->audioProcessor()->getInputChannelName (index_);
             else
-                tip = node->getProcessor()->getOutputChannelName (index_);
+                tip = node->audioProcessor()->getOutputChannelName (index_);
 
             if (tip.isEmpty())
             {
@@ -371,9 +371,9 @@ public:
         }
 
         numIns = numOuts = 0;
-        for (uint32 i = 0; i < f->getProcessor()->getNumPorts(); ++i)
+        for (uint32 i = 0; i < f->audioProcessor()->getNumPorts(); ++i)
         {
-            if (f->getProcessor()->isPortInput (i))
+            if (f->audioProcessor()->isPortInput (i))
                 ++numIns;
             else
                 ++numOuts;
@@ -384,14 +384,14 @@ public:
 
         w = jmax (w, (jmax (numIns, numOuts) + 1) * 20);
 
-        const int textWidth = font.getStringWidth (f->getProcessor()->getName());
+        const int textWidth = font.getStringWidth (f->audioProcessor()->getName());
         w = jmax (w, 16 + jmin (textWidth, 300));
         if (textWidth > 300)
             h = 100;
 
         setSize (w, h);
 
-        setName (f->getProcessor()->getName());
+        setName (f->audioProcessor()->getName());
 
         {
             double x, y;
@@ -409,10 +409,10 @@ public:
 
             uint32 i;
 #if 1
-            for (i = 0; i < f->getProcessor()->getNumPorts(); ++i)
+            for (i = 0; i < f->audioProcessor()->getNumPorts(); ++i)
             {
-                const PortType t (f->getProcessor()->getPortType (i));
-                const bool isInput (f->getProcessor()->isPortInput (i));
+                const PortType t (f->audioProcessor()->getPortType (i));
+                const bool isInput (f->audioProcessor()->isPortInput (i));
                 addAndMakeVisible (new PinComponent (graph, filterID, i, isInput));
             }
 #else

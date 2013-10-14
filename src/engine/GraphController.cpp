@@ -23,7 +23,7 @@
 */
 
 #include "element/juce.hpp"
-#include "element/engine/graph-controller.hpp"
+#include "element/engine/GraphController.h"
 
 namespace Element {
 
@@ -75,7 +75,6 @@ GraphController::addFilter (const PluginDescription* desc, double x, double y)
 
         if (instance != nullptr)
             node = processor.addNode (instance);
-
 
         if (node != nullptr)
         {

@@ -1,6 +1,6 @@
 
 #include "element/engine/GraphPlayer.h"
-#include "element/engine/graph-processor.hpp"
+#include "element/engine/GraphProcessor.h"
 
 namespace Element {
 

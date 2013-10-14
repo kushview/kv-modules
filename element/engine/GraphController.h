@@ -29,7 +29,7 @@
 #include "element/controller.hpp"
 #include "element/session.hpp"
 #include "element/signal.hpp"
-#include "element/engine/graph-processor.hpp"
+#include "element/engine/GraphProcessor.h"
 
 
 namespace Element {
