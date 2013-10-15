@@ -255,7 +255,7 @@ public:
         */
         enum IODeviceType
         {
-            audioInputNode,     /**< In this mode, the processor has output channels
+            audioInputNode = 0, /**< In this mode, the processor has output channels
                                      representing all the audio input channels that are
                                      coming into its parent audio graph. */
             audioOutputNode,    /**< In this mode, the processor has input channels
@@ -264,9 +264,10 @@ public:
             midiInputNode,      /**< In this mode, the processor has a midi output which
                                      delivers the same midi data that is arriving at its
                                      parent graph. */
-            midiOutputNode      /**< In this mode, the processor has a midi input and
+            midiOutputNode,     /**< In this mode, the processor has a midi input and
                                      any data sent to it will be passed out of the parent
                                      graph. */
+            numDeviceTypes
         };
 
         //==============================================================================
