@@ -29,9 +29,6 @@ namespace Element {
     public:
 
         virtual ~Engine() { }
-
-        /** Get the graph player for this engine
-            The engine implementation owns the player and is responsible for its deletion */
         virtual AudioIODeviceCallback& callback() = 0;
 
     };

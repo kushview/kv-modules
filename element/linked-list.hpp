@@ -246,6 +246,7 @@ LinkedList<Node>::remove (Node *node)
         node->setNextFree (pnextFree);
         pFreeList = node;
 	}
+
 }
 
 
