@@ -34,7 +34,6 @@
 #include "element/time/timescale.hpp"
 #include "element/time/Tempo.h"
 
-
 #define PROP_SEQROWOFFSET                     T("sRoff")
 #define PROP_SEQCOLSIZE                       T("sCsize")
 #define PROP_SEQNOTESNAP                      T("sNsnap")
@@ -58,7 +57,7 @@ namespace Element {
         ~MidiSequencePlayer();
 
         void renderSequence (int numSamples, MidiBuffer& midiMessages);
-
+        void renderSequence (MidiBuffer& target, int32 startFrame, int32 endFrame);
         void prepareToPlay (double sampleRate, int blockSize);
         void releaseResources();
 

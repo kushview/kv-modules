@@ -57,12 +57,14 @@ void MidiSequencePlayer::prepareToPlay (double sampleRate, int /* blockSize */)
     shuttle->setSampleRate (sampleRate);
 }
 
-void MidiSequencePlayer::releaseResources()
+void
+MidiSequencePlayer::releaseResources()
 {
     stopTimer();
 }
 
-void MidiSequencePlayer::renderSequence (int numSamples, MidiBuffer& midiMessages)
+void
+MidiSequencePlayer::renderSequence (int numSamples, MidiBuffer& midiMessages)
 {
 
     const int blockSize = numSamples;
@@ -153,15 +155,58 @@ void MidiSequencePlayer::renderSequence (int numSamples, MidiBuffer& midiMessage
     }
 }
 
-void MidiSequencePlayer::renderEventsInRange (const MidiMessageSequence& source, MidiBuffer* midiBuffer,
-                                              double beatCount, double frameEndBeatCount,
-                                              const int frameCounter, const int framesPerBeat,
-                                              const int nextBlockFrameNumber, const int seqIndex,
-                                              const int blockSize)
+
+void
+MidiSequencePlayer::renderSequence (MidiBuffer& midi, int32 startFrame, int32 numSamples)
 {
+    MidiBuffer* midiBuffer =& midi;
+    const int32 endFrame = startFrame + numSamples;
+#if 0
+    const int framesPerBeat = shuttle->framesPerBeat();
+    const double framePerBeatDelta = 1.0f / (double) framesPerBeat;
+
+    const int seqIndex = loopRepeatIndex();
+    const double beatCount = loopBeatPosition();
+
+    const double frameLenBeatCount = (endFrame - startFrame) / (double) framesPerBeat;
+    double frameEndBeatCount = beatCount + frameLenBeatCount;
+    if (frameEndBeatCount > getLengthInBeats())
+        frameEndBeatCount -= getLengthInBeats();
+
+    if (frameEndBeatCount > beatCount)
+    {
+        renderEventsInRange(*midiSequence, midiBuffer, beatCount, frameEndBeatCount, startFrame, framesPerBeat, endFrame, seqIndex, blockSize);
+        renderEventsInRange(noteOffs, midiBuffer, beatCount, frameEndBeatCount, startFrame, framesPerBeat, endFrame, seqIndex, blockSize);
+        cleanUpNoteOffs (beatCount, frameEndBeatCount);
+    }
+    else
+    {
+        renderEventsInRange (*midiSequence, midiBuffer, beatCount, getLengthInBeats(), startFrame, framesPerBeat, endFrame, seqIndex, blockSize);
+        renderEventsInRange (*midiSequence, midiBuffer, 0.00, frameEndBeatCount, startFrame, framesPerBeat, endFrame, seqIndex + 1, blockSize);
+        renderEventsInRange (noteOffs, midiBuffer, beatCount, getLengthInBeats(), startFrame, framesPerBeat, endFrame, seqIndex, blockSize);
+        renderEventsInRange (noteOffs, midiBuffer, 0.00, frameEndBeatCount, startFrame, framesPerBeat, endFrame, seqIndex + 1, blockSize);
+
+        cleanUpNoteOffs (beatCount, getLengthInBeats());
+        cleanUpNoteOffs (0.00, frameEndBeatCount);
+    }
+
+    if (doAllNotesOff || shuttle->willSendAllNotesOff())
+    {
+        midiBuffer->addEvent (allNotesOff, blockSize - 1);
+        doAllNotesOff = false;
+    }
+#endif
+}
 
 
-    for (int ev = source.getNextIndexAtTime(beatCount); ev < source.getNumEvents(); ++ev)
+void
+MidiSequencePlayer::renderEventsInRange (const MidiMessageSequence& source, MidiBuffer* midiBuffer,
+                                         double beatCount, double frameEndBeatCount,
+                                         const int frameCounter, const int framesPerBeat,
+                                         const int nextBlockFrameNumber, const int seqIndex,
+                                         const int blockSize)
+{
+    for (int ev = source.getNextIndexAtTime (beatCount); ev < source.getNumEvents(); ++ev)
 	{
         int timeStampInSeq = roundFloatToInt (source.getEventTime(ev) * framesPerBeat);
         int timeStamp = timeStampInSeq + (seqIndex * getLengthInBeats() * framesPerBeat);
@@ -348,8 +393,8 @@ MidiSequencePlayer::addNote (const int noteNumber, const float beatNumber)
 }
 
 bool MidiSequencePlayer::removeNote (const int noteNumber,
-                                      const float beatNumber,
-                                      const float noteLength)
+                                     const float beatNumber,
+                                     const float noteLength)
 {
     DBG ("Removing:" + String (noteNumber) + " " + String (beatNumber));
 

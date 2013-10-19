@@ -40,14 +40,29 @@ namespace Element {
 
     /** Restrict a value between a lower and upper value */
     template<typename VAL> static inline VAL
-    clamp (const VAL& input, const VAL& lower, const VAL& upper)
+    clampNoMoreThan (const VAL& input, const VAL& lower, const VAL& upper)
+    {
+        if (input < lower) {
+            return lower;
+        }
+
+        if (input > upper) {
+            return upper;
+        }
+
+        return input;
+    }
+
+    /** Restrict a value between a lower and upper value */
+    template<typename VAL> static inline VAL
+    clampBelow (const VAL& input, const VAL& lower, const VAL& upper)
     {
         if (input < lower) {
             return lower;
         }
 
         if (input >= upper) {
-            return upper;
+            return upper - 1;
         }
 
         return input;
