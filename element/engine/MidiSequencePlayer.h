@@ -57,7 +57,9 @@ namespace Element {
         ~MidiSequencePlayer();
 
         void renderSequence (int numSamples, MidiBuffer& midiMessages);
-        void renderSequence (MidiBuffer& target, int32 startFrame, int32 endFrame);
+        void renderSequence (MidiBuffer& target, const MidiMessageSequence& seq,
+                             int32 startFrame, int32 numSamples);
+
         void prepareToPlay (double sampleRate, int blockSize);
         void releaseResources();
 

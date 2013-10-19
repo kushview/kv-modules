@@ -157,45 +157,32 @@ MidiSequencePlayer::renderSequence (int numSamples, MidiBuffer& midiMessages)
 
 
 void
-MidiSequencePlayer::renderSequence (MidiBuffer& midi, int32 startFrame, int32 numSamples)
+MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequence& seq,
+                                    int32 startFrame, int32 numSamples)
 {
-    MidiBuffer* midiBuffer =& midi;
-    const int32 endFrame = startFrame + numSamples;
-#if 0
-    const int framesPerBeat = shuttle->framesPerBeat();
-    const double framePerBeatDelta = 1.0f / (double) framesPerBeat;
+    const int64  endFrame = startFrame + numSamples;
+    const double framesPerBeat = shuttle->framesPerBeat();
+    const double startBeat = (double) startFrame / framesPerBeat;
 
-    const int seqIndex = loopRepeatIndex();
-    const double beatCount = loopBeatPosition();
-
-    const double frameLenBeatCount = (endFrame - startFrame) / (double) framesPerBeat;
-    double frameEndBeatCount = beatCount + frameLenBeatCount;
-    if (frameEndBeatCount > getLengthInBeats())
-        frameEndBeatCount -= getLengthInBeats();
-
-    if (frameEndBeatCount > beatCount)
+    const int32 numEvents = seq.getNumEvents();
+    for (int32 ev = seq.getNextIndexAtTime (startBeat); ev < numEvents;)
     {
-        renderEventsInRange(*midiSequence, midiBuffer, beatCount, frameEndBeatCount, startFrame, framesPerBeat, endFrame, seqIndex, blockSize);
-        renderEventsInRange(noteOffs, midiBuffer, beatCount, frameEndBeatCount, startFrame, framesPerBeat, endFrame, seqIndex, blockSize);
-        cleanUpNoteOffs (beatCount, frameEndBeatCount);
-    }
-    else
-    {
-        renderEventsInRange (*midiSequence, midiBuffer, beatCount, getLengthInBeats(), startFrame, framesPerBeat, endFrame, seqIndex, blockSize);
-        renderEventsInRange (*midiSequence, midiBuffer, 0.00, frameEndBeatCount, startFrame, framesPerBeat, endFrame, seqIndex + 1, blockSize);
-        renderEventsInRange (noteOffs, midiBuffer, beatCount, getLengthInBeats(), startFrame, framesPerBeat, endFrame, seqIndex, blockSize);
-        renderEventsInRange (noteOffs, midiBuffer, 0.00, frameEndBeatCount, startFrame, framesPerBeat, endFrame, seqIndex + 1, blockSize);
+        const int32 frameInSeq = roundFloatToInt (seq.getEventTime(ev) * framesPerBeat);
+        const int32 timeStamp  = frameInSeq - startFrame;
 
-        cleanUpNoteOffs (beatCount, getLengthInBeats());
-        cleanUpNoteOffs (0.00, frameEndBeatCount);
-    }
+        MidiMessage* msg = &seq.getEventPointer(ev)->message;
+        if (timeStamp >= numSamples || ! msg)
+        {
+            break;
+        }
 
-    if (doAllNotesOff || shuttle->willSendAllNotesOff())
-    {
-        midiBuffer->addEvent (allNotesOff, blockSize - 1);
-        doAllNotesOff = false;
+        if (msg->isNoteOn())
+            std::clog << "note on: " << seq.getEventTime(ev) << " timeStamp: " << timeStamp << std::endl;
+        else if (msg->isNoteOff())
+            std::clog << "note off: " << seq.getEventTime(ev) << " timeStamp: " << timeStamp << std::endl;
+
+        ++ev;
     }
-#endif
 }
 
 
