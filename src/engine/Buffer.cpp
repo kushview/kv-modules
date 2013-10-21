@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/BufferFactory.h"
-#include "element/Buffer.h"
+#include "element/engine/BufferFactory.h"
+#include "element/engine/Buffer.h"
 #include <boost/intrusive_ptr.hpp>
 
 namespace Element {

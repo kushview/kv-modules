@@ -179,6 +179,6 @@ namespace Element {
 } /* namespace element */
 
 /* Include the "util" folder */
-#include "element/util/convert.hpp"
+#include "element/util/Convert.h"
 
 #endif /* ELEMENT_UTIL_HPP */

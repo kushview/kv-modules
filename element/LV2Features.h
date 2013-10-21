@@ -33,7 +33,7 @@ class LV2FeatureArray
 public:
 
     LV2FeatureArray() : needsBuilt (true) { }
-    ~LV2FeatureArray() {}
+    ~LV2FeatureArray() { }
 
     inline void add (LV2Feature* feature)
     {

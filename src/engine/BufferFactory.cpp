@@ -18,7 +18,7 @@
 */
 
 #include "element/Core.h"
-#include "element/BufferFactory.h"
+#include "element/engine/BufferFactory.h"
 
 namespace Element {
 

@@ -17,7 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-/** @file lv2module.hpp */
+/** @file LV2Module.h */
 
 #ifndef ELEMENT_LV2MODULE_HPP
 #define ELEMENT_LV2MODULE_HPP
@@ -39,10 +39,10 @@ namespace Element {
 
    class LV2Evbuf;
 
-namespace lv2 {
+namespace LV2Callbacks {
 
    inline unsigned
-   ui_supported (const char* hostType, const char* uiType)
+   uiSupported (const char* hostType, const char* uiType)
    {
       String host (hostType);
       String ui (uiType);
@@ -51,8 +51,6 @@ namespace lv2 {
          return 2;
       else if (ui == LV2_UI__JuceUI)
          return 1;
-
-      std::clog << "checking ui support: " << hostType << " " << uiType << std::endl;
 
       return suil_ui_supported (hostType, uiType);
    }

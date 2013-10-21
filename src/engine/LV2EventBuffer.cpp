@@ -21,7 +21,7 @@
 
 #include "lv2/lv2plug.in/ns/ext/atom/atom.h"
 #include "lv2/lv2plug.in/ns/ext/event/event.h"
-#include "lv2_evbuf.h"
+#include "LV2EventBuffer.h"
 
 struct LV2_Evbuf_Impl {
         LV2_Evbuf_Type type;
@@ -306,7 +306,7 @@ lv2_evbuf_write(LV2_Evbuf_Iterator* iter,
 // end std C
 
 #include "element/Core.h"
-#include "lv2evbuf.hpp"
+#include "LV2EventBuffer.h"
 
 namespace Element {
 

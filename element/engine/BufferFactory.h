@@ -21,7 +21,7 @@
 #define ELEMENT_BUFFER_FACTORY_HPP
 
 #include "element/Core.h"
-#include "element/Buffer.h"
+#include "element/engine/Buffer.h"
 
 namespace Element {
 

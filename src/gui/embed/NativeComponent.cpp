@@ -53,7 +53,6 @@ namespace Element {
       virtual void handleMouseDrag (const MouseEvent& ev) { }
 
       virtual void show() = 0;
-
       virtual void hide() = 0;
 
       virtual void expose (const Rectangle<int>& bounds) { }

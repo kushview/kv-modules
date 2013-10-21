@@ -21,7 +21,7 @@
 
 namespace Element {
     
-    namespace lv2 {
+    namespace LV2Callbacks {
 
         static void
         process (uint32 nframes, void* arg)
