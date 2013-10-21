@@ -5,8 +5,8 @@
       * Michael Fisher <mfisher@bketech.com>
 */
 
-#ifndef BTV_SLUGS_H
-#define BTV_SLUGS_H
+#ifndef ELEMENT_SLUGS_H
+#define ELEMENT_SLUGS_H
 
 #include <element/juce.hpp>
 
@@ -38,4 +38,4 @@ static const Identifier velocity = "velocity";
 
 } //}
 
-#endif // BTV_SLUGS_H
+#endif // ELEMENT_SLUGS_H
