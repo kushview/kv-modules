@@ -54,7 +54,6 @@ void MidiSequencePlayer::prepareToPlay (double sampleRate, int /* blockSize */)
 {
 	noteOffs.clear();
     startTimer (1000 / 25);
-    shuttle->setSampleRate (sampleRate);
 }
 
 void
@@ -175,6 +174,8 @@ MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequenc
         {
             break;
         }
+
+        target.addEvent (*msg, timeStamp);
 
         if (msg->isNoteOn())
             std::clog << "note on: " << seq.getEventTime(ev) << " timeStamp: " << timeStamp << std::endl;

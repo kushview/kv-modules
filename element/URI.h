@@ -1,6 +1,5 @@
 /*
-    uris.hpp
-
+    uri.hpp - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -18,15 +17,27 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef LV2LAB_URIS_HPP
-#define LV2LAB_URIS_HPP
+#ifndef ELEMENT_URI_HPP
+#define ELEMENT_URI_HPP
 
-#include "element/uris-base.hpp"
+#include "element/Core.h"
 
 namespace Element {
 
+    class URI : public String
+    {
+    public:
+
+        URI() : String() { }
+
+        URI (const char* uri)
+            : String (uri)
+        { }
+
+        String scheme() const;
+        bool isLocalFile() const;
+    };
 
 }
 
-
-#endif /* LV2LAB_URIS_HPP */
+#endif

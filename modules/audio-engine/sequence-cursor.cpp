@@ -19,7 +19,7 @@
 */
 
 #if 0
-#include "element/session.hpp"
+#include "element/Session.h"
 #include "element/engine/clip.hpp"
 #include "element/engine/sequence-cursor.hpp"
 

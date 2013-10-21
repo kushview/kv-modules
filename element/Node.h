@@ -22,9 +22,9 @@
 
 #include <map>
 
-#include "element/core.hpp"
-#include "element/pointer.hpp"
-#include "element/uri.hpp"
+#include "element/Core.h"
+#include "element/Pointer.h"
+#include "element/URI.h"
 
 namespace Element {
 

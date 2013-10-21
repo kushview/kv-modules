@@ -9,9 +9,9 @@
 #define BTV_GUIAPP_HPP
 
 #include "element/session/app-controller.hpp"
-#include "element/engine.hpp"
-#include "element/pointer.hpp"
-#include "element/session.hpp"
+#include "element/Engine.h"
+#include "element/Pointer.h"
+#include "element/Session.h"
 #include "element/gui/Style.h"
 
 #include "preferences.hpp"

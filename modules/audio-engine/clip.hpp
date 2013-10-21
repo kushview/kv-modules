@@ -24,12 +24,12 @@
 #include <atomic>
 #include <boost/intrusive_ptr.hpp>
 
-#include "element/asset.hpp"
+#include "element/Asset.h"
 #include "element/list.hpp"
-#include "element/signal.hpp"
-#include "element/uri.hpp"
+#include "element/Signals.h"
+#include "element/URI.h"
 
-#include "element/util.hpp"
+#include "element/Utils.h"
 #include "element/util/fraction.hpp"
 #include "element/util/range.hpp"
 

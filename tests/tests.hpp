@@ -9,8 +9,8 @@
 #include "element/engine/lv2features.hpp"
 #include "element/engine/plugin-manager.hpp"
 
-#include "element/buffer.hpp"
-#include "element/core.hpp"
+#include "element/Buffer.h"
+#include "element/Core.h"
 #include "element/world.hpp"
 
 using namespace Element;

@@ -1,5 +1,5 @@
 /*
-    app-controller.cpp - This file is part of Element
+    AppController.cpp - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 */
 
 #include "element/session/AppController.h"
-#include "element/session/world.hpp"
+#include "element/session/WorldBase.h"
 
 namespace Element {
 

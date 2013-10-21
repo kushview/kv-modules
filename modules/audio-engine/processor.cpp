@@ -22,7 +22,7 @@
   ==============================================================================
 */
 
-#include "element/processors.hpp"
+#include "element/Processors.h"
 
 namespace Element {
 

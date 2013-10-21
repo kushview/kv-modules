@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/session/plugin-manager.hpp"
-#include "element/session/world.hpp"
+#include "element/session/PluginManager.h"
+#include "element/session/WorldBase.h"
 #include "lv2format.hpp"
 
 namespace Element {
@@ -37,13 +37,13 @@ namespace Element {
     PluginManager::PluginManager (LV2World& lv2_)
         : lv2 (lv2_)
     {
-        priv.reset (new Private());
+        priv = new Private();
         addFormat (new LV2PluginFormat (lv2_));
     }
 
     PluginManager::~PluginManager()
     {
-        priv.reset (nullptr);
+        priv = nullptr;
     }
 
     AudioPluginFormat*

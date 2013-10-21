@@ -23,7 +23,7 @@
 */
 
 #include "element/gui/icons.hpp"
-#include "element/pointer.hpp"
+#include "element/Pointer.h"
 
 namespace Element
 {

@@ -1,8 +1,8 @@
 
-#include "element/core.hpp"
-#include "element/node-store.hpp"
-#include "element/node.hpp"
-#include "element/pointer.hpp"
+#include "element/Core.h"
+#include "element/NodeStorage.h"
+#include "element/Node.h"
+#include "element/Pointer.h"
 
 using namespace std;
 

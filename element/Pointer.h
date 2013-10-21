@@ -19,7 +19,7 @@
 #ifndef ELEMENT_POINTER_HPP
 #define ELEMENT_POINTER_HPP
 
-#include "element/core.hpp"
+#include "element/Core.h"
 
 #define ELEMENT_FORCE_BOOST_SHARED_PTR 1
 
@@ -52,8 +52,10 @@
 #endif
 
 #include <boost/scoped_ptr.hpp>
-#define Scoped boost::scoped_ptr
-#define ScopedXml boost::scoped_ptr<juce::XmlElement>
+#define Scoped ScopedPointer
+#define OptionalPtr OptionalScopedPointer
+//#define ScopedXml boost::scoped_ptr<juce::XmlElement>
+#define ScopedXml ScopedPointer<XmlElement>
 
 namespace Element
 {
@@ -104,55 +106,55 @@ static_ptr_cast (const Shared<U>& sp)
 
 #if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
 template <class T>
-inline Shared<T> make_sptr()
+inline Shared<T> makeShared()
 {
     return std::make_shared<T>();
 }
 
 template <class T, class A0>
-inline Shared<T> make_sptr(A0& a0)
+inline Shared<T> makeShared(A0& a0)
 {
     return std::make_shared<T> (a0);
 }
 
 template <class T, class A0, class A1>
-inline Shared<T> make_sptr (A0& a0, A1& a1)
+inline Shared<T> makeShared (A0& a0, A1& a1)
 {
     return std::make_shared<T> (a0, a1);
 }
 
 template <class T, class A0, class A1, class A2>
-inline Shared<T> make_sptr (A0& a0, A1& a1, A2& a2)
+inline Shared<T> makeShared (A0& a0, A1& a1, A2& a2)
 {
     return std::make_shared<T> (a0, a1, a2);
 }
 #else
 template <class T>
-inline Shared<T> make_sptr()
+inline Shared<T> makeShared()
 {
     return Shared<T> (new T());
 }
 
 template <class T, class A0>
-inline Shared<T> make_sptr(A0& a0)
+inline Shared<T> makeShared(A0& a0)
 {
     return Shared<T> (new T(a0));
 }
 
 template <class T, class A0, class A1>
-inline Shared<T> make_sptr (A0& a0, A1& a1)
+inline Shared<T> makeShared (A0& a0, A1& a1)
 {
     return Shared<T> (new T(a0, a1));
 }
 
 template <class T, class A0, class A1, class A2>
-inline Shared<T> make_sptr (A0& a0, A1& a1, A2& a2)
+inline Shared<T> makeShared (A0& a0, A1& a1, A2& a2)
 {
     return Shared<T> (new T(a0, a1, a2));
 }
 
 template <class T, class A0, class A1, class A2, class A3>
-inline Shared<T> make_sptr (A0& a0, A1& a1, A2& a2, A3& a3)
+inline Shared<T> makeShared (A0& a0, A1& a1, A2& a2, A3& a3)
 {
     return Shared<T> (new T(a0, a1, a2, a3));
 }

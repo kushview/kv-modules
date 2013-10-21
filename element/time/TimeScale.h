@@ -25,8 +25,8 @@
 
 #include <string>
 
-#include "element/linked-list.hpp"
-#include "element/util.hpp"
+#include "element/LinkedList.h"
+#include "element/Utils.h"
 
 namespace Element {
 

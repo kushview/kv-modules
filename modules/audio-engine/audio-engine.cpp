@@ -18,8 +18,8 @@
 */
 
 #include "element/juce.hpp"
-#include "element/engine.hpp"
-#include "element/session.hpp"
+#include "element/Engine.h"
+#include "element/Session.h"
 
 #include "element/engine/graph-player.hpp"
 #include "element/engine/port-processor.hpp"
@@ -84,7 +84,7 @@ namespace Element {
             if (f == nullptr)
                 world->plugins().addFormat (new InternalFormat());
 
-            world->setEngine (make_sptr<AudioEngine> (*world));
+            world->setEngine (makeShared<AudioEngine> (*world));
         }
 
     private:

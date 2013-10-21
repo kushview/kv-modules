@@ -31,7 +31,7 @@
 
 
 #include "element/juce.hpp"
-#include "element/time/timescale.hpp"
+#include "element/time/TimeScale.h"
 #include "element/time/Tempo.h"
 
 #define PROP_SEQROWOFFSET                     T("sRoff")

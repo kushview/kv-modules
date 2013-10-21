@@ -20,8 +20,8 @@
 #ifndef ELEMENT_BUFFER_FACTORY_HPP
 #define ELEMENT_BUFFER_FACTORY_HPP
 
-#include "element/core.hpp"
-#include "element/buffer.hpp"
+#include "element/Core.h"
+#include "element/Buffer.h"
 
 namespace Element {
 

@@ -1,5 +1,5 @@
 /*
-    buffer.cpp - This file is part of Element
+    Buffer.cpp - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -16,8 +16,9 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-#include "element/buffer-factory.hpp"
-#include "element/buffer.hpp"
+
+#include "element/BufferFactory.h"
+#include "element/Buffer.h"
 #include <boost/intrusive_ptr.hpp>
 
 namespace Element {

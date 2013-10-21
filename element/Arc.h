@@ -1,7 +1,7 @@
 #ifndef ELEMENT_ARC_HPP
 #define ELEMENT_ARC_HPP
 
-#include "element/core.hpp"
+#include "element/Core.h"
 
 namespace Element {
 
@@ -19,6 +19,16 @@ namespace Element {
 
         String head() { return String::empty; }
         String tail() { return String::empty; }
+
+        inline ValueTree makeState() const
+        {
+            ValueTree v ("arc");
+            v.setProperty ("sourceNode", (int32) sourceNode, nullptr);
+            v.setProperty ("sourcePort", (int32) sourcePort, nullptr);
+            v.setProperty ("destNode", (int32) destNode, nullptr);
+            v.setProperty ("destPort", (int32) destPort, nullptr);
+            return v;
+        }
 
     private:
         JUCE_LEAK_DETECTOR (Arc)

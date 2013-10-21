@@ -3,7 +3,7 @@
 
 #include "guiapp.hpp"
 #include "main-window.hpp"
-#include "element/session/world.hpp"
+#include "element/session/WorldBase.h"
 
 namespace Element {
 namespace gui {

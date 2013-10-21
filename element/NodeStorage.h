@@ -3,8 +3,8 @@
 
 #include <map>
 
-#include "element/core.hpp"
-#include "element/pointer.hpp"
+#include "element/Core.h"
+#include "element/Pointer.h"
 
 namespace Element {
 

@@ -1,10 +1,22 @@
 /*
-  lv2module.hpp - Interface to a physical LV2 Plugin instance
+    LV2Module.h - This file is part of Element
+    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
-  Copyright (C) 2013  BKE, LLC.  All rights reserved.
-  Michael Fisher <mfisher@bketech.com>
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+
 /** @file lv2module.hpp */
 
 #ifndef ELEMENT_LV2MODULE_HPP
@@ -12,12 +24,12 @@
 
 #include <suil/suil.h>
 
-#include "element/core.hpp"
-#include "element/port.hpp"
-#include "element/lv2features.hpp"
-#include "element/pointer.hpp"
-#include "element/ringbuffer.hpp"
-#include "element/symmap.hpp"
+#include "element/Core.h"
+#include "element/Port.h"
+#include "element/LV2Features.h"
+#include "element/Pointer.h"
+#include "element/RingBuffer.h"
+#include "element/SymbolMap.h"
 
 #include "lv2world.hpp"
 

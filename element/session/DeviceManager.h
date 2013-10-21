@@ -20,8 +20,8 @@
 #ifndef ELEMENT_DEVICE_MANAGER_HPP
 #define ELEMENT_DEVICE_MANAGER_HPP
 
-#include "element/devices.hpp"
-#include "element/pointer.hpp"
+#include "element/Devices.h"
+#include "element/Pointer.h"
 
 namespace Element {
 

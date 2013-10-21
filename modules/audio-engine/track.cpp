@@ -23,7 +23,7 @@
 #include "element/engine/clip.hpp"
 #include "element/engine/sequence.hpp"
 #include "element/engine/track.hpp"
-#include "element/session.hpp"
+#include "element/Session.h"
 
 namespace element {
 

@@ -1,5 +1,5 @@
 
-#include "element/gui/dock.hpp"
+#include "element/gui/Dock.h"
 
 
 namespace Element {

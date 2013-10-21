@@ -20,7 +20,7 @@
 #ifndef ELEMENT_RANGE_HPP
 #define ELEMENT_RANGE_HPP
 
-#include "element/core.hpp"
+#include "element/Core.h"
 
 namespace Element {
 

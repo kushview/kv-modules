@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/core.hpp"
-#include "element/buffer-factory.hpp"
+#include "element/Core.h"
+#include "element/BufferFactory.h"
 
 namespace Element {
 

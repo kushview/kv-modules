@@ -1,5 +1,5 @@
 
-#include "element/core.hpp"
+#include "element/Core.h"
 #include "element/engine/plugin-manager.hpp"
 #include "element/engine/world.hpp"
 

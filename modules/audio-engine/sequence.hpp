@@ -21,15 +21,15 @@
 #ifndef LIB_SEQUENCE_HPP
 #define LIB_SEQUENCE_HPP
 
-#include "element/asset.hpp"
+#include "element/Asset.h"
 #include "element/atomic.hpp"
-#include "element/pointer.hpp"
+#include "element/Pointer.h"
 #include "element/processor.hpp"
-#include "element/signal.hpp"
+#include "element/Signals.h"
 
 #include "element/engine/clip-factory.hpp"
 #include "element/engine/track.hpp"
-#include "element/time/timescale.hpp"
+#include "element/time/TimeScale.h"
 
 namespace Element {
 

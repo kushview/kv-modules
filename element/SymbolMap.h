@@ -28,7 +28,7 @@
 #include <lv2/lv2plug.in/ns/lv2core/lv2.h>
 #include <lv2/lv2plug.in/ns/ext/urid/urid.h>
 
-#include "element/util.hpp"
+#include "element/Utils.h"
 
 namespace Element {
     

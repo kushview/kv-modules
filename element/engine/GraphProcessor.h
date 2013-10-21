@@ -22,9 +22,9 @@
 #ifndef ELEMENT_GRAPH_PROCESSOR_HPP
 #define ELEMENT_GRAPH_PROCESSOR_HPP
 
-#include "element/arc.hpp"
-#include "element/core.hpp"
-#include "element/processors.hpp"
+#include "element/Arc.h"
+#include "element/Core.h"
+#include "element/Processors.h"
 
 namespace Element {
 
@@ -198,6 +198,10 @@ public:
     */
     bool addConnection (uint32 sourceNode, uint32 sourcePort,
                         uint32 destNode, uint32 destPort);
+
+
+    bool connectChannels (PortType type, uint32 sourceNode, int32 sourceChannel,
+                          uint32 destNode, int32 destChannel);
 
     /** Deletes the connection with the specified index. */
     void removeConnection (int index);
@@ -374,6 +378,8 @@ public:
 
     virtual void fillInPluginDescription (PluginDescription& d) const;
 
+    inline ValueTree getGraphState() const { return graphState.graph; }
+
 protected:
 
     virtual void preRenderNodes() { }
@@ -386,6 +392,12 @@ private:
 
     ReferenceCountedArray <Node> nodes;
     OwnedArray <Connection> connections;
+
+    struct GraphState {
+        ValueTree graph;
+        ValueTree arcs;
+    } graphState;
+
     uint32 lastNodeId;
     AudioSampleBuffer renderingBuffers;
     OwnedArray <MidiBuffer> midiBuffers;

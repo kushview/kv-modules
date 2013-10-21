@@ -21,7 +21,7 @@ int main() { return 0; }
 
 #if 0
 #include "element/juce.hpp"
-#include "element/session.hpp"
+#include "element/Session.h"
 
 namespace element {
 

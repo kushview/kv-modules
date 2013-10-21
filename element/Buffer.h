@@ -16,7 +16,7 @@
 #ifndef ELEMENT_BUFFER_HPP
 #define ELEMENT_BUFFER_HPP
 
-#include "element/core.hpp"
+#include "element/Core.h"
 #include <boost/intrusive_ptr.hpp>
 
 namespace Element {

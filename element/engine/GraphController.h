@@ -26,9 +26,9 @@
 #define __FILTERGRAPH_JUCEHEADER__
 
 #include "element/juce.hpp"
-#include "element/controller.hpp"
-#include "element/session.hpp"
-#include "element/signal.hpp"
+#include "element/Controller.h"
+#include "element/Session.h"
+#include "element/Signals.h"
 #include "element/engine/GraphProcessor.h"
 
 

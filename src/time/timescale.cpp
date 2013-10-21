@@ -19,7 +19,7 @@
 
 *****************************************************************************/
 
-#include "element/time/timescale.hpp"
+#include "element/time/TimeScale.h"
 
 namespace Element {
 

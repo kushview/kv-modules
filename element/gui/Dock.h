@@ -3,7 +3,7 @@
 #define ELEMENT_GUI_DOCK_HPP
 
 #include "element/juce.hpp"
-#include "element/pointer.hpp"
+#include "element/Pointer.h"
 
 namespace Element {
 namespace gui {

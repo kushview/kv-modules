@@ -3,7 +3,7 @@
 
 #include "element/juce.hpp"
 #include "element/list.hpp"
-#include "element/port.hpp"
+#include "element/Port.h"
 #include "element/types.h"
 
 #include "node.hpp"

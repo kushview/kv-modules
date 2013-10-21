@@ -158,7 +158,7 @@ namespace Element {
          currentSampleRate (44100.0), savedFeatures (nullptr),
          numPorts (plugin.get_num_ports())
    {
-       priv.reset (new Private (*this));
+       priv = new Private (*this);
        //FIXME: createPorts (numPorts);
    }
 

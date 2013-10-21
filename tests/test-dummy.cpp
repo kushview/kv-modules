@@ -1,5 +1,5 @@
 
-#include "element/core.hpp"
+#include "element/Core.h"
 using namespace Element;
 #if 1
 class DummyTest : public UnitTest

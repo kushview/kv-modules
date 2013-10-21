@@ -22,7 +22,7 @@
   ==============================================================================
 */
 
-#include "element/session/stored-settings.hpp"
+#include "element/session/StoredSettings.h"
 
 namespace Element {
 

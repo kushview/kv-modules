@@ -9,7 +9,7 @@
 #define DOCK_H_
 
 #include "element/juce.hpp"
-#include "element/gui/dock.hpp"
+#include "element/gui/Dock.h"
 #include "guiapp.hpp"
 
 namespace Element {

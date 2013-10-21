@@ -1,5 +1,5 @@
 
-#include "element/atom-buffer.hpp"
+#include "element/AtomBuffer.h"
 
 #include "lv2evbuf.hpp"
 

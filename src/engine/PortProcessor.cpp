@@ -1,5 +1,5 @@
 
-#include "element/core.hpp"
+#include "element/Core.h"
 #include "element/engine/PortProcessor.h"
 #include "element/engine/GraphProcessor.h"
 
@@ -19,9 +19,7 @@ namespace Element {
         }
     }
 
-    PortProcessor::~PortProcessor()
-    {
-    }
+    PortProcessor::~PortProcessor() { }
 
     uint32
     PortProcessor::getNumPorts()

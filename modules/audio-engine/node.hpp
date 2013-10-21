@@ -1,8 +1,8 @@
 #ifndef ELEMENT_ENGINE_NODE_HPP
 #define ELEMENT_ENGINE_NODE_HPP
 
-#include "element/core.hpp"
-#include "element/node.hpp"
+#include "element/Core.h"
+#include "element/Node.h"
 
 namespace Element {
 

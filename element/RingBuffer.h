@@ -21,7 +21,7 @@
 #ifndef ELEMENT_RINGBUFFER_HPP
 #define ELEMENT_RINGBUFFER_HPP
 
-#include "core.hpp"
+#include "element/Core.h"
 
 namespace Element {
 

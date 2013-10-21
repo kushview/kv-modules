@@ -1,5 +1,5 @@
 /*
-    asset.hpp - This file is part of Element
+    Asset.h- This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -17,15 +17,15 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_ASSET_HPP
-#define ELEMENT_ASSET_HPP
+#ifndef ELEMENT_ASSET_H
+#define ELEMENT_ASSET_H
 
 #include <string>
 
-#include "element/asset-type.hpp"
-#include "element/pointer.hpp"
-#include "element/uri.hpp"
-#include "element/util.hpp"
+#include "element/AssetType.h"
+#include "element/Pointer.h"
+#include "element/URI.h"
+#include "element/Utils.h"
 
 namespace Element {
 
@@ -131,4 +131,4 @@ namespace Element {
     };
 }
 
-#endif /* ELEMENT_ASSET_HPP */
+#endif /* ELEMENT_ASSET_H */

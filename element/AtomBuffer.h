@@ -20,7 +20,7 @@
 #ifndef ELEMENT_ATOMBUFFER_HPP
 #define ELEMENT_ATOMBUFFER_HPP
 
-#include "element/core.hpp"
+#include "element/Core.h"
 
 #include <lv2/lv2plug.in/ns/ext/atom/atom.h>
 #include <lv2/lv2plug.in/ns/ext/midi/midi.h>

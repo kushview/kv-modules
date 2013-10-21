@@ -4,7 +4,7 @@
 
 #include "element/juce.hpp"
 #include "element/time/Tempo.h"
-#include "element/time/timescale.hpp"
+#include "element/time/TimeScale.h"
 
 namespace Element
 {

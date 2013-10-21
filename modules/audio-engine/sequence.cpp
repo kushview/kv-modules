@@ -20,10 +20,10 @@
 #if 0
 #include <boost/foreach.hpp>
 
-#include "element/pointer.hpp"
+#include "element/Pointer.h"
 #include "element/engine/sequence.hpp"
 #include "element/engine/sequence-cursor.hpp"
-#include "element/session.hpp"
+#include "element/Session.h"
 #include "element/engine/track.hpp"
 
 namespace element {

@@ -21,8 +21,8 @@
 #define ELEMENT_WORLD_HPP
 
 #include "element/juce.hpp"
-#include "element/pointer.hpp"
-#include "element/session/stored-settings.hpp"
+#include "element/Pointer.h"
+#include "element/session/StoredSettings.h"
 
 namespace Element {
 

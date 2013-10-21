@@ -1,5 +1,5 @@
 
-#include "element/session.hpp"
+#include "element/Session.h"
 #include "jack.hpp"
 
 namespace Element {

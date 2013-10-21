@@ -1,5 +1,5 @@
 /*
-    session.hpp - This file is part of Element
+    types.h - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -17,12 +17,25 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_SESSION_HEADERS_HPP
-#define ELEMENT_SESSION_HEADERS_HPP
+#ifndef ELEMENT_TYPES_H
+#define ELEMENT_TYPES_H
 
-#include "element/session/DeviceManager.h"
-#include "element/session/module.hpp"
-#include "element/session/plugin-manager.hpp"
-#include "element/session/world.hpp"
+#include <inttypes.h>
 
-#endif  /* ELEMENT_SESSION_HEADERS_HPP */
+#include "element/Pointer.h"
+
+typedef float    Sample;
+typedef uint32_t SampleCount;
+typedef uint32_t FrameTime;
+typedef uint16_t Channel;
+
+namespace Element {
+
+    enum PluginFormat
+    {
+        AUDIO_UNIT, LADSPA, LV2, VST
+    };
+
+}
+
+#endif // ELEMENT_TYPES_H

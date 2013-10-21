@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/asset.hpp"
-#include "element/session/world.hpp"
+#include "element/Asset.h"
+#include "element/session/WorldBase.h"
 
 namespace Element {
 

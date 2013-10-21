@@ -21,7 +21,7 @@
 #define ELEMENT_PARAMETER_HPP
 
 #include <cmath>
-#include "element/core.hpp"
+#include "element/Core.h"
 
 namespace Element {
 

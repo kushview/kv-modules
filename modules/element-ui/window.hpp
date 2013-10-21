@@ -11,7 +11,7 @@
 #define WINDOW_HPP_
 
 #include "element/juce.hpp"
-#include "element/signal.hpp"
+#include "element/Signals.h"
 
 namespace Element {
 namespace gui {

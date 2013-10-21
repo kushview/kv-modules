@@ -2,7 +2,7 @@
 #define ELEMENT_PLUGIN_MANAGER_HPP
 
 #include "element/juce.hpp"
-#include "element/pointer.hpp"
+#include "element/Pointer.h"
 
 namespace Element {
 

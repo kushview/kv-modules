@@ -15,7 +15,7 @@
    A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 */
 
-#include "element/port.hpp"
+#include "element/Port.h"
 #include "element/engine/PortProcessor.h"
 #include "element/engine/GraphProcessor.h"
 
@@ -753,7 +753,11 @@ GraphProcessor::GraphProcessor()
       currentAudioInputBuffer (nullptr),
       currentAudioOutputBuffer (1, 1),
       currentMidiInputBuffer (nullptr)
-{ }
+{
+    graphState.graph = ValueTree ("graph");
+    graphState.arcs  = ValueTree ("arcs");
+    graphState.graph.addChild (graphState.arcs, -1, 0);
+}
 
 GraphProcessor::~GraphProcessor()
 {
@@ -917,20 +921,40 @@ GraphProcessor::addConnection (const uint32 sourceNode,
                                const uint32 destPort)
 {
     if (! canConnect (sourceNode, sourcePort, destNode, destPort))
-    {
         return false;
-    }
 
     ArcSorter sorter;
-    connections.addSorted (sorter, new Connection (sourceNode, sourcePort,
-                                                   destNode, destPort));
+    Connection* c = new Connection (sourceNode, sourcePort, destNode, destPort);
+    int32 index = connections.addSorted (sorter, c);
+    graphState.arcs.addChild (c->makeState(), index, nullptr);
+
+    std::clog << graphState.arcs.toXmlString();
+
     triggerAsyncUpdate();
     return true;
+}
+
+bool
+GraphProcessor::connectChannels (PortType type, uint32 sourceNode, int32 sourceChannel,
+                                 uint32 destNode, int32 destChannel)
+{
+    Node* src = getNodeForId (sourceNode);
+    Node* dst = getNodeForId (destNode);
+    if (! src && ! dst)
+        return false;
+
+    uint32 from = src->audioProcessor()->getNthPort (type, sourceChannel, false, false);
+    uint32 to   = dst->audioProcessor()->getNthPort (type, destChannel, true, false);
+
+    const bool res = addConnection (sourceNode, from, destNode, to);
+    return res;
 }
 
 void GraphProcessor::removeConnection (const int index)
 {
     connections.remove (index);
+    graphState.arcs.removeChild (index, nullptr);
+    std::clog << graphState.arcs.toXmlString();
     triggerAsyncUpdate();
 }
 

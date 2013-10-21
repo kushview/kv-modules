@@ -1,6 +1,6 @@
 
 
-#include "element/core.hpp"
+#include "element/Core.h"
 #include "juce/AppConfig.h"
 #include "juce/modules/juce_audio_devices/juce_audio_devices.h"
 

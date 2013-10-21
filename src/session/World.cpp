@@ -17,16 +17,16 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/core.hpp"
-#include "element/node-store.hpp"
-#include "element/pointer.hpp"
-#include "element/symmap.hpp"
+#include "element/Core.h"
+#include "element/NodeStorage.h"
+#include "element/Pointer.h"
+#include "element/SymbolMap.h"
 #include "element/types.h"
 
 #include "element/session/DeviceManager.h"
-#include "element/session/module.hpp"
-#include "element/session/plugin-manager.hpp"
-#include "element/session/world.hpp"
+#include "element/session/Module.h"
+#include "element/session/PluginManager.h"
+#include "element/session/WorldBase.h"
 
 #include "lv2world.hpp"
 
@@ -146,12 +146,12 @@ namespace Element {
 
     World::World()
     {
-        priv.reset (new Private ());
+        priv = new Private ();
     }
 
     World::~World()
     {
-        priv.reset (nullptr);
+        priv = nullptr;
     }
 
     int

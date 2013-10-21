@@ -12,10 +12,10 @@ namespace Element {
         Tempo()  { }
         ~Tempo() { }
 
-        static int
+        inline static int32
         framesPerBeat (double sampleRate, double bpmTempo)
         {
-            return roundDoubleToInt (sampleRate * 60.0 / bpmTempo);
+            return roundDoubleToInt (sampleRate * 60.0f / bpmTempo);
         }
 
     };

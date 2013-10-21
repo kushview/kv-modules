@@ -1,7 +1,7 @@
 #ifndef ELEMENT_APP_CONTROLLER_HPP
 #define ELEMENT_APP_CONTROLLER_HPP
 
-#include "element/controller.hpp"
+#include "element/Controller.h"
 
 namespace Element {
 

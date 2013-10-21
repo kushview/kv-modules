@@ -305,7 +305,7 @@ lv2_evbuf_write(LV2_Evbuf_Iterator* iter,
 
 // end std C
 
-#include "element/core.hpp"
+#include "element/Core.h"
 #include "lv2evbuf.hpp"
 
 namespace Element {

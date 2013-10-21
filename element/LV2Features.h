@@ -10,7 +10,7 @@
 #ifndef BKE_LV2FEATURES_HPP
 #define BKE_LV2FEATURES_HPP
 
-#include "element/core.hpp"
+#include "element/Core.h"
 #include <lv2/lv2plug.in/ns/lv2core/lv2.h>
 
 namespace Element {

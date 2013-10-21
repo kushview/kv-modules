@@ -19,7 +19,7 @@
 
 #include "element/juce.hpp"
 #include "element/session/DeviceManager.h"
-#include "element/engine.hpp"
+#include "element/Engine.h"
 
 using namespace Element;
 
@@ -63,7 +63,7 @@ namespace Element {
 
     DeviceManager::DeviceManager()
     {
-        priv.reset (new Private());
+        priv = new Private();
     }
 
     DeviceManager::~DeviceManager()
