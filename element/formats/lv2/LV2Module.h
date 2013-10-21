@@ -24,14 +24,14 @@
 
 #include <suil/suil.h>
 
+#include "element/formats/lv2/LV2World.h"
+
 #include "element/Core.h"
 #include "element/Port.h"
 #include "element/LV2Features.h"
 #include "element/Pointer.h"
 #include "element/RingBuffer.h"
 #include "element/SymbolMap.h"
-
-#include "lv2world.hpp"
 
 #define LV2_UI__JuceUI           LV2_UI_PREFIX "JuceUI"
 

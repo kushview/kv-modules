@@ -28,7 +28,7 @@
 #include "element/session/PluginManager.h"
 #include "element/session/WorldBase.h"
 
-#include "lv2world.hpp"
+#include "element/formats/lv2/LV2World.h"
 
 using namespace std;
 

@@ -10,8 +10,7 @@
 #ifndef ELEMENT_LV2FORMAT_HPP
 #define ELEMENT_LV2FORMAT_HPP
 
-#include "element/Core.h"
-#include "juce/modules/juce_audio_processors/juce_audio_processors.h"
+#include "element/juce.hpp"
 
 namespace Element {
 

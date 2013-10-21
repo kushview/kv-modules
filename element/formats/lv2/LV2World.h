@@ -17,6 +17,8 @@
 #include <lv2/lv2plug.in/ns/ext/worker/worker.h>
 #include <lv2/lv2plug.in/ns/extensions/ui/ui.h>
 
+#include "element/juce.hpp"
+
 namespace Element {
 
     class  LV2Module;

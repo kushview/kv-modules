@@ -18,8 +18,8 @@
 */
 
 #include "element/Core.h"
-#include "lv2module.hpp"
-#include "lv2world.hpp"
+#include "element/formats/lv2/LV2Module.h"
+#include "element/formats/lv2/LV2World.h"
 
 
 namespace Element {

@@ -1,5 +1,5 @@
 /*
-    plugin-manager.cpp - This file is part of Element
+    PluginManager.cpp - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -17,9 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "element/formats/lv2/LV2PluginFormat.h"
 #include "element/session/PluginManager.h"
 #include "element/session/WorldBase.h"
-#include "lv2format.hpp"
 
 namespace Element {
 
