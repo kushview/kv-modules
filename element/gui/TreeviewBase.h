@@ -26,7 +26,7 @@
 #define ELEMENT_TREEVIEW_BASE_H
 
 #include "element/juce.hpp"
-#include "element/gui/icons.hpp"
+#include "element/gui/Icons.h"
 
 namespace Element {
 

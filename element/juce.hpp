@@ -22,4 +22,7 @@
 
 #include "../libs/juce/JuceHeader.h"
 
+namespace Element { }
+using namespace Element;
+
 #endif // ELEMENT_JUCE_HPP

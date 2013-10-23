@@ -56,13 +56,20 @@ namespace Element {
 
         /** Add a new note to the sequence */
         inline Note
-        addNote (int note, double beat, double length = 1.0f, int channel = 1)
+        addNote (int note, double beat, double length = 1.0f,
+                 int channel = 1, float velocity = 0.8f)
         {
-            Note n (note, beat, length, channel);
-            if (node().isValid())
-                node().addChild (n.node(), -1, nullptr);
-
+            Note n (note, beat, length, channel, velocity);
+            node().addChild (n.node(), -1, nullptr);
             return n;
+        }
+
+        inline Note
+        addNote()
+        {
+            Note note (0, 0.f, 0.f, 0);
+            node().addChild (note.node(), -1, nullptr);
+            return note;
         }
 
         /** Add a note from a value tree object */
@@ -81,7 +88,6 @@ namespace Element {
             Note nt = Note::make (tree);
             node().addChild (nt.node(), -1, nullptr);
 
-            std::clog << node().toXmlString() << std::endl;
             return nt;
         }
 
@@ -121,6 +127,10 @@ namespace Element {
         inline NoteSequence& operator= (const NoteSequence& o) {
             setNodeData (o.node());
             return *this;
+        }
+
+        inline void clear (UndoManager* u = nullptr) {
+            node().removeAllChildren (u);
         }
 
     private:

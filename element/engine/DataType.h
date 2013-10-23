@@ -1,5 +1,5 @@
 /*
-    Arc.cpp - This file is part of Element
+    DataType.h - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -17,22 +17,33 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/Arc.h"
+#ifndef ELEMENT_DATATYPE_H
+#define ELEMENT_DATATYPE_H
+
+#include <element/juce.hpp>
 
 namespace Element {
 
-    Arc::Arc (uint32 sn, uint32 sp, uint32 dn, uint32 dp) noexcept
-        : sourceNode (sn), sourcePort (sp), destNode (dn), destPort (dp)  { }
+    class DataType {
+    public:
 
-    ValueTree
-    Arc::makeState() const
-    {
-        ValueTree v ("arc");
-        v.setProperty ("sourceNode", (int32) sourceNode, nullptr);
-        v.setProperty ("sourcePort", (int32) sourcePort, nullptr);
-        v.setProperty ("destNode", (int32) destNode, nullptr);
-        v.setProperty ("destPort", (int32) destPort, nullptr);
-        return v;
+        enum ID {
+            Audio,
+            MIDI,
+            Unknown
+        };
 
-    }
+        inline static int32 numTypes() { return Unknown; }
+
+        inline DataType() : type (Unknown) { }
+        inline DataType (const ID& i) : type (i) { }
+        inline DataType (const int32& i) : type (isPositiveAndBelow (i, (int)Unknown) ? (ID)i : Unknown) { }
+        inline DataType& operator= (const DataType& other) { type = other.type; return *this; }
+
+    private:
+        ID type;
+    };
+
 }
+
+#endif // ELEMENT_DATATYPE_H

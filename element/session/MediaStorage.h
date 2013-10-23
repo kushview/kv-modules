@@ -1,5 +1,5 @@
 /*
-    Arc.cpp - This file is part of Element
+    MediaStorage.h - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -17,22 +17,18 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/Arc.h"
+#ifndef ELEMENT_MEDIA_STORAGE_H
+#define ELEMENT_MEDIA_STORAGE_H
 
-namespace Element {
+namespace BTV {
 
-    Arc::Arc (uint32 sn, uint32 sp, uint32 dn, uint32 dp) noexcept
-        : sourceNode (sn), sourcePort (sp), destNode (dn), destPort (dp)  { }
+    class MediaStorage {
 
-    ValueTree
-    Arc::makeState() const
-    {
-        ValueTree v ("arc");
-        v.setProperty ("sourceNode", (int32) sourceNode, nullptr);
-        v.setProperty ("sourcePort", (int32) sourcePort, nullptr);
-        v.setProperty ("destNode", (int32) destNode, nullptr);
-        v.setProperty ("destPort", (int32) destPort, nullptr);
-        return v;
+    private:
 
-    }
+
+    };
+
 }
+
+#endif // ELEMENT_MEDIA_STORAGE_H

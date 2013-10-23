@@ -9,7 +9,7 @@
 #define BKE_ICONBUTTON_HPP
 
 #include "element/juce.hpp"
-#include "element/gui/tango.hpp"
+#include "element/gui/Tango.h"
 #include "element/Signals.h"
 
 namespace Element {

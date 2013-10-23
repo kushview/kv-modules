@@ -926,9 +926,6 @@ GraphProcessor::addConnection (const uint32 sourceNode,
     ArcSorter sorter;
     Connection* c = new Connection (sourceNode, sourcePort, destNode, destPort);
     int32 index = connections.addSorted (sorter, c);
-    graphState.arcs.addChild (c->makeState(), index, nullptr);
-
-    std::clog << graphState.arcs.toXmlString();
 
     triggerAsyncUpdate();
     return true;
@@ -953,8 +950,6 @@ GraphProcessor::connectChannels (PortType type, uint32 sourceNode, int32 sourceC
 void GraphProcessor::removeConnection (const int index)
 {
     connections.remove (index);
-    graphState.arcs.removeChild (index, nullptr);
-    std::clog << graphState.arcs.toXmlString();
     triggerAsyncUpdate();
 }
 

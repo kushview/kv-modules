@@ -75,19 +75,17 @@ namespace Element {
             if (! midi.isNoteOn())
                 return Note (ValueTree::invalid);
 
+            float velocity = (float)midi.getVelocity() / 127.f;
             return Note (midi.getNoteNumber(), midi.getTimeStamp(),
-                         beatLength, midi.getChannel());
+                         beatLength, midi.getChannel(), velocity);
         }
 
         static inline Note
-        make (int note, double beat, double length = 1.0f, int channel = 1)
-        {
-            return Note (note, beat, length, channel);
+        make (int note, double beat, double length = 1.0f, int channel = 1, float velocity = 0.8f) {
+            return Note (note, beat, length, channel, velocity);
         }
 
-        static inline Note
-        make (const ValueTree& tree)
-        {
+        static inline Note make (const ValueTree& tree) {
             return Note (tree);
         }
 
@@ -119,7 +117,7 @@ namespace Element {
         inline const int eventId() const { return node().getProperty ("eventId", 0); }
 
         /** Returns the current key id (midi note) for this model */
-        inline const int keyId() const { return (int) node().getProperty (Slugs::keyId, 0); }
+        inline const int keyId() const { return (int) node().getProperty (Slugs::id, 0); }
 
         /** Returns the channel of this note */
         inline const int channel() const { return (int) node().getProperty ("channel", 1); }
@@ -194,7 +192,7 @@ namespace Element {
         applyEditDeltas (EditDeltas& changes, bool reset = true)
         {
             if (changes.note != 0)
-                node().setProperty (Slugs::keyId, keyId() + changes.note, nullptr);
+                node().setProperty (Slugs::id, keyId() + changes.note, nullptr);
 
             if (changes.channel != 0)
                 node().setProperty ("channel", channel() + changes.channel, nullptr);
@@ -239,16 +237,16 @@ namespace Element {
 
         friend class NoteSequence;
 
-        Note (int note, double beat, double length = 1.0f, int channel = 1)
+        Note (int note, double start, double length = 1.0f, int channel = 1, float velocity = 0.8f)
             : ObjectModel (Slugs::note)
         {
-            node().setProperty (Slugs::keyId, note, nullptr);
+            node().setProperty (Slugs::id, note, nullptr);
             node().setProperty ("channel", channel, nullptr);
-            node().setProperty ("start", beat, nullptr);
+            node().setProperty ("start", start, nullptr);
             node().setProperty ("length", length, nullptr);
-            node().setProperty (Slugs::velocity, 0.8f, nullptr);
+            node().setProperty (Slugs::velocity, velocity, nullptr);
+            node().setProperty ("eventId", 0, nullptr);
         }
-
     };
 }
 
