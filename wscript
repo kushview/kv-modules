@@ -34,6 +34,12 @@ def configure (conf):
     autowaf.check_pkg (conf, "suil-0", uselib_store="SUIL", mandatory=False)
     autowaf.check_pkg (conf, "jack", uselib_store="JACK", mandatory=False)
     pkg_defs = ['HAVE_LILV', 'HAVE_JACK', 'HAVE_SUIL', 'HAVE_LV2']
+
+    if element.is_linux():
+        autowaf.check_pkg (conf, "alsa", uselib_store="ALSA", mandatory=True)
+        autowaf.check_pkg (conf, "x11", uselib_store="X11", mandatory=True)
+        autowaf.check_pkg (conf, "xext", uselib_store="XEXT", mandatory=True)
+        autowaf.check_pkg (conf, "freetype2", uselib_store="FREETYPE2", mandatory=True)
     for d in pkg_defs: conf.env[d] = conf.is_defined (d)
 
     conf.env.ELEMENT_VERSION_STRING = version_string()
@@ -158,10 +164,13 @@ def build(bld):
     glob = bld.path.ant_glob
 
     # The main element library/framework
-    element = make_library (bld, "Element", "element-0", element_modules)
-    element.source += glob ('src/**/*.cpp')
-    element.includes += ['libs/juce']
-    element.use += ["LV2", "LILV", "SUIL", "AUDIO_TOOLBOX", "APP_KIT"]
+    e = make_library (bld, "Element", "element-0", element_modules)
+    e.source += glob ('src/**/*.cpp')
+    e.includes += ['libs/juce']
+    if element.is_linux():
+        e.use += ["LV2", "LILV", "SUIL", "ALSA", "X11", "XEXT", "FREETYPE2"]
+    elif element.is_mac():
+        e.use += ["LV2", "LILV", "SUIL", "AUDIO_TOOLBOX", "APP_KIT"]
     bld.add_group()
 
     #other_dirs = ["plugins", "modules", "tools", "tests", "src"]
