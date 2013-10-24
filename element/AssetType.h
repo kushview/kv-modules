@@ -30,38 +30,38 @@ class AssetType
 public:
 
     /** Numeric symbol for this asset type. */
-    enum Root
+    enum ID
     {
-        audio    = 0, // Regular audio
-        midi     = 1, // Regular MIDI
-        sequence = 2, // Element Sequence Asset
-        video    = 3, // Video (not supported yet)
-        invalid  = 4
+        AudioFile  = 0, // Regular audio
+        MidiFile   = 1, // Regular MIDI
+        Sequence   = 2, // Element Sequence Asset
+        Video      = 3, // Video (not supported yet)
+        Unknown    = 4
     };
 
     static const uint32_t numTypes = 4;
-    inline AssetType() : root (invalid) { }
+    inline AssetType() : root (Unknown) { }
 
     inline AssetType (const AssetType& other)
     {
         root = other.root;
     }
 
-    AssetType (const Root root)
+    AssetType (const ID root)
         : root (root)
     { }
 
-    AssetType (const std::string& str)
-        : root (invalid)
+    AssetType (const String& str)
+        : root (Unknown)
     {
         if (str == "audio")
-            root = audio;
+            root = AudioFile;
         if (str == "midi")
-            root = midi;
+            root = MidiFile;
         if (str == "sequence")
-            root = sequence;
+            root = Sequence;
         else if (str == "video")
-            root = video;
+            root = Video;
     }
 
     /** Inverse of the from-string constructor */
@@ -69,10 +69,10 @@ public:
     {
         switch (root)
         {
-            case audio:    return "audio";
-            case midi:     return "midi";
-            case sequence: return "sequence";
-            case video:    return "video";
+            case AudioFile:    return "audio";
+            case MidiFile:     return "midi";
+            case Sequence: return "sequence";
+            case Video:    return "video";
             default:       return "unknown"; // reeeally shouldn't ever happen
         }
     }
@@ -81,10 +81,10 @@ public:
     {
         switch (root)
         {
-            case audio:    return "urn:datatype:audio";
-            case midi:     return "urn:datatype:midi";
-            case sequence: return "urn:datatype:sequence";
-            case video:    return "urn:datatype:video";
+            case AudioFile:    return "urn:datatype:audio";
+            case MidiFile:     return "urn:datatype:midi";
+            case Sequence: return "urn:datatype:sequence";
+            case Video:    return "urn:datatype:video";
             default:       return "unknown"; // reeeally shouldn't ever happen
         }
     }
@@ -97,7 +97,7 @@ public:
 
         iterator (uint32_t index) : index(index) { }
 
-        AssetType  operator*() { return AssetType((Root)index); }
+        AssetType  operator*() { return AssetType((ID)index); }
         iterator& operator++() { ++index; return *this; } // yes, prefix only
         bool operator==(const iterator& other) { return (index == other.index); }
         bool operator!=(const iterator& other) { return (index != other.index); }
@@ -112,8 +112,8 @@ public:
     static iterator begin() { return iterator (0); }
     static iterator end()   { return iterator (numTypes); }
 
-    bool operator==(const Root symbol) { return (root == symbol); }
-    bool operator!=(const Root symbol) { return (root != symbol); }
+    bool operator==(const ID symbol) { return (root == symbol); }
+    bool operator!=(const ID symbol) { return (root != symbol); }
 
     bool operator==(const AssetType other) { return (root == other.root); }
     bool operator!=(const AssetType other) { return (root != other.root); }
@@ -122,7 +122,7 @@ public:
 
 private:
 
-    Root root; // could be const if not for the string constructor
+    ID root; // could be const if not for the string constructor
 
 };
 

@@ -48,13 +48,14 @@ namespace Element {
         return objectData.getPropertyAsValue (property, nullptr);
     }
 
-    void
+    ValueTree
     ObjectModel::setData (const ValueTree& data)
     {
         if (! canAcceptData (data))
-            return;
+            return data;
 
         setNodeData (data);
+        return objectData;
     }
 
     void

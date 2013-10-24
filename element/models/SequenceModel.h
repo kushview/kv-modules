@@ -38,8 +38,10 @@ namespace Element {
 
     private:
 
-        // disable
         SequenceModel& operator= (const SequenceModel&);
+
+        ValueTree tempoNode;
+        ValueTree tracksNode;
 
     };
 

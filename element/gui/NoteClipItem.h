@@ -21,6 +21,7 @@
 #define ELEMENT_NOTE_CLIPITEM_H
 
 #include "element/models/NoteSequence.h"
+#include "element/gui/TimelineBase.h"
 #include "element/gui/TimelineClip.h"
 #include "element/util/Midi.h"
 
@@ -59,20 +60,39 @@ namespace Gui {
         inline void
         getTime (Range<double> &time) const
         {
-            time.setStart (60.f / 120.f * model.beatStart());
-            time.setLength (60.f / 120.f * model.beatLength());
+#if 0
+            double scale = 1.0f / (double) Shuttle::PPQ;
+            double start = scale * model.tickStart();
+            double end   = scale * model.tickEnd();
+            double tempo = (double) timeline().timeScale().tempo();
+
+            time.setStart (60.f / tempo * start);
+            time.setEnd   (60.f / tempo * end);
+#else
+            time.setStart (model.tickStart());
+            time.setEnd (model.tickEnd());
+#endif
         }
 
-        inline
-        void setTime (const Range<double> &time)
+        inline void
+        setTime (const Range<double> &time)
         {
-            model.moveToBeat (deltas, time.getStart() * (120.0f / 60.f));
-            model.resize (deltas, time.getLength() * (120.0f / 60.f));
-            model.applyEditDeltas (deltas);
+#if 0
+            double scale = (double) Shuttle::PPQ;
+            double tempo = (double) timeline().timeScale().tempo();
+
+            model.move (deltas, (time.getStart() * (tempo / 60.f) * scale));
+            model.resize (deltas, (time.getLength() * (tempo / 60.f) * scale));
+            model.applyEdits (deltas);
+#else
+            model.move (deltas, (time.getStart()));
+            model.resize (deltas, (time.getLength()));
+            model.applyEdits (deltas);
+#endif
         }
 
-
-        inline void paint (Graphics &g)
+        inline void
+        paint (Graphics &g)
         {
             if (! isSelected())
                 g.setColour (fillColor (model.velocity()));
@@ -89,16 +109,17 @@ namespace Gui {
                                   getLocalBounds(), Justification::centred, 1);
         }
 
-        inline int trackRequested (const int &track)
-        {
-            if (isPositiveAndBelow (track, 128))
-            {
-                model.changeKeyId (deltas, 127 - track);
-                model.applyEditDeltas (deltas);
-                return track;
-            }
+        inline int32 trackIndex() const { return 127 - model.keyId(); }
 
-            return 127 - model.keyId();
+        inline int32
+        trackRequested (const int32 track)
+        {
+            if (! isPositiveAndBelow (track, 128))
+                return trackIndex();
+
+            model.changeKeyId (deltas, 127 - track);
+            model.applyEdits (deltas);
+            return trackIndex();
         }
 
         const int channel() const { return model.channel(); }
@@ -113,8 +134,8 @@ namespace Gui {
             MidiMessage noff (MidiMessage::noteOff (model.channel(),
                                                        model.keyId(),
                                                        model.velocity()));
-            non.setTimeStamp (model.beatStart());
-            noff.setTimeStamp (model.beatEnd());
+            non.setTimeStamp (model.tickStart());
+            noff.setTimeStamp (model.tickEnd());
             return std::make_pair (non, noff);
         }
 

@@ -27,7 +27,7 @@ namespace Gui {
         : owner (timeline)
     {
         setInterceptsMouseClicks (true, true);
-        setName ("a clip");
+        setName ("TimelineClip");
         lastSnap = getBoundsInParent().getX();
         isResizing = false;
     }
@@ -46,7 +46,8 @@ namespace Gui {
         timeline().clipDoubleClicked (this, event);
     }
 
-    void TimelineClip::mouseDown (const MouseEvent& ev)
+    void
+    TimelineClip::mouseDown (const MouseEvent& ev)
     {
         owner.clipClicked (this, ev);
 
@@ -63,15 +64,16 @@ namespace Gui {
         }
     }
 
-    void TimelineClip::mouseDrag (const MouseEvent& ev)
+    void
+    TimelineClip::mouseDrag (const MouseEvent& ev)
     {
         int changes = 0;
 
         // use the dragger to compute an x delta from the last drag
         Rectangle<int> r (getBoundsInParent());
-        dragger.dragComponent (this, ev, &limit);
-        int pixel = owner.pixelSnap (getBoundsInParent().getX());
-        int snap = pixel;
+        dragger.dragComponent (this, ev, nullptr);
+        int32 pixel = owner.pixelSnap (getBoundsInParent().getX());
+        int32 snap = pixel;
         setBounds (r); // reset it back to normal
 
         if (snap != lastSnap)
@@ -145,18 +147,21 @@ namespace Gui {
     }
 
     void
-    TimelineClip::setTrackIndex (const int track, bool notify)
+    TimelineClip::setTrackIndex (const int32 track, bool notify)
     {
-        const int oldTrack = currentTrack;
+        const int oldTrack = trackIndex();
+        if (track == oldTrack)
+            return;
 
-        if (currentTrack != track)
-            currentTrack = trackRequested (track);
-
-        if (oldTrack != currentTrack && notify)
-            owner.clipChangedTrack (this, currentTrack - oldTrack);
+        const int32 nextTrack = trackRequested (track);
+        if (oldTrack != nextTrack && notify)
+            owner.clipChangedTrack (this, nextTrack - oldTrack);
     }
 
+    uint16 TimelineClip::ticksPerBeat() const { return timeline().timeScale().ticksPerBeat(); }
+
     TimelineBase& TimelineClip::timeline() { return owner; }
+    const TimelineBase& TimelineClip::timeline() const { return owner; }
 
     void
     TimelineClip::mouseMove (const MouseEvent& e)
@@ -171,4 +176,15 @@ namespace Gui {
         }
     }
 
+    void
+    TimelineClip::setTimeInternal (const Range<double>& time)
+    {
+        setTime (time);
+    }
+
+    void
+    TimelineClip::getTimeInternal (Range<double>& time)
+    {
+
+    }
 }}

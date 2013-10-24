@@ -17,6 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "element/engine/Shuttle.h"
 #include "element/time/TimeScale.h"
 #include "element/gui/TimelineBase.h"
 #include "element/gui/TimelineClip.h"
@@ -41,8 +42,7 @@ namespace Gui {
     void
     TimelineIndicator::setPosition (double time, bool musical)
     {
-        if (musical)
-        {
+        if (musical) {
             const float bpm = (float) timeline()->timeScale().tempo();
             time = (time * (60.0f / bpm));
         }
@@ -159,10 +159,9 @@ namespace Gui {
         mTrackWidth = 0;
         mMaxTrackWidth = 200;
 
-        timeOffset = 0.0f;
         scale.setSampleRate (44100);
         scale.setTempo (120.f);
-        scale.setPixelsPerBeat (100);
+        scale.setTicksPerBeat (Shuttle::PPQ);
         scale.updateScale();
 
         pixPerUnit = (double) scale.pixelsPerBeat();
@@ -170,11 +169,14 @@ namespace Gui {
         timeSpan.setLength (4.0);
         addAndMakeVisible (playheadIndicator = new TimelineIndicator);
         playheadIndicator->setAlwaysOnTop (true);
+
+        tempo.addListener (this);
+        scale.setDisplayFormat (TimeScale::BBT);
     }
 
     TimelineBase::~TimelineBase()
     {
-
+        tempo.removeListener (this);
     }
 
     void
@@ -184,10 +186,9 @@ namespace Gui {
             return;
 
         freeClips.removeObject (clip, false);
-
         addAndMakeVisible (clip);
         clips.addIfNotAlreadyThere (clip);
-        clip->setTrackIndex (track, true);
+        // clip->setTrackIndex (track, true);
         updateClip (clip);
     }
 
@@ -329,12 +330,39 @@ namespace Gui {
         Range<double> time;
         clip->getTime (time);
 
+        //if (clip->timeIsMusical())
+        {
+#if 0
+            double s = 1.0f / (double) Shuttle::PPQ;
+            double start = s * time.getStart();
+            double end   = s * time.getEnd();
+            double tempo = (double) scale.tempo();
+
+            time.setStart (60.f / tempo * start);
+            time.setEnd   (60.f / tempo * end);
+#endif
+        }
+
         const Range<int> hrange (trackHeight (clip->trackIndex()));
         clip->setBounds (timeToX (time.getStart()), hrange.getStart(),
                          timeToWidth (time), hrange.getLength());
-
     }
 
+    void
+    TimelineBase::valueChanged (Value &value)
+    {
+        bool updateTimeScale = false;
+
+        if (value.refersToSameSourceAs (tempo))
+        {
+            updateTimeScale = true;
+            scale.setTempo ((double) tempo.getValue());
+            scale.setPixelsPerBeat (60.f * ((double)scale.tempo() / 120.f));
+        }
+
+        if (updateTimeScale)
+            scale.updateScale();
+    }
 
 
 }}

@@ -1,5 +1,5 @@
 /****************************************************************************
-   timescale.hpp
+   TimeScale.h
 
    Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
    Adapted/Modified 2013 Michael Fisher <mfisher31@gmail.com>
@@ -20,11 +20,12 @@
 
 *****************************************************************************/
 
-#ifndef ELEMENT_TIMESCALE_HPP
-#define ELEMENT_TIMESCALE_HPP
+#ifndef ELEMENT_TIMESCALE_H
+#define ELEMENT_TIMESCALE_H
 
 #include <string>
 
+#include "element/juce.hpp"
 #include "element/LinkedList.h"
 #include "element/Utils.h"
 
@@ -35,15 +36,16 @@ class TimeScale
 {
 public:
 
-    enum DisplayFormat {
+    enum DisplayFormat
+    {
         Frames = 0,
         Time,
         BBT
     };
 
-    TimeScale() : mDisplayFmt (Frames), mCursor (this), m_marker_cursor(this) { clear(); }
-    TimeScale (const TimeScale& ts) : mCursor (this), m_marker_cursor(this) { copy(ts); }
-    TimeScale& operator=(const TimeScale& ts) { return copy(ts); }
+    TimeScale() : mDisplayFmt (Frames), mCursor (this), mMarkerCursor (this) { clear(); }
+    TimeScale (const TimeScale& ts) : mCursor (this), mMarkerCursor (this) { copyFrom (ts); }
+    TimeScale& operator=(const TimeScale& ts) { return copyFrom (ts); }
 
     /** Reset the node list */
 	void reset();
@@ -57,29 +59,30 @@ public:
     /** Copy the timescale.
         @param ts The timescale to copy from
         @note Also calls sync */
-    TimeScale& copy (const TimeScale& ts);
+    TimeScale& copyFrom (const TimeScale& ts);
 
-	// Sample rate (frames per second)
+    /** Sample rate (frames per second) */
     void setSampleRate (unsigned int rate) { mSampleRate = rate; }
     unsigned int sampleRate() const { return mSampleRate; }
 
-	// Resolution (ticks per quarter note; PPQN)
+    /** Resolution (ticks per quarter note; PPQN) */
     void setTicksPerBeat (unsigned short ticks) { mTicksPerBeat = ticks; }
     unsigned short ticksPerBeat() const { return mTicksPerBeat; }
+    unsigned short ppq() const { return mTicksPerBeat; }
 
-    // Pixels per beat (width).
+    /** Pixels Per Beat */
     void setPixelsPerBeat (unsigned short ppb) { mPixelsPerBeat = ppb; }
     unsigned short pixelsPerBeat() const { return mPixelsPerBeat; }
 
-	// Beat divisor (snap) accessors.
+    /** Set snaps per beat */
     void setSnapPerBeat (unsigned short snap) { mSnapPerBeat = snap; }
     unsigned short snapPerBeat() const { return mSnapPerBeat; }
 
-	// Horizontal zoom factor.
+    /** Horizontal zoom */
     void setHorizontalZoom (unsigned short hZoom) { mHorizontalZoom = hZoom; }
     unsigned short horizontalZoom() const { return mHorizontalZoom; }
 
-	// Vertical zoom factor.
+    /** Vertical zoom */
     void setVerticalZoom (unsigned short vzoom) { mVerticalZoom = vzoom; }
     unsigned short verticalZoom() const { return mVerticalZoom; }
 
@@ -105,11 +108,11 @@ public:
               unsigned short beattype_ = 2, unsigned short beats_per_bar_ = 4,
               unsigned short beat_divisor_ = 2)
             : frame(frame_), bar(0), beat(0), tick(0), pixel(0),
-              tempo(tempo_), beat_type (beattype_),
-              beats_per_bar (beats_per_bar_),
-              beat_divisor (beat_divisor_),
-              ticks_per_beat(0), ts (timescale),
-              tick_rate (1.0f), beat_rate (1.0f)
+              tempo(tempo_), beatType (beattype_),
+              beatsPerBar (beats_per_bar_),
+              beatDivisor (beat_divisor_),
+              ticksPerBeat(0), ts (timescale),
+              tickRate (1.0f), beatRate (1.0f)
         { }
 
 		// Update node scale coefficients.
@@ -123,45 +126,45 @@ public:
         float tempoEx (unsigned short beatType = 2) const;
 
 		// Frame/bar convertors.
-        unsigned short barFromFrame (unsigned long iFrame) const { return bar + uroundf ((beat_rate * (iFrame - frame)) / (ts->frameRate() * beats_per_bar)); }
-        unsigned long frameFromBar (unsigned short iBar) const { return frame + uroundf ((ts->frameRate() * beats_per_bar * (iBar - bar)) / beat_rate); }
+        unsigned short barFromFrame (unsigned long iFrame) const { return bar + uroundf ((beatRate * (iFrame - frame)) / (ts->frameRate() * beatsPerBar)); }
+        unsigned long frameFromBar (unsigned short iBar) const { return frame + uroundf ((ts->frameRate() * beatsPerBar * (iBar - bar)) / beatRate); }
 
 		// Frame/beat convertors.
-        unsigned int beatFromFrame (unsigned long iFrame) const { return beat + uroundf ((beat_rate * (iFrame - frame)) / ts->frameRate()); }
-        unsigned long frameFromBeat (unsigned int iBeat) const { return frame + uroundf ((ts->frameRate() * (iBeat - beat)) / beat_rate); }
+        unsigned int beatFromFrame (unsigned long iFrame) const { return beat + uroundf ((beatRate * (iFrame - frame)) / ts->frameRate()); }
+        unsigned long frameFromBeat (unsigned int iBeat) const { return frame + uroundf ((ts->frameRate() * (iBeat - beat)) / beatRate); }
 
 		// Frame/tick convertors.
-        unsigned long tickFromFrame (unsigned long iFrame) const { return tick + uroundf ((tick_rate * (iFrame - frame)) / ts->frameRate()); }
-        unsigned long frameFromTick (unsigned long iTick) const { return frame + uroundf((ts->frameRate() * (iTick - tick)) / tick_rate); }
+        unsigned long tickFromFrame (unsigned long iFrame) const { return tick + uroundf ((tickRate * (iFrame - frame)) / ts->frameRate()); }
+        unsigned long frameFromTick (unsigned long iTick) const { return frame + uroundf ((ts->frameRate() * (iTick - tick)) / tickRate); }
 
 		// Tick/beat convertors.
-        unsigned int beatFromTick (unsigned long iTick) const { return beat + ((iTick - tick) / ticks_per_beat); }
-        unsigned long tickFromBeat (unsigned int iBeat) const { return tick + (ticks_per_beat * (iBeat - beat)); }
+        unsigned int beatFromTick (unsigned long iTick) const { return beat + ((iTick - tick) / ticksPerBeat); }
+        unsigned long tickFromBeat (unsigned int iBeat) const { return tick + (ticksPerBeat * (iBeat - beat)); }
 
 		// Tick/bar convertors.
-        unsigned short barFromTick (unsigned long iTick) const { return bar + ((iTick - tick) / (ticks_per_beat * beats_per_bar)); }
-        unsigned long tickFromBar (unsigned short iBar) const { return tick + (ticks_per_beat * beats_per_bar * (iBar - bar)) ; }
+        unsigned short barFromTick (unsigned long iTick) const { return bar + ((iTick - tick) / (ticksPerBeat * beatsPerBar)); }
+        unsigned long tickFromBar (unsigned short iBar) const { return tick + (ticksPerBeat * beatsPerBar * (iBar - bar)) ; }
 
 		// Tick/pixel convertors.
-        unsigned long tickFromPixel (int x) const { return tick + uroundf ((tick_rate * (x - pixel)) / ts->pixelRate()); }
-        int pixelFromTick (unsigned long iTick) const { return pixel + uroundf ((ts->pixelRate() * (iTick - tick)) / tick_rate); }
+        unsigned long tickFromPixel (int x) const { return tick + uroundf ((tickRate * (x - pixel)) / ts->pixelRate()); }
+        int pixelFromTick (unsigned long iTick) const { return pixel + uroundf ((ts->pixelRate() * (iTick - tick)) / tickRate); }
 
 		// Beat/pixel convertors.
-        unsigned int beatFromPixel (int x) const { return beat + uroundf ((beat_rate * (x - pixel)) / ts->pixelRate()); }
-        int pixelFromBeat (unsigned int b) const { return pixel + uroundf ((ts->pixelRate() * (b - beat)) / beat_rate); }
+        unsigned int beatFromPixel (int x) const { return beat + uroundf ((beatRate * (x - pixel)) / ts->pixelRate()); }
+        int pixelFromBeat (unsigned int b) const { return pixel + uroundf ((ts->pixelRate() * (b - beat)) / beatRate); }
 
 		// Pixel/beat rate convertor.
-        unsigned short pixelsPerBeat() const { return uroundf(ts->pixelRate() / beat_rate); }
+        unsigned short pixelsPerBeat() const { return uroundf(ts->pixelRate() / beatRate); }
 
 		// Bar/pixel convertors.
-        unsigned short barFromPixel (int x) const { return bar + uroundf ((beat_rate * (x - pixel)) / (ts->pixelRate() * beats_per_bar)); }
-        int pixelFromBar (unsigned short b) const { return pixel + uroundf ((ts->pixelRate() * beats_per_bar * (b - bar)) / beat_rate); }
+        unsigned short barFromPixel (int x) const { return bar + uroundf ((beatRate * (x - pixel)) / (ts->pixelRate() * beatsPerBar)); }
+        int pixelFromBar (unsigned short b) const { return pixel + uroundf ((ts->pixelRate() * beatsPerBar * (b - bar)) / beatRate); }
 
 		// Bar/beat convertors.
-        unsigned short barFromBeat (unsigned int iBeat) const { return bar + ((iBeat - beat) / beats_per_bar); }
-        unsigned int beatFromBar (unsigned short iBar) const  { return beat + (beats_per_bar * (iBar - bar)); }
+        unsigned short barFromBeat (unsigned int iBeat) const { return bar + ((iBeat - beat) / beatsPerBar); }
+        unsigned int beatFromBar (unsigned short iBar) const  { return beat + (beatsPerBar * (iBar - bar)); }
 
-        bool beatIsBar (unsigned int iBeat) const { return ((iBeat - beat) % beats_per_bar) == 0; }
+        bool beatIsBar (unsigned int iBeat) const { return ((iBeat - beat) % beatsPerBar) == 0; }
 
 		// Frame/bar quantizer.
         unsigned long frameSnapToBar (unsigned long frame) const { return frameFromBar (barFromFrame (frame)); }
@@ -180,11 +183,11 @@ public:
 
 		// Node payload.
 		float          tempo;
-        unsigned short beat_type;
-        unsigned short beats_per_bar;
-        unsigned short beat_divisor;
+        unsigned short beatType;
+        unsigned short beatsPerBar;
+        unsigned short beatDivisor;
 
-        unsigned short ticks_per_beat;
+        unsigned short ticksPerBeat;
 
 	protected:
 
@@ -192,8 +195,8 @@ public:
 		TimeScale *ts;
 
 		// Node cached coefficients.
-        float tick_rate;
-        float beat_rate;
+        float tickRate;
+        float beatRate;
 	};
 
 	// Node list accessor.
@@ -210,10 +213,10 @@ public:
 
         void reset (Node *node = 0);
 
-        Node* seekFrame (unsigned long frame);
-        Node* seekBar   (unsigned short bar);
-        Node* seekBeat  (unsigned int beat);
-        Node* seekTick  (unsigned long tick);
+        Node* seekFrame (unsigned long frame) const;
+        Node* seekBar   (unsigned short bar) const;
+        Node* seekBeat  (unsigned int beat) const;
+        Node* seekTick  (unsigned long tick) const;
         Node* seekPixel (int x) const;
 
 	protected:
@@ -236,8 +239,8 @@ public:
     void updateScale();
 
 	// Frame/pixel convertors.
-    int pixelFromFrame (unsigned long frame) const { return uroundf((m_pixel_rate * frame) / m_frame_rate); }
-    unsigned long frameFromPixel (int x) const { return uroundf((m_frame_rate * x) / m_pixel_rate); }
+    int pixelFromFrame (unsigned long frame) const { return uroundf((mPixelRate * frame) / mFrameRate); }
+    unsigned long frameFromPixel (int x) const { return uroundf((mFrameRate * x) / mPixelRate); }
 
 	// Frame/bar general converters.
     unsigned short
@@ -271,14 +274,14 @@ public:
 
 	// Frame/tick general converters.
     unsigned long
-    tickFromFrame (unsigned long frame)
+    tickFromFrame (unsigned long frame) const
 	{
         Node *node = mCursor.seekFrame (frame);
         return (node ? node->tickFromFrame (frame) : 0);
 	}
 
     unsigned long
-    frameFromTick (unsigned long tick)
+    frameFromTick (unsigned long tick) const
 	{
         Node *node = mCursor.seekTick (tick);
         return (node ? node->frameFromTick (tick) : 0);
@@ -286,14 +289,14 @@ public:
 
 	// Tick/pixel general converters.
     unsigned long
-    tickFromPixel (int x)
+    tickFromPixel (int x) const
 	{
         Node *node = mCursor.seekPixel (x);
         return (node ? node->tickFromPixel (x) : 0);
 	}
 
     int
-    pixelFromTick (unsigned long tick)
+    pixelFromTick (unsigned long tick) const
 	{
         Node *node = mCursor.seekTick (tick);
         return (node ? node->pixelFromTick (tick) : 0);
@@ -395,14 +398,14 @@ public:
     setBeatType (unsigned short beat_type)
 	{
         Node *node = mNodes.first();
-        if (node) node->beat_type = beat_type;
+        if (node) node->beatType = beat_type;
 	}
 
     unsigned short
     beatType() const
 	{
         Node *node = mNodes.first();
-        return (node ? node->beat_type : 2);
+        return (node ? node->beatType : 2);
 	}
 
     /** Set beats per bar (time signature numerator)
@@ -411,14 +414,14 @@ public:
     setBeatsPerBar (unsigned short bpb)
 	{
         if (Node *node = mNodes.first())
-            node->beats_per_bar = bpb;
+            node->beatsPerBar = bpb;
 	}
 
     unsigned short
     beatsPerBar() const
 	{
         Node *node = mNodes.first();
-        return (node ? node->beats_per_bar : 4);
+        return (node ? node->beatsPerBar : 4);
 	}
 
 	// Time signature (denominator)
@@ -426,19 +429,19 @@ public:
     setBeatDivisor (unsigned short divisor)
 	{
         Node *node = mNodes.first();
-        if (node) node->beat_divisor = divisor;
+        if (node) node->beatDivisor = divisor;
 	}
 
     unsigned short
     beatDivisor() const
 	{
         Node *node = mNodes.first();
-        return (node ? node->beat_divisor : 2);
+        return (node ? node->beatDivisor : 2);
 	}
 
 	// Tick/Frame range conversion (delta conversion).
-    unsigned long frameFromTickRange (unsigned long tick_start, unsigned long tick_end);
-    unsigned long tickFromFrameRange (unsigned long frame_start, unsigned long frame_end);
+    unsigned long frameFromTickRange (unsigned long tickStart, unsigned long tickEnd);
+    unsigned long tickFromFrameRange (unsigned long frameStart, unsigned long frameEnd);
 
 #if 1
 	// Location marker declaration.
@@ -487,8 +490,8 @@ public:
         Marker *seekPixel (int x);
 
 		// Notable markers accessors
-		Marker *first() const { return ts->m_markers.first(); }
-		Marker *last()  const { return ts->m_markers.last();  }
+        Marker *first() const { return ts->mMarkers.first(); }
+        Marker *last()  const { return ts->mMarkers.last();  }
 
 	protected:
 
@@ -498,11 +501,11 @@ public:
 	};
 
 	// Markers list accessor.
-    MarkerCursor& markers() { return m_marker_cursor; }
+    MarkerCursor& markers() { return mMarkerCursor; }
 
 	// Marker list specifics.
     Marker *addMarker (unsigned long iFrame, const std::string& text,
-                                              const std::string& color = std::string ("#000000"));
+                                             const std::string& color = std::string ("#000000"));
     void updateMarker (Marker *marker);
     void removeMarker (Marker *marker);
 
@@ -514,18 +517,18 @@ public:
 protected:
 
 	// Tempo-map independent coefficients.
-    float pixelRate() const { return m_pixel_rate; }
-    float frameRate() const { return m_frame_rate; }
+    float pixelRate() const { return mPixelRate; }
+    float frameRate() const { return mFrameRate; }
 
 private:
 
     unsigned short mSnapPerBeat;    ///< Snap per beat (divisor).
-    unsigned short mHorizontalZoom;           ///< Horizontal zoom factor.
-    unsigned short mVerticalZoom;           ///< Vertical zoom factor.
+    unsigned short mHorizontalZoom; ///< Horizontal zoom factor.
+    unsigned short mVerticalZoom;   ///< Vertical zoom factor.
 
-    DisplayFormat  mDisplayFmt;      ///< Textual display format.
+    DisplayFormat  mDisplayFmt;     ///< Textual display format.
 
-    unsigned int   mSampleRate;      ///< Sample rate (frames per second)
+    unsigned int   mSampleRate;     ///< Sample rate (frames per second)
     unsigned short mTicksPerBeat;   ///< Tticks per quarter note (PPQN)
     unsigned short mPixelsPerBeat;  ///< Pixels per beat (width).
 
@@ -536,19 +539,16 @@ private:
     Cursor mCursor;
 
 	// Tempo-map independent coefficients.
-    float m_pixel_rate;
-    float m_frame_rate;
+    float mPixelRate;
+    float mFrameRate;
 
 	// Location marker list.
-    LinkedList<Marker> m_markers;
+    LinkedList<Marker> mMarkers;
 
 	// Internal node cursor.
-    MarkerCursor m_marker_cursor;
+    MarkerCursor mMarkerCursor;
 };
 
-} /* namespace element */
+} /* namespace Element */
 
-#endif	// ELEMENT_TIMESCALE_HPP
-
-
-// end of TimeScale.h
+#endif	/* ELEMENT_TIMESCALE_H */

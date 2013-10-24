@@ -15,13 +15,20 @@ namespace Gui {
 
         virtual ~TimelineClip();
 
+        inline void
+        adjustTrackIndex (int trackDelta, bool notify)
+        {
+            if (trackDelta != 0)
+                setTrackIndex (trackIndex() + trackDelta, notify);
+        }
+
         virtual bool moveable() const { return true; }
         virtual bool resizable() const { return true; }
         virtual bool timeIsMusical() const { return false; }
 
         virtual void getTime (Range<double>& time) const = 0;
         virtual void setTime (const Range<double>& time) = 0;
-
+        virtual int32 trackIndex() const = 0;
 
         inline void
         setSelected (bool isSelected)
@@ -34,7 +41,7 @@ namespace Gui {
         }
 
         inline bool isSelected() const { return selected; }
-        inline const int& trackIndex() const { return currentTrack; }
+
 
         virtual bool hitTest (int x, int y);
         virtual void mouseDoubleClick (const MouseEvent &event);
@@ -43,21 +50,20 @@ namespace Gui {
         virtual void mouseMove (const MouseEvent& e);
         virtual void mouseUp (const MouseEvent &event);
 
-        inline void adjustTrackIndex (int trackDelta, bool notify) {
-            if (trackDelta != 0)
-                setTrackIndex (currentTrack + trackDelta, notify);
-        }
+
 
     protected:
 
         TimelineClip (TimelineBase&);
-
         void recycle();
+        TimelineBase& timeline();
+        const TimelineBase& timeline() const;
+
         virtual void reset() { }
         virtual void selectedStateChanged() { }
-        TimelineBase& timeline();
+        virtual int32 trackRequested (const int32 track) { return track; }
 
-        virtual int trackRequested (const int& track) { return track; }
+        uint16 ticksPerBeat() const;
 
     private:
 
@@ -65,12 +71,13 @@ namespace Gui {
 
         TimelineBase& owner;
         ComponentDragger dragger;
-        ComponentBoundsConstrainer limit;
 
         int lastSnap, currentTrack;
         bool isResizing, selected;
 
         void setTrackIndex (const int track, bool notify);
+        void setTimeInternal (const Range<double>& time);
+        void getTimeInternal (Range<double>& time);
 
     };
 

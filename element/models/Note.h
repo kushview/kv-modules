@@ -65,7 +65,6 @@ namespace Element {
             }
         };
 
-
         Note (const Note& n) : ObjectModel (n.node()) { }
         Note (const ValueTree& data) : ObjectModel (data) { }
 
@@ -126,18 +125,18 @@ namespace Element {
         inline const float velocity() const { return (float) node().getProperty("velocity", 0.8f); }
 
         /** The start position in beats */
-        inline const double beatStart() const { return (double) node().getProperty ("start"); }
+        inline const double tickStart() const { return (double) node().getProperty ("start"); }
 
         /** Length of note in beats */
         inline const double beatLength() const { return (double) node().getProperty ("length"); }
 
         /** End of the note */
-        inline const double beatEnd() const { return beatStart() + beatLength(); }
+        inline const double tickEnd() const { return tickStart() + beatLength(); }
 
         /** Get the timings of this note as a Range */
         inline void getBeats (Range<double>& beats) const
         {
-            beats.setStart (beatStart());
+            beats.setStart (tickStart());
             beats.setLength (beatLength());
         }
 
@@ -182,14 +181,14 @@ namespace Element {
 
         /** Move this note to a new start beat
             Length is unaffected */
-        inline void moveToBeat (EditDeltas& changes, const double beat)
+        inline void move (EditDeltas& changes, const double beat)
         {
-            changes.start = beat - beatStart();
+            changes.start = beat - tickStart();
         }
 
         /** Apply pending changes to this note */
         inline void
-        applyEditDeltas (EditDeltas& changes, bool reset = true)
+        applyEdits (EditDeltas& changes, bool reset = true)
         {
             if (changes.note != 0)
                 node().setProperty (Slugs::id, keyId() + changes.note, nullptr);
@@ -198,7 +197,7 @@ namespace Element {
                 node().setProperty ("channel", channel() + changes.channel, nullptr);
 
             if (changes.start != 0.0f)
-                node().setProperty ("start", beatStart() + changes.start, nullptr);
+                node().setProperty ("start", tickStart() + changes.start, nullptr);
 
             if (changes.length != 0.0f)
                 node().setProperty ("length", beatLength() + changes.length, nullptr);
@@ -211,7 +210,7 @@ namespace Element {
         noteOn() const
         {
             MidiMessage mm = MidiMessage::noteOn (channel(), keyId(), velocity());
-            mm.setTimeStamp (beatStart());
+            mm.setTimeStamp (tickStart());
             return mm;
         }
 
@@ -219,7 +218,7 @@ namespace Element {
         noteOff() const
         {
             MidiMessage mm = MidiMessage::noteOff (channel(), keyId());
-            mm.setTimeStamp (beatEnd());
+            mm.setTimeStamp (tickEnd());
             return mm;
         }
 
@@ -228,6 +227,12 @@ namespace Element {
         {
             on  = noteOn();
             off = noteOff();
+        }
+
+        inline ValueTree
+        sequenceNode() const
+        {
+            return node().getParent();
         }
 
         inline bool operator== (const Note& n) const { return node() == n.node(); }
@@ -241,9 +246,9 @@ namespace Element {
             : ObjectModel (Slugs::note)
         {
             node().setProperty (Slugs::id, note, nullptr);
-            node().setProperty ("channel", channel, nullptr);
-            node().setProperty ("start", start, nullptr);
-            node().setProperty ("length", length, nullptr);
+            node().setProperty (Slugs::channel, channel, nullptr);
+            node().setProperty (Slugs::start, start, nullptr);
+            node().setProperty (Slugs::length, length, nullptr);
             node().setProperty (Slugs::velocity, velocity, nullptr);
             node().setProperty ("eventId", 0, nullptr);
         }

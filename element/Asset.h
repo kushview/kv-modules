@@ -22,8 +22,11 @@
 
 #include <string>
 
+#include "element/models/ObjectModel.h"
+#include "element/AssetTree.h"
 #include "element/AssetType.h"
 #include "element/Pointer.h"
+#include "element/Slugs.h"
 #include "element/URI.h"
 #include "element/Utils.h"
 
@@ -37,12 +40,26 @@ namespace Element {
     class Asset;
     typedef Shared<Asset> AssetPtr;
 
+
+    class AssetNode :  public ObjectModel
+    {
+    public:
+
+        AssetNode (const AssetItem& item)
+            : ObjectModel (Slugs::asset)
+        {
+
+        }
+
+    };
+
+
     class AssetID
     {
     public:
 
         inline AssetID()
-            : m_root (AssetType::invalid),
+            : m_root (AssetType::Unknown),
               m_id(0),
               m_uri ("urn:nil")
         { }
@@ -75,7 +92,7 @@ namespace Element {
         inline AssetType type() const { return m_root; }
         inline String typeString() const { return m_root.toString(); }
         inline const String& uri() const { return m_uri; }
-        inline bool is_valid() const { return m_id != 0 && m_root != AssetType::invalid; }
+        inline bool is_valid() const { return m_id != 0 && m_root != AssetType::Unknown; }
         inline operator bool() const { return is_valid(); }
 
     private:

@@ -57,9 +57,9 @@ public:
 
 private:
 
-    HashMap<int32, EventHolder*> eventMap;
     int32 lastEventId;
     Array<int32> expiredIds;
+    HashMap<int32, EventHolder*> eventMap;
 
     /** @internal */
     void buildHashTable (ValueTree& noteData);

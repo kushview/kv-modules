@@ -52,7 +52,7 @@ namespace Gui {
         void hideEmptyKeys();
 
         inline bool triggerNotes() const { return (var)shouldTriggerNotes; }
-        inline Value& triggerNotesValue() { return shouldTriggerNotes; }
+        inline Value triggerNotesValue() { return shouldTriggerNotes; }
 
         //======================================================================
         /** Set the Note sequence to use */
@@ -122,6 +122,8 @@ namespace Gui {
         virtual void refreshComponentForTrack (const int track);
 
     private:
+
+        ValueTree sequenceNode;
 
         MidiKeyboardState& keyboardState;
 

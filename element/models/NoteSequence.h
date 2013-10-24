@@ -20,6 +20,7 @@
 #ifndef ELEMENT_NOTESEQUENCE_H
 #define ELEMENT_NOTESEQUENCE_H
 
+#include "element/engine/Shuttle.h"
 #include "element/models/Note.h"
 
 namespace Element {
@@ -31,7 +32,7 @@ namespace Element {
     public:
 
         /** Create an empty sequence */
-        NoteSequence() : ObjectModel ("note-events") { }
+        NoteSequence() : ObjectModel ("noteSequence") { }
 
         /** Create an empty sequence */
         NoteSequence (const ValueTree& data)
@@ -132,6 +133,21 @@ namespace Element {
         inline void clear (UndoManager* u = nullptr) {
             node().removeAllChildren (u);
         }
+
+        /** This will return Shuttle::PPQ unless specified otherwise
+            by setting the property "ppq" to and integer value
+
+            The easiest thing to do when working with foreign MIDI sources
+            is to read tick values from the source, scale them with,
+            Shuttle::scaledTick, then add notes to the sequences with new tick
+            values.
+        */
+        inline int32 ppq() const {
+            return node().getProperty (Slugs::ppq, Shuttle::PPQ);
+        }
+
+    protected:
+
 
     private:
 

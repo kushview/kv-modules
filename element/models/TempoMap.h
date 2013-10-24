@@ -1,5 +1,5 @@
 /*
-    asset.cpp - This file is part of Element
+    TempoMap.h - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -17,50 +17,24 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/Asset.h"
-#include "element/session/WorldBase.h"
+#ifndef ELEMENT_TEMPO_MAP_H
+#define ELEMENT_TEMPO_MAP_H
+
+#include "element/models/ObjectModel.h"
 
 namespace Element {
 
-
-const char*
-asset_file_extensions (AssetType type)
+class TempoMap :  public ObjectModel
 {
+public:
 
-    switch (type)
+    TempoMap ()
+        : ObjectModel ("tempo")
     {
-        case AssetType::Sequence:
-            return ".esq";
-        case AssetType::AudioFile:
-            return "*.wav";
-        case AssetType::MidiFile:
-            return ".mid";
-        default: break;
+
     }
 
-    return "";
-}
-
-
-
-AssetPtr
-Asset::create (World&, const URI&)
-{
-    Logger::writeToLog ("Asset::create() not implemented");
-
-#if 0
-    Asset* asset = 0;
-
-    switch (uri.asset_type())
-    {
-        case AssetType::audio:
-        {
-            break;
-        }
-    }
-#endif
-
-    return AssetPtr();
-}
+};
 
 }
+#endif // ELEMENT_TEMPO_MAP_H

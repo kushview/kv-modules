@@ -44,6 +44,10 @@ namespace Gui {
         : keyboardState (k),
           shouldTriggerNotes ("trigger-notes")
     {
+        sequence.setOwned (new NoteSequence());
+        sequenceNode = sequence->node();
+        sequenceNode.addListener (this);
+
         setTrackWidth (80);
         setTrackHeightsOffset (-getTracksTotalHeight() / 2, false);
         resized();
@@ -59,23 +63,23 @@ namespace Gui {
 
     MidiEditorBody::~MidiEditorBody()
     {
+        sequenceNode.removeListener (this);
         notes.clear();
         sequence.clear();
     }
 
 
     void
-    MidiEditorBody::addNote (int note, float beat, float length, int channel)
+    MidiEditorBody::addNote (int note, float start, float length, int channel)
     {
         assert (sequence.get() != nullptr);
-        sequence->addNote (note, beat, length, channel);
+        sequence->addNote (note, start, length, channel);
     }
 
 
     void
     MidiEditorBody::addSequence (const MidiMessageSequence& seq)
     {
-        // pseudo code  sequence->interface->putMidiSequence (seq);
     }
 
     void
@@ -165,9 +169,10 @@ namespace Gui {
     void
     MidiEditorBody::mouseDoubleClick (const MouseEvent &ev)
     {
-        if (ev.x > getTrackWidth()) {
+        if (ev.x > getTrackWidth())
+        {
             const int keyId = 127 - trackAt (ev);
-            addNote (keyId, xToBeat (ev.x, true), insertLength, insertChannel);
+            addNote (keyId, xToTicks (ev.x, true), (float)Shuttle::PPQ * 0.5f, 1);
         }
     }
 
@@ -228,6 +233,11 @@ namespace Gui {
                 c->setModel (note);
             }
 
+            String msg ("Ticks to Pix: start: " );
+            msg << tickToX (note.tickStart()) << String(" len: ");
+            msg << tickToX (note.tickEnd());
+            Logger::writeToLog (msg);
+
             notes.add (c);
             addTimelineClip (c, 127 - c->keyId());
         }
@@ -266,27 +276,22 @@ namespace Gui {
     void
     MidiEditorBody::setNoteSequence (const NoteSequence& s)
     {
-        if (sequence.get() == &s)
-            return;
+        if (sequenceNode == s.node())
+                return;
 
-        if (sequence != nullptr)
-            sequence->removeValueListener (this);
+        sequence.setOwned (new NoteSequence (s));
+        sequenceNode = sequence->node();
 
         selected.deselectAll();
         foreachNote (boost::bind (&MidiEditorBody::unloadNote, this, ::_1));
         notes.clear();
 
-        sequence.setOwned (new NoteSequence (s));
-        ValueTree state = sequence->node();
-
-        for (int32 c = state.getNumChildren(); --c >= 0;)
+        for (int32 c = sequenceNode.getNumChildren(); --c >= 0;)
         {
-            Note note (state.getChild (c));
-            if (note.isValid())
-                onNoteAdded (note);
+            Note note (sequenceNode.getChild (c));
+            onNoteAdded (note);
         }
 
-        sequence->addValueListener (this);
         repaint();
     }
 

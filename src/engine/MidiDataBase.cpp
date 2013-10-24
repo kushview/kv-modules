@@ -104,8 +104,8 @@ MidiDataBase::editNote (const Note& note)
 
     bool editResult = true;
 
-    if (note.beatStart() != noteOn->getTimeStamp() ||
-        note.beatEnd() != noteOff->getTimeStamp())
+    if (note.tickStart() != noteOn->getTimeStamp() ||
+        note.tickEnd() != noteOff->getTimeStamp())
     {
         editResult = false;
         const int32 id = note.eventId();
@@ -116,8 +116,8 @@ MidiDataBase::editNote (const Note& note)
                 editResult = note.eventId() > 0;
 #else
         lock();
-        noteOn->setTimeStamp (note.beatStart());
-        noteOff->setTimeStamp (note.beatEnd());
+        noteOn->setTimeStamp (note.tickStart());
+        noteOff->setTimeStamp (note.tickEnd());
         midi.updateMatchedPairs();
         midi.sort();
         unlock();

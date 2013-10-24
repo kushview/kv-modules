@@ -32,6 +32,7 @@ namespace Slugs {
     static const Identifier assetId  = "assetId";
     static const Identifier block    = "block";
     static const Identifier bpm      = "bpm";
+    static const Identifier channel  = "channel";
     static const Identifier clip     = "clip";
     static const Identifier file     = "file";
     static const Identifier fsid     = "fsid";
@@ -48,8 +49,11 @@ namespace Slugs {
     static const Identifier pattern  = "pattern";
     static const Identifier ppq      = "ppq";
     static const Identifier sampler  = "sampler";
+    static const Identifier start    = "start";
     static const Identifier sequence = "sequence";
+    static const Identifier tempo    = "tempo";
     static const Identifier track    = "track";
+    static const Identifier type     = "type";
     static const Identifier velocity = "velocity";
     static const Identifier version  = "version";
 

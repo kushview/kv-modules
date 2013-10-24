@@ -282,12 +282,14 @@ namespace Element {
 
 
 
-    AssetTree::AssetTree (ValueTree& parent, const String& rootName,
+    AssetTree::AssetTree (const ValueTree& parent, const String& rootName,
                           const String& rootValType, UndoManager* u)
         : rootValueType (rootValType), undo (u), assets (rootValType)
     {
         assets.setProperty ("name", rootName, nullptr);
-        parent.addChild (assets, -1, nullptr);
+
+        ValueTree(parent).addChild (assets, -1, nullptr);
+
         root().setId (Utility::createGUID (rootName + rootValType));
         assets.addListener(this);
     }

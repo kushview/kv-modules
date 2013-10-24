@@ -135,7 +135,7 @@ namespace Midi {
         inline void
         update (const MidiByte* msg)
         {
-            switch (lv2_midi_message_type (msg))
+            switch ((int32) lv2_midi_message_type (msg))
             {
             case LV2_MIDI_CTL_MSB_BANK:
                 msb = msg [2];

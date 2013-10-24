@@ -83,6 +83,11 @@ namespace Element {
 
         inline bool isValid()  const { return node().isValid() && node().hasType (Slugs::clip); }
 
+        virtual inline int32 trackIndex() const {
+            ValueTree track (node().getParent());
+            return track.getParent().indexOf (track);
+        }
+
         inline bool operator== (const ClipModel& m) const { return node() == m.node(); }
         inline bool operator!= (const ClipModel& m) const { return node() != m.node(); }
 

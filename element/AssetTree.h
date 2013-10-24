@@ -116,7 +116,7 @@ namespace Element {
         };
 
 
-        AssetTree (ValueTree& parent, const String& rootName,
+        AssetTree (const ValueTree& parent, const String& rootName,
                    const String& rootValType = "assets", UndoManager* u = nullptr);
         AssetTree (const String& rootName, const String& rootValType = "assets",
                    UndoManager* u = nullptr);

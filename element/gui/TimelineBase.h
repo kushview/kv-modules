@@ -82,6 +82,7 @@ namespace Gui {
                          public Component,
                          public Slider::Listener,
                          public ScrollBar::Listener,
+                         public Value::Listener,
                          protected Timer
     {
 
@@ -167,14 +168,14 @@ namespace Gui {
             }
         }
 
-
-        inline void setTrackVisibility (const BigInteger& vis)
+        inline void
+        setTrackVisibility (const BigInteger& vis)
         {
             heights.setEnablement (vis);
             triggerAsyncUpdate();
         }
 
-        const Element::TimeScale& timeScale() { return scale; }
+        const Element::TimeScale& timeScale() const { return scale; }
 
         virtual void paint (Graphics& g);
         virtual void resized();
@@ -191,6 +192,14 @@ namespace Gui {
         {
             addAndMakeVisible (playheadIndicator = indicator);
         }
+
+        void valueChanged (Value &value);
+
+        inline double getTempo() const { return tempo.getValue(); }
+        inline Value& getTempoValue() { return tempo; }
+        inline void setTempo (double bpm) { tempo.setValue (bpm); }
+
+        inline uint16 ticksPerBeat() const { return scale.ticksPerBeat(); }
 
     protected:
 
@@ -251,51 +260,73 @@ namespace Gui {
             return heights.trackAtY (point.getY());
         }
 
-        inline int
-        beatToX (double beat) const
+
+
+        inline int32
+        tickToX (const double tick) const
         {
-            return timeToX (beat * (60.f / (double) scale.tempo()));
+            return mTrackWidth + scale.pixelFromTick (llrint (tick));
+        }
+
+        inline double
+        tickToTime (const double tick) const
+        {
+            int64 frame = scale.frameFromTick (tick);
+            return (double) frame / (double) scale.sampleRate();
         }
 
         inline int
         timeToX (double time) const
         {
+#if 0
             int64 frame = llrint (time * (double) scale.sampleRate());
             int pixel = scale.pixelFromFrame (frame);
             return pixel + mTrackWidth;
+#else
+            return tickToX (time);
+#endif
+        }
+
+        inline int64
+        xToFrame (int x) const
+        {
+            normalX (x);
+            return scale.frameFromPixel (x);
+        }
+
+        inline double
+        xToSeconds (int32 x) const
+        {
+            normalX (x);
+            return ((double) scale.frameFromPixel (x) / (double) scale.sampleRate());
+        }
+
+        inline double
+        xToTicks (int32 x, bool snap = false) const
+        {
+            normalX (x);
+            return (double) snap ? scale.tickFromPixel (scale.pixelSnap (x))
+                                 : scale.tickFromPixel (x);
         }
 
         inline double
         xToTime (int x) const
         {
-            x -= mTrackWidth;
-
-            if (x < 0)
-                return 0.0f;
-
-            return ((double) scale.frameFromPixel (x) / (double) scale.sampleRate());
+            //return xToSeconds (x);
+            return xToTicks (x);
         }
 
         inline double
-        xToBeat (int x, bool snap) const
+        xToBeat (int x, bool snap = false) const
         {
-            const double tempo = (double) scale.tempo();
-            return xToTime (snap ? pixelSnap (x) : x) * (tempo / 60.0f);
+            return xToTicks (x) / (double) scale.ticksPerBeat();
         }
 
 
         inline int
         timeToWidth (const Range<double>& time) const
         {
-            const int width = timeToX (time.getEnd()) - timeToX (time.getStart());
-            return width;
-        }
-
-        inline int64
-        xToFrame (int x) const
-        {
-            const int pixelOffset = timeToX (timeSpan.getStart());
-            return scale.frameFromPixel (x + pixelOffset);
+            return timeToX (time.getEnd()) - timeToX (time.getStart());
         }
 
         inline double getTime() const { return playheadIndicator->position(); }
@@ -345,7 +376,9 @@ namespace Gui {
 
         int mTrackWidth, mMaxTrackWidth;
 
-        TimeScale scale;
+        Element::TimeScale scale;
+        Value tempo;
+
         TrackHeights heights;
         TimelinePosition position;
         Range<double> timeSpan; // a.k.a the suggested visible range
@@ -360,6 +393,11 @@ namespace Gui {
 
         friend class AsyncUpdater;
         void handleAsyncUpdate();
+
+        void normalX (int32& x) const
+        {
+            x -= mTrackWidth;
+        }
 
 
 

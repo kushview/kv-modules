@@ -50,7 +50,7 @@ namespace Element {
         const ValueTree& node() const { return objectData; }
 
         /** Access to the underlying ValueTree */
-        ValueTree& node() { return objectData; }
+        ValueTree node() { return objectData; }
 
         /** Replace this objects ValueTree with another
             If you need to do something special when data is set, then override
@@ -58,7 +58,7 @@ namespace Element {
 
             @param The new data to use
         */
-        void setData (const ValueTree& data);
+        ValueTree setData (const ValueTree& data);
 
         /** Count the number of children with a type */
         int32 countChildrenOfType (const Identifier& slug) const;
