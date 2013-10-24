@@ -178,7 +178,7 @@ SequenceCursor::clip (int32 track) const
 }
 
 ClipSource*
-SequenceCursor::seekClip (const SequencerTrack* track, ClipSource* clip, int64_t frame) const
+SequenceCursor::seekClip (const SequencerTrack* track, ClipSource* clip, int64 frame) const
 {
     if (clip == nullptr)
         clip = track->firstClip();

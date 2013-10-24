@@ -6,23 +6,25 @@ import os, sys
 sys.path.append (os.getcwd() + "/tools/waf")
 import autowaf, audiounit, element, framework, juce, vst
 
-common_tools = "apple audiounit element framework juce vst"
+common_tools = "element juce vst"
 
 def options(opt):
     autowaf.set_options (opt, True)
     opt.load ("compiler_c compiler_cxx")
     opt.load (common_tools)
+    if element.is_mac(): opt.load ("apple audiounit framework");		
 
 def configure (conf):
     conf.load ("compiler_c compiler_cxx")
     autowaf.configure (conf)
     conf.load (common_tools)
+    if element.is_mac(): opt.load ("apple audiounit framework");
 
     print
     autowaf.display_header ("Element Configuration")
 
-    if not conf.env.REZ: conf.check_rez()
-    conf.check_vst()
+    if element.is_mac() and not conf.env.REZ: conf.check_rez()
+    ##conf.check_vst()
     conf.check_cxx11()
     conf.line_just = 40
 

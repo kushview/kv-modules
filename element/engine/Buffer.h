@@ -16,8 +16,10 @@
 #ifndef ELEMENT_BUFFER_HPP
 #define ELEMENT_BUFFER_HPP
 
-#include "element/Core.h"
+#include <atomic>
 #include <boost/intrusive_ptr.hpp>
+#include "element/Core.h"
+
 
 namespace Element {
     class Buffer;

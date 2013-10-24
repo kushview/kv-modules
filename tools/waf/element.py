@@ -9,6 +9,9 @@ import autowaf
 def is_mac():
     return "Darwin" in platform.system()
 
+def is_linux():
+    return "Linux" in platform.system()
+
 @conf
 def check_qt5 (self):
     self.qt5_vars_debug = []
@@ -26,6 +29,9 @@ def check_cxx11 (self):
         self.check_cxx (linkflags=["-stdlib=libc++", "-lc++"], cxxflags=["-stdlib=libc++", "-std=c++11"])
         self.env.append_unique ("CXXFLAGS", ["-stdlib=libc++", "-std=c++11"])
         self.env.append_unique ("LINKFLAGS", ["-stdlib=libc++", "-lc++"])
+    elif is_linux():
+        self.check_cxx (cxxflags=["-std=c++11"])
+        self.env.append_unique ("CXXFLAGS", ["-std=c++11"])
     else:
         print "SETUP CXX11 FOR " + platform.system()
         exit (1)

@@ -21,7 +21,7 @@
 #include "element/NodeStorage.h"
 #include "element/Pointer.h"
 #include "element/SymbolMap.h"
-#include "element/types.h"
+#include "element/Types.h"
 
 #include "element/session/DeviceManager.h"
 #include "element/session/Module.h"

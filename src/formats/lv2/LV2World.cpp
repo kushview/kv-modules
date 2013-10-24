@@ -133,7 +133,7 @@ namespace Element {
         for (int i = p.get_num_ports(); --i >= 0;)
         {
            Lilv::Port port (p.get_port_by_index(i));
-           if (port.is_a (lv2_CVPort))
+           if (port.is_a (const_cast<LilvNode*> (lv2_CVPort)))
               return false;
         }
 

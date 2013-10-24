@@ -21,7 +21,7 @@
 #define ELEMENT_ASSET_TYPE_HPP
 
 #include "element/Core.h"
-#include "element/types.h"
+#include "element/Types.h"
 
 namespace Element {
 
