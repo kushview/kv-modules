@@ -33,7 +33,8 @@ def check_cxx11 (self):
         self.check_cxx (cxxflags=["-std=c++11"])
         self.env.append_unique ("CXXFLAGS", ["-std=c++11"])
     else:
-        print "SETUP CXX11 FOR " + platform.system()
+        print os.getCwd() + "  element.py"
+        print "!!!!! SETUP CXX11 FOR " + platform.system()
         exit (1)
 
 @conf
