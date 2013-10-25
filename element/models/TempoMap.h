@@ -29,7 +29,7 @@ class TempoMap :  public ObjectModel
 public:
 
     TempoMap ()
-        : ObjectModel ("tempo")
+        : ObjectModel ()
     {
 
     }

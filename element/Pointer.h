@@ -51,7 +51,6 @@
 
 #endif
 
-#include <boost/scoped_ptr.hpp>
 #define Scoped ScopedPointer
 #define OptionalPtr OptionalScopedPointer
 #define ScopedXml ScopedPointer<XmlElement>
@@ -65,7 +64,7 @@ namespace Element
 
 template <class T, class U>
 inline Shared<T>
-dynamic_ptr_cast (const Shared<U>& sp)
+dynamicPtrCast (const Shared<U>& sp)
 {
 #if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
     return std::dynamic_pointer_cast<T> (sp);
@@ -79,7 +78,7 @@ dynamic_ptr_cast (const Shared<U>& sp)
 
 template <class T, class U>
 inline Shared<T>
-const_ptr_cast (const Shared<U>& sp)
+constPtrCast (const Shared<U>& sp)
 {
 #if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
     return std::const_pointer_cast<T> (sp);
@@ -92,7 +91,7 @@ const_ptr_cast (const Shared<U>& sp)
 
 template <class T, class U>
 inline Shared<T>
-static_ptr_cast (const Shared<U>& sp)
+staticPtrCast (const Shared<U>& sp)
 {
 #if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
     return std::static_pointer_cast<T> (sp);

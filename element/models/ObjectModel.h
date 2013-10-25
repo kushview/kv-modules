@@ -22,6 +22,7 @@
 
 #include <element/juce.hpp>
 #include <element/Pointer.h>
+#include <element/Slugs.h>
 
 namespace Element {
 
@@ -88,16 +89,10 @@ namespace Element {
     /** Typedef for a shared ObjectModel */
     typedef Shared<ObjectModel> ObjectPtr;
 
-    /** Convenience wrapper for  ::dynamic_ptr_cast */
-    template<class T, class U> inline Shared<T>
-    dynamicPtrCast (const Shared<U>& ptr) {
-        return Element::dynamic_ptr_cast<T> (ptr);
-    }
-
     /** cast another shared pointer to a shared Object Model */
     template<class T> inline ObjectPtr
     objectPtrCast (const Shared<T>& ptr) {
-        return Element::dynamic_ptr_cast<ObjectModel> (ptr);
+        return Element::dynamicPtrCast<ObjectModel> (ptr);
     }
 
 }
