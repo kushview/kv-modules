@@ -25,9 +25,13 @@ namespace Element {
 //==============================================================================
 void TreePanelBase::setRoot (TreeItemBase* root)
 {
+    tree.setRootItem (nullptr);
     rootItem = root;
-    tree.setRootItem (root);
-    tree.getRootItem()->setOpen (true);
+    if (root != nullptr) {
+        tree.setRootItem (root);
+        tree.getRootItem()->setOpen (true);
+    }
+
 #if 0
     if (project != nullptr)
     {
