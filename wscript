@@ -24,7 +24,8 @@ def configure (conf):
     autowaf.display_header ("Element Configuration")
 
     if element.is_mac() and not conf.env.REZ: conf.check_rez()
-    ##conf.check_vst()
+
+    conf.check_vst()
     conf.check_cxx11()
     conf.line_just = 40
 
