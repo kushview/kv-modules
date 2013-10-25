@@ -18,7 +18,6 @@
 */
 
 #include "element/Core.h"
-#include "element/NodeStorage.h"
 #include "element/Pointer.h"
 #include "element/SymbolMap.h"
 #include "element/Types.h"

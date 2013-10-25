@@ -69,11 +69,11 @@ public:
     {
         switch (root)
         {
-            case AudioFile:    return "audio";
-            case MidiFile:     return "midi";
-            case Sequence: return "sequence";
-            case Video:    return "video";
-            default:       return "unknown"; // reeeally shouldn't ever happen
+            case AudioFile: return "audio";
+            case MidiFile:  return "midi";
+            case Sequence:  return "sequence";
+            case Video:     return "video";
+            default:        return "unknown"; // reeeally shouldn't ever happen
         }
     }
 

@@ -15,7 +15,6 @@
 #include <boost/function.hpp>
 
 #include "element/Core.h"
-#include "element/Node.h"
 
 #define ELEMENT_INVALID_PORT JUCE_INVALID_PORT
 

@@ -47,9 +47,7 @@ namespace Element {
 
         AssetNode (const AssetItem& item)
             : ObjectModel (Slugs::asset)
-        {
-
-        }
+        { }
 
     };
 

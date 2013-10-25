@@ -1,23 +1,43 @@
-#ifndef LV2MODEL_HPP
-#define LV2MODEL_HPP
+/*
+    LV2Model.h - This file is part of Element
+    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
-namespace Element {
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-    class Model
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+#ifndef ELEMENT_LV2MODEL_H
+#define ELEMENT_LV2MODEL_H
+
+namespace Element
+{
+
+    class LV2Model
     {
     public:
 
-        ~Model () { }
+        ~LV2Model () { }
 
-        inline static Shared<Model>
+        inline static Shared<LV2Model>
         create (Lilv::World& world, Lilv::Plugin plugin, LV2World& nodes, LV2FeatureArray& features, SymbolMap& symbols)
         {
             if (plugin != nullptr)
             {
-                return Shared<Model> (new Model (world, plugin, nodes, features, symbols));
+                return Shared<LV2Model> (new LV2Model (world, plugin, nodes, features, symbols));
             }
 
-            return Shared<Model> ();
+            return Shared<LV2Model> ();
         }
 
         const LilvPlugin* getLilvPlugin() { return this->plugin.me; }
@@ -126,7 +146,7 @@ namespace Element {
 
     protected:
 
-        Model (Lilv::World& world_, Lilv::Plugin plugin_,
+        LV2Model (Lilv::World& world_, Lilv::Plugin plugin_,
                LV2World& nodes_, LV2FeatureArray& feats,
                SymbolMap& symbols_)
             : world (world_),
@@ -202,7 +222,7 @@ namespace Element {
 
         friend class LV2Module;
 
-    }; // LV2Module::Model
+    };
 
 }
-#endif // LV2MODEL_HPP
+#endif /* ELEMENT_LV2MODEL_H */
