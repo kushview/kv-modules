@@ -92,6 +92,28 @@ namespace Element {
             return nt;
         }
 
+        inline Note
+        addNote (const MidiMessage& on, const MidiMessage& off)
+        {
+            Note note (on.getNoteNumber(), on.getTimeStamp(),
+                       off.getTimeStamp() - on.getTimeStamp(),
+                       on.getChannel(), on.getFloatVelocity());
+            node().addChild (note.node(), -1, nullptr);
+            return note;
+        }
+
+
+        inline void
+        addMidiMessageSequence (const MidiMessageSequence& mseq)
+        {
+            const int32 numEvs = mseq.getNumEvents();
+            for (int32 i = 0; i < numEvs; ++i)
+                if (MidiMessageSequence::MidiEventHolder* mh = mseq.getEventPointer (i))
+                    if (mh->message.isNoteOn()&& mh->noteOffObject != nullptr)
+                        addNote (mh->message, mh->noteOffObject->message);
+        }
+
+
         /** Remove a note from the sequence */
         inline void
         removeNote (const Note& note)
