@@ -21,7 +21,7 @@
 
 #include "element/Core.h"
 
-#define ELEMENT_FORCE_BOOST_SHARED_PTR 1
+#define ELEMENT_FORCE_BOOST_SHARED_PTR 0
 
 #if ! ELEMENT_FORCE_BOOST_SHARED_PTR
     #if __cplusplus >= 201103L
@@ -54,7 +54,6 @@
 #include <boost/scoped_ptr.hpp>
 #define Scoped ScopedPointer
 #define OptionalPtr OptionalScopedPointer
-//#define ScopedXml boost::scoped_ptr<juce::XmlElement>
 #define ScopedXml ScopedPointer<XmlElement>
 
 namespace Element
