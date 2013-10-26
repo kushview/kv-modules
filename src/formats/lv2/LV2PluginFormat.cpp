@@ -413,7 +413,7 @@ LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& results,
         msg << fileOrIdentifier;
         JUCE_LV2_LOG (msg);
 
-        ScopedPointer<AudioPluginInstance> instance (createInstanceFromDescription (*desc.get()));
+        ScopedPointer<AudioPluginInstance> instance (createInstanceFromDescription (*desc.get(), 44100, 1024));
         if (LV2PluginInstance* const p = dynamic_cast <LV2PluginInstance*> (instance.get()))
         {
             p->fillInPluginDescription (*desc.get());
@@ -427,7 +427,7 @@ LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& results,
 }
 
 AudioPluginInstance*
-LV2PluginFormat::createInstanceFromDescription (const PluginDescription& desc)
+LV2PluginFormat::createInstanceFromDescription (const PluginDescription& desc, double sampleRate, int buffersize)
 {
     if (desc.pluginFormatName != String ("LV2"))
         return nullptr;

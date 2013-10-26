@@ -42,6 +42,7 @@ namespace Slugs {
     static const Identifier id       = "id";
     static const Identifier keyId    = "keyId";
     static const Identifier length   = "length";
+    static const Identifier media    = "media";
     static const Identifier name     = "name";
     static const Identifier nodeId   = "nodeId";
     static const Identifier note     = "note";

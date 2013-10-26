@@ -149,6 +149,7 @@ element_modules = '''
     juce_graphics
     juce_gui_basics
     juce_gui_extra
+    juce_opengl
 '''.split()
 
 def wipe (ctx):

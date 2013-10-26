@@ -19,6 +19,9 @@
 #ifndef ELEMENT_PORTTYPE_H
 #define ELEMENT_PORTTYPE_H
 
+#include <lv2/lv2plug.in/ns/lv2core/lv2.h>
+#include <lv2/lv2plug.in/ns/ext/atom/atom.h>
+
 #include "element/juce.hpp"
 
 #ifndef ELEMENT_INVALID_PORT

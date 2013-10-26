@@ -72,7 +72,7 @@ namespace Element {
     Processor*
     PluginManager::createPlugin (const PluginDescription &desc, String &errorMsg)
     {
-        if (AudioPluginInstance* plugin = formats().createPluginInstance (desc, errorMsg))
+        if (AudioPluginInstance* plugin = formats().createPluginInstance (desc, 44100.f, 1024, errorMsg))
             return dynamic_cast<Processor*> (plugin);
         return nullptr;
     }

@@ -31,7 +31,8 @@ public:
     //==============================================================================
     String getName() const { return "LV2"; }
     void findAllTypesForFile (OwnedArray <PluginDescription>& descrips, const String& identifier);
-    AudioPluginInstance* createInstanceFromDescription (const PluginDescription& desc);
+    AudioPluginInstance* createInstanceFromDescription (const PluginDescription& desc, double initialSampleRate,
+                                                        int initialBufferSize);
     bool fileMightContainThisPluginType (const String& fileOrIdentifier);
     String getNameOfPluginFromIdentifier (const String& fileOrIdentifier);
     StringArray searchPathsForPlugins (const FileSearchPath&, bool recursive);
