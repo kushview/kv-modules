@@ -12,13 +12,15 @@ def options(opt):
     autowaf.set_options (opt, True)
     opt.load ("compiler_c compiler_cxx")
     opt.load (common_tools)
-    if element.is_mac(): opt.load ("apple audiounit framework");		
+    if element.is_mac():
+        opt.load ("apple audiounit framework");
 
 def configure (conf):
     conf.load ("compiler_c compiler_cxx")
     autowaf.configure (conf)
     conf.load (common_tools)
-    if element.is_mac(): opt.load ("apple audiounit framework");
+    if element.is_mac():
+        conf.load ("apple audiounit framework");
 
     print
     autowaf.display_header ("Element Configuration")
