@@ -22,13 +22,14 @@
 
 #include "element/juce.hpp"
 #include "element/engine/ClipSource.h"
+#include "element/engine/Processor.h"
 #include "element/models/TrackModel.h"
 
 namespace Element {
 
 class Sequencer;
 
-class SequencerTrack :  public AudioProcessor
+class SequencerTrack :  public Processor
 {
 public:
 

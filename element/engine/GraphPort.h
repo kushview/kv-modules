@@ -20,7 +20,7 @@
 #ifndef ELEMENT_PORTPROCESSOR_H
 #define ELEMENT_PORTPROCESSOR_H
 
-#include "element/Processors.h"
+#include "element/engine/Processor.h"
 
 namespace Element {
 
@@ -41,7 +41,7 @@ namespace Element {
 
     @see AudioProcessorGraph
 */
-class JUCE_API  PortProcessor     : public AudioPluginInstance
+class JUCE_API  GraphPort     : public Processor
 {
 public:
 
@@ -65,8 +65,8 @@ public:
     bool isOutput() const;
 
     //==============================================================================
-    PortProcessor (const PortType portType, bool isInputPort);
-    ~PortProcessor();
+    GraphPort (const PortType portType, bool isInputPort);
+    ~GraphPort();
 
     void fillInPluginDescription (PluginDescription& d) const;
 
@@ -110,7 +110,7 @@ private:
     GraphProcessor* graph;
     const bool portIsInput;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PortProcessor)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphPort)
 
 };
 

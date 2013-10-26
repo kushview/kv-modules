@@ -2,7 +2,7 @@
 #include "element/gui/Style.h"
 
 namespace Element {
-namespace gui {
+namespace Gui {
 
 
     Style::Style()

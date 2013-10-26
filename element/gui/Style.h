@@ -1,12 +1,12 @@
 
-#ifndef BKE_STYLE_HPP
-#define BKE_STYLE_HPP
+#ifndef ELEMENT_STYLE_H
+#define ELEMENT_STYLE_H
 
 #include "element/juce.hpp"
 
 
 namespace Element {
-namespace gui {
+namespace Gui {
 
     enum ColourIds
     {
@@ -77,4 +77,4 @@ namespace gui {
     };
 }}
 
-#endif /* BKE_STYLE_HPP */
+#endif /* ELEMENT_STYLE_H */

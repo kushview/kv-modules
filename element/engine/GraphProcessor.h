@@ -22,9 +22,10 @@
 #ifndef ELEMENT_GRAPH_PROCESSOR_HPP
 #define ELEMENT_GRAPH_PROCESSOR_HPP
 
+#include "element/engine/Processor.h"
+
 #include "element/Arc.h"
 #include "element/Core.h"
-#include "element/Processors.h"
 
 namespace Element {
 
@@ -42,7 +43,7 @@ namespace Element {
     To play back a graph through an audio device, you might want to use an
     AudioProcessorPlayer object.
 */
-class JUCE_API  GraphProcessor :  public AudioPluginInstance,
+class JUCE_API  GraphProcessor :  public Processor,
                                   public AsyncUpdater
 {
 public:
@@ -71,7 +72,7 @@ public:
         const uint32 nodeId;
 
         /** The actual processor object that this node represents. */
-        AudioProcessor* audioProcessor() const noexcept           { return proc; }
+        Processor* audioProcessor() const noexcept           { return proc; }
 
         /** The actual processor object dynamic_cast'd to ProcType */
         template<class ProcType>
@@ -96,10 +97,10 @@ public:
         //==============================================================================
         friend class GraphProcessor;
 
-        const ScopedPointer<AudioProcessor> proc;
+        const ScopedPointer<Processor> proc;
         bool isPrepared;
 
-        Node (uint32 nodeId, AudioProcessor*) noexcept;
+        Node (uint32 nodeId, Processor*) noexcept;
 
         void setParentGraph (GraphProcessor*) const;
         void prepare (double sampleRate, int blockSize, GraphProcessor*);
@@ -159,7 +160,7 @@ public:
 
         If this succeeds, it returns a pointer to the newly-created node.
     */
-    Node* addNode (AudioProcessor* newProcessor, uint32 nodeId = 0);
+    Node* addNode (Processor* newProcessor, uint32 nodeId = 0);
 
     /** Deletes a node within the graph which has the specified ID.
 
@@ -252,7 +253,7 @@ public:
 
         @see AudioProcessorGraph
     */
-    class JUCE_API  AudioGraphIOProcessor     : public AudioPluginInstance
+    class JUCE_API  AudioGraphIOProcessor     : public Processor
     {
     public:
         /** Specifies the mode in which this processor will operate.
@@ -404,7 +405,7 @@ private:
     Array<void*> renderingOps;
 
     friend class AudioGraphIOProcessor;
-    friend class PortProcessor;
+    friend class GraphPort;
 
     AudioSampleBuffer* currentAudioInputBuffer;
     AudioSampleBuffer currentAudioOutputBuffer;

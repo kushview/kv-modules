@@ -9,7 +9,7 @@
 #define STOCK_HPP_
 
 namespace Element {
-namespace gui {
+namespace Gui {
 
     class Stock
     {

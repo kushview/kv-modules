@@ -6,7 +6,7 @@
 #include "element/Pointer.h"
 
 namespace Element {
-namespace gui {
+namespace Gui {
 
     class DockArea;
     class DockItem;

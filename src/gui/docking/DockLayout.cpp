@@ -3,7 +3,7 @@
 
 
 namespace Element {
-namespace gui {
+namespace Gui {
 
 
     DockLayout::DockLayout (Component& holder_, bool vertical)

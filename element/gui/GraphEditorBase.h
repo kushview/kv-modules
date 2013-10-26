@@ -82,9 +82,11 @@ public:
 
     virtual bool shouldDrawDragImageWhenOver() { return true; }
 
-private:
+protected:
 
     GraphController& graph;
+
+private:
 
     ScopedPointer<ConnectorComponent> draggingConnector;
 

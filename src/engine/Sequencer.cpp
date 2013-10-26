@@ -7,7 +7,7 @@
 
 #include "element/engine/ClipFactory.h"
 #include "element/engine/ClipSource.h"
-#include "element/engine/PortProcessor.h"
+#include "element/engine/GraphPort.h"
 #include "element/engine/Sequencer.h"
 #include "element/engine/SequenceCursor.h"
 #include "element/engine/SequencerTrack.h"

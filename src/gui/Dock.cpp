@@ -2,7 +2,7 @@
 #include "element/gui/Dock.h"
 
 namespace Element {
-namespace gui {
+namespace Gui {
 
     class Dock::MiddleLayout : public Component
     {

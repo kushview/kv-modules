@@ -167,8 +167,7 @@ namespace Element {
         }
 
         String errorMessage;
-
-        AudioPluginInstance* instance = plugins.createPluginInstance (pd, errorMessage);
+        Processor* instance = plugins.createPlugin (pd, errorMessage);
 
         if (instance == nullptr)
         {
@@ -180,8 +179,6 @@ namespace Element {
 
         GraphProcessor::Node::Ptr node (
                     graph.getGraph().addNode (instance, xml.getIntAttribute ("uid")));
-
-        std::clog << "node loaded: " << node->audioProcessor()->getName() << std::endl;
 
         if (const XmlElement* const state = xml.getChildByName ("state"))
         {

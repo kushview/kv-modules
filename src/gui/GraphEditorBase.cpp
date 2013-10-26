@@ -673,8 +673,8 @@ void GraphEditorBase::mouseDown (const MouseEvent& e)
         if (true) //MainHostWindow* const mainWindow = findParentComponentOfClass<MainHostWindow>())
         {
             m.addSectionHeader ("Plugins");
-            KnownPluginList& plugs (graph.plugins().allPlugins());
-            plugs.addToMenu (m, KnownPluginList::sortByCategory);
+            KnownPluginList& plugs (graph.plugins().availablePlugins());
+            plugs.addToMenu (m, KnownPluginList::sortByManufacturer);
 
             m.addSectionHeader ("Internals");
             m.addItem (3, "BTSP-1");

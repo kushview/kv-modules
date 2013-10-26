@@ -20,7 +20,7 @@
 #include "element/gui/Dock.h"
 
 namespace Element {
-namespace gui {
+namespace Gui {
 
 
     DockArea::DockArea ()

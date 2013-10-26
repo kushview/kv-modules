@@ -109,7 +109,7 @@ void TreeItemBase::paintOpenCloseButton (Graphics& g, int width, int height, boo
     else
         p.addTriangle (width * 0.25f, height * 0.25f, width * 0.8f, height * 0.5f,  width * 0.25f, height * 0.75f);
 
-    g.setColour (getOwnerView()->findColour (gui::mainBackgroundColourId).contrasting (0.3f));
+    g.setColour (getOwnerView()->findColour (Gui::mainBackgroundColourId).contrasting (0.3f));
     g.fillPath (p);
 }
 

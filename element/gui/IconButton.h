@@ -13,7 +13,7 @@
 #include "element/Signals.h"
 
 namespace Element {
-namespace gui {
+namespace Gui {
 
     class IconButton : public Button,
                        public ButtonListener

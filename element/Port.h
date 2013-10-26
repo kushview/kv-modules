@@ -11,12 +11,9 @@
 #define ELEMENT_PORT_HPP
 
 #include <inttypes.h>
-
 #include <boost/function.hpp>
 
-#include "element/Core.h"
-
-#define ELEMENT_INVALID_PORT JUCE_INVALID_PORT
+#include "element/engine/PortType.h"
 
 namespace Element {
 

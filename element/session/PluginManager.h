@@ -1,7 +1,7 @@
 #ifndef ELEMENT_PLUGIN_MANAGER_HPP
 #define ELEMENT_PLUGIN_MANAGER_HPP
 
-#include "element/juce.hpp"
+#include "element/engine/Processor.h"
 #include "element/Pointer.h"
 
 namespace Element {
@@ -9,32 +9,36 @@ namespace Element {
     class LV2World;
     class Settings;
 
-    class PluginManager : public AudioPluginFormatManager
+    class PluginManager
     {
     public:
 
+        PluginManager();
         PluginManager (LV2World&);
         ~PluginManager();
 
-        AudioPluginFormat* format (const String& fmt);
+        void addDefaultFormats();
+        void addFormat (AudioPluginFormat*);
 
+        KnownPluginList& availablePlugins();
+
+        AudioPluginFormatManager& formats();
+        AudioPluginFormat* format (const String& fmt);
         template<class FormatType>
         inline FormatType* format()
         {
-            for (int i = 0; i < getNumFormats(); ++i)
-                if (FormatType* fmt = dynamic_cast<FormatType*> (getFormat(i)))
+            for (int i = 0; i < formats().getNumFormats(); ++i)
+                if (FormatType* fmt = dynamic_cast<FormatType*> (formats().getFormat (i)))
                     return fmt;
             return nullptr;
         }
 
-        KnownPluginList& allPlugins();
-
         void saveUserPlugins (Settings&);
         void restoreUser (Settings&);
 
-    private:
+        Processor *createPlugin (const PluginDescription& desc, String& errorMsg);
 
-        LV2World& lv2;
+    private:
 
         class Private;
         Scoped<Private> priv;

@@ -16,7 +16,7 @@
 */
 
 #include "element/Port.h"
-#include "element/engine/PortProcessor.h"
+#include "element/engine/GraphPort.h"
 #include "element/engine/GraphProcessor.h"
 
 namespace Element {
@@ -348,7 +348,7 @@ private:
                                     Array<void*>& renderingOps,
                                     const int ourRenderingIndex)
     {
-        AudioProcessor* proc (node->audioProcessor());
+        Processor* proc (node->audioProcessor());
         Array <int> channelsToUse [PortType::Unknown];
         int maxLatency = getInputLatency (node->nodeId);
 
@@ -698,7 +698,7 @@ GraphProcessor::Connection::Connection (const uint32 sourceNode_, const uint32 s
 { }
 
 //==============================================================================
-GraphProcessor::Node::Node (const uint32 nodeId_, AudioProcessor* const processor_) noexcept
+GraphProcessor::Node::Node (const uint32 nodeId_, Processor* const processor_) noexcept
     : nodeId (nodeId_),
       proc (processor_),
       isPrepared (false)
@@ -742,7 +742,7 @@ void GraphProcessor::Node::setParentGraph (GraphProcessor* const graph) const
     if (GraphProcessor::AudioGraphIOProcessor* const ioProc
             = dynamic_cast <GraphProcessor::AudioGraphIOProcessor*> (proc.get()))
         ioProc->setParentGraph (graph);
-    else if (PortProcessor* const ioProc = dynamic_cast <PortProcessor*> (proc.get()))
+    else if (GraphPort* const ioProc = dynamic_cast <GraphPort*> (proc.get()))
         ioProc->setGraph (graph);
 }
 
@@ -791,7 +791,7 @@ GraphProcessor::getNodeForId (const uint32 nodeId) const
 }
 
 GraphProcessor::Node*
-GraphProcessor::addNode (AudioProcessor* const newProcessor, uint32 nodeId)
+GraphProcessor::addNode (Processor* const newProcessor, uint32 nodeId)
 {
     if (newProcessor == nullptr || (void*)newProcessor == (void*)this)
     {

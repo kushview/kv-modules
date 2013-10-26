@@ -18,8 +18,10 @@
 */
 
 #include "element/formats/lv2/LV2PluginFormat.h"
+#include "element/formats/lv2/LV2World.h"
 #include "element/session/PluginManager.h"
 #include "element/session/WorldBase.h"
+#include "element/SymbolMap.h"
 
 namespace Element {
 
@@ -31,14 +33,23 @@ namespace Element {
         ~Private() {  }
 
         KnownPluginList allPlugins;
+        AudioPluginFormatManager formats;
+        OptionalPtr<LV2World> lv2;
+        OptionalPtr<SymbolMap> symbols;
 
     };
 
-    PluginManager::PluginManager (LV2World& lv2_)
-        : lv2 (lv2_)
+    PluginManager::PluginManager()
     {
         priv = new Private();
-        addFormat (new LV2PluginFormat (lv2_));
+        priv->symbols.setOwned (new SymbolMap());
+        priv->lv2.setOwned (new LV2World (*priv->symbols));
+    }
+
+    PluginManager::PluginManager (LV2World& lv2)
+    {
+        priv = new Private();
+        priv->lv2.setNonOwned (&lv2);
     }
 
     PluginManager::~PluginManager()
@@ -46,12 +57,42 @@ namespace Element {
         priv = nullptr;
     }
 
+    void PluginManager::addDefaultFormats()
+    {
+        formats().addDefaultFormats();
+        formats().addFormat (new LV2PluginFormat (*priv->lv2));
+    }
+
+    void
+    PluginManager::addFormat (AudioPluginFormat* fmt)
+    {
+        formats().addFormat (fmt);
+    }
+
+    Processor*
+    PluginManager::createPlugin (const PluginDescription &desc, String &errorMsg)
+    {
+        if (AudioPluginInstance* plugin = formats().createPluginInstance (desc, errorMsg))
+            return dynamic_cast<Processor*> (plugin);
+        return nullptr;
+    }
+
+#if 0
+    template<class FormatType>
+    FormatType* PluginManager::format()
+    {
+        for (int i = 0; i < formats().getNumFormats(); ++i)
+            if (FormatType* fmt = dynamic_cast<FormatType*> (formats().getFormat (i)))
+                return fmt;
+        return nullptr;
+    }
+#endif
     AudioPluginFormat*
     PluginManager::format (const String& name)
     {
-        for (int i = 0; i < getNumFormats(); ++i)
+        for (int i = 0; i < formats().getNumFormats(); ++i)
         {
-            AudioPluginFormat* fmt = getFormat(i);
+            AudioPluginFormat* fmt = priv->formats.getFormat (i);
             if (fmt && fmt->getName() == name)
                 return fmt;
         }
@@ -59,8 +100,15 @@ namespace Element {
         return nullptr;
     }
 
+    AudioPluginFormatManager&
+    PluginManager::formats()
+    {
+        return priv->formats;
+    }
+
+
     KnownPluginList&
-    PluginManager::allPlugins()
+    PluginManager::availablePlugins()
     {
         return priv->allPlugins;
     }

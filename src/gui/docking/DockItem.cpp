@@ -9,7 +9,7 @@
 
 
 namespace Element {
-namespace gui {
+namespace Gui {
 
 
 DockItem::DockItem (Dock& parent, const String& id, const String& name)
