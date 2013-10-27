@@ -34,6 +34,7 @@ namespace Element {
 
         explicit ObjectModel (const ValueTree& data = ValueTree::invalid);
         ObjectModel (const Identifier& slugId);
+        virtual ~ObjectModel() { }
 
         /** Get a property from the underlying ValueTree */
         inline var getProperty (const Identifier& id, const var& d = var::null) const { return objectData.getProperty (id, d); }

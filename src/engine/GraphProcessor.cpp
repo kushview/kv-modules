@@ -925,7 +925,7 @@ GraphProcessor::addConnection (const uint32 sourceNode,
 
     ArcSorter sorter;
     Connection* c = new Connection (sourceNode, sourcePort, destNode, destPort);
-    int32 index = connections.addSorted (sorter, c);
+    connections.addSorted (sorter, c);
 
     triggerAsyncUpdate();
     return true;

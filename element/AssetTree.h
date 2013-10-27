@@ -35,11 +35,13 @@ namespace Element {
         public:
 
             Item (AssetTree& parent, const ValueTree& d)
-                : tree (parent), data (d)
+                : data (d),
+                  tree (parent)
             { }
 
             Item (const Item& other)
-                : tree (other.tree), data (other.data)
+                : data (other.data),
+                  tree (other.tree)
             { }
 
             inline bool operator== (const Item& other) const { return data == other.data && &tree == &other.tree; }

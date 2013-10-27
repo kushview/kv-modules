@@ -28,8 +28,8 @@ namespace Element {
 // Constructor.
 SequenceCursor::SequenceCursor (Sequencer& seq, int64 frame, DataType sync_type)
     : owner (seq),
-      trackCount (0),
-      mSyncType (sync_type)
+      mSyncType (sync_type),
+      trackCount (0)
 {
     mFrame = frame;
     rtClipSize = 0;
@@ -95,7 +95,7 @@ SequenceCursor::seek (int64 frame, bool sync)
         {
             // Tell whether play-head is after loop-start position...
             // FIXME: bool is_looping = (frame >= p_seq->loop_start());
-            const bool is_looping = frame > 0;
+            // const bool is_looping = frame > 0;
 
             // Care for old/previous clip...
             if (lastClip && lastClip != clip)

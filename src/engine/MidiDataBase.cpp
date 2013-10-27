@@ -108,13 +108,7 @@ MidiDataBase::editNote (const Note& note)
         note.tickEnd() != noteOff->getTimeStamp())
     {
         editResult = false;
-        const int32 id = note.eventId();
-#if 0
-        // remove and add will lock/unlock
-        if (removeNote (note))
-            if (addNote (note, id))
-                editResult = note.eventId() > 0;
-#else
+
         lock();
         noteOn->setTimeStamp (note.tickStart());
         noteOff->setTimeStamp (note.tickEnd());
@@ -123,7 +117,6 @@ MidiDataBase::editNote (const Note& note)
         unlock();
 
         editResult = true;
-#endif
     }
 
     return editResult;

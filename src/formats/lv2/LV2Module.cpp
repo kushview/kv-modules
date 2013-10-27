@@ -171,10 +171,16 @@ namespace Element {
    };
 
    LV2Module::LV2Module (LV2World& world_, const LilvPlugin* plugin_)
-       : instance (nullptr), plugin (plugin_), world(world_), worker (nullptr),
-         active (false), hub (4096), workResponses (1024),
-         currentSampleRate (44100.0), savedFeatures (nullptr),
-         numPorts (plugin.get_num_ports())
+       : instance (nullptr),
+         plugin (plugin_),
+         world (world_),
+         active (false),
+         currentSampleRate (44100.0),
+         numPorts (plugin.get_num_ports()),
+         savedFeatures (nullptr),
+         worker (nullptr),
+         hub (4096),
+         workResponses (1024)
    {
        priv = new Private (*this);
        //FIXME: createPorts (numPorts);
@@ -306,7 +312,7 @@ namespace Element {
    {
        if (instance != nullptr)
        {
-           const LV2_Descriptor* desc = instance->get_descriptor();
+           // TODO: Check if Lilv takes care of calling cleanup
        }
    }
 

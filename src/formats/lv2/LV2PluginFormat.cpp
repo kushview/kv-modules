@@ -49,7 +49,9 @@ public:
           wantsMidiMessages (false),
           initialised (false),
           isPowerOn (false),
-          module (module_), tempBuffer (1, 1)
+          tempBuffer (1, 1),
+          module (module_)
+         
     {
         jassert (module != nullptr);
     }

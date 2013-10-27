@@ -284,7 +284,10 @@ namespace Element {
 
     AssetTree::AssetTree (const ValueTree& parent, const String& rootName,
                           const String& rootValType, UndoManager* u)
-        : rootValueType (rootValType), undo (u), assets (rootValType)
+        : undo (u),
+          assets (rootValType),
+          rootValueType (rootValType)
+          
     {
         assets.setProperty ("name", rootName, nullptr);
 
@@ -295,15 +298,21 @@ namespace Element {
     }
 
     AssetTree::AssetTree (const String& rootName, const String& rootValType, UndoManager* u)
-        : rootValueType (rootValType), undo (u), assets (rootValType)
+        : undo (u),
+          assets (rootValType),
+          rootValueType (rootValType)
     {
-        assets.setProperty ("name", rootName, nullptr);
+        assets.setProperty (Slugs::name, rootName, nullptr);
         root().setId (Utility::createGUID (rootName + rootValType));
         assets.addListener (this);
     }
 
     AssetTree::AssetTree (const AssetTree& other)
-        : assets (other.assets), undo (other.undo) { assets.addListener(this); }
+        : undo (other.undo),
+          assets (other.assets)
+    {
+        assets.addListener(this);
+    }
 
     AssetTree::~AssetTree() { assets.removeListener (this); }
 

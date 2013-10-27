@@ -108,8 +108,8 @@ namespace Element {
     public:
 
         AtomicLock()
-            : a_locks(0),
-              a_mutex (ATOMIC_FLAG_INIT)
+            : a_mutex (ATOMIC_FLAG_INIT),
+              a_locks (0)
         { }
 
         inline bool

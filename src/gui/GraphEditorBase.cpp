@@ -358,7 +358,7 @@ public:
 #if 1
             for (i = 0; i < f->audioProcessor()->getNumPorts(); ++i)
             {
-                const PortType t (f->audioProcessor()->getPortType (i));
+                // const PortType t (f->audioProcessor()->getPortType (i));
                 const bool isInput (f->audioProcessor()->isPortInput (i));
                 addAndMakeVisible (new PinComponent (graph, filterID, i, isInput));
             }

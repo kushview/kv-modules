@@ -20,7 +20,11 @@
 #ifndef ELEMENT_JUCE_HPP
 #define ELEMENT_JUCE_HPP
 
+#if defined (ELEMENT_JUCE_LIBRARY)
 #include "../libs/juce/JuceHeader.h"
+#else
+#include "JuceHeader.h"
+#endif
 
 namespace Element { }
 using namespace Element;

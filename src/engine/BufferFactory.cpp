@@ -1,5 +1,5 @@
 /*
-    buffer-factory.cpp - This file is part of Element
+    BufferFactory.cpp - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -26,8 +26,11 @@ namespace Element {
 BufferFactory::BufferFactory()
     : freeAudio (nullptr),
       freeControl (nullptr),
-      freeAtom (nullptr),
-      freeMidi (nullptr) { }
+      freeMidi (nullptr),
+      freeAtom (nullptr)
+{
+
+}
 
 BufferFactory::~BufferFactory()
 {
