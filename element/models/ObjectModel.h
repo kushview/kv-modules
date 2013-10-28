@@ -80,9 +80,6 @@ namespace Element {
             @param data The data being setData
         */
         virtual void setNodeData (const ValueTree& data);
-
-    private:
-
         ValueTree objectData;
 
     };
