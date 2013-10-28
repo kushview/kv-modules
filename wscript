@@ -43,6 +43,7 @@ def configure (conf):
         autowaf.check_pkg (conf, "x11", uselib_store="X11", mandatory=True)
         autowaf.check_pkg (conf, "xext", uselib_store="XEXT", mandatory=True)
         autowaf.check_pkg (conf, "freetype2", uselib_store="FREETYPE2", mandatory=True)
+        autowaf.check_pkg (conf, "gl", uselib_store="GL", mandatory=True)
     for d in pkg_defs: conf.env[d] = conf.is_defined (d)
 
     conf.env.ELEMENT_VERSION_STRING = version_string()
@@ -172,7 +173,7 @@ def build(bld):
     e.source += glob ('src/**/*.cpp')
     e.includes += ['libs/juce']
     if element.is_linux():
-        e.use += ["LV2", "LILV", "SUIL", "ALSA", "X11", "XEXT", "FREETYPE2"]
+        e.use += ["LV2", "LILV", "SUIL", "ALSA", "X11", "XEXT", "FREETYPE2", "GL"]
     elif element.is_mac():
         e.use += ["LV2", "LILV", "SUIL", "AUDIO_TOOLBOX", "APP_KIT"]
     bld.add_group()
