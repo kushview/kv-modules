@@ -22,18 +22,18 @@
 
 #include <element/juce.hpp>
 
-//namespace Element {
-
 /** Commonly used Identifiers, these might represent different things depending
     on the context of use */
 namespace Slugs {
 
     static const Identifier asset    = "asset";
     static const Identifier assetId  = "assetId";
+    static const Identifier attack   = "attack";
     static const Identifier block    = "block";
     static const Identifier bpm      = "bpm";
     static const Identifier channel  = "channel";
     static const Identifier clip     = "clip";
+    static const Identifier decay    = "decay";
     static const Identifier file     = "file";
     static const Identifier fsid     = "fsid";
     static const Identifier events   = "events";
@@ -49,15 +49,18 @@ namespace Slugs {
     static const Identifier path     = "path";
     static const Identifier pattern  = "pattern";
     static const Identifier ppq      = "ppq";
+    static const Identifier release  = "release";
     static const Identifier sampler  = "sampler";
-    static const Identifier start    = "start";
     static const Identifier sequence = "sequence";
+    static const Identifier start    = "start";
+    static const Identifier sustain  = "sustain";
     static const Identifier tempo    = "tempo";
     static const Identifier track    = "track";
     static const Identifier type     = "type";
     static const Identifier velocity = "velocity";
     static const Identifier version  = "version";
+    static const Identifier volume   = "volume";
 
-} //}
+}
 
-#endif // ELEMENT_SLUGS_H
+#endif /* ELEMENT_SLUGS_H */
