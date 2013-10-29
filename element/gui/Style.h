@@ -14,12 +14,12 @@ namespace Gui {
         treeviewHighlightColourId       = 0x2340002
     };
 
-    class JUCE_API  Style   : public LookAndFeel_V2
+    class JUCE_API  LookAndFeel   : public LookAndFeel_V2
     {
     public:
 
-        Style();
-        virtual ~Style();
+        LookAndFeel();
+        virtual ~LookAndFeel();
 
         virtual void drawButtonBackground (Graphics&, Button&, const Colour& backgroundColour,
                                            bool isMouseOverButton, bool isButtonDown) override;
@@ -42,12 +42,14 @@ namespace Gui {
         virtual int getTabButtonSpaceAroundImage() override;
         virtual void drawTabButton (TabBarButton&, Graphics&, bool isMouseOver, bool isMouseDown) override;
 
+
         virtual void drawStretchableLayoutResizerBar (Graphics&, int w, int h, bool isVerticalBar, bool isMouseOver, bool isMouseDragging) override;
 
-        virtual bool areScrollbarButtonsVisible() override;
 
+        bool areScrollbarButtonsVisible() override;
         virtual void drawScrollbar (Graphics&, ScrollBar&, int x, int y, int width, int height, bool isScrollbarVertical,
                             int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override;
+
 
         virtual void drawConcertinaPanelHeader (Graphics&, const Rectangle<int>& area, bool isMouseOver, bool isMouseDown,
                                                 ConcertinaPanel&, Component&) override;
