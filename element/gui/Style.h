@@ -14,67 +14,53 @@ namespace Gui {
         treeviewHighlightColourId       = 0x2340002
     };
 
-
-    class Style :  public LookAndFeel
+    class JUCE_API  Style   : public LookAndFeel_V2
     {
     public:
 
         Style();
         virtual ~Style();
 
-        static void drawShinyButtonShape (Graphics& g,     float x, float y, float w, float h,
-                                                           float maxCornerSize,
-                                                           const Colour& baseColour,
-                                                           const float strokeWidth,
-                                                           const bool flatOnLeft,
-                                                           const bool flatOnRight,
-                                                           const bool flatOnTop,
-                                                           const bool flatOnBottom) noexcept;
+        virtual void drawButtonBackground (Graphics&, Button&, const Colour& backgroundColour,
+                                           bool isMouseOverButton, bool isButtonDown) override;
+
+        virtual void drawTableHeaderBackground (Graphics&, TableHeaderComponent&) override;
+
+        virtual bool areLinesDrawnForTreeView (TreeView&) override;
+        virtual void drawTreeviewPlusMinusBox (Graphics&, const Rectangle<float>& area, Colour backgroundColour, bool isOpen, bool isMouseOver) override;
+        virtual int getTreeViewIndentSize (TreeView&) override;
 
 
+        virtual void drawComboBox (Graphics& g, int width, int height, bool isButtonDown,
+                                   int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& box) override;
 
-        void drawPopupMenuBackground (Graphics& g, int width, int height);
-        Font getPopupMenuFont() { return juce::Font (12); }
+        virtual void drawKeymapChangeButton (Graphics& g, int width, int height, Button& button, const String& keyDescription) override;
 
-        Font getComboBoxFont() { return juce::Font (13); }
-        virtual void drawComboBox (Graphics&, int width, int height,
-                                   bool isButtonDown,
-                                   int buttonX, int buttonY,
-                                   int buttonW, int buttonH,
-                                   ComboBox& box);
+        virtual void drawPopupMenuBackground (Graphics& g, int width, int height) override;
 
-        int getTabButtonOverlap (int tabDepth);
-        int getTabButtonSpaceAroundImage();
-        int getTabButtonBestWidth (TabBarButton& button, int tabDepth);
-        static Colour getTabBackgroundColour (TabBarButton& button);
-        void drawTabButton (TabBarButton& button, Graphics& g, bool isMouseOver, bool isMouseDown);
+        virtual int getTabButtonOverlap (int tabDepth) override;
+        virtual int getTabButtonSpaceAroundImage() override;
+        virtual void drawTabButton (TabBarButton&, Graphics&, bool isMouseOver, bool isMouseDown) override;
 
-        Rectangle<int> getTabButtonExtraComponentBounds (const TabBarButton& button, Rectangle<int>& textArea, Component& comp);
-        void drawTabAreaBehindFrontButton (TabbedButtonBar&, Graphics&, int, int) { }
+        virtual void drawStretchableLayoutResizerBar (Graphics&, int w, int h, bool isVerticalBar, bool isMouseOver, bool isMouseDragging) override;
 
-        void drawStretchableLayoutResizerBar (Graphics& g, int /*w*/, int /*h*/, bool /*isVerticalBar*/, bool isMouseOver, bool isMouseDragging);
-        Rectangle<int> getPropertyComponentContentPosition (PropertyComponent&);
+        virtual bool areScrollbarButtonsVisible() override;
 
-        bool areScrollbarButtonsVisible()   { return false; }
+        virtual void drawScrollbar (Graphics&, ScrollBar&, int x, int y, int width, int height, bool isScrollbarVertical,
+                            int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override;
 
-        void drawScrollbar (Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height, bool isScrollbarVertical,
-                            int thumbStartPosition, int thumbSize, bool /*isMouseOver*/, bool /*isMouseDown*/);
+        virtual void drawConcertinaPanelHeader (Graphics&, const Rectangle<int>& area, bool isMouseOver, bool isMouseDown,
+                                                ConcertinaPanel&, Component&) override;
 
-        void drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
-                                        bool isMouseOver, bool isMouseDown,
-                                        ConcertinaPanel& concertina, Component& panel);
-
-        void drawButtonBackground (Graphics& g, Button& button, const Colour& backgroundColour,
-                                   bool isMouseOverButton, bool isButtonDown);
-
-        static Colour getScrollbarColourForBackground (Colour background);
-
+        static void createTabTextLayout (const TabBarButton& button, float length, float depth, Colour colour, TextLayout&);
 
     private:
 
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Style);
+        Image backgroundTexture;
+        Colour backgroundTextureBaseColour;
 
     };
+
 }}
 
 #endif /* ELEMENT_STYLE_H */
