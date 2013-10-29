@@ -48,8 +48,7 @@ namespace Gui {
 
         bool areScrollbarButtonsVisible() override;
         virtual void drawScrollbar (Graphics&, ScrollBar&, int x, int y, int width, int height, bool isScrollbarVertical,
-                            int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override;
-
+                                    int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown) override;
 
         virtual void drawConcertinaPanelHeader (Graphics&, const Rectangle<int>& area, bool isMouseOver, bool isMouseDown,
                                                 ConcertinaPanel&, Component&) override;
