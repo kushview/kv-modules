@@ -40,12 +40,12 @@ public:
     int getItemWidth() const override                   { return -1; }
     int getItemHeight() const override                  { return 20; }
 
-    void paintItem (Graphics& g, int width, int height) override;
-    void paintOpenCloseButton (Graphics& g, int width, int height, bool isMouseOver) override;
     Component* createItemComponent() override;
     void itemClicked (const MouseEvent& e) override;
     void itemSelectionChanged (bool isNowSelected) override;
     void itemDoubleClicked (const MouseEvent&) override;
+    void paintItem (Graphics& g, int width, int height) override;
+    void paintOpenCloseButton (Graphics&, const Rectangle<float>& area, Colour backgroundColour, bool isMouseOver) override;
 
     void cancelDelayedSelectionTimer();
 

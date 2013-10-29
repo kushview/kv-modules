@@ -100,9 +100,13 @@ float TreeItemBase::getIconSize() const
     return jmin (getItemHeight() - 4.0f, 18.0f);
 }
 
-void TreeItemBase::paintOpenCloseButton (Graphics& g, int width, int height, bool /*isMouseOver*/)
+void TreeItemBase::paintOpenCloseButton (Graphics& g, const Rectangle<float>& area,
+                                         Colour /* backgroundColour */, bool /* isMouseOver */)
 {
     Path p;
+
+    const float width = area.getWidth();
+    const float height = area.getHeight();
 
     if (isOpen())
         p.addTriangle (width * 0.2f,  height * 0.25f, width * 0.8f, height * 0.25f, width * 0.5f, height * 0.75f);

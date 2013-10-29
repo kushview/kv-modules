@@ -262,12 +262,14 @@ namespace Gui {
         return background.contrasting().withAlpha (0.13f);
     }
 
-    Rectangle<int> Style::getPropertyComponentContentPosition (PropertyComponent& component)
+    Rectangle<int>
+    Style::getPropertyComponentContentPosition (PropertyComponent& component)
     {
         //if (component.findParentComponentOfClass<AppearanceEditor::EditorPanel>() != nullptr)
           //  return component.getLocalBounds().reduced (1).removeFromRight (component.getWidth() / 2);
 
-        return LookAndFeel::getPropertyComponentContentPosition (component);
+        //return LookAndFeel::getPropertyComponentContentPosition (component);
+        return component.getLocalBounds().reduced (1);
     }
 
     int Style::getTabButtonOverlap (int /*tabDepth*/)                      { return -1; }
@@ -287,7 +289,8 @@ namespace Gui {
         textLayout.createLayout (s, (float) textArea.getWidth());
     }
 
-    Colour Style::getTabBackgroundColour (TabBarButton& button)
+    Colour
+    Style::getTabBackgroundColour (TabBarButton& button)
     {
         const Colour bkg (button.findColour (mainBackgroundColourId).contrasting (0.15f));
 
@@ -297,7 +300,8 @@ namespace Gui {
         return bkg;
     }
 
-    void Style::drawTabButton (TabBarButton& button, Graphics& g, bool isMouseOver, bool isMouseDown)
+    void
+    Style::drawTabButton (TabBarButton& button, Graphics& g, bool isMouseOver, bool isMouseDown)
     {
         const Rectangle<int> activeArea (button.getActiveArea());
 
@@ -319,7 +323,8 @@ namespace Gui {
         textLayout.draw (g, button.getTextArea().toFloat());
     }
 
-    Rectangle<int> Style::getTabButtonExtraComponentBounds (const TabBarButton& button, Rectangle<int>& textArea, Component& comp)
+    Rectangle<int>
+    Style::getTabButtonExtraComponentBounds (const TabBarButton& button, Rectangle<int>& textArea, Component& comp)
     {
         TextLayout textLayout;
         createTabTextLayout (button, textArea, Colours::black, textLayout);
@@ -334,7 +339,7 @@ namespace Gui {
     void Style::drawStretchableLayoutResizerBar (Graphics& g, int w, int h, bool isVerticalBar, bool isMouseOver, bool isMouseDragging)
     {
         g.fillAll (Colour (0xff636363));
-        LookAndFeel::drawStretchableLayoutResizerBar (g, w, h, isVerticalBar, false, false);
+        //LookAndFeel::drawStretchableLayoutResizerBar (g, w, h, isVerticalBar, false, false);
 #if 0
         if (isMouseOver || isMouseDragging)
             g.fillAll (Colours::black.withAlpha (0.3f).darker());
