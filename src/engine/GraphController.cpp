@@ -22,8 +22,8 @@
   ==============================================================================
 */
 
-#include "element/juce.hpp"
 #include "element/engine/GraphController.h"
+#include "element/formats/PluginManager.h"
 
 namespace Element {
 

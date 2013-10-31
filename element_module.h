@@ -23,8 +23,7 @@
 
 /** Config: ELEMENT_PLUGINHOST_LV2
 
-    Normally, JUCE_DEBUG is set to 1 or 0 based on compiler and project settings,
-    but if you define this value, you can override this to force it to be true or false.
+    Enable classes for hosting LV2 plugins
 */
 #ifndef ELEMENT_PLUGINHOST_LV2
   // nothing
@@ -33,8 +32,15 @@
 
 /** Config: ELEMENT_DOCKING
 
-    Normally, JUCE_DEBUG is set to 1 or 0 based on compiler and project settings,
-    but if you define this value, you can override this to force it to be true or false.
+    Build the docking widgets classes
+*/
+#ifndef ELEMENT_DOCKING
+  // nothing
+#endif
+
+/** Config: ELEMENT_SESSION
+
+    Build the Session/World base classes
 */
 #ifndef ELEMENT_DOCKING
   // nothing

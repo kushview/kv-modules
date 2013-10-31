@@ -22,7 +22,6 @@
 
 #include "element/session/DeviceManager.h"
 #include "element/session/Module.h"
-#include "element/session/PluginManager.h"
 #include "element/session/WorldBase.h"
 
 #endif  /* ELEMENT_SESSION_HEADERS_HPP */

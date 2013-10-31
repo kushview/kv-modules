@@ -18,11 +18,12 @@
 */
 
 
+#if ELEMENT_PLUGINHOST_LV2
 #include "element/formats/lv2/LV2PluginFormat.h"
 #include "element/formats/lv2/LV2World.h"
+#endif
 
-#include "element/session/PluginManager.h"
-#include "element/session/WorldBase.h"
+#include "element/formats/PluginManager.h"
 #include "element/SymbolMap.h"
 
 namespace Element {

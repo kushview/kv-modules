@@ -56,13 +56,14 @@
 #include "src/engine/Sequencer.cpp"
 #include "src/engine/SequencerTrack.cpp"
 
+#include "src/formats/PluginManager.cpp"
+
 #if ELEMENT_PLUGINHOST_LV2
 #include "src/formats/lv2/LV2Module.cpp"
 #include "src/formats/lv2/LV2PluginFormat.cpp"
 #include "src/formats/lv2/LV2World.cpp"
 #endif
 
-#include "src/gui/DecibelScaleComponent.cpp"
 
 #if ELEMENT_DOCKING
 #include "src/gui/Dock.cpp"
@@ -73,6 +74,7 @@
 
 #include "src/gui/embed/NativeComponent.cpp"
 
+#include "src/gui/DecibelScaleComponent.cpp"
 #include "src/gui/GraphEditorBase.cpp"
 #include "src/gui/HighQualityMeter.cpp"
 #include "src/gui/Icons.cpp"
@@ -89,11 +91,14 @@
 #include "src/models/NoteSequence.cpp"
 #include "src/models/SequenceModel.cpp"
 
+#if ELEMENT_SESSION
+#include "src/session/AppController.cpp"
 #include "src/session/DeviceManager.cpp"
-#include "src/session/PluginManager.cpp"
+#include "src/session/SessionBase.cpp"
+#include "src/session/StoredSettings.cpp"
 #include "src/session/WorldBase.cpp"
+#endif
 
 #include "src/time/TimeScale.cpp"
-
 #include "src/util/FileHelpers.cpp"
 #include "src/util/UUID.cpp"
