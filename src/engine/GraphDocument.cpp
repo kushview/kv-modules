@@ -20,6 +20,7 @@
 #include "element/engine/GraphController.h"
 #include "element/engine/GraphDocument.h"
 #include "element/engine/GraphProcessor.h"
+#include "element/formats/PluginManager.h"
 
 namespace Element {
 

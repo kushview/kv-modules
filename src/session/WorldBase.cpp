@@ -17,17 +17,14 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <map>
+
 #include "element/juce.hpp"
 #include "element/Pointer.h"
-#include "element/SymbolMap.h"
-#include "element/Types.h"
+#include "element/Utils.h"
 
-#include "element/session/DeviceManager.h"
 #include "element/session/Module.h"
-#include "element/session/PluginManager.h"
 #include "element/session/WorldBase.h"
-
-#include "element/formats/lv2/LV2World.h"
 
 using namespace std;
 

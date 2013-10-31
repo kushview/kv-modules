@@ -37,8 +37,8 @@ namespace Element {
             return nullptr;
         }
 
-        void saveUserPlugins (Settings&);
-        void restoreUser (Settings&);
+        void saveUserPlugins (ApplicationProperties&);
+        void restoreUser (ApplicationProperties&);
 
         Processor *createPlugin (const PluginDescription& desc, String& errorMsg);
 

@@ -17,6 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "element/juce.hpp"
 
 #if ELEMENT_PLUGINHOST_LV2
 #include "element/formats/lv2/LV2PluginFormat.h"
@@ -127,14 +128,14 @@ namespace Element {
     }
 
     void
-    PluginManager::saveUserPlugins (Settings& settings)
+    PluginManager::saveUserPlugins (ApplicationProperties& settings)
     {
         ScopedXml elm (priv->allPlugins.createXml());
         settings.getUserSettings()->setValue ("plugin-list", elm.get());
     }
 
     void
-    PluginManager::restoreUser (Settings& settings)
+    PluginManager::restoreUser (ApplicationProperties& settings)
     {
         ScopedXml xml (settings.getUserSettings()->getXmlValue ("plugin-list"));
         if (xml)
