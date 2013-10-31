@@ -21,7 +21,7 @@
 #define ELEMENT_PARAMETER_HPP
 
 #include <cmath>
-#include "element/Core.h"
+#include "element/juce.hpp"
 
 namespace Element {
 
@@ -32,10 +32,10 @@ namespace Element {
         struct Seed { float min, max, value; };
 
         Parameter ()
-            : m_name("param"), m_symbol("param") { }
+            : mName("param"), mSymbol("param") { }
 
         Parameter (const String& name_, const String& symbol_)
-            : m_name (name_), m_symbol (symbol_) { }
+            : mName (name_), mSymbol (symbol_) { }
 
         ~Parameter() { }
 
@@ -55,36 +55,36 @@ namespace Element {
         }
 
 
-        const String& name() const { return m_name; }
-        const String& symbol() const { return m_symbol; }
+        const String& name() const { return mName; }
+        const String& symbol() const { return mSymbol; }
 
-        inline double min() const { return m_seed.min; }
-        inline double max() const { return m_seed.max; }
+        inline double min() const { return mSeed.min; }
+        inline double max() const { return mSeed.max; }
 
         inline void
         set (double value)
         {
-            if (value != m_seed.value && value >= m_seed.min && value <= m_seed.max)
+            if (value != mSeed.value && value >= mSeed.min && value <= mSeed.max)
             {
-                m_seed.value = value;
+                mSeed.value = value;
             }
         }
 
         inline void
         set (double min, double max, double value)
         {
-            m_seed.min = min;
-            m_seed.max = max;
+            mSeed.min = min;
+            mSeed.max = max;
             set (value);
         }
 
         inline double
-        value() const { return m_seed.value; }
+        value() const { return mSeed.value; }
 
         inline double
         normal() const
         {
-            return (m_seed.value - m_seed.min) / (m_seed.max - m_seed.min);
+            return (mSeed.value - mSeed.min) / (mSeed.max - mSeed.min);
         }
 
         inline void
@@ -93,7 +93,7 @@ namespace Element {
             if (val < 0) val = 0;
             if (val > 1.0) val = 1.0;
 
-            set (val * (m_seed.max - m_seed.min) + m_seed.min);
+            set (val * (mSeed.max - mSeed.min) + mSeed.min);
         }
 
         inline double
@@ -106,36 +106,37 @@ namespace Element {
         logarithmic() const
         {
             // double value = lower * pow (upper / lower, step / (steps - 1))
-            return m_seed.min * pow (m_seed.max / m_seed.min, normal());
+            return mSeed.min * pow (mSeed.max / mSeed.min, normal());
         }
 
         inline const Seed* seed() const
         {
-            return &m_seed;
+            return &mSeed;
         }
 
         inline void
         seed (Seed& other)
         {
-            other = m_seed;
+            other = mSeed;
         }
 
         inline void
         setSeed (const Seed &other)
         {
-            m_seed = other;
+            mSeed = other;
         }
 
         inline void reset()
         {
-            m_seed.min      = 0;
-            m_seed.max      = 1;
-            m_seed.value    = 1;
+            mSeed.min      = 0;
+            mSeed.max      = 1;
+            mSeed.value    = 1;
         }
 
     private:
-        String m_name, m_symbol;
-        Seed m_seed;
+
+        String mName, mSymbol;
+        Seed mSeed;
 
     };
 

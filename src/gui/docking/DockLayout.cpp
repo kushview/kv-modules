@@ -84,7 +84,7 @@ namespace Gui {
         layout.clearAllItems();
         comps.clear();
 
-        for (int i = 0, c = 0; i < items.size(); ++i)
+        for (int i = 0; i < items.size(); ++i)
         {
             layout.setItemLayout (comps.size(), 30, -1.0, 100);
             comps.add ((Component*) items[i]);

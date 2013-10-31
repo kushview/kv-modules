@@ -178,17 +178,6 @@ def build(bld):
         e.use += ["LV2", "LILV", "SUIL", "AUDIO_TOOLBOX", "APP_KIT"]
     bld.add_group()
 
-    #other_dirs = ["plugins", "modules", "tools", "tests", "src"]
-    other_dirs = ['modules', 'src', 'tools']
-    for o in other_dirs:
-        bld.recurse (o)
-        bld.add_group()
-
-    juce_extras = "libs/juce/extras"
-    introjucer  = os.path.join (juce_extras, "Introjucer")
-
-
-
     install_headers (bld)
 
 def install_headers (bld):

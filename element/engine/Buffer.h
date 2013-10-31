@@ -1,24 +1,28 @@
 /*
-  ==============================================================================
+    Buffer.h - This file is part of Element
+    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
-   This file is part of Element
-   Copyright (c) 2013 - Michael Fisher mfisher31@gmail.com
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
-
-  ==============================================================================
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_BUFFER_HPP
-#define ELEMENT_BUFFER_HPP
+#ifndef ELEMENT_BUFFER_H
+#define ELEMENT_BUFFER_H
 
 #include <atomic>
 #include <boost/intrusive_ptr.hpp>
-#include "element/Core.h"
+#include "element/juce.hpp"
 
 
 namespace Element {
@@ -86,4 +90,4 @@ public:
 };
 }
 
-#endif // ELEMENT_BUFFER_HPP
+#endif /* ELEMENT_BUFFER_H */

@@ -24,11 +24,12 @@
 
 #include <suil/suil.h>
 
+#include "element/juce.hpp"
+
+#include "element/formats/lv2/LV2Features.h"
 #include "element/formats/lv2/LV2World.h"
 
-#include "element/Core.h"
-#include "element/Port.h"
-#include "element/LV2Features.h"
+#include "element/PortWriter.h"
 #include "element/Pointer.h"
 #include "element/RingBuffer.h"
 #include "element/SymbolMap.h"

@@ -1,5 +1,5 @@
 /*
-   linked-list.hpp
+   LinkedList.h
 
    Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
    Modified 2013 Michael Fisher  <mfisher31@gmail.com>

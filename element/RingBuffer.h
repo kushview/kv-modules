@@ -1,5 +1,5 @@
 /*
-    ringbuffer.hpp - This file is part of Element
+    RingBuffer.h - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 #ifndef ELEMENT_RINGBUFFER_HPP
 #define ELEMENT_RINGBUFFER_HPP
 
-#include "element/Core.h"
+#include "element/juce.hpp"
 
 namespace Element {
 

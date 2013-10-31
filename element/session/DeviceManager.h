@@ -20,7 +20,7 @@
 #ifndef ELEMENT_DEVICE_MANAGER_HPP
 #define ELEMENT_DEVICE_MANAGER_HPP
 
-#include "element/Devices.h"
+#include "element/juce.hpp"
 #include "element/Pointer.h"
 
 namespace Element {

@@ -17,10 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <boost/bind.hpp>
-#include "element/gui/embed/native.hpp"
-#include "element/Signals.h"
-
+#include "element/gui/embed/NativeComponent.h"
 
 #if JUCE_LINUX
 namespace {
@@ -83,9 +80,9 @@ namespace Element {
    public:
 
       NativeAttachment (Component& owner_, WidgetWrapper* wrapper)
-      : ComponentMovementWatcher (&owner_),
-        widget (wrapper),
-        owner (owner_)
+          : ComponentMovementWatcher (&owner_),
+            owner (owner_),
+            widget (wrapper)
       {
          currentPeer = owner.getPeer();
          widget->hide();
@@ -93,7 +90,6 @@ namespace Element {
 
       void onTest() {
          std::cout << "tested\n";
-
       }
 
       ~NativeAttachment() { removeFromParent(); }

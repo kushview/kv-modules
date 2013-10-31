@@ -1,14 +1,9 @@
 /*
-  port.hpp - Header description
-
-  Copyright (C) 2013  BKE, LLC.  All rights reserved.
-  mfisher <mfisher@bketech.com>
-
+  PortWriter.h - Header description
 */
-/** @file port.hpp */
 
-#ifndef ELEMENT_PORT_HPP
-#define ELEMENT_PORT_HPP
+#ifndef ELEMENT_PORT_WRITER_H
+#define ELEMENT_PORT_WRITER_H
 
 #include <inttypes.h>
 #include <boost/function.hpp>
@@ -33,7 +28,6 @@ namespace Element {
         uint32 size;
     };
 
-
 }
 
-#endif  /* ELEMENT_PORT_HPP */
+#endif  /* ELEMENT_PORT_WRITER_H */

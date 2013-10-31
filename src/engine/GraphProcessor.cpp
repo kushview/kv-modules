@@ -15,7 +15,7 @@
    A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 */
 
-#include "element/Port.h"
+#include "element/PortWriter.h"
 #include "element/engine/GraphPort.h"
 #include "element/engine/GraphProcessor.h"
 

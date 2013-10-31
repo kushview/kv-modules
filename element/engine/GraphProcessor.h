@@ -25,7 +25,7 @@
 #include "element/engine/Processor.h"
 
 #include "element/Arc.h"
-#include "element/Core.h"
+#include "element/juce.hpp"
 
 namespace Element {
 

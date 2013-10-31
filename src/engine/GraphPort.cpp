@@ -1,5 +1,5 @@
 
-#include "element/Core.h"
+#include "element/juce.hpp"
 #include "element/engine/GraphPort.h"
 #include "element/engine/GraphProcessor.h"
 

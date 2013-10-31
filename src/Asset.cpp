@@ -22,45 +22,4 @@
 
 namespace Element {
 
-
-const char*
-asset_file_extensions (AssetType type)
-{
-
-    switch (type)
-    {
-        case AssetType::Sequence:
-            return ".esq";
-        case AssetType::AudioFile:
-            return "*.wav";
-        case AssetType::MidiFile:
-            return ".mid";
-        default: break;
-    }
-
-    return "";
-}
-
-
-
-AssetPtr
-Asset::create (World&, const URI&)
-{
-    Logger::writeToLog ("Asset::create() not implemented");
-
-#if 0
-    Asset* asset = 0;
-
-    switch (uri.asset_type())
-    {
-        case AssetType::audio:
-        {
-            break;
-        }
-    }
-#endif
-
-    return AssetPtr();
-}
-
 }

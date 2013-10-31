@@ -1,5 +1,5 @@
 /*
-    asset-type.hpp - This file is part of Element
+    AssetType.h - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 #ifndef ELEMENT_ASSET_TYPE_HPP
 #define ELEMENT_ASSET_TYPE_HPP
 
-#include "element/Core.h"
+#include "element/juce.hpp"
 #include "element/Types.h"
 
 namespace Element {

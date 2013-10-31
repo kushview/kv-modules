@@ -1,5 +1,5 @@
 /*
-    atom-buffer.hpp - This file is part of Element
+    AtomBuffer.h - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -17,10 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_ATOMBUFFER_HPP
-#define ELEMENT_ATOMBUFFER_HPP
+#ifndef ELEMENT_ATOMBUFFER_H
+#define ELEMENT_ATOMBUFFER_H
 
-#include "element/Core.h"
+#include "element/juce.hpp"
 
 #include <lv2/lv2plug.in/ns/ext/atom/atom.h>
 #include <lv2/lv2plug.in/ns/ext/midi/midi.h>
@@ -30,6 +30,7 @@ namespace Element {
 
     class AtomBuffer {
     public:
+
         AtomBuffer (LV2_URID_Map* map, uint32 capacity = 4096);
 
         void addEvent (uint32_t frame, uint32_t subframe, uint32_t size, uint32_t type, const uint8* data);
@@ -58,4 +59,4 @@ namespace Element {
     };
 }
 
-#endif /* ELEMENT_ATOMBUFFER_HPP */
+#endif /* ELEMENT_ATOMBUFFER_H */

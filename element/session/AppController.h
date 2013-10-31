@@ -14,6 +14,9 @@ namespace Element {
 
         AppController (World& world);
         virtual ~AppController();
+
+    protected:
+
         World& world();
 
     private:

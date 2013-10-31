@@ -1,6 +1,5 @@
 /*
-  convert.hpp - Common conversions
-
+  Convert.h - Common conversions
   Copyright (C) 2013  Michael R Fisher <mfisher31@gmail.com>
 
   This is free software: you can redistribute it and/or modify it under the
@@ -24,12 +23,10 @@
 #include <string>
 #include <sstream>
 
-#include <boost/algorithm/string.hpp>
-#include <boost/lexical_cast.hpp>
-
 namespace Element {
 
-
+#if 0
+    // most of this is obsolete
 /** Convert decibels to gain */
 template<typename T>
 inline T db_to_gain (T db, T inf = 90)
@@ -101,7 +98,7 @@ uri_to_path (const std::string& uri)
     boost::replace_all (res, "file://", "");
     return res;
 }
-
+#endif
 } /* namespace element */
 
 #endif /* LIB_UTIL_CONVERT_HPP */

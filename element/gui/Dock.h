@@ -128,14 +128,7 @@ namespace Gui {
 
         void dockTo (DockItem* target, Dock::Placement placement);
 
-        bool isToplevel()
-        {
-            if (DockArea* area = getDockArea())
-                return true;
-
-            return false;
-        }
-
+        bool isToplevel() { return nullptr == getDockArea(); }
         DockArea* getDockArea() { return dynamic_cast<DockArea*> (getParentComponent()); }
 
         void layoutItems();

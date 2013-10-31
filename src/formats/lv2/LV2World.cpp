@@ -17,7 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/Core.h"
+#include "element/juce.hpp"
 #include "element/formats/lv2/LV2Module.h"
 #include "element/formats/lv2/LV2World.h"
 

@@ -13,8 +13,8 @@ namespace Gui {
 
 
 DockItem::DockItem (Dock& parent, const String& id, const String& name)
-    : Component (name), grip (*this), dock (parent), dragging (false),
-      layout (*this, false)
+    : Component (name), dock (parent), 
+      layout (*this, false), dragging (false), grip (*this)
 {
     setComponentID (id);
     addAndMakeVisible (&grip);

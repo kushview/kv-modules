@@ -1,7 +1,7 @@
 #ifndef ELEMENT_MODULE_HPP
 #define ELEMENT_MODULE_HPP
 
-#include "element/Core.h"
+#include "element/juce.hpp"
 
 namespace Element {
 
