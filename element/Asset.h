@@ -20,14 +20,9 @@
 #ifndef ELEMENT_ASSET_H
 #define ELEMENT_ASSET_H
 
-#include <string>
-
 #include "element/models/ObjectModel.h"
 #include "element/AssetTree.h"
-#include "element/AssetType.h"
-#include "element/Pointer.h"
 #include "element/Slugs.h"
-#include "element/Utils.h"
 
 namespace Element {
 
@@ -35,9 +30,8 @@ namespace Element {
     {
     public:
 
-        AssetNode (const AssetItem& item)
-            : ObjectModel (Slugs::asset)
-        { }
+        AssetNode (const AssetItem& item);
+        ~AssetNode();
 
     };
 

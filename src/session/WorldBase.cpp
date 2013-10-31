@@ -84,31 +84,11 @@ namespace Element {
     {
     public:
         Private()
-            : symbols(),
-              lv2 (new LV2World (symbols)),
-              plugins (new PluginManager (*lv2)),
-              settings (new Settings())
-        {
-            devices = new DeviceManager();
-
-            {
-                PropertiesFile::Options opts;
-                opts.applicationName     = "Element";
-                opts.filenameSuffix      = "conf";
-                opts.folderName          = opts.applicationName;
-                opts.osxLibrarySubFolder = "Application Support";
-                opts.storageFormat       = PropertiesFile::storeAsXML;
-                settings->setStorageParameters (opts);
-            }
-
-            plugins->restoreUser (*settings);
-        }
+            : settings (new Settings())
+        { }
 
         ~Private()
         {
-            devices = nullptr;
-            engine.reset();
-            plugins  = nullptr;
             settings = nullptr;
 
             // kill all loaded modules
@@ -125,18 +105,11 @@ namespace Element {
                 l->close();
             libs.clear (true);
 
-            lv2 = nullptr;
         }
 
-        SymbolMap symbols;
-        ScopedPointer<LV2World>      lv2;
-        ScopedPointer<PluginManager> plugins;
-        ScopedPointer<Settings>      settings;
-        ScopedPointer<DeviceManager> devices;
-
-        Shared<Engine>               engine;
-
+        Shared<Engine> engine;
         map<const String, Module*> mods;
+        ScopedPointer<Settings> settings;
 
     private:
 
@@ -154,7 +127,7 @@ namespace Element {
     }
 
     int
-    World::execute (const char* name)
+    World::executeModule (const char* name)
     {
         typedef map<const String, Module*> MAP;
         MAP::iterator mit = priv->mods.find (name);
@@ -188,13 +161,6 @@ namespace Element {
         return *priv->settings;
     }
 
-    DeviceManager&
-    World::devices()
-    {
-        assert (priv->devices != nullptr);
-        return *priv->devices.get();
-    }
-
 
     Shared<Engine>
     World::engine()
@@ -207,19 +173,6 @@ namespace Element {
     {
         Shared<Engine> oe (priv->engine);
         priv->engine = e;
-        priv->devices->attach (priv->engine);
-    }
-
-    PluginManager&
-    World::plugins()
-    {
-        return *priv->plugins;
-    }
-
-    SymbolMap&
-    World::symbols()
-    {
-        return priv->symbols;
     }
 
 }

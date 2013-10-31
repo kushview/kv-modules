@@ -84,14 +84,6 @@ namespace Element {
 
     };
 
-    /** Typedef for a shared ObjectModel */
-    typedef Shared<ObjectModel> ObjectPtr;
-
-    /** cast another shared pointer to a shared Object Model */
-    template<class T> inline ObjectPtr
-    objectPtrCast (const Shared<T>& ptr) {
-        return Element::dynamicPtrCast<ObjectModel> (ptr);
-    }
 
 }
 

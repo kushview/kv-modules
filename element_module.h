@@ -21,27 +21,29 @@
  #endif
 #endif
 
-#include <memory>
+/** Config: ELEMENT_PLUGINHOST_LV2
 
-#include "juce_audio_processors/juce_audio_processors.h"
-#include "juce_core/juce_core.h"
-#include "juce_data_structures/juce_data_structures.h"
+    Normally, JUCE_DEBUG is set to 1 or 0 based on compiler and project settings,
+    but if you define this value, you can override this to force it to be true or false.
+*/
+#ifndef ELEMENT_PLUGINHOST_LV2
+  // nothing
+#endif
 
-namespace juce {
-    class AudioIODeviceCallback;
-}
 
-using namespace juce;
+/** Config: ELEMENT_DOCKING
 
-#include "element/AssetTree.h"
-#include "element/Asset.h"
-#include "element/AssetType.h"
-#include "element/Arc.h"
-#include "element/Controller.h"
-#include "element/Engine.h"
-#include "element/LinkedList.h"
-#include "element/Pointer.h"
+    Normally, JUCE_DEBUG is set to 1 or 0 based on compiler and project settings,
+    but if you define this value, you can override this to force it to be true or false.
+*/
+#ifndef ELEMENT_DOCKING
+  // nothing
+#endif
 
-#include "element/gui/MidiEditorBody.h"
+
+// Header include'ing is handled in implementation files.  This is so the library
+// can be built and installed like a normal system library with a pkg-config file.
+// The catch is that you MUST include the element source tree in your include path
+// e.g. -I/path/to/element
 
 #endif   // ELEMENT_MODELS_H_INCLUDED

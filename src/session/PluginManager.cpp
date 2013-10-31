@@ -17,8 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+
 #include "element/formats/lv2/LV2PluginFormat.h"
 #include "element/formats/lv2/LV2World.h"
+
 #include "element/session/PluginManager.h"
 #include "element/session/WorldBase.h"
 #include "element/SymbolMap.h"
@@ -34,23 +36,31 @@ namespace Element {
 
         KnownPluginList allPlugins;
         AudioPluginFormatManager formats;
-        OptionalPtr<LV2World> lv2;
         OptionalPtr<SymbolMap> symbols;
+
+       #if ELEMENT_PLUGINHOST_LV2
+        OptionalPtr<LV2World> lv2;
+       #endif
 
     };
 
     PluginManager::PluginManager()
     {
         priv = new Private();
-        priv->symbols.setOwned (new SymbolMap());
+
+      #if ELEMENT_PLUGINHOST_LV2
+        priv->symbols.setOwned (new SymbolMap ());
         priv->lv2.setOwned (new LV2World (*priv->symbols));
+      #endif
     }
 
+   #if ELEMENT_PLUGINHOST_LV2
     PluginManager::PluginManager (LV2World& lv2)
     {
         priv = new Private();
         priv->lv2.setNonOwned (&lv2);
     }
+   #endif
 
     PluginManager::~PluginManager()
     {
@@ -60,7 +70,9 @@ namespace Element {
     void PluginManager::addDefaultFormats()
     {
         formats().addDefaultFormats();
+       #if ELEMENT_PLUGINHOST_LV2
         formats().addFormat (new LV2PluginFormat (*priv->lv2));
+       #endif
     }
 
     void

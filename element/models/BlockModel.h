@@ -25,13 +25,15 @@
 
 namespace Element
 {
+    /** Represents a node on a processing graph */
     class BlockModel : public NodeModel
     {
     public:
-        BlockModel() : NodeModel (Slugs::block) { }
-        BlockModel (const Identifier& valueType) : NodeModel (valueType) { }
-        BlockModel (const ValueTree& data) : NodeModel (data) { }
+        BlockModel();
+        BlockModel (const Identifier& valueType);
+        BlockModel (const ValueTree& data);
     };
+
 }
 
 #endif // ELEMENT_BLOCK_MODEL_H

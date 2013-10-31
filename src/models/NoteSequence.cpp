@@ -17,6 +17,35 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "element/engine/Shuttle.h"
 #include "element/models/NoteSequence.h"
 
-namespace Element { }
+namespace Element
+{
+
+    /** Add a note from a value tree object */
+    Note
+    NoteSequence::addNote (const ValueTree& tree)
+    {
+        if (tree.hasType (Slugs::note))
+            return Note::make (ValueTree::invalid);
+
+        if (tree.getParent().isValid())
+        {
+            ValueTree p = tree.getParent();
+            p.removeChild (tree, nullptr);
+        }
+
+        Note nt = Note::make (tree);
+        node().addChild (nt.node(), -1, nullptr);
+
+        return nt;
+    }
+
+    int32
+    NoteSequence::ppq() const
+    {
+        return node().getProperty (Slugs::ppq, Shuttle::PPQ);
+    }
+
+}

@@ -24,6 +24,9 @@
 #ifndef ELEMENT_LINKEDLIST_HPP
 #define ELEMENT_LINKEDLIST_HPP
 
+namespace Element {
+
+
 /** A doubly linked list
     The main usage here is to aid in adapting other work(s) by rncbc.  New code
     should use something boost::intrusive  @see list.hpp */
@@ -324,8 +327,6 @@ int LinkedList<Node>::find (Node *node) const
 	return (-1);
 }
 
+}
 
-#endif  // ELEMENT_LINKEDLIST_HPP
-
-
-// end of List.h
+#endif  /* ELEMENT_LINKEDLIST_H */

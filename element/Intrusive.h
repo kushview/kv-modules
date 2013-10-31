@@ -18,7 +18,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
 #ifndef ELEMENT_LIST_HPP
 #define ELEMENT_LIST_HPP
 

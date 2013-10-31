@@ -1,4 +1,21 @@
+/*
+    element_module.cpp - This file is part of Element
+    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
 #if defined (ELEMENT_MODELS_H_INCLUDED) && ! JUCE_AMALGAMATED_INCLUDE
 /* When you add this cpp file to your project, you mustn't include it in a file where you've
@@ -39,16 +56,20 @@
 #include "src/engine/Sequencer.cpp"
 #include "src/engine/SequencerTrack.cpp"
 
+#if ELEMENT_PLUGINHOST_LV2
 #include "src/formats/lv2/LV2Module.cpp"
 #include "src/formats/lv2/LV2PluginFormat.cpp"
 #include "src/formats/lv2/LV2World.cpp"
+#endif
 
 #include "src/gui/DecibelScaleComponent.cpp"
 
+#if ELEMENT_DOCKING
 #include "src/gui/Dock.cpp"
 #include "src/gui/docking/DockArea.cpp"
 #include "src/gui/docking/DockItem.cpp"
 #include "src/gui/docking/DockLayout.cpp"
+#endif
 
 #include "src/gui/embed/NativeComponent.cpp"
 
@@ -62,11 +83,15 @@
 #include "src/gui/TimelineClip.cpp"
 #include "src/gui/TreeviewBase.cpp"
 
-#include "src/models/NoteSequence.cpp"
+#include "src/models/BlockModel.cpp"
 #include "src/models/ObjectModel.cpp"
+#include "src/models/Note.cpp"
+#include "src/models/NoteSequence.cpp"
 #include "src/models/SequenceModel.cpp"
 
+#include "src/session/DeviceManager.cpp"
 #include "src/session/PluginManager.cpp"
+#include "src/session/WorldBase.cpp"
 
 #include "src/time/TimeScale.cpp"
 

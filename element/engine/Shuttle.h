@@ -20,7 +20,7 @@
 #ifndef ELEMENT_SHUTTLE_H
 #define ELEMENT_SHUTTLE_H
 
-#include "element/juce.hpp"
+//#include "element/juce.hpp"
 
 #include "element/time/Tempo.h"
 #include "element/time/TimeScale.h"

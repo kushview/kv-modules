@@ -20,7 +20,7 @@
 #include "element/formats/lv2/LV2Module.h"
 
 namespace Element {
-    
+
     namespace LV2Callbacks {
 
         static void

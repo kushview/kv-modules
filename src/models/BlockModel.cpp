@@ -1,5 +1,5 @@
 /*
-    device-manager.hpp - This file is part of Element
+    BlockModel.cpp - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -17,41 +17,12 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_DEVICE_MANAGER_HPP
-#define ELEMENT_DEVICE_MANAGER_HPP
-
-#include "element/juce.hpp"
-#include "element/Pointer.h"
+#include "element/models/BlockModel.h"
 
 namespace Element {
 
-    class Engine;
-
-    class DeviceManager :  public AudioDeviceManager
-    {
-    public:
-
-        typedef AudioDeviceManager::AudioDeviceSetup AudioSettings;
-
-        DeviceManager();
-        ~DeviceManager();
-
-        void createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list);
-
-        void getAudioDrivers (StringArray& drivers);
-        void selectAudioDriver (const String& name);
-
-        void attach (Shared<Engine> engine);
-
-    private:
-
-        friend class World;
-
-        class Private;
-        Scoped<Private> impl;
-
-    };
+    BlockModel::BlockModel() : NodeModel (Slugs::block) { }
+    BlockModel::BlockModel (const Identifier& valueType) : NodeModel (valueType) { }
+    BlockModel::BlockModel (const ValueTree& data) : NodeModel (data) { }
 
 }
-
-#endif // ELEMENT_DEVICE_MANAGER_HPP

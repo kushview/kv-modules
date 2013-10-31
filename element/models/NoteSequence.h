@@ -20,7 +20,6 @@
 #ifndef ELEMENT_NOTESEQUENCE_H
 #define ELEMENT_NOTESEQUENCE_H
 
-#include "element/engine/Shuttle.h"
 #include "element/models/Note.h"
 
 namespace Element {
@@ -74,23 +73,7 @@ namespace Element {
         }
 
         /** Add a note from a value tree object */
-        inline Note
-        addNote (const ValueTree& tree)
-        {
-            if (tree.hasType (Slugs::note))
-                return Note::make (ValueTree::invalid);
-
-            if (tree.getParent().isValid())
-            {
-                ValueTree p = tree.getParent();
-                p.removeChild (tree, nullptr);
-            }
-
-            Note nt = Note::make (tree);
-            node().addChild (nt.node(), -1, nullptr);
-
-            return nt;
-        }
+        Note addNote (const ValueTree& tree);
 
         inline Note
         addNote (const MidiMessage& on, const MidiMessage& off)
@@ -164,9 +147,7 @@ namespace Element {
             Shuttle::scaledTick, then add notes to the sequences with new tick
             values.
         */
-        inline int32 ppq() const {
-            return node().getProperty (Slugs::ppq, Shuttle::PPQ);
-        }
+        int32 ppq() const;
 
     protected:
 

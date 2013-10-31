@@ -40,7 +40,7 @@ namespace Element {
     {
     public:
 
-        Settings()  { }
+        Settings() { }
         ~Settings() { }
 
     private:
@@ -57,12 +57,9 @@ namespace Element {
         virtual ~World();
 
         virtual bool loadModule (const char* moduleName);
-        virtual int execute (const char* entryModule);
+        virtual int executeModule (const char* entryModule);
 
         Settings&       settings();
-        DeviceManager&  devices();
-        PluginManager&  plugins();
-        SymbolMap&      symbols();
 
         Shared<Engine>  engine();
         virtual void setEngine (Shared<Engine> engine);

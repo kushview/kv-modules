@@ -63,7 +63,7 @@ namespace Element {
 
     DeviceManager::DeviceManager()
     {
-        priv = new Private();
+        impl = new Private();
     }
 
     DeviceManager::~DeviceManager()
@@ -75,15 +75,14 @@ namespace Element {
     void
     DeviceManager::attach (Shared<Engine> engine)
     {
-        if (priv->activeEngine == engine)
+        if (impl->activeEngine == engine)
             return;
 
-        Shared<Engine> old = priv->activeEngine;
+        Shared<Engine> old = impl->activeEngine;
 
         if (old != nullptr)
         {
             removeAudioCallback (&old->callback());
-            // SIGNAL drop references (or something) ???
         }
 
         if (engine)
@@ -91,7 +90,7 @@ namespace Element {
         else
             closeAudioDevice();
 
-        priv->activeEngine = engine;
+        impl->activeEngine = engine;
     }
 
     static void

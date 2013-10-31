@@ -104,136 +104,61 @@ namespace Element {
 
             @param id The new ID to use
         */
-        inline void setEventId (const int id) const
-        {
-            ValueTree temp = node();
-            temp.setProperty ("eventId", id, nullptr);
-        }
+        void setEventId (const int id) const;
 
-        inline bool isValid() const { return node().isValid(); }
+        bool isValid() const;
 
         /** The event index in the interface-side implementation. */
-        inline const int eventId() const { return node().getProperty ("eventId", 0); }
+        const int eventId() const;
 
         /** Returns the current key id (midi note) for this model */
-        inline const int keyId() const { return (int) node().getProperty (Slugs::id, 0); }
+        const int keyId() const;
 
         /** Returns the channel of this note */
-        inline const int channel() const { return (int) node().getProperty ("channel", 1); }
+        const int channel() const;
 
         /** Returns the velocity of this note as a ratio (0.0f to 1.0f) */
-        inline const float velocity() const { return (float) node().getProperty("velocity", 0.8f); }
+        const float velocity() const;
 
         /** The start position in beats */
-        inline const double tickStart() const { return (double) node().getProperty ("start"); }
+        const double tickStart() const;
 
         /** Length of note in beats */
-        inline const double beatLength() const { return (double) node().getProperty ("length"); }
+        const double beatLength() const;
 
         /** End of the note */
-        inline const double tickEnd() const { return tickStart() + beatLength(); }
+        const double tickEnd() const;
 
         /** Get the timings of this note as a Range */
-        inline void getBeats (Range<double>& beats) const
-        {
-            beats.setStart (tickStart());
-            beats.setLength (beatLength());
-        }
+        void getBeats (Range<double>& beats) const;
 
         /** Resize this notes length in beats
             Note that this does not change the start time */
-        inline void
-        resize (EditDeltas& changes, double length)
-        {
-            if (length < 0.015625f) {
-                // 1/64th note
-                length = 0.015625f;
-            }
-
-            changes.length = length - beatLength();
-        }
+        void resize (EditDeltas& changes, double length);
 
         /** Change the length */
-        inline void changeLength (EditDeltas& d, double len) { resize (d, len); }
+        void changeLength (EditDeltas& d, double len);
 
         /** Change channel */
-        inline void
-        changeChannel (EditDeltas& changes, int c)
-        {
-            c = Element::clampNoMoreThan (c, 1, 16);
-            changes.channel = c - channel();
-        }
+        void changeChannel (EditDeltas& changes, int c);
 
         /** Change the key id for this note */
-        inline void
-        changeKeyId (EditDeltas& changes, int key)
-        {
-            jassert (isPositiveAndBelow (key, 128));
-            changes.note = key - keyId();
-        }
+        void changeKeyId (EditDeltas& changes, int key);
 
         /** Change this notes velocity */
-        inline void
-        changeVelocity (EditDeltas& changes, float vel)
-        {
-            changes.velocity = Element::clampNoMoreThan (vel, 0.0f, 1.0f) - velocity();
-        }
+        void changeVelocity (EditDeltas& changes, float vel);
 
         /** Move this note to a new start beat
             Length is unaffected */
-        inline void move (EditDeltas& changes, const double beat)
-        {
-            changes.start = beat - tickStart();
-        }
+        void move (EditDeltas& changes, const double beat);
 
         /** Apply pending changes to this note */
-        inline void
-        applyEdits (EditDeltas& changes, bool reset = true)
-        {
-            if (changes.note != 0)
-                node().setProperty (Slugs::id, keyId() + changes.note, nullptr);
+        void applyEdits (EditDeltas& changes, bool reset = true);
 
-            if (changes.channel != 0)
-                node().setProperty ("channel", channel() + changes.channel, nullptr);
-
-            if (changes.start != 0.0f)
-                node().setProperty ("start", tickStart() + changes.start, nullptr);
-
-            if (changes.length != 0.0f)
-                node().setProperty ("length", beatLength() + changes.length, nullptr);
-
-            if (reset)
-                changes.reset();
-        }
-
-        inline MidiMessage
-        noteOn() const
-        {
-            MidiMessage mm = MidiMessage::noteOn (channel(), keyId(), velocity());
-            mm.setTimeStamp (tickStart());
-            return mm;
-        }
-
-        inline MidiMessage
-        noteOff() const
-        {
-            MidiMessage mm = MidiMessage::noteOff (channel(), keyId());
-            mm.setTimeStamp (tickEnd());
-            return mm;
-        }
-
-        inline void
-        getMidi (MidiMessage& on, MidiMessage& off) const
-        {
-            on  = noteOn();
-            off = noteOff();
-        }
-
-        inline ValueTree
-        sequenceNode() const
-        {
-            return node().getParent();
-        }
+        MidiMessage noteOn() const;
+        MidiMessage noteOff() const;
+        void getMidi (MidiMessage& on, MidiMessage& off) const;
+        ValueTree sequenceNode() const;
 
         inline bool operator== (const Note& n) const { return node() == n.node(); }
         inline bool operator!= (const Note& n) const { return node() != n.node(); }
@@ -241,17 +166,8 @@ namespace Element {
     protected:
 
         friend class NoteSequence;
+        Note (int note, double start, double length = 1.0f, int channel = 1, float velocity = 0.8f);
 
-        Note (int note, double start, double length = 1.0f, int channel = 1, float velocity = 0.8f)
-            : ObjectModel (Slugs::note)
-        {
-            node().setProperty (Slugs::id, note, nullptr);
-            node().setProperty (Slugs::channel, channel, nullptr);
-            node().setProperty (Slugs::start, start, nullptr);
-            node().setProperty (Slugs::length, length, nullptr);
-            node().setProperty (Slugs::velocity, velocity, nullptr);
-            node().setProperty ("eventId", 0, nullptr);
-        }
     };
 }
 

@@ -27,6 +27,7 @@
                       "src/*",
                       "src/engine/*",
                       "src/formats/*",
+                      "src/formats/lv2/*",
                       "src/gui/*",
                       "src/models/*",
                       "src/session/*",

@@ -18,8 +18,12 @@
 */
 
 #include "element/Asset.h"
-#include "element/session/WorldBase.h"
 
 namespace Element {
 
+    AssetNode::AssetNode (const AssetItem& item)
+        : ObjectModel (Slugs::asset)
+    { }
+    
+    AssetNode::~AssetNode() { }
 }

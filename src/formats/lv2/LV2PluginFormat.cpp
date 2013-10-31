@@ -376,11 +376,17 @@ private:
 class LV2PluginFormat::Private
 {
 public:
-    Private (LV2World& w) : world (w) { }
+
+    Private (LV2World& w)
+    {
+        world.setNonOwned (&w);
+    }
+
+
 
     LV2Module* createModule (const String& uri)
     {
-        if (LV2Module* module = world.createModule (uri))
+        if (LV2Module* module = world->createModule (uri))
         {
             module->init();
             return module;
@@ -389,13 +395,13 @@ public:
         return nullptr;
     }
 
-    LV2World& world;
+    OptionalScopedPointer<LV2World> world;
 };
 
 LV2PluginFormat::LV2PluginFormat (LV2World& w) : priv (new LV2PluginFormat::Private (w)) { }
 LV2PluginFormat::~LV2PluginFormat() { priv = nullptr; }
 
-SymbolMap& LV2PluginFormat::symbols() { return priv->world.symbols(); }
+SymbolMap& LV2PluginFormat::symbols() { return priv->world->symbols(); }
 
 void
 LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& results,
@@ -439,7 +445,7 @@ LV2PluginFormat::createInstanceFromDescription (const PluginDescription& desc, d
     if (LV2Module* module = priv->createModule (desc.fileOrIdentifier))
     {
         JUCE_LV2_LOG ("  instantiating from module.");
-        return new LV2PluginInstance (priv->world, module);
+        return new LV2PluginInstance (*priv->world, module);
     }
 
     JUCE_LV2_LOG ("Failed creating LV2 plugin instance");
@@ -470,13 +476,13 @@ StringArray
 LV2PluginFormat::searchPathsForPlugins (const FileSearchPath&, bool)
 {
     StringArray list;
-    Lilv::Plugins plugins (priv->world.getAllPlugins());
+    Lilv::Plugins plugins (priv->world->getAllPlugins());
 
     LILV_FOREACH (plugins, iter, plugins)
     {
         Lilv::Plugin plugin (plugins.get (iter));
         String uri (plugin.get_uri().as_string());
-        if (priv->world.isPluginSupported (uri))
+        if (priv->world->isPluginSupported (uri))
             list.add (uri);
     }
 

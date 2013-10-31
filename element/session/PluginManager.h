@@ -14,7 +14,11 @@ namespace Element {
     public:
 
         PluginManager();
+
+       #if ELEMENT_PLUGINHOST_LV2
         PluginManager (LV2World&);
+       #endif
+
         ~PluginManager();
 
         void addDefaultFormats();
