@@ -35,32 +35,6 @@ namespace Element {
         Shared<Engine> activeEngine;
     };
 
-    class IdleCallback :  public AudioIODeviceCallback
-    {
-    public:
-
-        void audioDeviceIOCallback (const float** inputChannelData, int numInputChannels,
-                                    float** outputChannelData, int numOutputChannels,
-                                    int numSamples)
-        {  }
-
-        void audioDeviceAboutToStart (AudioIODevice* device)
-        { }
-
-        void audioDeviceStopped()
-        {
-            std::clog << "Device Stopping\n";
-        }
-
-        void audioDeviceError (const String& e)
-        {
-            String msg = "Device Error: " ; msg << e;
-            Logger::writeToLog (msg);
-        }
-
-        void shutdown() { }
-    };
-
     DeviceManager::DeviceManager()
     {
         impl = new Private();
