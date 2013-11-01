@@ -198,10 +198,10 @@ def check(ctx):
     call (["bash", "tools/run-tests"])
 
 def patch(bld):
-    call (["bash", "tools/patch-namespace", "juce", "element"])
+    call (["bash", "tools/patch-namespace", "juce", "Element"])
 
 def unpatch(bld):
-    call (["bash", "tools/patch-namespace", "element", "juce"])
+    call (["bash", "tools/patch-namespace", "Element", "juce"])
 
 def version(bld):
     call (["bash", "tools/version", "verbose"])

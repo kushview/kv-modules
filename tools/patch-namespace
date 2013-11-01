@@ -23,11 +23,21 @@ fi
 IFS=$'\n'
 
 echo -n "Setting namespace to '$newns' "
-for f in `grep -l -R --include="*.h" --include="*.cpp" --include="*.mm" "$oldns" "$srcdir"`; do
-    echo -n "."
-    sed -i "" "s|namespace $oldns|namespace $newns|g" "$f"
-    sed -i "" "s|$oldns::|$newns::|g" "$f"
+for f in `grep -l -R --include="*.h" --include="*.cpp" --include="*.mm" "$oldns" "$srcdir"`;
+do 
+    echo "Patching (if needed): $f"
+    if [ "$(uname)" == "Darwin" ]; then
+        sed -i "" "s|namespace $oldns|namespace $newns|g" "$f"
+        sed -i "" "s|$oldns::|$newns::|g" "$f"       
+    elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
+        sed -i "s|namespace $oldns|namespace $newns|g" "$f"
+        sed -i "s|$oldns::|$newns::|g" "$f"
+    elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
+     		sed -i "s|namespace $oldns|namespace $newns|g" "$f"
+        sed -i "s|$oldns::|$newns::|g" "$f"
+    fi
 done
 
-echo " finished"
+echo "Finished"
 exit 0
+

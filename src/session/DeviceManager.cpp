@@ -1,5 +1,5 @@
 /*
-    device-manager.cpp - This file is part of Element
+    DeviceManager.cpp - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -20,8 +20,6 @@
 #include "element/juce.hpp"
 #include "element/session/DeviceManager.h"
 #include "element/Engine.h"
-
-using namespace Element;
 
 namespace Element {
 

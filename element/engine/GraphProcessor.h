@@ -374,7 +374,7 @@ public:
     virtual const String getProgramName (int)               { return String::empty; }
     virtual void changeProgramName (int, const String&)     { }
 
-    virtual void getStateInformation (juce::MemoryBlock&);
+    virtual void getStateInformation (MemoryBlock&);
     virtual void setStateInformation (const void* data, int sizeInBytes);
 
     virtual void fillInPluginDescription (PluginDescription& d) const;
