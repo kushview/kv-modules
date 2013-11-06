@@ -135,7 +135,7 @@ namespace Element {
     }
 
     void
-    PluginManager::restoreUser (ApplicationProperties& settings)
+    PluginManager::restoreUserPlugins (ApplicationProperties& settings)
     {
         ScopedXml xml (settings.getUserSettings()->getXmlValue ("plugin-list"));
         if (xml)
