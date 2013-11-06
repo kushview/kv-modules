@@ -27,6 +27,8 @@
 #include "element/formats/PluginManager.h"
 #include "element/SymbolMap.h"
 
+#include "PluginWrapper.h"
+
 namespace Element {
 
 
@@ -86,21 +88,18 @@ namespace Element {
     Processor*
     PluginManager::createPlugin (const PluginDescription &desc, String &errorMsg)
     {
-        if (AudioPluginInstance* plugin = formats().createPluginInstance (desc, 44100.f, 1024, errorMsg))
-            return dynamic_cast<Processor*> (plugin);
+        if (AudioPluginInstance* instance = formats().createPluginInstance (desc, 44100.f, 1024, errorMsg))
+        {
+            if (Processor* plugin = dynamic_cast<Processor*> (instance))
+                return plugin;
+
+            else
+                return new PluginWrapper (instance);
+        }
+
         return nullptr;
     }
 
-#if 0
-    template<class FormatType>
-    FormatType* PluginManager::format()
-    {
-        for (int i = 0; i < formats().getNumFormats(); ++i)
-            if (FormatType* fmt = dynamic_cast<FormatType*> (formats().getFormat (i)))
-                return fmt;
-        return nullptr;
-    }
-#endif
     AudioPluginFormat*
     PluginManager::format (const String& name)
     {

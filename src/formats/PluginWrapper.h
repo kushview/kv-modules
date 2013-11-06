@@ -34,8 +34,16 @@ namespace Element {
 
     public:
 
-        PluginWrapper (AudioProcessor* plug);
-        ~PluginWrapper();
+        inline PluginWrapper (AudioProcessor* plug)
+        {
+            jassert (plug != nullptr);
+            proc = plug;
+        }
+
+        inline PluginWrapper()
+        {
+            proc = nullptr;
+        }
 
         inline const String getName() const { return proc->getName(); }
         inline void prepareToPlay (double rate, int block) { proc->prepareToPlay (rate, block); }
@@ -78,6 +86,25 @@ namespace Element {
         inline void addListener (AudioProcessorListener* newListener) { proc->addListener (newListener); }
         inline void removeListener (AudioProcessorListener* listenerToRemove) { proc->removeListener (listenerToRemove); }
         inline void setPlayHead (AudioPlayHead* newPlayHead) { proc->setPlayHead (newPlayHead); }
+
+        inline void fillInPluginDescription (PluginDescription &d) const
+        {
+            if (AudioPluginInstance* plug = dynamic_cast<AudioPluginInstance*> (proc.get()))
+                return plug->fillInPluginDescription (d);
+
+            d.category = "Wrapper";
+            d.descriptiveName = "Universal Plugin Wrapper";
+            d.fileOrIdentifier = "internal://pluginWrapper";
+            d.hasSharedContainer = false;
+            d.isInstrument = proc->acceptsMidi();
+            d.manufacturerName = "Element Project";
+            d.name = proc->getName();
+            d.numInputChannels = getNumInputChannels();
+            d.numOutputChannels = getNumOutputChannels();
+            d.pluginFormatName = "Internal";
+            d.version = "0.0.1";
+            d.uid = String("internal://pluginWrapper").hashCode();
+        }
 
     private:
 
