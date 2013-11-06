@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import platform
+import os, platform
 from waflib.Configure import conf
 
 import autowaf
@@ -43,8 +43,13 @@ def check_rez (self):
 
 def options (opts):
     opts.add_option ("--no-headers", dest="install_headers", action="store_false", default=True)
+    opts.add_option ("--app-config", dest="app_config", type='string', default='')
 
 def configure (conf):
+
+    if conf.options.app_config == '':
+        conf.env.append_unique ("CXXFLAGS", ['-I' + os.getcwd() + "/project/JuceLibraryCode"])
+        conf.env.append_unique ("CFLAGS", ['-I' + os.getcwd() + "/project/JuceLibraryCode"])
 
     pat = conf.env['cshlib_PATTERN']
     if not pat:

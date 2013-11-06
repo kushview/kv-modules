@@ -44,6 +44,8 @@ def configure (conf):
         autowaf.check_pkg (conf, "xext", uselib_store="XEXT", mandatory=True)
         autowaf.check_pkg (conf, "freetype2", uselib_store="FREETYPE2", mandatory=True)
         autowaf.check_pkg (conf, "gl", uselib_store="GL", mandatory=True)
+        pkg_defs += ['HAVE_ALSA', 'HAVE_X11', 'HAVE_XEXT', 'HAVE_FREETYPE2', 'HAVE_GL']
+
     for d in pkg_defs: conf.env[d] = conf.is_defined (d)
 
     conf.env.ELEMENT_VERSION_STRING = version_string()

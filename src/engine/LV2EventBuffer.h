@@ -10,9 +10,7 @@
 #ifndef ELEMENT_LV2EVBUF_HPP
 #define ELEMENT_LV2EVBUF_HPP
 
-#include <boost/noncopyable.hpp>
 #include "element/juce.hpp"
-
 #include "lv2_evbuf.h"
 
 namespace Element {
