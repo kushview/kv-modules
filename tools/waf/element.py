@@ -50,6 +50,9 @@ def configure (conf):
     if conf.options.app_config == '':
         conf.env.append_unique ("CXXFLAGS", ['-I' + os.getcwd() + "/project/JuceLibraryCode"])
         conf.env.append_unique ("CFLAGS", ['-I' + os.getcwd() + "/project/JuceLibraryCode"])
+    else:
+        conf.env.append_unique ("CXXFLAGS", ['-I' + conf.options.app_config])
+        conf.env.append_unique ("CFLAGS", ['-I' + conf.options.app_config])
 
     pat = conf.env['cshlib_PATTERN']
     if not pat:
