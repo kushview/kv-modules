@@ -176,11 +176,11 @@ namespace Element {
          world (world_),
          active (false),
          currentSampleRate (44100.0),
-         numPorts (plugin.get_num_ports()),
+         numPorts (lilv_plugin_get_num_ports (plugin_)),
          savedFeatures (nullptr),
          worker (nullptr),
-         hub (4096),
-         workResponses (1024)
+         hub (nullptr),
+         workResponses (nullptr)
    {
        priv = new Private (*this);
        //FIXME: createPorts (numPorts);
@@ -208,33 +208,14 @@ namespace Element {
 
    void LV2Module::init()
    {
-#if 0
-       Lilv::Plugin plugin (model->getPlugin());
-       LV2World&    nodes  (model->getNodes());
-
        // Get min/max/default values for input control ports.
-       float mins[numPorts], maxes[numPorts], defaults[numPorts];
+       float mins [numPorts], maxes [numPorts], defaults [numPorts];
        plugin.get_port_ranges_float (mins, maxes, defaults);
 
        for (int i = 0; i < numPorts; ++i)
        {
-           Lilv::Port modelPort (plugin.get_port_by_index (i));
-
-           const Port::Type type = modelPort.is_a (nodes.lv2_AudioPort) ? Bke::audioPort
-                                                                        : modelPort.is_a (nodes.lv2_ControlPort) ? Bke::controlPort
-                                                                                                                 : modelPort.is_a (nodes.lv2_AtomPort) ? Bke::atomPort
-                                                                                                                                                       : modelPort.is_a (nodes.lv2_EventPort) ? Bke::eventPort
-                                                                                                                                                                                              : modelPort.is_a (nodes.lv2_CVPort) ? Bke::cvPort
-                                                                                                                                                                                                                                  : Bke::unknownPort;
-           assert (type != unknownPort);
-
-           const Bke::PortFlow flow = modelPort.is_a (nodes.lv2_InputPort)
-                   ? Bke::inputPort : Bke::outputPort;
-
-           setPortConfig ((uint32) i, type, flow);
-
-       } /* foreach port */
-#endif
+           Lilv::Port port (plugin.get_port_by_index (i));
+       }
    }
 
    Result
@@ -244,14 +225,17 @@ namespace Element {
        savedFeatures     = features;
 
        freeInstance();
-       jassert (instance == nullptr);
-
        instance = Lilv::Instance::create (plugin, samplerate, savedFeatures);
+
        if (instance == nullptr)
            return Result::fail ("Could not instantiate plugin.");
 
        if (const void* data = getExtensionData (LV2_WORKER__interface))
+       {
            worker = (LV2_Worker_Interface*) data;
+           if (! workResponses)
+               workResponses = new RingBuffer (4096);
+       }
 
        // FIXME: activatePorts();
        return allocateEventBuffers();
@@ -345,54 +329,44 @@ namespace Element {
    void
    LV2Module::setSampleRate (double newSampleRate)
    {
-       if (newSampleRate != currentSampleRate)
+       if (newSampleRate == currentSampleRate)
+           return;
+
+       currentSampleRate = newSampleRate;
+
+       if (instance != nullptr)
        {
-#ifndef NDEBUG
-           std::clog << "LV2Module::setSampleRate (...); " << newSampleRate << std::endl;
-#endif
-           currentSampleRate = newSampleRate;
+           const bool wasActive = isActive();
 
-           if (instance != nullptr)
-           {
-               const bool wasActive = isActive();
+           deactivate();
 
-               deactivate();
+           // TODO: need to save state here
 
-               // TODO: need to save state here
+           freeInstance();
+           instance = Lilv::Instance::create (plugin, currentSampleRate, savedFeatures);
 
-               freeInstance();
-               instance = Lilv::Instance::create (plugin, currentSampleRate, savedFeatures);
+           // TODO: and restore it here
 
-               // TODO: and restore it here
-
-               if (wasActive)
-                   activate();
-           }
+           if (wasActive)
+               activate();
        }
    }
 
 
-   uint32
-   LV2Module::countPorts (PortType type, bool inputs) const
+   Result
+   LV2Module::allocateEventBuffers()
    {
-       Lilv::World& w (world.lilvWorld());
+       for (int i = 0; i < numPorts; ++i)
+       { }
 
-       LilvNode* tnode = w.new_uri (type.uri().toUTF8());
-       const LilvNode* fnode = (inputs) ? world.lv2_InputPort : world.lv2_OutputPort;
-       uint32 cnt = lilv_plugin_get_num_ports_of_class (plugin, tnode, fnode, nullptr);
-       lilv_node_free (tnode);
-
-       return cnt;
+       return Result::ok();
    }
 
-
-   LV2_Handle
-   LV2Module::getHandle()
+   void
+   LV2Module::connectPort (uint32 port, void* data)
    {
        if (instance != nullptr)
-           return instance->get_handle();
-
-       return nullptr;
+           instance->connect_port (port, data);
    }
 
    String
@@ -400,7 +374,7 @@ namespace Element {
    {
        if (LilvNode* node = lilv_plugin_get_author_name (plugin))
        {
-           String name (lilv_node_as_string (node));
+           String name (CharPointer_UTF8 (lilv_node_as_string (node)));
            lilv_node_free (node);
            return name;
        }
@@ -416,6 +390,8 @@ namespace Element {
        return String::empty;
    }
 
+   LV2_Handle LV2Module::getHandle() { return instance != nullptr ? instance->get_handle() : nullptr; }
+
    String
    LV2Module::getName() const
    {
@@ -429,68 +405,126 @@ namespace Element {
        return String::empty;
    }
 
+   uint32
+   LV2Module::getNumPorts() const { return lilv_plugin_get_num_ports (plugin); }
+
+   uint32
+   LV2Module::getNumPorts (PortType type, bool isInput)
+   {
+       if (type == PortType::Unknown)
+           return 0;
+
+       const LilvNode* flow = isInput ? world.lv2_InputPort : world.lv2_OutputPort;
+       const LilvNode* kind = type == PortType::Audio ? world.lv2_AudioPort
+                            : type == PortType::Atom  ? world.lv2_AtomPort
+                            : type == PortType::Control ? world.lv2_ControlPort
+                            : type == PortType::CV ? world.lv2_CVPort : nullptr;
+
+       if (kind == nullptr || flow == nullptr)
+           return 0;
+
+       return lilv_plugin_get_num_ports_of_class (plugin, kind, flow, nullptr);
+   }
+
+   const LilvPort* LV2Module::getPort (uint32 port) const { return lilv_plugin_get_port_by_index (plugin, port); }
+
+   uint32
+   LV2Module::getMidiPort() const
+   {
+       for (uint32 i = 0; i < getNumPorts(); ++i)
+       {
+           const LilvPort* port (getPort (i));
+           if (lilv_port_is_a (plugin, port, world.lv2_AtomPort) &&
+               lilv_port_is_a (plugin, port, world.lv2_InputPort) &&
+               lilv_port_supports_event (plugin, port, world.midi_MidiEvent))
+               return i;
+       }
+
+       return ELEMENT_INVALID_PORT;
+   }
+
+   const LilvPlugin* LV2Module::getPlugin() const { return plugin.me; }
+
+   uint32
+   LV2Module::getNotifyPort() const
+   {
+#if 0
+       for (int i = 0; i < countPorts(); ++i)
+       {
+           const PortInfo& info (getPortInfo(i));
+           if (info.flow == outputPort && (info.type == atomPort ||
+                                           info.type == eventPort))
+               return info.index;
+       }
+
+       return Port::invalidIndex;
+#endif
+       return 0;
+   }
+
+   PortType
+   LV2Module::getPortType (uint32 i) const
+   {
+       const LilvPort* port (getPort (i));
+
+       if (lilv_port_is_a (plugin, port, world.lv2_AudioPort))
+           return PortType::Audio;
+       else if (lilv_port_is_a (plugin, port, world.lv2_AtomPort))
+           return PortType::Atom;
+       else if (lilv_port_is_a (plugin, port, world.lv2_ControlPort))
+           return PortType::Control;
+       else if (lilv_port_is_a (plugin, port, world.lv2_CVPort))
+           return PortType::CV;
+       else if (lilv_port_is_a (plugin, port, world.lv2_EventPort))
+           { jassertfalse; /* XXX Handle (deprecated) event ports */ }
+
+       return PortType::Unknown;
+   }
+
+
    String
    LV2Module::getURI() const
    {
-       const LilvNode* uriNode = lilv_plugin_get_uri (plugin);
-       return lilv_node_as_string (uriNode);
+       return lilv_node_as_string (lilv_plugin_get_uri (plugin));
    }
 
-   Result
-   LV2Module::allocateEventBuffers()
+   bool LV2Module::isLoaded() const { return instance != nullptr; }
+
+   bool
+   LV2Module::isPortInput (uint32 index) const
    {
-       for (int i = 0; i < numPorts; ++i)
-       {
-#if 0
-           const PortInfo& port (getPortInfo (i));
-
-           if (port.type == Bke::eventPort || port.type == Bke::atomPort)
-           {
-               bool isInput = port.flow == Bke::inputPort ? true : false;
-               // managed evbufs aren't currently supported.
-               // hint hint, just use a PortGraph object which will handle
-               // setting up port buffers and connections for you
-           }
-#endif
-       }
-
-       return Result::ok();
+       return lilv_port_is_a (plugin, getPort (index), world.lv2_InputPort);
    }
 
    bool
-   LV2Module::isLoaded() const
+   LV2Module::isPortOutput (uint32 index) const
    {
-       return instance != nullptr;
-   }
-
-   void
-   LV2Module::connectPort (uint32 port, void* data)
-   {
-       if (instance != nullptr)
-           instance->connect_port (port, data);
+       return lilv_port_is_a (plugin, getPort (index), world.lv2_OutputPort);
    }
 
    void LV2Module::run (uint32 nframes)
    {
-       if (isLoaded())
+       if (! isLoaded())
+           return;
+
+       const bool haveWorker = (worker && workResponses);
+
+       if (haveWorker && workResponses->canRead (sizeof (uint32)))
        {
-           const bool haveWorker = (worker != nullptr);
-           if (haveWorker && workResponses.canRead (sizeof(uint32_t)))
-           {
-               uint32_t size;
-               workResponses.read ((char*) &size, sizeof (uint32_t));
-               std::cout << "SIZE: " << size << std::endl;
-               char data [size];
-               workResponses.read (data, size);
-               worker->work_response (getHandle(), size, (const void*) data);
-           }
+           uint32 size = 0;
+           workResponses->read ((char*) &size, sizeof (uint32));
 
-           instance->run (nframes);
+           char data [size];
+           workResponses->read (data, size);
 
-           if (haveWorker && worker->end_run != nullptr)
-               worker->end_run (getHandle());
-
+           worker->work_response (getHandle(), size, (const void*) data);
        }
+
+       instance->run (nframes);
+
+       if (haveWorker && worker->end_run != nullptr)
+           worker->end_run (getHandle());
+
    }
 
 }  /* namespace element */

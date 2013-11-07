@@ -52,7 +52,7 @@ namespace Element {
         virtual bool isPortInput (uint32 port);
 
         /** Returns true if the port is an output (source port) */
-        bool isPortOutput (uint32 port) { return ! isPortInput (port); }
+        virtual bool isPortOutput (uint32 port) { return ! isPortInput (port); }
 
     };
 

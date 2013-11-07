@@ -29,13 +29,15 @@ Processor::getChannelPort (uint32 port)
     return -1;
 }
 
-uint32 Processor::getNumPorts()
+uint32
+Processor::getNumPorts()
 {
     return getNumInputChannels() + getNumOutputChannels() +
            getNumParameters() + (acceptsMidi() ? 1 : 0) + (producesMidi() ? 1 : 0);
 }
 
-uint32 Processor::getNumPorts (PortType type, bool isInput)
+uint32
+Processor::getNumPorts (PortType type, bool isInput)
 {
     uint32 count = 0;
     for (uint32 port = 0; port < getNumPorts(); ++port)
@@ -44,7 +46,8 @@ uint32 Processor::getNumPorts (PortType type, bool isInput)
     return count;
 }
 
-uint32 Processor::getNthPort (PortType type, int index, bool isInput, bool oneBased)
+uint32
+Processor::getNthPort (PortType type, int index, bool isInput, bool oneBased)
 {
     int count = oneBased ? 0 : -1;
 
@@ -65,7 +68,8 @@ uint32 Processor::getNthPort (PortType type, int index, bool isInput, bool oneBa
     return ELEMENT_INVALID_PORT;
 }
 
-bool Processor::isPortInput (uint32 port)
+bool
+Processor::isPortInput (uint32 port)
 {
     if (port >= getNumPorts())
         jassertfalse;
@@ -101,7 +105,8 @@ bool Processor::isPortInput (uint32 port)
     return false;
 }
 
-PortType Processor::getPortType (uint32 port)
+PortType
+Processor::getPortType (uint32 port)
 {
     const bool haveControls = getNumParameters() > 0;
     const bool haveAudio = (getNumInputChannels() + getNumOutputChannels()) > 0;

@@ -91,8 +91,10 @@ namespace Element {
         if (AudioPluginInstance* instance = formats().createPluginInstance (desc, 44100.f, 1024, errorMsg))
         {
             if (Processor* plugin = dynamic_cast<Processor*> (instance))
+            {
+                Logger::writeToLog("Got a native Processor: " + desc.pluginFormatName);
                 return plugin;
-
+            }
             else
                 return new PluginWrapper (instance);
         }

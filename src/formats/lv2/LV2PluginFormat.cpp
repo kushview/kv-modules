@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "element/Parameter.h"
+#include "element/engine/Processor.h"
 #include "element/formats/lv2/LV2PluginFormat.h"
 #include "element/formats/lv2/LV2Module.h"
 #include "element/formats/lv2/LV2World.h"
@@ -36,24 +38,109 @@
 
 namespace Element {
 
+
+class LV2Parameter :  public Parameter
+{
+public:
+    LV2Parameter (const LilvPlugin* pg, const LilvPort* pt)
+        : Parameter (),
+          portIndex (lilv_port_get_index (pg, pt)),
+          plugin (pg),
+          port (pt)
+
+    {
+        LilvNode* n = lilv_port_get_name (plugin, port);
+        const LilvNode* s = lilv_port_get_symbol (plugin, port);
+
+        setName (lilv_node_as_string (n));
+        setSymbol (lilv_node_as_string (s));
+
+        lilv_node_free (n);
+    }
+
+    uint32 getPortIndex() const { return portIndex; }
+
+private:
+
+    uint32 portIndex;
+    const LilvPlugin* plugin;
+    const LilvPort*   port;
+
+};
+
+
 //==============================================================================
-class LV2PluginInstance     : public AudioPluginInstance
+class LV2PluginInstance     : public Processor
 {
 private:
     SymbolMap &sym;
 
 public:
 
-    LV2PluginInstance (LV2World& map, LV2Module* module_)
-        : sym (map.symbols()), name ("plugin"),
+    LV2PluginInstance (LV2World& world, LV2Module* module_)
+        : sym (world.symbols()),
           wantsMidiMessages (false),
           initialised (false),
           isPowerOn (false),
           tempBuffer (1, 1),
           module (module_)
-         
     {
-        jassert (module != nullptr);
+        assert (module != nullptr);
+
+        numPorts   = module->getNumPorts();
+        midiPort   = module->getMidiPort();
+        notifyPort = ELEMENT_INVALID_PORT;
+
+        const LilvPlugin* plugin (module->getPlugin());
+        for (uint32 p = 0; p < numPorts; ++p)
+        {
+            const LilvPort* port (module->getPort (p));
+            const bool input = module->isPortInput (p);
+            const PortType type = module->getPortType (p);
+
+            if (input)
+            {
+                switch (type.id())
+                {
+                    case PortType::Audio: audioIns.add (p); break;
+                    case PortType::Atom: atomIns.add (p); break;
+                    case PortType::Control: ctlIns.add(p); params.add (new LV2Parameter (plugin, port)); break;
+                    case PortType::CV: cvIns.add (p); break;
+                    case PortType::Unknown:
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                switch (type.id())
+                {
+                    case PortType::Audio: audioOuts.add (p); break;
+                    case PortType::Atom: atomOuts.add (p); break;
+                    case PortType::Control: ctlOuts.add (p); break;
+                    case PortType::CV: cvOuts.add (p); break;
+                    case PortType::Unknown:
+                    default:
+                        break;
+                }
+            }
+        }
+
+#if JUCE_DEBUG
+        for (int i = 0; i < audioIns.size(); ++i) {
+            std::clog << "audio in: " << i << " to port " << audioIns.getUnchecked(i) << std::endl;
+        }
+
+        for (int i = 0; i < audioOuts.size(); ++i) {
+            std::clog << "audio out: " << i << " to port " << audioOuts.getUnchecked(i) << std::endl;
+        }
+
+        for (int i = 0; i < ctlIns.size(); ++i) {
+            std::clog << "ctl in: " << i << " to port " << ctlIns.getUnchecked(i) << std::endl;
+        }
+#endif
+
+        setPlayConfigDetails (audioIns.size(), audioOuts.size(), 44100.0, 1024);
     }
 
 
@@ -62,8 +149,14 @@ public:
         module = nullptr;
     }
 
-    LV2Module& getModule() { assert (module); return *module; }
+    //=========================================================================
+    uint32 getNumPorts(){ return module->getNumPorts(); }
+    uint32 getNumPorts (PortType type, bool isInput) { return module->getNumPorts (type, isInput); }
+    PortType getPortType (uint32 port) { return module->getPortType (port); }
+    bool isPortInput (uint32 port)     { return module->isPortInput (port); }
+    bool isPortOutput (uint32 port)    { return module->isPortOutput (port); }
 
+    //=========================================================================
     void fillInPluginDescription (PluginDescription& desc) const
     {
         desc.name = module->getName();
@@ -82,8 +175,8 @@ public:
         desc.manufacturerName = module->getAuthorName();
         desc.version = "";
 
-        desc.numInputChannels  = module->countPorts (PortType::Audio, true);
-        desc.numOutputChannels = module->countPorts (PortType::Audio, false);
+        desc.numInputChannels  = module->getNumPorts (PortType::Audio, true);
+        desc.numOutputChannels = module->getNumPorts (PortType::Audio, false);
         desc.isInstrument = false; //XXXX
     }
 
@@ -100,60 +193,71 @@ public:
         jassert (MessageManager::getInstance()->isThisTheMessageThread());
        #endif
 
-
-
-        wantsMidiMessages = false; // FIXME: model->hasMidiPort (true);
+        wantsMidiMessages = midiPort != ELEMENT_INVALID_PORT;
 
         initialised = true;
         setLatencySamples (0);
     }
 
     double getTailLengthSeconds() const { return 0.0f; }
-    void* getPlatformSpecificData()  { return getModule().getHandle(); }
-    const String getName() const     { return module->getName(); } // FIXME: module->getModel()->getName(); }
+    void* getPlatformSpecificData()  { return module->getHandle(); }
+    const String getName() const     { return module->getName(); }
     bool silenceInProducesSilenceOut() const { return false; }
-    bool acceptsMidi() const         { return module->countPorts (PortType::Atom, true) > 0; } // FIXME: module->getModel()->hasMidiPort (true); }
-    bool producesMidi() const        { return module->countPorts (PortType::Atom, false) > 0; } // FIXME: module->getModel()->hasMidiPort (false); }
+    bool acceptsMidi()  const        { return wantsMidiMessages; }
+    bool producesMidi() const        { return notifyPort != ELEMENT_INVALID_PORT; }
 
     //==============================================================================
-    void prepareToPlay (double rate, int samplesPerBlockExpected)
+    void prepareToPlay (double sampleRate, int blockSize)
     {
-        setPlayConfigDetails (module->countPorts (PortType::Audio, true),
-                              module->countPorts (PortType::Audio, false),
-                              rate, samplesPerBlockExpected);
-#if 0
+        setPlayConfigDetails (audioIns.size(), audioOuts.size(), sampleRate, blockSize);
         initialise();
 
         if (initialised)
         {
-            atomBuffer.clear (false);
-
-            module->setSampleRate (rate);
-
-            tempBuffer.setSize (jmax (1, getNumOutputChannels()), samplesPerBlockExpected);
-
-            if (! module->isActive())
-                module->activate();
-
-            //FIXME: setLatencySamples (effect->initialDelay);
+            module->setSampleRate (sampleRate);
+            tempBuffer.setSize (jmax (1, audioOuts.size()), blockSize);
+            module->activate();
         }
-#endif
     }
 
     void releaseResources()
     {
-        if (initialised && module->getHandle())
-        {
-            if (module->isActive())
-                module->deactivate();
-        }
+        if (initialised)
+            module->deactivate();
 
         tempBuffer.setSize (1, 1);
-        // FIXME: atomBuffer.clear (false);
     }
 
 
-    void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages) { }
+    void processBlock (AudioSampleBuffer& audio, MidiBuffer& midi)
+    {
+        const int32 numSamples = audio.getNumSamples();
+
+        if (! initialised)
+        {
+            for (int i = 0; i < getNumOutputChannels(); ++i)
+                audio.clear (i, 0, numSamples);
+
+            return;
+        }
+
+        for (int32 i = audioIns.size(); --i >= 0;) {
+            module->connectPort (audioIns.getUnchecked(i), audio.getSampleData (i));
+        }
+
+        for (int32 i = audioOuts.size(); --i >= 0;) {
+            module->connectPort (audioOuts.getUnchecked(i), tempBuffer.getSampleData (i));
+        }
+
+        float value = 1.0f;
+        module->connectPort (0, &value);
+
+        module->run ((uint32) numSamples);
+
+        for (int i = getNumOutputChannels(); --i >= 0;)
+            audio.copyFrom (i, 0, tempBuffer.getSampleData (i), numSamples);
+    }
+
 #if 0
     void processBlock (AudioSampleBuffer& buffer, AtomBuffer& atoms)
     {
@@ -270,75 +374,46 @@ public:
     bool isOutputChannelStereoPair (int index) const { return false; }
 
     //==============================================================================
-    int getNumParameters() { return getModule().countPorts (PortType::Control, true); }
+    int getNumParameters() { return params.size(); }
 
     float getParameter (int index)
     {
-#if 0
-        if (index < params.size() && params.size() > 0)
-            return params[index].normal();
-#endif
-        return 0.0;
+        if (isPositiveAndBelow (index, params.size()))
+            return params[index]->normal();
+        return 0.0f;
     }
 
     void setParameter (int index, float newValue)
     {
-#if 0
-        if (index < params.size() && params.size())
-        {
-            Parameter* param = &params[index];
-
-            // denormalize from the gui
-            for (int i = module->getModel()->getNumPorts(); --i >= 0;)
-            {
-               if (module->getModel()->getPortSymbol(i) == param->getSymbol().c_str())
-               {
-                  newValue = (newValue * (param->max() - param->min())) + param->min();
-                  //FIXME: module->writeToPort (i, sizeof (float), 0, &newValue);
-                  param->set (newValue);
-               }
-            }
-        }
-#endif
+        if (isPositiveAndBelow (index, params.size()))
+            params.getUnchecked(index)->setNormal (newValue);
     }
 
     const String getParameterName (int index)
     {
-#if 0
-        if (index < params.size() && params.size() > 0)
-            return String (params[index].getName().c_str());
-#endif
+        if (isPositiveAndBelow (index, params.size()))
+            return params.getUnchecked(index)->getName();
         return String::empty;
     }
 
     const String getParameterText (int index)
     {
-#if 0
-        if (index < params.size() && params.size() > 0)
-        {
-            return String (params[index].value());
-        }
-#endif
         return String::empty;
     }
 
     String getParameterLabel (int index) const
     {
-#if 0
-        if (index < params.size() && index >= 0)
-            { /* get units somehow */ }
-#endif
         return String::empty;
     }
 
-    bool isParameterAutomatable (int index) const { return false; }
+    bool isParameterAutomatable (int index) const { return true; }
 
     //==============================================================================
     int getNumPrograms()          { return 0; }
     int getCurrentProgram()       { return 0; }
-    void setCurrentProgram (int newIndex) { }
-    const String getProgramName (int index)  { return String::empty; }
-    void changeProgramName (int index, const String& newName) { }
+    void setCurrentProgram (int /*index*/) { }
+    const String getProgramName (int /*index*/)  { return String::empty; }
+    void changeProgramName (int /*index*/, const String& /*name*/) { }
 
     //==============================================================================
     void getStateInformation (MemoryBlock& mb)                  { ; }
@@ -356,16 +431,22 @@ public:
     }
 
 private:
-    String name;
+
     CriticalSection lock, midiInLock;
     bool wantsMidiMessages, initialised, isPowerOn;
     mutable StringArray programNames;
 
     AudioSampleBuffer tempBuffer;
-    // Element::AtomBuffer   atomBuffer;
-
     ScopedPointer<LV2Module> module;
-    //std::vector<Parameter> params;
+    OwnedArray<Parameter> params;
+
+    uint32 numPorts;
+    uint32 midiPort;
+    uint32 notifyPort;
+
+    // port/channel maps
+    Array<uint32> audioIns, audioOuts, atomIns, atomOuts;
+    Array<uint32> ctlIns, ctlOuts, cvIns, cvOuts, evIns, evOuts;
 
     const char* getCategory() const { return module->getClassLabel().toUTF8(); }
 
@@ -380,9 +461,8 @@ public:
     Private (LV2World& w)
     {
         world.setNonOwned (&w);
+
     }
-
-
 
     LV2Module* createModule (const String& uri)
     {
@@ -396,6 +476,7 @@ public:
     }
 
     OptionalScopedPointer<LV2World> world;
+    LV2FeatureArray features;
 };
 
 LV2PluginFormat::LV2PluginFormat (LV2World& w) : priv (new LV2PluginFormat::Private (w)) { }
@@ -445,6 +526,8 @@ LV2PluginFormat::createInstanceFromDescription (const PluginDescription& desc, d
     if (LV2Module* module = priv->createModule (desc.fileOrIdentifier))
     {
         JUCE_LV2_LOG ("  instantiating from module.");
+
+        module->instantiate (sampleRate, priv->features);
         return new LV2PluginInstance (*priv->world, module);
     }
 
@@ -491,7 +574,8 @@ LV2PluginFormat::searchPathsForPlugins (const FileSearchPath&, bool)
 
 FileSearchPath LV2PluginFormat::getDefaultLocationsToSearch() { return FileSearchPath(); }
 
-bool LV2PluginFormat::doesPluginStillExist (const PluginDescription& desc)
+bool
+LV2PluginFormat::doesPluginStillExist (const PluginDescription& desc)
 {
     FileSearchPath placeholder;
     StringArray plugins (searchPathsForPlugins (placeholder, true));

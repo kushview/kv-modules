@@ -132,8 +132,10 @@ namespace Element {
         // Check we support this plugins port types
         for (int i = p.get_num_ports(); --i >= 0;)
         {
-           Lilv::Port port (p.get_port_by_index(i));
-           if (port.is_a (const_cast<LilvNode*> (lv2_CVPort)))
+           Lilv::Port port (p.get_port_by_index (i));
+           if (port.is_a (const_cast<LilvNode*> (lv2_CVPort)) ||
+               port.is_a (const_cast<LilvNode*> (lv2_AtomPort)) ||
+               port.is_a (const_cast<LilvNode*> (lv2_EventPort)))
               return false;
         }
 

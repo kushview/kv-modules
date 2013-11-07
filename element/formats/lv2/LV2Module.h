@@ -78,9 +78,6 @@ private:
 
 class LV2Module// : public PortProcessor
 {
-    class Private;
-    Scoped<Private> priv;
-
 public:
 
     LV2Module (LV2World& world, const LilvPlugin* plugin_);
@@ -112,6 +109,9 @@ public:
                                     : nullptr;
     }
 
+    uint32 getNumPorts() const;
+    uint32 getNumPorts (PortType type, bool isInput);
+
     LV2_Worker_Status
     work (LV2_Worker_Respond_Function respond, uint32_t size, const void* data)
     {
@@ -121,20 +121,17 @@ public:
     }
 
     inline LV2_Worker_Status
-    writeWorkResponse (uint32_t size, const void* data)
+    writeWorkResponse (uint32 size, const void* data)
     {
-#if 0
-       if (worker != nullptr)
+       if (worker && workResponses)
        {
-          workResponses.write ((const char*) &size, sizeof (uint32_t));
-          workResponses.write ((const char*) data, size);
+          workResponses->write (&size, sizeof (uint32));
+          workResponses->write (data, size);
           return LV2_WORKER_SUCCESS;
        }
-#endif
+
        return LV2_WORKER_ERR_UNKNOWN;
     }
-
-    uint32 countPorts (PortType type, bool inputs) const;
 
     String getAuthorName() const;
     String getClassLabel() const;
@@ -143,41 +140,21 @@ public:
 
     inline bool hasEditor() const { return false; /* XXX */ }
 
-    inline uint32
-    getMidiPort() const
-    {
-#if 0
-        for (int i = 0; i < countPorts(); ++i)
-        {
-            const PortInfo& info (getPortInfo (i));
-            if (info.flow == inputPort && (info.type == atomPort ||
-                                           info.type == eventPort))
-                return info.index;
-        }
-#endif
-        return uint32(-1);
-    }
-
-    inline uint32
-    getNotifyPort() const
-    {
-#if 0
-        for (int i = 0; i < countPorts(); ++i)
-        {
-            const PortInfo& info (getPortInfo(i));
-            if (info.flow == outputPort && (info.type == atomPort ||
-                                            info.type == eventPort))
-                return info.index;
-        }
-
-        return Port::invalidIndex;
-#endif
-        return 0;
-    }
-
+    uint32 getMidiPort() const;
+    uint32 getNotifyPort() const;
     LV2_Handle getHandle();
+    const LilvPlugin* getPlugin() const;
+    const LilvPort* getPort (uint32 index) const;
+
+
+    PortType getPortType (uint32 index) const;
+
     void setSampleRate (double newSampleRate);
+
     bool isLoaded() const;
+    bool isPortInput (uint32 port) const;
+    bool isPortOutput (uint32 port) const;
+
     void run (uint32 nframes);
     void connectPort (uint32 port, void* data);
 
@@ -192,8 +169,13 @@ private:
     uint32 numPorts;
     LV2_Feature** savedFeatures;
     LV2_Worker_Interface *worker;
-    RingBuffer hub, workResponses;
+
+    ScopedPointer<RingBuffer> hub, workResponses;
+
     Result allocateEventBuffers();
+
+    class Private;
+    ScopedPointer<Private> priv;
 
     /** @internal Free the plugin instance */
     void freeInstance();

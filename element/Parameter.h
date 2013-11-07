@@ -29,15 +29,13 @@ namespace Element {
     {
     public:
 
-        struct Seed { float min, max, value; };
 
-        Parameter ()
-            : mName("param"), mSymbol("param") { }
 
-        Parameter (const String& name_, const String& symbol_)
-            : mName (name_), mSymbol (symbol_) { }
+        inline Parameter() : name("Parameter"), symbol("parameter") { }
+        inline Parameter (const String& name_, const String& symbol_)
+            : name (name_), symbol (symbol_) { }
 
-        ~Parameter() { }
+        inline ~Parameter() { }
 
         inline static double
         mapLog (double value, double min, double max, double k)
@@ -55,36 +53,36 @@ namespace Element {
         }
 
 
-        const String& name() const { return mName; }
-        const String& symbol() const { return mSymbol; }
+        const String& getName()   const { return name; }
+        const String& getSymbol() const { return symbol; }
 
-        inline double min() const { return mSeed.min; }
-        inline double max() const { return mSeed.max; }
+        inline double min() const { return seed.min; }
+        inline double max() const { return seed.max; }
 
         inline void
         set (double value)
         {
-            if (value != mSeed.value && value >= mSeed.min && value <= mSeed.max)
+            if (value != seed.value && value >= seed.min && value <= seed.max)
             {
-                mSeed.value = value;
+                seed.value = value;
             }
         }
 
         inline void
         set (double min, double max, double value)
         {
-            mSeed.min = min;
-            mSeed.max = max;
+            seed.min = min;
+            seed.max = max;
             set (value);
         }
 
         inline double
-        value() const { return mSeed.value; }
+        value() const { return seed.value; }
 
         inline double
         normal() const
         {
-            return (mSeed.value - mSeed.min) / (mSeed.max - mSeed.min);
+            return (seed.value - seed.min) / (seed.max - seed.min);
         }
 
         inline void
@@ -93,7 +91,7 @@ namespace Element {
             if (val < 0) val = 0;
             if (val > 1.0) val = 1.0;
 
-            set (val * (mSeed.max - mSeed.min) + mSeed.min);
+            set (val * (seed.max - seed.min) + seed.min);
         }
 
         inline double
@@ -106,37 +104,34 @@ namespace Element {
         logarithmic() const
         {
             // double value = lower * pow (upper / lower, step / (steps - 1))
-            return mSeed.min * pow (mSeed.max / mSeed.min, normal());
+            return seed.min * pow (seed.max / seed.min, normal());
         }
 
-        inline const Seed* seed() const
-        {
-            return &mSeed;
-        }
 
         inline void
-        seed (Seed& other)
+        reset()
         {
-            other = mSeed;
+            seed.min      = 0;
+            seed.max      = 1;
+            seed.value    = 1;
         }
 
-        inline void
-        setSeed (const Seed &other)
-        {
-            mSeed = other;
-        }
+    protected:
 
-        inline void reset()
-        {
-            mSeed.min      = 0;
-            mSeed.max      = 1;
-            mSeed.value    = 1;
-        }
+        inline void setName (const String& n) { name = n; }
+        inline void setSymbol (const String& s) { symbol = s; }
 
     private:
 
-        String mName, mSymbol;
-        Seed mSeed;
+        String name, symbol;
+
+        struct Seed
+        {
+            String name, symbol;
+            double min, max, value;
+        };
+
+        Seed seed;
 
     };
 
