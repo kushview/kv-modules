@@ -165,8 +165,7 @@ namespace Element {
          return nullptr;
       }
 
-   private:
-
+      HeapBlock<float> mins, maxes, defaults, values;
 
    };
 
@@ -183,7 +182,6 @@ namespace Element {
          workResponses (nullptr)
    {
        priv = new Private (*this);
-       //FIXME: createPorts (numPorts);
    }
 
    LV2Module::~LV2Module ()
@@ -191,31 +189,39 @@ namespace Element {
        deactivate();
        freeInstance();
    }
-#if 0
-   ProcessorEditor*
-   LV2Module::createEditor()
+
+   void
+   LV2Module::activatePorts()
    {
-       if (this->hasEditor())
+       jassert (instance != nullptr);
+
+       priv->mins.allocate (numPorts, true);
+       priv->maxes.allocate (numPorts, true);
+       priv->defaults.allocate (numPorts, true);
+       priv->values.allocate (numPorts, true);
+
+       plugin.get_port_ranges_float (priv->mins, priv->maxes, priv->defaults);
+
+       for (uint32 i = 0; i < numPorts; ++i)
+           priv->values[i] = priv->defaults[i];
+
+       for (int32 p = 0; p < numPorts; ++p)
        {
-           Scoped<Component> comp (new Component());
-           Scoped<LV2UIModule> ui (new LV2UIModule (*this, *comp));
-           ui->open();
-           ui->close();
+           const PortType type = getPortType (p);
+
+           if (type == PortType::Control)
+           {
+               // normally this would ONLY be done during 'run'. However,
+               // control ports are only connected once, here, during activation
+               connectPort (p, priv->values.getData() + p);
+           }
        }
-       return nullptr;
    }
-#endif
 
-   void LV2Module::init()
+   void
+   LV2Module::init()
    {
-       // Get min/max/default values for input control ports.
-       float mins [numPorts], maxes [numPorts], defaults [numPorts];
-       plugin.get_port_ranges_float (mins, maxes, defaults);
 
-       for (int i = 0; i < numPorts; ++i)
-       {
-           Lilv::Port port (plugin.get_port_by_index (i));
-       }
    }
 
    Result
@@ -236,56 +242,22 @@ namespace Element {
            if (! workResponses)
                workResponses = new RingBuffer (4096);
        }
-
-       // FIXME: activatePorts();
-       return allocateEventBuffers();
-   }
-
-#if 0
-   SuilInstance*
-   LV2Module::instantiateUI (const LV2_Feature* const * uiFeatures)
-   {
-
-       Lilv::Node nativeType (model->nativeEditorType());
-       Lilv::Node juceType   (model->getWorld().new_uri (LV2_UI__JuceUI));
-
-       if (const LilvUI* ui = model->hasUIWithWidgetType (juceType))
+       else
        {
-           std::clog << "LV2: UI Selected: " << juceType.as_uri() << std::endl;
-           return instantiateUI (ui, juceType, juceType, uiFeatures);
+           worker = nullptr;
+           if (workResponses)
+               workResponses = nullptr;
        }
 
-       if (const LilvUI* ui = model->hasUIWithWidgetType (nativeType))
-       {
-           std::clog << "LV2: UI Selected: " << nativeType.as_uri() << std::endl;
-           return instantiateUI (ui, nativeType, nativeType, uiFeatures);
-       }
-
-       return nullptr;
+       return Result::ok();
    }
-
-   SuilInstance*
-   LV2Module::instantiateUI (const LilvUI* ui,
-                             const LilvNode* containerType,
-                             const LilvNode* widgetType,
-                             const LV2_Feature* const * features)
-   {
-       return priv->instantiateUI (ui, containerType, widgetType, features);
-   }
-#endif
 
    void
    LV2Module::activate()
    {
-       if (instance != nullptr && ! active)
+       if (instance && ! active)
        {
-           if (const void* data = getExtensionData (LV2_WORKER__interface))
-               this->worker = (LV2_Worker_Interface*) data;
-           else
-               this->worker = nullptr;
-
-           //FIXME: activatePorts();
-
+           activatePorts();
            instance->activate();
            active = true;
        }
@@ -409,7 +381,7 @@ namespace Element {
    LV2Module::getNumPorts() const { return lilv_plugin_get_num_ports (plugin); }
 
    uint32
-   LV2Module::getNumPorts (PortType type, bool isInput)
+   LV2Module::getNumPorts (PortType type, bool isInput) const
    {
        if (type == PortType::Unknown)
            return 0;
@@ -502,7 +474,8 @@ namespace Element {
        return lilv_port_is_a (plugin, getPort (index), world.lv2_OutputPort);
    }
 
-   void LV2Module::run (uint32 nframes)
+   void
+   LV2Module::run (uint32 nframes)
    {
        if (! isLoaded())
            return;
@@ -527,5 +500,5 @@ namespace Element {
 
    }
 
-}  /* namespace element */
+}  /* namespace Element */
 

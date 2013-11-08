@@ -83,19 +83,10 @@ public:
     LV2Module (LV2World& world, const LilvPlugin* plugin_);
     ~LV2Module();
 
-    void init();
+
     Result instantiate (double samplerate, LV2_Feature** features);
 
-#if 0
-    SuilInstance* instantiateUI (const LV2_Feature* const * uiFeatures);
-
-    SuilInstance* instantiateUI (const LilvUI* ui,
-                                 const LilvNode* containerType,
-                                 const LilvNode* widgetType,
-                                 const LV2_Feature* const * uiFeatures);
-#endif
-
-    const LV2_Feature* const* features() { return savedFeatures; }
+    const LV2_Feature* const* features() const { return savedFeatures; }
 
     void activate();
     void cleanup();
@@ -110,7 +101,7 @@ public:
     }
 
     uint32 getNumPorts() const;
-    uint32 getNumPorts (PortType type, bool isInput);
+    uint32 getNumPorts (PortType type, bool isInput) const;
 
     LV2_Worker_Status
     work (LV2_Worker_Respond_Function respond, uint32_t size, const void* data)
@@ -145,8 +136,6 @@ public:
     LV2_Handle getHandle();
     const LilvPlugin* getPlugin() const;
     const LilvPort* getPort (uint32 index) const;
-
-
     PortType getPortType (uint32 index) const;
 
     void setSampleRate (double newSampleRate);
@@ -173,12 +162,13 @@ private:
     ScopedPointer<RingBuffer> hub, workResponses;
 
     Result allocateEventBuffers();
+    void activatePorts();
+    void freeInstance();
+    void init();
 
     class Private;
     ScopedPointer<Private> priv;
 
-    /** @internal Free the plugin instance */
-    void freeInstance();
 };
 
 }   /* namespace element */

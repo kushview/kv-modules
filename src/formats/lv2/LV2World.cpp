@@ -61,9 +61,7 @@ namespace Element {
         if (isPluginSupported (uri))
         {
             Lilv::Plugin plugin (getPlugin (uri));
-            LV2Module* module = new LV2Module (*this, plugin);
-            module->init();
-            return module;
+            return new LV2Module (*this, plugin);
         }
 
         return nullptr;
@@ -108,9 +106,6 @@ namespace Element {
     bool
     LV2World::isPluginSupported (const String& uri)
     {
-       if (! isPluginAvailable (uri))
-          return false;
-
         Lilv::Plugin p (getPlugin (uri));
         p.get_name();
 

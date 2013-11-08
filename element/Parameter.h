@@ -29,8 +29,6 @@ namespace Element {
     {
     public:
 
-
-
         inline Parameter() : name("Parameter"), symbol("parameter") { }
         inline Parameter (const String& name_, const String& symbol_)
             : name (name_), symbol (symbol_) { }
@@ -76,12 +74,15 @@ namespace Element {
             set (value);
         }
 
-        inline double
+        inline const double&
         value() const { return seed.value; }
 
         inline double
         normal() const
         {
+            if (seed.min == 0.0 && seed.max == 1.0)
+                return seed.value;
+
             return (seed.value - seed.min) / (seed.max - seed.min);
         }
 
@@ -91,7 +92,10 @@ namespace Element {
             if (val < 0) val = 0;
             if (val > 1.0) val = 1.0;
 
-            set (val * (seed.max - seed.min) + seed.min);
+            if (seed.min == 0.0 && seed.max == 1.0)
+                set (val);
+            else
+                set (val * (seed.max - seed.min) + seed.min);
         }
 
         inline double
@@ -103,10 +107,8 @@ namespace Element {
         inline double
         logarithmic() const
         {
-            // double value = lower * pow (upper / lower, step / (steps - 1))
             return seed.min * pow (seed.max / seed.min, normal());
         }
-
 
         inline void
         reset()
@@ -127,12 +129,12 @@ namespace Element {
 
         struct Seed
         {
+            Seed() : min(0.0), max(1.0), value(1.0) { }
             String name, symbol;
             double min, max, value;
         };
 
         Seed seed;
-
     };
 
 }

@@ -249,9 +249,6 @@ public:
             module->connectPort (audioOuts.getUnchecked(i), tempBuffer.getSampleData (i));
         }
 
-        float value = 1.0f;
-        module->connectPort (0, &value);
-
         module->run ((uint32) numSamples);
 
         for (int i = getNumOutputChannels(); --i >= 0;)
@@ -379,7 +376,8 @@ public:
     float getParameter (int index)
     {
         if (isPositiveAndBelow (index, params.size()))
-            return params[index]->normal();
+            return static_cast<float> (params.getUnchecked(index)->normal());
+
         return 0.0f;
     }
 
@@ -466,13 +464,7 @@ public:
 
     LV2Module* createModule (const String& uri)
     {
-        if (LV2Module* module = world->createModule (uri))
-        {
-            module->init();
-            return module;
-        }
-
-        return nullptr;
+        return world->createModule (uri);
     }
 
     OptionalScopedPointer<LV2World> world;
@@ -498,10 +490,6 @@ LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& results,
 
     try
     {
-        String msg = "Discovering LV2 Plugin: ";
-        msg << fileOrIdentifier;
-        JUCE_LV2_LOG (msg);
-
         ScopedPointer<AudioPluginInstance> instance (createInstanceFromDescription (*desc.get(), 44100, 1024));
         if (LV2PluginInstance* const p = dynamic_cast <LV2PluginInstance*> (instance.get()))
         {
@@ -521,18 +509,13 @@ LV2PluginFormat::createInstanceFromDescription (const PluginDescription& desc, d
     if (desc.pluginFormatName != String ("LV2"))
         return nullptr;
 
-    JUCE_LV2_LOG ("Creating LV2 Module");
-
     if (LV2Module* module = priv->createModule (desc.fileOrIdentifier))
     {
-        JUCE_LV2_LOG ("  instantiating from module.");
-
         module->instantiate (sampleRate, priv->features);
         return new LV2PluginInstance (*priv->world, module);
     }
 
     JUCE_LV2_LOG ("Failed creating LV2 plugin instance");
-
     return nullptr;
 }
 
