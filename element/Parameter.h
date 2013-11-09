@@ -21,7 +21,7 @@
 #define ELEMENT_PARAMETER_HPP
 
 #include <cmath>
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
 

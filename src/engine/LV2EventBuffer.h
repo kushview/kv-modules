@@ -10,7 +10,7 @@
 #ifndef ELEMENT_LV2EVBUF_HPP
 #define ELEMENT_LV2EVBUF_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "lv2_evbuf.h"
 
 namespace Element {

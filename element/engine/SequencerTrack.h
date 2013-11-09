@@ -20,7 +20,7 @@
 #ifndef ELEMENT_SEQUENCER_TRACK_H
 #define ELEMENT_SEQUENCER_TRACK_H
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/engine/ClipSource.h"
 #include "element/engine/Processor.h"
 #include "element/models/TrackModel.h"

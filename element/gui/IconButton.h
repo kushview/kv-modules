@@ -8,7 +8,7 @@
 #ifndef BKE_ICONBUTTON_HPP
 #define BKE_ICONBUTTON_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/gui/Tango.h"
 #include "element/Signals.h"
 

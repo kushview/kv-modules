@@ -19,7 +19,7 @@
 #ifndef ELEMENT_POINTER_HPP
 #define ELEMENT_POINTER_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 #define ELEMENT_FORCE_BOOST_SHARED_PTR 0
 

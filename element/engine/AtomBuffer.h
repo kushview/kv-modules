@@ -20,7 +20,7 @@
 #ifndef ELEMENT_ATOMBUFFER_H
 #define ELEMENT_ATOMBUFFER_H
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 #include <lv2/lv2plug.in/ns/ext/atom/atom.h>
 #include <lv2/lv2plug.in/ns/ext/midi/midi.h>

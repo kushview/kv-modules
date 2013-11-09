@@ -21,7 +21,7 @@
 #ifndef ELEMENT_RINGBUFFER_HPP
 #define ELEMENT_RINGBUFFER_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
 

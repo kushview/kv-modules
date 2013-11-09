@@ -22,7 +22,7 @@
 #ifndef ELEMENT_UTILITY_H
 #define ELEMENT_UTILITY_H
 
-#include <element/juce.hpp>
+#include <element/Juce.h>
 #include <element/Utils.h>
 #include <element/util/Convert.h>
 

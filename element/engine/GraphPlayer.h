@@ -1,7 +1,7 @@
 #ifndef GRAPHPLAYER_HPP
 #define GRAPHPLAYER_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
 

@@ -20,7 +20,7 @@
 #ifndef ELEMENT_RANGE_HPP
 #define ELEMENT_RANGE_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
 

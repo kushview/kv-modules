@@ -33,7 +33,7 @@
 #ifndef __JUCETICE_DECIBELSCALE_HEADER__
 #define __JUCETICE_DECIBELSCALE_HEADER__
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 //==============================================================================
 /**

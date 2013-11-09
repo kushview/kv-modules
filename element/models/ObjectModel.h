@@ -20,9 +20,9 @@
 #ifndef ELEMENT_OBJECT_MODEL_H
 #define ELEMENT_OBJECT_MODEL_H
 
-#include <element/juce.hpp>
-#include <element/Pointer.h>
-#include <element/Slugs.h>
+#include "element/Juce.h"
+#include "element/Pointer.h"
+#include "element/Slugs.h"
 
 namespace Element {
 

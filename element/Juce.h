@@ -1,5 +1,5 @@
 /*
-    juce.hpp - This file is part of Element
+    Juce.h - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_JUCE_HPP
-#define ELEMENT_JUCE_HPP
+#ifndef ELEMENT_JUCE_H
+#define ELEMENT_JUCE_H
 
 #if defined (ELEMENT_JUCE_LIBRARY)
 #include "../libs/juce/JuceHeader.h"
@@ -29,4 +29,4 @@
 namespace Element { }
 using namespace Element;
 
-#endif // ELEMENT_JUCE_HPP
+#endif // ELEMENT_JUCE_H

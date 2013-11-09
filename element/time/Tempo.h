@@ -20,7 +20,7 @@
 #ifndef ELEMENT_TEMPO_H
 #define ELEMENT_TEMPO_H
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
 

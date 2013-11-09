@@ -22,7 +22,7 @@
 #include <lv2/lv2plug.in/ns/lv2core/lv2.h>
 #include <lv2/lv2plug.in/ns/ext/atom/atom.h>
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 #ifndef ELEMENT_INVALID_PORT
 #define ELEMENT_INVALID_PORT (uint32)-1

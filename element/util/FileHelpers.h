@@ -22,9 +22,9 @@
 #ifndef ELEMENT_FILE_HELPERS_H
 #define ELEMENT_FILE_HELPERS_H
 
-#include <element/juce.hpp>
+#include <element/Juce.h>
 
-
+namespace Element {
 namespace FileHelpers {
 
     int64 calculateStreamHashCode (InputStream& stream);
@@ -83,5 +83,6 @@ private:
     int64 fileHashCode, fileSize;
 };
 
+}
 
 #endif   // ELEMENT_FILE_HELPERS_H

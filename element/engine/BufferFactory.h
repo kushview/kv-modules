@@ -20,7 +20,7 @@
 #ifndef ELEMENT_BUFFER_FACTORY_HPP
 #define ELEMENT_BUFFER_FACTORY_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/engine/Buffer.h"
 
 namespace Element {

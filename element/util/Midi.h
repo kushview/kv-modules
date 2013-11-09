@@ -20,7 +20,7 @@
 #ifndef ELEMENT_MIDI_H
 #define ELEMENT_MIDI_H
 
-#include <element/juce.hpp>
+#include <element/Juce.h>
 #include <lv2/lv2plug.in/ns/ext/midi/midi.h>
 
 namespace Element {

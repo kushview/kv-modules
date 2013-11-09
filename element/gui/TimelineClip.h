@@ -1,7 +1,7 @@
 #ifndef TIMELINECLIP_H
 #define TIMELINECLIP_H
 
-#include <element/juce.hpp>
+#include <element/Juce.h>
 
 namespace Element {
 namespace Gui {

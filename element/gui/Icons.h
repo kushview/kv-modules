@@ -25,7 +25,7 @@
 #ifndef __JUCER_ICONS_JUCEHEADER__
 #define __JUCER_ICONS_JUCEHEADER__
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
 

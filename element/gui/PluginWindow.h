@@ -1,7 +1,7 @@
 #ifndef PLUGINWINDOW_HPP
 #define PLUGINWINDOW_HPP
 
-#include <element/juce.hpp>
+#include <element/Juce.h>
 #include <element/engine/GraphProcessor.h>
 
 namespace Element {

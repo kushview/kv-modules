@@ -8,7 +8,7 @@
 #ifndef ELEMENT_CLIP_SOURCE_H
 #define ELEMENT_CLIP_SOURCE_H
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/Atomic.h"
 #include "element/LinkedList.h"
 #include "element/models/ClipModel.h"

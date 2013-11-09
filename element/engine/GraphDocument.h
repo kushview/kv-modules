@@ -1,7 +1,7 @@
 #ifndef GRAPHDOCUMENT_HPP
 #define GRAPHDOCUMENT_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
 

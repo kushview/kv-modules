@@ -33,7 +33,7 @@
 #ifndef __JUCETICE_HIGHQUALITYMETER_HEADER__
 #define __JUCETICE_HIGHQUALITYMETER_HEADER__
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 class HighQualityMeter;
 class HighQualityMeterValue;

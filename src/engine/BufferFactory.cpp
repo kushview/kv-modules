@@ -17,7 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/engine/BufferFactory.h"
 
 namespace Element {

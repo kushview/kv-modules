@@ -22,7 +22,7 @@
 
 #include <atomic>
 #include <boost/intrusive_ptr.hpp>
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 
 namespace Element {

@@ -2,7 +2,7 @@
 #ifndef BKE_TANGO_HPP
 #define BKE_TANGO_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/Pointer.h"
 
 namespace Tango {

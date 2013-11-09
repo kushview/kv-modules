@@ -2,7 +2,7 @@
 #define BTV_TRACK_HEIGHTS_H
 
 #include <vector>
-#include <element/juce.hpp>
+#include <element/Juce.h>
 #include <element/Utils.h>
 
 namespace Element {

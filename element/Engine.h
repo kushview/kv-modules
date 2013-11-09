@@ -20,7 +20,7 @@
 #ifndef ELEMENT_ENGINE_BASE_HPP
 #define ELEMENT_ENGINE_BASE_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
 

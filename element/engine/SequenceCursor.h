@@ -22,7 +22,7 @@
 
 #include <memory>
 
-#include <element/juce.hpp>
+#include <element/Juce.h>
 #include <element/Atomic.h>
 
 #include <element/engine/DataType.h>

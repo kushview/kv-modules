@@ -19,7 +19,7 @@
 
 #include <map>
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/Pointer.h"
 #include "element/Utils.h"
 

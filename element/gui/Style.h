@@ -2,7 +2,7 @@
 #ifndef ELEMENT_STYLE_H
 #define ELEMENT_STYLE_H
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 
 namespace Element {

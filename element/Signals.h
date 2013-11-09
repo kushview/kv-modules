@@ -44,7 +44,7 @@ namespace boost
 #  define signals protected
 #endif
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
     typedef boost::sig::signal<void()> Signal;

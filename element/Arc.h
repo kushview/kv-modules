@@ -20,7 +20,7 @@
 #ifndef ELEMENT_ARC_HPP
 #define ELEMENT_ARC_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
 

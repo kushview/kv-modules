@@ -20,7 +20,7 @@
 #ifndef ELEMENT_ASSET_TYPE_HPP
 #define ELEMENT_ASSET_TYPE_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/Types.h"
 
 namespace Element {

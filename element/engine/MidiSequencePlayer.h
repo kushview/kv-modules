@@ -29,7 +29,7 @@
 #ifndef ELEMENT_MIDISEQUENCE_PROCESSOR_H
 #define ELEMENT_MIDISEQUENCE_PROCESSOR_H
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/time/TimeScale.h"
 #include "element/time/Tempo.h"
 

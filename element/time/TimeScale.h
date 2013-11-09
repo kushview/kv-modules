@@ -25,7 +25,7 @@
 
 #include <string>
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/LinkedList.h"
 #include "element/Utils.h"
 

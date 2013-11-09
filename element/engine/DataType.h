@@ -20,7 +20,7 @@
 #ifndef ELEMENT_DATATYPE_H
 #define ELEMENT_DATATYPE_H
 
-#include <element/juce.hpp>
+#include <element/Juce.h>
 
 namespace Element {
 

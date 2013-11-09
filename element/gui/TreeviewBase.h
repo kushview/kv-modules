@@ -25,7 +25,7 @@
 #ifndef ELEMENT_TREEVIEW_BASE_H
 #define ELEMENT_TREEVIEW_BASE_H
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/gui/Icons.h"
 
 namespace Element {

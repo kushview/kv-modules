@@ -11,7 +11,7 @@
 #ifndef BKE_NATIVE_HPP
 #define BKE_NATIVE_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
     

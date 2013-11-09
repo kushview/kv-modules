@@ -25,7 +25,7 @@
 #ifndef ELEMENT_STORED_SETTINGS
 #define ELEMENT_STORED_SETTINGS
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
 //==============================================================================

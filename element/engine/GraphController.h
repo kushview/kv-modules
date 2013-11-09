@@ -25,7 +25,7 @@
 #ifndef __FILTERGRAPH_JUCEHEADER__
 #define __FILTERGRAPH_JUCEHEADER__
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/Controller.h"
 #include "element/Session.h"
 #include "element/Signals.h"

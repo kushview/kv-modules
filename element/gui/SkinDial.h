@@ -10,7 +10,7 @@
 #ifndef BKE_SKINDIAL_HPP
 #define BKE_SKINDIAL_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 namespace Element {
 

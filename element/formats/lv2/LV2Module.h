@@ -24,7 +24,7 @@
 
 #include <suil/suil.h>
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 
 #include "element/formats/lv2/LV2Features.h"
 #include "element/formats/lv2/LV2World.h"

@@ -20,7 +20,7 @@
 #ifndef ELEMENT_TIMELINE_BASE_H
 #define ELEMENT_TIMELINE_BASE_H
 
-#include <element/juce.hpp>
+#include <element/Juce.h>
 #include <element/time/TimeScale.h>
 #include <element/gui/TrackHeights.h>
 

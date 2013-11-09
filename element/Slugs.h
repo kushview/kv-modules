@@ -20,7 +20,7 @@
 #ifndef ELEMENT_SLUGS_H
 #define ELEMENT_SLUGS_H
 
-#include <element/juce.hpp>
+#include <element/Juce.h>
 
 /** Commonly used Identifiers, these might represent different things depending
     on the context of use */

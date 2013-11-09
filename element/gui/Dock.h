@@ -2,7 +2,7 @@
 #ifndef ELEMENT_GUI_DOCK_HPP
 #define ELEMENT_GUI_DOCK_HPP
 
-#include "element/juce.hpp"
+#include "element/Juce.h"
 #include "element/Pointer.h"
 
 namespace Element {
