@@ -34,9 +34,11 @@ def configure (conf):
     # Do pkg-config stuff
     autowaf.check_pkg (conf, "lv2", uselib_store="LV2", mandatory=False)
     autowaf.check_pkg (conf, "lilv-0", uselib_store="LILV", mandatory=False)
+    autowaf.check_pkg (conf, "lvtk-plugin-1", uselib_store="LVTK_PLUGIN", mandatory=False)
+    autowaf.check_pkg (conf, "lvtk-ui-1", uselib_store="LVTK_UI", mandatory=False)
     autowaf.check_pkg (conf, "suil-0", uselib_store="SUIL", mandatory=False)
     autowaf.check_pkg (conf, "jack", uselib_store="JACK", mandatory=False)
-    pkg_defs = ['HAVE_LILV', 'HAVE_JACK', 'HAVE_SUIL', 'HAVE_LV2']
+    pkg_defs = ['HAVE_LILV', 'HAVE_JACK', 'HAVE_SUIL', 'HAVE_LV2', 'HAVE_LVTK_PLUGIN', 'HAVE_LVTK_UI']
 
     if element.is_linux():
         autowaf.check_pkg (conf, "alsa", uselib_store="ALSA", mandatory=True)
@@ -160,12 +162,6 @@ def wipe (ctx):
 
 def build(bld):
 
-    # Let these headers appear as if they lived inside the juce folder
-    #bld(rule="cp -f ${SRC} ${TGT}", source="element/juce/JuceHeader.h",
-    #                            target="libs/juce/JuceHeader.h")
-    #bld(rule="cp -f ${SRC} ${TGT}", source="element/juce/AppConfig.h",
-    #                             target="libs/juce/AppConfig.h")
-
     bld.add_group()
 
     glob = bld.path.ant_glob
@@ -173,7 +169,7 @@ def build(bld):
     # The main element library/framework
     e = make_library (bld, "Element", "element-0", element_modules)
     e.source += glob ('src/**/*.cpp')
-    e.includes += ['libs/juce']
+
     if element.is_linux():
         e.use += ["LV2", "LILV", "SUIL", "ALSA", "X11", "XEXT", "FREETYPE2", "GL"]
     elif element.is_mac():
@@ -224,4 +220,3 @@ from waflib import TaskGen
 @TaskGen.extension ('.mm')
 def mm_hook (self, node):
     return self.create_compiled_task ('cxx', node)
-
