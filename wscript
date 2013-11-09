@@ -31,6 +31,8 @@ def configure (conf):
     conf.check_cxx11()
     conf.line_just = 40
 
+    conf.find_program ('ttl2c')
+
     # Do pkg-config stuff
     autowaf.check_pkg (conf, "lv2", uselib_store="LV2", mandatory=False)
     autowaf.check_pkg (conf, "lilv-0", uselib_store="LILV", mandatory=False)
@@ -84,6 +86,8 @@ def configure (conf):
     conf.display_msg ("Compile flags (c++)", conf.env.CXXFLAGS)
     conf.display_msg ("Linker flags", conf.env.LINKFLAGS)
 
+    print conf.env
+
 def build_pc_file (bld, name, slug):
     src = "%s.pc.in" % slug
     tgt = "%s.pc" % slug
@@ -123,23 +127,6 @@ def make_library (bld, name, libname, mods):
     install_module_headers (bld, mods)
 
     return thelib
-
-core_modules = '''
-    juce_core
-'''.split()
-
-audio_modules = '''
-    juce_audio_basics
-    juce_audio_formats
-'''.split()
-
-gui_modules = '''
-
-'''.split()
-
-engine_modules = '''
-
-'''.split()
 
 element_modules = '''
     juce_core
