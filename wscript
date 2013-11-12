@@ -168,7 +168,7 @@ def build(bld):
     elif element.is_mac():
         e.use += ["LV2", "LILV", "SUIL", "AUDIO_TOOLBOX", "APP_KIT"]
 
-    bld.recurse ('plugins')
+    #bld.recurse ('plugins')
 
     bld.program (
         source = glob ('project/Source/**/*.cpp'),
