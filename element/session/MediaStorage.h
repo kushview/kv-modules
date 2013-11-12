@@ -20,7 +20,7 @@
 #ifndef ELEMENT_MEDIA_STORAGE_H
 #define ELEMENT_MEDIA_STORAGE_H
 
-namespace BTV {
+namespace Element {
 
     class MediaStorage {
 

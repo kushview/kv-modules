@@ -155,7 +155,7 @@ namespace Element {
         /** Get this tree's name */
         String name() const;
 
-        /** Get this tree's name as a juce::Value */
+        /** Get this tree's name as a Element::Value */
         Value nameValue();
 
         /** Set the tree's root file/dir */

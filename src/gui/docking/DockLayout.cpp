@@ -1,26 +1,38 @@
+/*
+    DockLayout.cpp - This file is part of Element
+    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
 #include "element/gui/Dock.h"
-
 
 namespace Element {
 namespace Gui {
 
-
     DockLayout::DockLayout (Component& holder_, bool vertical)
         : isVertical (vertical), holder (holder_)
-    {
+    { }
 
-    }
-
-    DockLayout::~DockLayout () { }
+    DockLayout::~DockLayout() { }
 
     void
     DockLayout::append (DockItem* item)
     {
         if (! items.contains (item))
         {
-
-
             if (items.size() > 0)
             {
                 int index = comps.size();
@@ -44,7 +56,7 @@ namespace Gui {
 
         if (items.contains (child))
         {
-            items.removeAllInstancesOf (child);
+            items.removeFirstMatchingValue (child);
             wasRemoved = true;
         }
 
@@ -79,7 +91,6 @@ namespace Gui {
     void
     DockLayout::buildComponentArray()
     {
-        std::cout << "buildComponentArray()\n";
         bars.clear (true);
         layout.clearAllItems();
         comps.clear();

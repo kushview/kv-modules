@@ -21,9 +21,9 @@
 
 #include "element/util/FileHelpers.h"
 
-//==============================================================================
-namespace FileHelpers
-{
+namespace Element {
+namespace FileHelpers {
+
     static int64 calculateMemoryHashCode (const void* data, const size_t numBytes)
     {
         int64 t = 0;
@@ -207,4 +207,4 @@ namespace FileHelpers
 
         return path;
     }
-}
+}}

@@ -171,4 +171,4 @@ ClipType* ClipFactory::getType (const int32 t) { return impl->types.getUnchecked
 void ClipFactory::registerType (ClipType* type) { impl->types.addIfNotAlreadyThere (type); }
 int32 ClipFactory::numTypes() const { return impl->types.size(); }
 
-} /* namespace BTV */
+} /* namespace Element */

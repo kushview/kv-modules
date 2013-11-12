@@ -33,6 +33,5 @@ namespace Element {
         v.setProperty ("destNode", (int32) destNode, nullptr);
         v.setProperty ("destPort", (int32) destPort, nullptr);
         return v;
-
     }
 }

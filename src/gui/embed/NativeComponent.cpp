@@ -1,5 +1,5 @@
 /*
-    Native.cpp - This file is part of Element
+    NativeComponent.cpp - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify

@@ -17,8 +17,8 @@
 */
 /** @file uris.hpp */
 
-#ifndef LIB_URIS_HPP
-#define LIB_URIS_HPP
+#ifndef ELEMENT_URIS_H
+#define ELEMENT_URIS_H
 
 #include <string>
 
@@ -134,4 +134,4 @@ struct URIs : boost::noncopyable
 
 } /* namespace element */
 
-#endif /* LIB_URIS_HPP */
+#endif /* ELEMENT_URIS_H */

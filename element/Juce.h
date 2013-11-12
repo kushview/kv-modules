@@ -20,13 +20,15 @@
 #ifndef ELEMENT_JUCE_H
 #define ELEMENT_JUCE_H
 
+namespace Element { }
+namespace juce { }
+
 #if defined (ELEMENT_JUCE_LIBRARY)
 #include "../libs/juce/JuceHeader.h"
 #else
 #include "JuceHeader.h"
 #endif
 
-namespace Element { }
-using namespace Element;
+
 
 #endif // ELEMENT_JUCE_H

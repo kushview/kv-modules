@@ -1,5 +1,5 @@
 /*
-    Sequencer.cpp - This file is part of BTV
+    Sequencer.cpp - This file is part of Element
 
     Copyright (C) 2013 BKE, LLC  All rights reserved.
       * Michael Fisher <mfisher@bketech.com>

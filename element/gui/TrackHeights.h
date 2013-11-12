@@ -1,5 +1,5 @@
-#ifndef BTV_TRACK_HEIGHTS_H
-#define BTV_TRACK_HEIGHTS_H
+#ifndef ELEMENT_TRACK_HEIGHTS_H
+#define ELEMENT_TRACK_HEIGHTS_H
 
 #include <vector>
 #include <element/Juce.h>
@@ -210,4 +210,4 @@ namespace Gui {
 
 }}
 
-#endif // BTV_TRACK_HEIGHTS_H
+#endif // ELEMENT_TRACK_HEIGHTS_H

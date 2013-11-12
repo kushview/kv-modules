@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef SIGNALSLIB_HPP_INCLUDED
-#define SIGNALSLIB_HPP_INCLUDED
+#ifndef ELEMENT_SIGNALS_H
+#define ELEMENT_SIGNALS_H
+
 #ifndef Q_MOC_RUN
 
 /* this is what boost recommends to do about qt. */

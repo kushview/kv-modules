@@ -1210,7 +1210,7 @@ bool GraphProcessor::silenceInProducesSilenceOut() const               { return 
 double GraphProcessor::getTailLengthSeconds() const                    { return 0; }
 bool GraphProcessor::acceptsMidi() const   { return true; }
 bool GraphProcessor::producesMidi() const  { return true; }
-void GraphProcessor::getStateInformation (juce::MemoryBlock& /*destData*/) { }
+void GraphProcessor::getStateInformation (MemoryBlock& /*destData*/) { }
 void GraphProcessor::setStateInformation (const void* /*data*/, int /*sizeInBytes*/) { }
 
 void
@@ -1397,7 +1397,7 @@ void GraphProcessor::AudioGraphIOProcessor::setCurrentProgram (int)            {
 const String GraphProcessor::AudioGraphIOProcessor::getProgramName (int)       { return String::empty; }
 void GraphProcessor::AudioGraphIOProcessor::changeProgramName (int, const String&) { }
 
-void GraphProcessor::AudioGraphIOProcessor::getStateInformation (juce::MemoryBlock&) { }
+void GraphProcessor::AudioGraphIOProcessor::getStateInformation (MemoryBlock&) { }
 void GraphProcessor::AudioGraphIOProcessor::setStateInformation (const void*, int) { }
 
 void GraphProcessor::AudioGraphIOProcessor::setParentGraph (GraphProcessor* const newGraph)

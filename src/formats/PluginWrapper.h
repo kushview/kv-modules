@@ -78,8 +78,8 @@ namespace Element {
         inline void setCurrentProgram (int index) { return proc->setCurrentProgram (index); }
         inline const String getProgramName (int index) { return proc->getProgramName (index); }
         inline void changeProgramName (int index, const String& newName) { proc->changeProgramName (index, newName); }
-        inline void getStateInformation (juce::MemoryBlock& destData) { proc->getStateInformation (destData); }
-        inline void getCurrentProgramStateInformation (juce::MemoryBlock& destData) { proc->getCurrentProgramStateInformation (destData); }
+        inline void getStateInformation (MemoryBlock& destData) { proc->getStateInformation (destData); }
+        inline void getCurrentProgramStateInformation (MemoryBlock& destData) { proc->getCurrentProgramStateInformation (destData); }
         inline void setStateInformation (const void* data, int sizeInBytes) { proc->setStateInformation (data, sizeInBytes); }
         inline void setCurrentProgramStateInformation (const void* data, int sizeInBytes) { proc->setCurrentProgramStateInformation (data, sizeInBytes); }
         inline void numChannelsChanged() { proc->numChannelsChanged(); }

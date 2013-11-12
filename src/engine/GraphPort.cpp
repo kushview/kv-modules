@@ -173,7 +173,7 @@ namespace Element {
     const String GraphPort::getProgramName (int)       { return String::empty; }
     void GraphPort::changeProgramName (int, const String&) { }
 
-    void GraphPort::getStateInformation (juce::MemoryBlock&) { }
+    void GraphPort::getStateInformation (MemoryBlock&) { }
     void GraphPort::setStateInformation (const void*, int) { }
 
     void GraphPort::setGraph (GraphProcessor* const newGraph)

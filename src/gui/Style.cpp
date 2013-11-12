@@ -17,6 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "element/gui/HighQualityMeter.h"
 #include "element/gui/Style.h"
 
 namespace Element {
@@ -37,6 +38,14 @@ LookAndFeel::LookAndFeel()
     setColour (TextButton::buttonColourId, textButtonColour);
     setColour (ComboBox::buttonColourId, textButtonColour);
     setColour (ScrollBar::thumbColourId, Colour::greyLevel (0.8f).contrasting().withAlpha (0.13f));
+
+    setColour (HighQualityMeter::levelOverColourId, Colours::yellow.darker());
+    setColour (HighQualityMeter::level0dBColourId, Colours::yellowgreen);
+    setColour (HighQualityMeter::level3dBColourId, Colours::lightgreen);
+    setColour (HighQualityMeter::level6dBColourId, Colours::green);
+    setColour (HighQualityMeter::level10dBColourId, Colours::darkgreen.darker());
+    setColour (HighQualityMeter::backgroundColourId, Colours::transparentBlack);
+    setColour (HighQualityMeter::foregroundColourId, Colours::transparentWhite);
 }
 
 LookAndFeel::~LookAndFeel() {}

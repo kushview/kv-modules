@@ -97,7 +97,7 @@ namespace Gui {
                               };
 
         areaLayout.layOutComponents (
-                comps + 2, 1, 0, 0, getWidth(), getHeight(), false, true
+            comps + 2, 1, 0, 0, getWidth(), getHeight(), false, true
         );
     }
 

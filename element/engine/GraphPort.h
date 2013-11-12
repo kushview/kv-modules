@@ -98,7 +98,7 @@ public:
     const String getProgramName (int);
     void changeProgramName (int, const String&);
 
-    void getStateInformation (juce::MemoryBlock& destData);
+    void getStateInformation (MemoryBlock& destData);
     void setStateInformation (const void* data, int sizeInBytes);
 
     /** @internal */

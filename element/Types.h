@@ -1,5 +1,5 @@
 /*
-    types.h - This file is part of Element
+    Types.h - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -21,7 +21,6 @@
 #define ELEMENT_TYPES_H
 
 #include <inttypes.h>
-
 #include "element/Pointer.h"
 
 typedef float    Sample;
@@ -31,10 +30,6 @@ typedef uint16_t Channel;
 
 namespace Element {
 
-    enum PluginFormat
-    {
-        AUDIO_UNIT, LADSPA, LV2, VST
-    };
 
 }
 

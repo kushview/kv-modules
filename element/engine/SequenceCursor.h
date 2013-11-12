@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef BTV_SEQUENCE_CURSOR_H
-#define BTV_SEQUENCE_CURSOR_H
+#ifndef ELEMENT_SEQUENCE_CURSOR_H
+#define ELEMENT_SEQUENCE_CURSOR_H
 
 #include <memory>
 
@@ -100,4 +100,4 @@ private:
 
 }
 
-#endif  /* BTV_SEQUENCE_CURSOR_H */
+#endif  /* ELEMENT_SEQUENCE_CURSOR_H */
