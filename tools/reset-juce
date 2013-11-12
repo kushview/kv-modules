@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd libs/juce && git reset --hard origin/master
+
