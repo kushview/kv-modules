@@ -28,6 +28,10 @@
 
 // Your project must contain an AppConfig.h file with your project-specific settings in it,
 // and your header search path must make it accessible to the module's files.
+
+// get the juce namespace recognized
+namespace juce { }
+
 #include "AppConfig.h"
 #include "element_module.h"
 

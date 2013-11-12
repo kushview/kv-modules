@@ -33,7 +33,7 @@ def check_cxx11 (self):
         self.check_cxx (cxxflags=["-std=c++11"])
         self.env.append_unique ("CXXFLAGS", ["-std=c++11"])
     else:
-        print os.getCwd() + "  element.py"
+        print os.getcwd() + "  element.py"
         print "!!!!! SETUP CXX11 FOR " + platform.system()
         exit (1)
 
@@ -42,17 +42,17 @@ def check_rez (self):
     self.find_program("Rez")
 
 def options (opts):
-    opts.add_option ("--no-headers", dest="install_headers", action="store_false", default=True)
     opts.add_option ("--app-config", dest="app_config", type='string', default='')
+    opts.add_option ("--introjucer", dest="introjucer", action="store_true", default=False)
+    opts.add_option ("--no-headers", dest="install_headers", action="store_false", default=True)
 
 def configure (conf):
 
-    if conf.options.app_config == '':
-        conf.env.append_unique ("CXXFLAGS", ['-I' + os.getcwd() + "/project/JuceLibraryCode"])
-        conf.env.append_unique ("CFLAGS", ['-I' + os.getcwd() + "/project/JuceLibraryCode"])
-    else:
+    if conf.options.app_config != '':
         conf.env.append_unique ("CXXFLAGS", ['-I' + conf.options.app_config])
         conf.env.append_unique ("CFLAGS", ['-I' + conf.options.app_config])
+
+    conf.env.BUILD_INTROJUCER = conf.options.introjucer
 
     pat = conf.env['cshlib_PATTERN']
     if not pat:

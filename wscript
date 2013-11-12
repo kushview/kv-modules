@@ -43,6 +43,15 @@ def configure (conf):
     pkg_defs = ['HAVE_LILV', 'HAVE_JACK', 'HAVE_SUIL', 'HAVE_LV2', 'HAVE_LVTK_PLUGIN', 'HAVE_LVTK_UI']
 
     if element.is_linux():
+        autowaf.check_pkg (conf, "juce-audio-processors", uselib_store="JUCE_AUDIO_PROCESSORS", minimum_version='2.1.8', mandatory=True)
+        autowaf.check_pkg (conf, "juce-audio-devices", uselib_store="JUCE_AUDIO_DEVICES", minimum_version='2.1.8', mandatory=True)
+        autowaf.check_pkg (conf, "juce-core", uselib_store="JUCE_CORE", minimum_version='2.1.8', mandatory=True)
+        autowaf.check_pkg (conf, "juce-cryptography", uselib_store="JUCE_CRYPTOGRAPHY", minimum_version='2.1.8', mandatory=True)
+        autowaf.check_pkg (conf, "juce-gui-basics", uselib_store="JUCE_GUI_BASICS", minimum_version='2.1.8', mandatory=True)
+        autowaf.check_pkg (conf, "juce-gui-extra", uselib_store="JUCE_GUI_EXTRA", minimum_version='2.1.8', mandatory=True)
+        autowaf.check_pkg (conf, "juce-graphics", uselib_store="JUCE_GRAPHICS", minimum_version='2.1.8', mandatory=True)
+        autowaf.check_pkg (conf, "juce-opengl", uselib_store="JUCE_OPENGL", minimum_version='2.1.8', mandatory=True)
+
         autowaf.check_pkg (conf, "alsa", uselib_store="ALSA", mandatory=True)
         autowaf.check_pkg (conf, "x11", uselib_store="X11", mandatory=True)
         autowaf.check_pkg (conf, "xext", uselib_store="XEXT", mandatory=True)
@@ -63,11 +72,10 @@ def configure (conf):
     conf.env.append_unique ("MODULE_PATH", [conf.env.MODULEDIR])
     conf.define ("ELEMENT_DEFAULT_MODULE_PATH", ":".join(conf.env.MODULE_PATH))
 
-    conf.define ("JUCE_LOG_ASSERTIONS", 1)
-
-    print # Do the summary
+    print
     autowaf.display_header ("Element Build Summary")
-    conf.display_msg ("Build Jack Module", conf.env.HAVE_JACK)
+    conf.display_msg ("Build Introjucer", conf.env.BUILD_INTROJUCER)
+    conf.display_msg ("Jack Audio Support", conf.env.HAVE_JACK)
     conf.display_msg ("LV2 Plugin Support", conf.env.HAVE_LILV)
     conf.display_msg ("LV2 Plugin GUI Support", conf.env.HAVE_SUIL)
     conf.display_msg ("Library Version", conf.env.VERSION_STRING)
@@ -85,8 +93,6 @@ def configure (conf):
     conf.display_msg ("Compile flags (c)", conf.env.CFLAGS)
     conf.display_msg ("Compile flags (c++)", conf.env.CXXFLAGS)
     conf.display_msg ("Linker flags", conf.env.LINKFLAGS)
-
-    print conf.env
 
 def build_pc_file (bld, name, slug):
     src = "%s.pc.in" % slug
@@ -114,7 +120,7 @@ def build_pc_file (bld, name, slug):
 
 def make_library (bld, name, libname, mods):
     thelib = juce.create_unified_lib (bld, libname, mods)
-    thelib.includes += [".", "element", "libs"]
+    thelib.includes += [".", "element", "project/JuceLibraryCode"]
 
     build_frameworks = False
     if element.is_mac() and build_frameworks:
@@ -154,14 +160,28 @@ def build(bld):
     glob = bld.path.ant_glob
 
     # The main element library/framework
-    e = make_library (bld, "Element", "element-0", element_modules)
+    e = make_library (bld, "Element", "element", element_modules)
     e.source += glob ('src/**/*.cpp')
 
     if element.is_linux():
-        e.use += ["LV2", "LILV", "SUIL", "ALSA", "X11", "XEXT", "FREETYPE2", "GL"]
+        e.use += ['LV2', 'LILV', 'SUIL', 'JACK', 'X11', 'XEXT', 'ALSA', 'GL', 'FREETYPE2']
     elif element.is_mac():
         e.use += ["LV2", "LILV", "SUIL", "AUDIO_TOOLBOX", "APP_KIT"]
-    bld.add_group()
+
+    bld.recurse ('plugins')
+
+    bld.program (
+        source = glob ('project/Source/**/*.cpp'),
+        name = 'Element Application',
+        target = 'bin/element',
+        use = 'element',
+        includes = ['project/JuceLibraryCode']
+    )
+
+    if bld.env.BUILD_INTROJUCER:
+        jucer = juce.IntrojucerProject ('libs/juce/extras/Introjucer/Introjucer.jucer')
+        obj = jucer.compile (bld)
+        obj.install_path = None
 
     install_headers (bld)
 
@@ -169,7 +189,7 @@ def install_headers (bld):
     if bld.options.install_headers:
         include_dir = bld.env.INCLUDEDIR + "/element-0"
         bld.install_files (os.path.join (include_dir, "libs/juce"), bld.path.ant_glob ("element/juce/*.h"), relative_trick=False)
-        bld.install_files (include_dir, bld.path.ant_glob ("element/**/*.hpp"), relative_trick=True)
+        bld.install_files (include_dir, bld.path.ant_glob ("element/**/*.h"), relative_trick=True)
 
 def install_module_headers (bld, modules):
     if bld.options.install_headers:
