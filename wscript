@@ -172,13 +172,17 @@ def build(bld):
     #bld.recurse ('plugins')
 
     if bld.env.BUILD_ELEMENT_APP:
-        bld.program (
+        obj = bld.program (
             source = glob ('project/Source/**/*.cpp'),
             name = 'Element Application',
             target = 'bin/element',
             use = 'element',
             includes = ['project/JuceLibraryCode']
         )
+        
+        if juce.is_mac():
+            obj.target = 'Applications/Element'
+            obj.mac_app = True
 
     if bld.env.BUILD_INTROJUCER:
         jucer = juce.IntrojucerProject ('libs/juce/extras/Introjucer/Introjucer.jucer')

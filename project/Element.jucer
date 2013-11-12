@@ -300,10 +300,10 @@
       </GROUP>
       <FILE id="TcfKfG" name="Types.h" compile="0" resource="0" file="Source/Types.h"/>
       <FILE id="ogHH5d" name="URIs.h" compile="0" resource="0" file="Source/URIs.h"/>
-      <FILE id="JwmvC4" name="wscript_build" compile="0" resource="1" file="Source/wscript_build"/>
+      <FILE id="JwmvC4" name="wscript_build" compile="0" resource="0" file="Source/wscript_build"/>
     </GROUP>
     <GROUP id="{4C0CA2D9-7E14-3C17-C3F1-4FF581D4DAE9}" name="Templates">
-      <FILE id="qrZXVE" name="Element.cpp" compile="1" resource="0" file="Templates/Element.cpp"/>
+      <FILE id="qrZXVE" name="Element.cpp" compile="0" resource="0" file="Templates/Element.cpp"/>
       <FILE id="Ag660q" name="Element.h" compile="0" resource="0" file="Templates/Element.h"/>
     </GROUP>
   </MAINGROUP>

@@ -54,6 +54,10 @@ namespace Element {
  //#define ELEMENT_DOCKING
 #endif
 
+#ifndef    ELEMENT_JACK_DEVICE
+ //#define ELEMENT_JACK_DEVICE
+#endif
+
 #ifndef    ELEMENT_SESSION
  //#define ELEMENT_SESSION
 #endif
