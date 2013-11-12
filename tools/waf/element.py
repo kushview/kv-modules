@@ -44,6 +44,7 @@ def check_rez (self):
 def options (opts):
     opts.add_option ("--app-config", dest="app_config", type='string', default='')
     opts.add_option ("--introjucer", dest="introjucer", action="store_true", default=False)
+    opts.add_option ("--no-element-app", dest="element_app", action="store_false", default=True)
     opts.add_option ("--no-headers", dest="install_headers", action="store_false", default=True)
 
 def configure (conf):
@@ -52,7 +53,8 @@ def configure (conf):
         conf.env.append_unique ("CXXFLAGS", ['-I' + conf.options.app_config])
         conf.env.append_unique ("CFLAGS", ['-I' + conf.options.app_config])
 
-    conf.env.BUILD_INTROJUCER = conf.options.introjucer
+    conf.env.BUILD_INTROJUCER  = conf.options.introjucer
+    conf.env.BUILD_ELEMENT_APP = conf.options.element_app
 
     pat = conf.env['cshlib_PATTERN']
     if not pat:

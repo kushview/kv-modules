@@ -6,6 +6,8 @@
  */
 /** @file jack.hpp */
 
+#if ELEMENT_JACK_DEVICE
+
 #ifndef ELEMENT_JACK_HPP
 #define ELEMENT_JACK_HPP
 
@@ -121,3 +123,5 @@ namespace Element {
 
 }
 #endif /* ELEMENT_JACK_HPP */
+
+#endif

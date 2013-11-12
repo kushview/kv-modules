@@ -56,6 +56,14 @@
     #define ELEMENT_DOCKING 1
 #endif
 
+/** Config: ELEMENT_JACK_DEVICE
+
+    Build the docking widgets classes
+*/
+#ifndef ELEMENT_JACK_DEVICE
+    #define ELEMENT_JACK_DEVICE 0
+#endif
+
 /** Config: ELEMENT_SESSION
 
     Build the Session/World base classes

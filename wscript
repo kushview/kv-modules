@@ -74,6 +74,7 @@ def configure (conf):
 
     print
     autowaf.display_header ("Element Build Summary")
+    conf.display_msg ("Build Element (app)", conf.env.BUILD_ELEMENT_APP)
     conf.display_msg ("Build Introjucer", conf.env.BUILD_INTROJUCER)
     conf.display_msg ("Jack Audio Support", conf.env.HAVE_JACK)
     conf.display_msg ("LV2 Plugin Support", conf.env.HAVE_LILV)
@@ -170,13 +171,14 @@ def build(bld):
 
     #bld.recurse ('plugins')
 
-    bld.program (
-        source = glob ('project/Source/**/*.cpp'),
-        name = 'Element Application',
-        target = 'bin/element',
-        use = 'element',
-        includes = ['project/JuceLibraryCode']
-    )
+    if bld.env.BUILD_ELEMENT_APP:
+        bld.program (
+            source = glob ('project/Source/**/*.cpp'),
+            name = 'Element Application',
+            target = 'bin/element',
+            use = 'element',
+            includes = ['project/JuceLibraryCode']
+        )
 
     if bld.env.BUILD_INTROJUCER:
         jucer = juce.IntrojucerProject ('libs/juce/extras/Introjucer/Introjucer.jucer')

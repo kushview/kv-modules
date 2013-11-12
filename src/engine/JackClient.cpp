@@ -1,4 +1,6 @@
 
+#if ELEMENT_JACK_DEVICE
+
 #include <iostream>
 #include <sstream>
 
@@ -179,3 +181,4 @@ JackClient::bufferSize()
 
 } /* namespace element */
 
+#endif

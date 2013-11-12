@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if ELEMENT_JACK_DEVICE
+
 #include "element/engine/Jack.h"
 
 namespace Element {
@@ -317,3 +319,5 @@ namespace Element {
 	}
     
 }
+
+#endif
