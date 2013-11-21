@@ -17,10 +17,10 @@
 //==============================================================================
 // [BEGIN_USER_CODE_SECTION]
 
-
-namespace Element {
-
-}
+#if ! DONT_SET_USING_JUCE_NAMESPACE
+    namespace Element { }
+    using namespace Element;
+#endif
 
 #include <cassert>  // XXX:  figure out how to get this included while building
                     // juce itself

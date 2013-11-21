@@ -96,6 +96,11 @@ def configure (conf):
     conf.display_msg ("Linker flags", conf.env.LINKFLAGS)
 
 def build_pc_file (bld, name, slug):
+
+    # hack
+    if slug == 'element':
+        slug = 'element-0'
+
     src = "%s.pc.in" % slug
     tgt = "%s.pc" % slug
 
@@ -103,30 +108,39 @@ def build_pc_file (bld, name, slug):
         return
 
     pc = bld (
-        features     = "subst",
+        features     = 'subst',
         source       = src,
         target       = tgt,
         INCLUDEDIR   = bld.env.INCLUDEDIR,
-        VERSION      = bld.env.VERSION_STRING,
-        LIBRARIES    = "",
-        LDFLAGS      = "",
-        REQUIRES     = "",
-        install_path = bld.env.LIBDIR + "/pkgconfig"
+        VERSION      = bld.env.ELEMENT_VERSION_STRING,
+        LIBRARIES    = '',
+        LDFLAGS      = '',
+        REQUIRES     = '',
+        install_path = bld.env.LIBDIR + '/pkgconfig'
     )
 
-    if element.is_mac():
+    if bld.env.HAVE_LILV:
+        pc.REQUIRES += ' lilv-0'
+    if bld.env.HAVE_JACK:
+        pc.REQUIRES += ' jack'
+    if bld.env.HAVE_SUIL:
+        pc.REQUIRES += ' suil-0'
+
+    if juce.is_mac():
         pc.LIBRARIES += " -framework " + name
         if bld.env.FRAMEWORKDIR != "/Library/Frameworks":
             pc.LDFLAGS += " -F " + bld.env.FRAMEWORKDIR
+
 
 def make_library (bld, name, libname, mods):
     thelib = juce.create_unified_lib (bld, libname, mods)
     thelib.includes += [".", "element", "project/JuceLibraryCode"]
 
-    build_frameworks = False
+    build_frameworks = True
     if element.is_mac() and build_frameworks:
-        thelib.mac_framework = True
-        thelib.target = "Frameworks/%s" % name
+        thelib.mac_framework            = True
+        thelib.mac_bundle_identifier    = 'org.element-project.%s' % name
+        thelib.target                   = "Frameworks/%s" % name
     else:
         thelib.vnum = bld.env.ELEMENT_VERSION_STRING
 
@@ -177,12 +191,16 @@ def build(bld):
             name = 'Element Application',
             target = 'bin/element',
             use = 'element',
-            includes = ['project/JuceLibraryCode']
+            includes = ['project/JuceLibraryCode'],
+            linkflags = [],
         )
         
         if juce.is_mac():
-            obj.target = 'Applications/Element'
+            obj.target  = 'Applications/Element'
             obj.mac_app = True
+            obj.use     = ['LV2', 'LILV', 'SUIL', 'AUDIO_TOOLBOX', 'APP_KIT']
+            obj.linkflags += ['-F', os.getcwd() + '/build/Frameworks', '-framework', 'Element']
+
 
     if bld.env.BUILD_INTROJUCER:
         jucer = juce.IntrojucerProject ('libs/juce/extras/Introjucer/Introjucer.jucer')
@@ -194,16 +212,18 @@ def build(bld):
 def install_headers (bld):
     if bld.options.install_headers:
         include_dir = bld.env.INCLUDEDIR + "/element-0"
-        bld.install_files (os.path.join (include_dir, "libs/juce"), bld.path.ant_glob ("element/juce/*.h"), relative_trick=False)
         bld.install_files (include_dir, bld.path.ant_glob ("element/**/*.h"), relative_trick=True)
+        bld.install_files (include_dir, bld.path.ant_glob ('project/JuceLibraryCode/AppConfig.h'))
+        bld.install_files (include_dir, bld.path.ant_glob ('project/JuceLibraryCode/JuceHeader.h'))
+        bld.install_files (include_dir + '/modules/element', 'element_module.h')
 
 def install_module_headers (bld, modules):
     if bld.options.install_headers:
-        # Juce modules go to PREFIX/include/element-0/juce right now
+        # Juce modules go to PREFIX/include/element-0/modules
         include_dir = bld.env.INCLUDEDIR + "/element-0"
         for mod in modules:
-            bld.install_files (include_dir + "/libs", bld.path.ant_glob ("libs/juce/modules/" + mod + "/**/*.h"), \
-                relative_trick=True, cwd=bld.path.find_dir ("libs"))
+            bld.install_files (include_dir, bld.path.ant_glob ("libs/juce/modules/" + mod + "/**/*.h"), \
+                relative_trick=True, cwd=bld.path.find_dir ("libs/juce"))
 
 def check(ctx):
     call (["bash", "tools/run-tests"])

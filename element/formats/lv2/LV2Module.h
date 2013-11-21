@@ -84,8 +84,7 @@ public:
     ~LV2Module();
 
 
-    Result instantiate (double samplerate, LV2_Feature** features);
-
+    Result instantiate (double samplerate, const LV2_Feature* const* features);
     const LV2_Feature* const* features() const { return savedFeatures; }
 
     void activate();

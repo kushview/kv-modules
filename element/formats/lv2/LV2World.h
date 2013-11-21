@@ -5,10 +5,9 @@
   Michael Fisher <mfisher@bketech.com>
 
 */
-/** @file lv2nodes.hpp */
 
-#ifndef ELEMENT_LV2WORLD_HPP
-#define ELEMENT_LV2WORLD_HPP
+#ifndef ELEMENT_LV2WORLD_H
+#define ELEMENT_LV2WORLD_H
 
 #include <lilv/lilvmm.hpp>
 #include <lv2/lv2plug.in/ns/ext/atom/atom.h>
@@ -22,13 +21,12 @@
 namespace Element {
 
     class  LV2Module;
-    class  SymbolMap;
 
     class LV2World
     {
     public:
 
-        LV2World (SymbolMap&);
+        LV2World();
         ~LV2World();
 
         const LilvNode*   lv2_InputPort;
@@ -52,15 +50,13 @@ namespace Element {
         bool isPluginSupported (const String& uri);
 
         Lilv::World& lilvWorld() { return world; }
-        SymbolMap& symbols() { return sym; }
 
     private:
 
         Lilv::World world;
-        SymbolMap& sym;
 
     };
 
 }
 
-#endif /* ELEMENT_LV2WORLD_HPP */
+#endif /* ELEMENT_LV2WORLD_H */

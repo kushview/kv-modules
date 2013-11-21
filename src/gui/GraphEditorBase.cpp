@@ -671,48 +671,14 @@ void GraphEditorBase::mouseDown (const MouseEvent& e)
     if (e.mods.isPopupMenu())
     {
         PopupMenu m;
-        if (true) //MainHostWindow* const mainWindow = findParentComponentOfClass<MainHostWindow>())
-        {
-            m.addSectionHeader ("Plugins");
-            KnownPluginList& plugs (graph.plugins().availablePlugins());
-            plugs.addToMenu (m, KnownPluginList::sortByManufacturer);
-
-            m.addSectionHeader ("Internals");
-            m.addItem (3, "BTSP-1");
-            m.addItem (4, "Pattern");
-
-            m.addSeparator();
-
-            m.addItem (1, "Audio Input Device");
-            m.addItem (2, "Audio Output Device");
-            m.addItem (5, "MIDI Device");
-
-            int res = m.show();
-
-            if (res == 1)
-            {
-              //  InternalFormat fmt;
-              //  createNewPlugin (fmt.description (InternalFormat::audioInputDevice), e.x, e.y);
-            }
-            else if (res == 2)
-            {
-              //  InternalFormat fmt;
-              //  createNewPlugin (fmt.description (InternalFormat::audioOutputDevice), e.x, e.y);
-            }
-            else if (res == 3)
-            {
-               // InternalFormat fmt;
-               // createNewPlugin (fmt.description (InternalFormat::samplerProcessor), e.x, e.y);
-            }
-            else if (res == 4)
-            {
-
-            }
-            else if (const PluginDescription* desc = plugs.getType (plugs.getIndexChosenByMenu (res)))
-            {
-                createNewPlugin (desc, e.x, e.y);
-            }
-        }
+        m.addSectionHeader ("Plugins");
+        KnownPluginList& plugs (graph.plugins().availablePlugins());
+        plugs.addToMenu (m, KnownPluginList::sortByManufacturer);
+        
+        const int res = m.show();
+        
+        if (const PluginDescription* desc = plugs.getType (plugs.getIndexChosenByMenu (res)))
+            createNewPlugin (desc, e.x, e.y);
     }
 }
 

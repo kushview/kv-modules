@@ -77,7 +77,7 @@ public:
     //virtual void itemDragExit (const SourceDetails& dragSourceDetails);
     void itemDropped (const SourceDetails& details)
     {
-        std::clog << details.description.toString() << std::endl;
+        Logger::writeToLog (details.description);
     }
 
     virtual bool shouldDrawDragImageWhenOver() { return true; }
@@ -89,7 +89,6 @@ protected:
 private:
 
     ScopedPointer<ConnectorComponent> draggingConnector;
-
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphEditorBase)
 };
 

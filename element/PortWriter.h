@@ -6,7 +6,7 @@
 #define ELEMENT_PORT_WRITER_H
 
 #include <inttypes.h>
-#include <boost/function.hpp>
+#include <functional>
 
 #include "element/engine/PortType.h"
 
@@ -15,7 +15,7 @@ namespace Element {
     /** Function type for writing to a port buffer
         Params are in order port, size, protocol, buffer
         @note This is compatible with lvtk's port write ui method */
-    typedef boost::function<void(uint32_t, uint32_t, uint32_t, void const*)> PortWriteFunction;
+    typedef std::function<void(uint32_t, uint32_t, uint32_t, void const*)> PortWriteFunction;
 
     struct PortEvent
     {

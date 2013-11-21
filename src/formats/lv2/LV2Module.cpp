@@ -225,10 +225,10 @@ namespace Element {
    }
 
    Result
-   LV2Module::instantiate (double samplerate, LV2_Feature** features)
+   LV2Module::instantiate (double samplerate, const LV2_Feature* const* features)
    {
        currentSampleRate = samplerate;
-       savedFeatures     = features;
+       savedFeatures     = const_cast<LV2_Feature**> (features);
 
        freeInstance();
        instance = Lilv::Instance::create (plugin, samplerate, savedFeatures);

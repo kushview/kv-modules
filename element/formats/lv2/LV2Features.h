@@ -21,10 +21,8 @@ public:
 
     LV2Feature() { }
     virtual ~LV2Feature() { }
-
-    virtual String getURI() = 0;
-    virtual LV2_Feature& getFeature() = 0;
-
+    virtual const LV2_Feature* getFeature() const = 0;
+    virtual const String& getURI() const = 0;
 };
 
 
@@ -35,69 +33,54 @@ public:
     LV2FeatureArray() : needsBuilt (true) { }
     ~LV2FeatureArray() { }
 
-    inline void add (LV2Feature* feature)
+    inline void add (LV2Feature* feature, bool rebuildArray = true)
     {
         ScopedPointer<LV2Feature> f (feature);
         if (f && ! contains (f->getURI()))
         {
-            needsBuilt = true;
             features.add (f.release());
+            if (rebuildArray)
+                buildArray();
         }
     }
 
-    inline bool contains (const String& featureURI)
+    inline bool contains (const String& featureURI) const
     {
-        for (int i = features.size(); --i >=0; )
+        for (int i = features.size(); --i >= 0; )
             if (features[i]->getURI() == featureURI)
                 return true;
-
         return false;
     }
 
-    template <class DataType>
-    inline DataType* getFeatureData (const String& feature)
-    {
-       for (int i = features.size(); --i >=0; )
-          if (features[i]->getURI() == feature)
-              return &features[i]->getFeature();
-       return nullptr;
-    }
-
-    LV2_Feature* getFeature (const String& feature)
-    {
-       for (int i = features.size(); --i >=0; )
-                 if (features[i]->getURI() == feature)
-                     return &features[i]->getFeature();
-       return nullptr;
-    }
-
     /** Get a C-Style array of feautres */
-    inline LV2_Feature** getFeatures()
+    inline const LV2_Feature* const*
+    getFeatures() const
     {
-        if (needsBuilt)
-        {
-            array.calloc (features.size() + 1);
-
-            for (int i = 0; i < features.size(); ++i)
-            {
-                array[i] = &features[i]->getFeature();
-            }
-
-            array[features.size()] = 0;
-
-            needsBuilt = false;
-        }
-
+        jassert (needsBuilt == false);
         return array.getData();
     }
 
-    inline int size() const                          { return features.size(); }
-    inline operator LV2_Feature**()                  { return getFeatures(); }
+    inline int size() const { return features.size(); }
+    inline const LV2_Feature* begin() const { return getFeatures() [0]; }
+    inline const LV2_Feature* end()   const { return getFeatures() [features.size()]; }
+    inline operator const LV2_Feature* const*() const { return getFeatures(); }
 
 private:
+    
     OwnedArray<LV2Feature>  features;
     HeapBlock<LV2_Feature*> array;
     bool needsBuilt;
+    
+    inline void buildArray()
+    {
+        needsBuilt = false;
+        
+        array.calloc (features.size() + 1);
+        for (int i = 0; i < features.size(); ++i)
+            array[i] = const_cast<LV2_Feature*> (features[i]->getFeature());
+        
+        array [features.size()] = nullptr;
+    }
 
 };
 

@@ -28,6 +28,7 @@
 #include <lv2/lv2plug.in/ns/lv2core/lv2.h>
 #include <lv2/lv2plug.in/ns/ext/urid/urid.h>
 
+#include "element/formats/lv2/LV2Features.h"
 #include "element/Utils.h"
 
 namespace Element {
@@ -48,7 +49,7 @@ namespace Element {
     public:
 
         /** Create an empty symbol map and initialized LV2 URID features */
-        SymbolMap() : urid_map (this), urid_unmap (this) { }
+        SymbolMap() { }
         
         ~SymbolMap() 
         { 
@@ -119,50 +120,61 @@ namespace Element {
         }
         
         /** Get a function to map symbols in this SymbolMap */
-        inline URIMapFunc   map_func()   { return boost::bind (&SymbolMap::map, this, ::_1); }
+        inline URIMapFunc   getMapFunction()   { return boost::bind (&SymbolMap::map, this, ::_1); }
 
         /** Get a function to unmap symbols in this SymbolMap */
-        inline URIUnmapFunc unmap_func() { return boost::bind (&SymbolMap::unmap, this, ::_1); }
+        inline URIUnmapFunc getUnmapFunction() { return boost::bind (&SymbolMap::unmap, this, ::_1); }
 
-        /** Get the URID Map LV2 Feature.  Can be passed to an LV2 instance */
-        inline LV2_Feature&  map_feature()   { return urid_map.feat; }
+        /** Create a URID Map LV2Feature.  */
+        inline LV2Feature*  createMapFeature()   { return new MapFeature (this); }
 
-        /** Get the URID Unmap LV2 Feature. Can be passed to an LV2 instance */
-        inline LV2_Feature&  unmap_feature() { return urid_unmap.feat; }
+        /** Create a URID Unmap LV2Feature. Can be passed to an LV2 instance */
+        inline LV2Feature*  createUnmapFeature() { return new UnmapFeature (this); }
 
     private:
         
+        // XXX: use a juce::StringPool somehow.
         std::map<std::string, LV2_URID> mapped;
         std::map<LV2_URID, std::string> unmapped;
         
         // LV2 URID Host Implementation follows ...
 
-        class Map {
+        class MapFeature :  public LV2Feature
+        {
         public:
 
             inline static
             LV2_URID map (LV2_URID_Map_Handle handle, const char* uri)
             {
-                SymbolMap* sym = (SymbolMap*) handle;
+                SymbolMap* sym = reinterpret_cast<SymbolMap*> (handle);
                 return sym->map (uri);
             }
 
-            Map (void *parent)
+            MapFeature (SymbolMap *parent)
             {
-                feat.URI    = LV2_URID__map;
-                data.handle = parent;
-                data.map    = &Map::map;
+                uri = LV2_URID__map;
+                feat.URI    = uri.toUTF8();
+                data.handle = (void*) parent;
+                data.map    = &MapFeature::map;
                 feat.data   = &data;
             }
 
+            virtual ~MapFeature() { }
+            
+            const String& getURI() const { return uri; }
+            const LV2_Feature* getFeature() const { return &feat; }
+      
         private:
+            
+            String       uri;
             LV2_Feature  feat;
             LV2_URID_Map data;
 
             friend class SymbolMap;
-        } urid_map ;
+        };
 
-        class Unmap {
+        class UnmapFeature : public LV2Feature
+        {
         public:
 
             inline static const char*
@@ -172,21 +184,28 @@ namespace Element {
                 return sym->unmap (urid);
             }
 
-            Unmap (void* symmap)
+            UnmapFeature (SymbolMap* parent)
             {
-                feat.URI    = LV2_URID__unmap;
-                data.handle = symmap;
-                data.unmap  = &Unmap::unmap;
+                uri = LV2_URID__unmap;
+                feat.URI    = uri.toUTF8();
+                data.handle = (void*) parent;
+                data.unmap  = &UnmapFeature::unmap;
                 feat.data   = &data;
             }
 
+            virtual ~UnmapFeature() { }
+            
+            const String& getURI() const { return uri; }
+            const LV2_Feature* getFeature() const { return &feat; }
+            
         private:
-
+            
+            String         uri;
             LV2_Feature    feat;
             LV2_URID_Unmap data;
 
             friend class SymbolMap;
-        } urid_unmap ;
+        };
     };
 }  /* namespace element */
 

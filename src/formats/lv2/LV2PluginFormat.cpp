@@ -24,12 +24,12 @@
 #include "element/formats/lv2/LV2World.h"
 
 //==============================================================================
-// Change this to disable logging of various VST activities
+// Change this to disable logging of various LV2 activities
 #ifndef LV2_LOGGING
- #define LV2_LOGGING 1
+ #define LV2_LOGGING 0
 #endif
 
-#if VST_LOGGING
+#if LV2_LOGGING
  #define JUCE_LV2_LOG(a) Logger::writeToLog(a);
 #else
  #define JUCE_LV2_LOG(a)
@@ -37,7 +37,6 @@
 
 
 namespace Element {
-
 
 class LV2Parameter :  public Parameter
 {
@@ -59,6 +58,7 @@ public:
     }
 
     uint32 getPortIndex() const { return portIndex; }
+    void setPortIndex (uint32 index) { portIndex = index; }
 
 private:
 
@@ -72,14 +72,10 @@ private:
 //==============================================================================
 class LV2PluginInstance     : public Processor
 {
-private:
-    SymbolMap &sym;
-
 public:
 
     LV2PluginInstance (LV2World& world, LV2Module* module_)
-        : sym (world.symbols()),
-          wantsMidiMessages (false),
+        : wantsMidiMessages (false),
           initialised (false),
           isPowerOn (false),
           tempBuffer (1, 1),
@@ -126,7 +122,7 @@ public:
             }
         }
 
-#if JUCE_DEBUG
+       #if JUCE_DEBUG
         for (int i = 0; i < audioIns.size(); ++i) {
             std::clog << "audio in: " << i << " to port " << audioIns.getUnchecked(i) << std::endl;
         }
@@ -138,7 +134,7 @@ public:
         for (int i = 0; i < ctlIns.size(); ++i) {
             std::clog << "ctl in: " << i << " to port " << ctlIns.getUnchecked(i) << std::endl;
         }
-#endif
+       #endif
 
         setPlayConfigDetails (audioIns.size(), audioOuts.size(), 44100.0, 1024);
     }
@@ -456,10 +452,16 @@ class LV2PluginFormat::Private
 {
 public:
 
+    Private ()
+    {
+        world.setOwned (new LV2World ());
+        init();
+    }
+    
     Private (LV2World& w)
     {
         world.setNonOwned (&w);
-
+        init();
     }
 
     LV2Module* createModule (const String& uri)
@@ -469,12 +471,23 @@ public:
 
     OptionalScopedPointer<LV2World> world;
     LV2FeatureArray features;
+    SymbolMap       symbols;
+    
+private:
+    
+    void init()
+    {
+        features.add (symbols.createMapFeature(), false);
+        features.add (symbols.createUnmapFeature(), true);
+    }
+    
 };
 
+LV2PluginFormat::LV2PluginFormat () : priv (new LV2PluginFormat::Private()) { }    
 LV2PluginFormat::LV2PluginFormat (LV2World& w) : priv (new LV2PluginFormat::Private (w)) { }
 LV2PluginFormat::~LV2PluginFormat() { priv = nullptr; }
 
-SymbolMap& LV2PluginFormat::symbols() { return priv->world->symbols(); }
+SymbolMap& LV2PluginFormat::getSymbolMap() { return priv->symbols; }
 
 void
 LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& results,
@@ -519,7 +532,8 @@ LV2PluginFormat::createInstanceFromDescription (const PluginDescription& desc, d
     return nullptr;
 }
 
-bool LV2PluginFormat::fileMightContainThisPluginType (const String& fileOrIdentifier)
+bool
+LV2PluginFormat::fileMightContainThisPluginType (const String& fileOrIdentifier)
 {
     bool maybe = fileOrIdentifier.contains ("http:") ||
                  fileOrIdentifier.contains ("urn.");

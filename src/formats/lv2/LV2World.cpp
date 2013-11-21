@@ -24,8 +24,7 @@
 
 namespace Element {
 
-    LV2World::LV2World (SymbolMap& s)
-        : sym (s)
+    LV2World::LV2World()
     {
         world.load_all();
         lv2_InputPort   = world.new_uri (LV2_CORE__InputPort);

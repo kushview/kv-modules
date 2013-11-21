@@ -51,10 +51,9 @@ namespace Element {
     PluginManager::PluginManager()
     {
         priv = new Private();
-
       #if ELEMENT_PLUGINHOST_LV2
         priv->symbols.setOwned (new SymbolMap ());
-        priv->lv2.setOwned (new LV2World (*priv->symbols));
+        priv->lv2.setOwned (new LV2World());
       #endif
     }
 

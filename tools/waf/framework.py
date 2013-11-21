@@ -26,7 +26,7 @@ framework_info = '''<?xml version="1.0" encoding="UTF-8"?>
     <key>CFBundlePackageType</key>
     <string>FMWK</string>
     <key>NSHumanReadableCopyright</key>
-    <string>Copyright 2013 Element</string>
+    <string>%s</string>
     <key>CFBundleGetInfoString</key>
     <string>Created by Element</string>
 </dict>
@@ -141,7 +141,9 @@ def create_task_fwkplist(self):
             else:
                 plisttask.code = self.mac_plist
         else:
-            plisttask.code = framework_info % (out.name, 'org.element-project.framework.%s' % out.name)
+            bundle_id = getattr (self, 'mac_bundle_identifier', 'com.example.%s' % out.name)
+            bundle_cpy = getattr (self, 'mac_bundle_copyright', 'Copyright 2013 %s' % out.name)
+            plisttask.code = framework_info % (out.name, bundle_id, bundle_cpy)
 
         default_framework_dir = self.framework_dir()
         inst_to = default_framework_dir + '/%s/Versions/%s/Resources' % (name, version)
