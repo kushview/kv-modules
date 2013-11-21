@@ -34,7 +34,7 @@ namespace Element {
         Internal (Globals& g)
             : owner(g), symbols()
         {
-            lv2     = new LV2World (symbols);
+            lv2     = new LV2World();
             plugins = new PluginManager (*lv2);
             devices = new DeviceManager();
             media   = new MediaManager();
