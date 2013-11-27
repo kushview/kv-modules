@@ -20,8 +20,7 @@
 #ifndef ELEMENT_SESSION_DOCUMENT_H
 #define ELEMENT_SESSION_DOCUMENT_H
 
-#include <element/Juce.h>
-#include <element/Signals.h>
+#include "element/Juce.h"
 
 namespace Element {
 
@@ -46,7 +45,7 @@ namespace Gui {
 
         Session& session;
         File lastSession;
-        boost::sig::connection connection;
+        boost::signals2::connection connection;
 
         friend class Session;
         void onSessionChanged();

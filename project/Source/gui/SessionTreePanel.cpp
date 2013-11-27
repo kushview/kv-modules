@@ -17,8 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/engine/GraphProcessor.h"
-
 #include "GuiCommon.h"
 #include "AssetTreeView.h"
 #include "ContentComponent.h"
@@ -41,7 +39,7 @@ public:
 
     String getDisplayName() const { return item.getName(); }
 
-    Element::Icon getIcon() const { return Element::Icon (Element::getIcons().document, Colours::orange); }
+    Icon getIcon() const { return Icon (getIcons().document, Colours::orange); }
 
     bool isMissing() { return ! item.getFile().existsAsFile(); }
 
@@ -136,7 +134,7 @@ public:
         return session.assets().getFile().getParentDirectory().existsAsFile();
     }
 
-    Icon getIcon() const { return Element::Icon (Element::getIcons().folder, Colours::red); }
+    Icon getIcon() const { return Icon (getIcons().folder, Colours::red); }
 
 private:
 
@@ -149,7 +147,7 @@ private:
 
 
 SessionTreePanel::SessionTreePanel (GuiApp& g)
-    : Element::TreePanelBase ("session"),
+    : TreePanelBase ("session"),
       gui (g)
 {
     setRoot (new SessionRootTreeItem (g, *this));

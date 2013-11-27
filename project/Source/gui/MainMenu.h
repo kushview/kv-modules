@@ -147,9 +147,9 @@ public:
 
    void getAllCommands (Array <CommandID>& commands)
    {
-       const CommandID ids[] = {
+      // const CommandID ids[] = {
 
-       };
+       //};
    }
 
    void getCommandInfo (CommandID command, ApplicationCommandInfo& result)

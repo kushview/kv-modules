@@ -17,17 +17,15 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <element/Juce.h>
-#include <element/engine/ClipFactory.h>
+
 
 #include "../EngineControl.h"
 #include "../Globals.h"
+#include "../MediaManager.h"
 
 #include "AudioEngine.h"
 #include "InternalFormat.h"
 #include "Transport.h"
-
-using namespace Element;
 
 namespace Element {
 
@@ -328,7 +326,7 @@ namespace Element {
 
     Globals& AudioEngine::globals() { return world; }
 
-    Element::GraphProcessor&
+    GraphProcessor&
     AudioEngine::graph()
     {
         return priv->graph;

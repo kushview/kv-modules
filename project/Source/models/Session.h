@@ -20,16 +20,8 @@
 #ifndef ELEMENT_SESSION_H
 #define ELEMENT_SESSION_H
 
+#include "element/Juce.h"
 #include <boost/intrusive_ptr.hpp>
-
-#include <element/models/ClipModel.h>
-#include <element/models/SequenceModel.h>
-#include <element/models/TrackModel.h>
-#include <element/AssetTree.h>
-#include <element/Atomic.h>
-#include <element/Monitor.h>
-#include <element/Pointer.h>
-#include <element/Signals.h>
 
 namespace Element {
 
@@ -65,11 +57,11 @@ namespace Element {
     };
 
     /** Session, the main interface to the Audio Engine */
-    class Session :  public Element::ObjectModel,
+    class Session :  public ObjectModel,
                      public ValueTree::Listener,
                      public Timer
     {
-        Element::Signal notifyChanged;
+        Signal notifyChanged;
 
     public:
 
@@ -108,16 +100,16 @@ namespace Element {
             inline int numClips() const { return trackData.getNumChildren(); }
             void removeFromSession();
 
-            bool supportsAsset (const Element::AssetItem& asset) const;
-            bool supportsClip (const Element::ClipModel& clip) const;
+            bool supportsAsset (const AssetItem& asset) const;
+            bool supportsClip (const ClipModel& clip) const;
             bool supportsFile (const File& file) const;
 
-            Element::ClipModel addClip (const File& file, double startSeconds = 0.0f);
+            ClipModel addClip (const File& file, double startSeconds = 0.0f);
 
-            inline Element::ClipModel
+            inline ClipModel
             testAddClip (double time)
             {
-                Element::ClipModel clip (time, 1.0f);
+                ClipModel clip (time, 1.0f);
                 trackData.addChild (clip.node(), -1, undoManager());
 
                 return clip;
@@ -147,12 +139,12 @@ namespace Element {
             friend class Session;
             SessionRef session;
 
-            Element::ClipModel createClip() { return Element::ClipModel (ValueTree::invalid); }
+            ClipModel createClip() { return ClipModel (ValueTree::invalid); }
             UndoManager* undoManager() const { return nullptr; }
 
         };
 
-        Element::Signal& signalChanged() { return notifyChanged; }
+        Signal& signalChanged() { return notifyChanged; }
         virtual ~Session();
 
         bool loadData (const ValueTree& data);
@@ -168,7 +160,7 @@ namespace Element {
         void getMonitors (const ObjectModel& object, Array<Shared<Monitor> >& monitors);
         Shared<PlaybackMonitor> playbackMonitor();
 
-        Element::AssetTree& assets();
+        AssetTree& assets();
         Shared<EngineControl> controller();
         Globals& globals();
         MediaManager& media();

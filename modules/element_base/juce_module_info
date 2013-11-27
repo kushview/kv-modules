@@ -1,0 +1,23 @@
+{
+  "id":             "element_base",
+  "name":           "Element Base",
+  "version":        "0.0.1",
+  "description":    "Element Base classes",
+  "website":        "http://github.org/element-project/element",
+  "license":        "GPL v3",
+
+  "dependencies":   [ { "id": "juce_core", "version": "2.1.7" },
+                      { "id": "juce_data_structures", "version": "2.1.7" }, ],
+
+  "include":        "element_base.h",
+
+  "compile":        [ { "file": "element_base.cpp", "target": "! xcode" },
+                      { "file": "element_base.mm",  "target": "xcode" } ],
+
+  "browse":         [ "core/*", "time/*", "util/*" ],
+
+  "OSXFrameworks":  "",
+  "iOSFrameworks":  "",
+  "LinuxLibs":      "",
+  "mingwLibs":      ""
+}

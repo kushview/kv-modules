@@ -24,8 +24,6 @@
 
 #include "SessionAssets.h"
 
-using namespace Element;
-
 namespace Element {
 
     SessionAssets::SessionAssets (Session& s)
@@ -115,6 +113,7 @@ namespace Element {
 
         for (const MediaPtr& ptr : mediaToLoad)
         {
+            ptr.get();
 #if 0
             if (PatternPtr pat = dynamicPtrCast<Pattern> (ptr))
             {

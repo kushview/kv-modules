@@ -17,25 +17,17 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <boost/bind.hpp>
-
-#include <element/Juce.h>
-#include <element/Pointer.h>
-#include <element/Session.h>
-
 #include "engine/AudioEngine.h"
 #include "engine/InternalFormat.h"
 #include "models/Session.h"
-
 #include "gui/Alerts.h"
 #include "gui/GuiApp.h"
-
 #include "Globals.h"
 
+namespace Element
+{
 
-namespace Element {
-
-class Main  : public JUCEApplication
+class ElementMain  : public JUCEApplication
 {
 
     Scoped<Globals>     world;
@@ -45,7 +37,7 @@ class Main  : public JUCEApplication
 public:
 
    //==============================================================================
-   Main()  {  }
+   ElementMain() {  }
 
    const String getApplicationName()       { return "BTV"; }
    const String getApplicationVersion()    { return "3.0.0"; }
@@ -60,13 +52,13 @@ public:
        Logger::writeToLog ("Creating global data");
        world = new Globals();
 
-       Settings& settings (world->settings());
+       //Settings& settings (world->settings());
 
-       Logger::writeToLog ("Restoring device settings");
-       {
-           ScopedXml dxml (settings.getUserSettings()->getXmlValue ("devices"));
-           world->devices().initialise (16, 16, dxml.get(), true, "default", nullptr);
-       }
+    //   Logger::writeToLog ("Restoring device settings");
+     //  {
+     //      ScopedXml dxml (settings.getUserSettings()->getXmlValue ("devices"));
+      ///     world->devices().initialise (16, 16, dxml.get(), true, "default", nullptr);
+   //    }
 
        Logger::writeToLog ("Creating engine");
        engine.reset (new AudioEngine (*world));
@@ -78,7 +70,7 @@ public:
        PluginManager& plugins (world->plugins());
        plugins.addDefaultFormats();
        plugins.addFormat (new InternalFormat (*engine));
-       plugins.restoreUserPlugins (settings);
+      // plugins.restoreUserPlugins (settings);
 
        Logger::writeToLog ("creating GUI");
        gui = Gui::GuiApp::create (*world);
@@ -105,12 +97,12 @@ public:
 
    void shutdown()
    {
-       PluginManager& plugins (world->plugins());
-       Settings& settings (world->settings());
-       plugins.saveUserPlugins (settings);
+       //PluginManager& plugins (world->plugins());
+       //Settings& settings (world->settings());
+       //plugins.saveUserPlugins (settings);
 
-       if (ScopedXml el = world->devices().createStateXml())
-           settings.getUserSettings()->setValue ("devices", el);
+       //if (ScopedXml el = world->devices().createStateXml())
+          // settings.getUserSettings()->setValue ("devices", el);
 
        engine->deactivate();
        world->setEngine (Shared<Engine>());
@@ -139,7 +131,6 @@ public:
    }
 
 };
+}
 
-} /* namespace Element */
-
-START_JUCE_APPLICATION (Element::Main)
+START_JUCE_APPLICATION (Element::ElementMain)

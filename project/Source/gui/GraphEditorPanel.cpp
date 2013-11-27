@@ -17,7 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <element/formats/PluginManager.h>
 
 #include "../engine/InternalFormat.h"
 
@@ -28,8 +27,8 @@
 namespace Element {
 namespace Gui {
 
-    typedef Element::InternalFormat Internals;
-
+    typedef InternalFormat Internals;
+    
     GraphEditorPanel::GraphEditorPanel (GuiApp& gui, GraphController& ctl)
         : GraphEditorBase (ctl)
     { }

@@ -20,8 +20,8 @@
 #ifndef ELEMENT_GLOBALS_H
 #define ELEMENT_GLOBALS_H
 
-#include <element/Session.h>
-#include <element/URIs.h>
+#include "element/Juce.h"
+#include "URIs.h"
 
 namespace Element {
 

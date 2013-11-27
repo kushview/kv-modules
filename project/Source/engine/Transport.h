@@ -20,14 +20,10 @@
 #ifndef ELEMENT_TRANSPORT_H
 #define ELEMENT_TRANSPORT_H
 
-#include <element/engine/Shuttle.h>
-#include <element/Atomic.h>
-#include <element/Pointer.h>
+#include "element/Juce.h"
 
 namespace Element
 {
-
-    class Monitor;
 
     class Transport : public Shuttle
     {

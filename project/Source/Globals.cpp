@@ -17,13 +17,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <element/formats/lv2/LV2World.h>
-#include <element/formats/PluginManager.h>
-#include <element/SymbolMap.h>
-
+#include "element/Juce.h"
 #include "models/Session.h"
 #include "Globals.h"
 #include "MediaManager.h"
+#include "URIs.h"
+
+using namespace lvtk;
 
 namespace Element {
 
@@ -46,10 +46,10 @@ namespace Element {
                 opts.folderName          = opts.applicationName;
                 opts.osxLibrarySubFolder = "Application Support";
                 opts.storageFormat       = PropertiesFile::storeAsXML;
-                owner.settings().setStorageParameters (opts);
+               // owner.settings().setStorageParameters (opts);
             }
 
-            plugins->restoreUserPlugins (owner.settings());
+            //plugins->restoreUserPlugins (owner.settings());
         }
 
         void freeAll()
@@ -80,7 +80,8 @@ namespace Element {
     Globals::Globals()
     {
         impl = new Internal (*this);
-        uris = new Element::URIs (boost::bind (&SymbolMap::map, &impl->symbols, ::_1));
+        uris = new URIs();
+        //uris = new Element::URIs (boost::bind (&SymbolMap::map, &impl->symbols, ::_1));
     }
 
     Globals::~Globals()
@@ -116,9 +117,9 @@ namespace Element {
     }
 
     void
-    Globals::setEngine (Shared<Element::Engine> engine)
+    Globals::setEngine (Shared<Engine> engine)
     {
-        Element::World::setEngine (engine);
+        World::setEngine (engine);
 
         if (impl->session == nullptr) {
             impl->session = new Session (*this);

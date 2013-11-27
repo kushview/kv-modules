@@ -20,11 +20,7 @@
 #ifndef ELEMENT_GUIAPP_H
 #define ELEMENT_GUIAPP_H
 
-#include <element/gui/Style.h>
-#include <element/session/AppController.h>
-#include <element/Pointer.h>
-#include <element/Session.h>
-
+#include "element/Juce.h"
 #include "../models/Session.h"
 #include "../URIs.h"
 
@@ -50,7 +46,7 @@ namespace Gui {
         ~CommandManager() { }
     };
 
-    class GuiApp :  public Element::AppController,
+    class GuiApp :  public AppController,
                     public ApplicationCommandTarget
     {
     public:
@@ -104,7 +100,7 @@ namespace Gui {
 
     protected:
 
-        GuiApp (Element::World&);
+        GuiApp (World&);
 
     private:
 
@@ -115,8 +111,8 @@ namespace Gui {
         Scoped<MainWindow>        mainWindow;
         Scoped<ContentComponent>  content;
 
-        CommandManager            commandManager;
-        Element::Gui::LookAndFeel lookAndFeel;
+        CommandManager             commandManager;
+        LookAndFeel_V3 lookAndFeel;
 
         class Dispatch;
         ScopedPointer<Dispatch>   dispatch;

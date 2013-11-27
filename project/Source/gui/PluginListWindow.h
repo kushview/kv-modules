@@ -20,8 +20,6 @@
 #ifndef ELEMENT_PLUGINLIST_WINDOW_H
 #define ELEMENT_PLUGINLIST_WINDOW_H
 
-#include <element/formats/PluginManager.h>
-
 #include "../Globals.h"
 #include "Window.h"
 
@@ -34,18 +32,18 @@ namespace Gui {
 
         PluginListWindow (Globals& world, const File& deadmansFile = File::nonexistent)
             : Window ("Plugin Manager", gui),
-              pluginManager (world.plugins()),
-              pluginList (world.plugins().availablePlugins())
+              pluginList (world.plugins().availablePlugins()),
+              pluginManager (world.plugins())
         {
             setUsingNativeTitleBar (true);
 #if 0
             const File deadMansPedalFile (getAppProperties().getUserSettings()
                                           ->getFile().getSiblingFile ("RecentlyCrashedPluginsList"));
-#endif
+
             setContentOwned (listComponent = new PluginListComponent (pluginManager.formats(), pluginList,
                                     deadmansFile, world.settings().getUserSettings()),
                              true);
-
+#endif
             setResizable (true, false);
             setResizeLimits (300, 400, 800, 1500);
             setTopLeftPosition (60, 60);
@@ -67,7 +65,7 @@ namespace Gui {
     private:
 
         KnownPluginList& pluginList;
-        Element::PluginManager&   pluginManager;
+        PluginManager&   pluginManager;
         PluginListComponent* listComponent;
 
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PluginListWindow)

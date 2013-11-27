@@ -20,14 +20,8 @@
 #ifndef ELEMENT_ENGINECONTROL_H
 #define ELEMENT_ENGINECONTROL_H
 
-#include <element/engine/GraphController.h>
-
 #include "engine/InternalFormat.h"
 #include "models/Session.h"
-
-namespace Element {
-    class Sequencer;
-}
 
 namespace Element {
 
@@ -37,13 +31,13 @@ namespace Element {
     class InternalFormat;
     class Pattern;
 
-    class EngineControl :  public  Element::GraphController,
+    class EngineControl :  public  GraphController,
                            public  ValueTree::Listener
     {
     public:
 
-        typedef Element::GraphProcessor::AudioGraphIOProcessor IOProcessor;
-        typedef Element::GraphProcessor::Node::Ptr NodePtr;
+        typedef GraphProcessor::AudioGraphIOProcessor IOProcessor;
+        typedef GraphProcessor::Node::Ptr NodePtr;
 
         ~EngineControl();
 
@@ -56,7 +50,7 @@ namespace Element {
 
         inline bool isOpen() const { return session.get() != nullptr; }
 
-        Element::GraphController* createSequenceController ();
+        GraphController* createSequenceController ();
 
     protected:
 
@@ -69,7 +63,7 @@ namespace Element {
         NodePtr addRootPlugin (IOProcessor::IODeviceType ioType);
         NodePtr addRootPlugin (InternalFormat::ID internal);
         InternalFormat* internals() const;
-        Element::Sequencer* sequencer() const;
+        Sequencer* sequencer() const;
 
         Globals& world;
         AudioEngine& engine;

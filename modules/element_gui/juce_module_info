@@ -1,0 +1,23 @@
+{
+  "id":             "element_gui",
+  "name":           "Element data models",
+  "version":        "0.0.1",
+  "description":    "The Element library in juce module form",
+  "website":        "http://github.org/element-project/element",
+  "license":        "GPL v3",
+
+  "dependencies":   [ { "id": "juce_core", "version": "2.1.7" },
+                      { "id": "juce_data_structures", "version": "2.1.7" }, ],
+
+  "include":        "element_gui.h",
+
+  "compile":        [ { "file": "element_gui.cpp", "target": "! xcode" },
+                      { "file": "element_gui.mm",  "target": "xcode" } ],
+
+  "browse":         [ "base/*", "docking/*", "embed/*", "style/*" ],
+
+  "OSXFrameworks":  "",
+  "iOSFrameworks":  "",
+  "LinuxLibs":      "",
+  "mingwLibs":      ""
+}

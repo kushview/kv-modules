@@ -21,7 +21,6 @@
 #define ELEMENT_WINDOW_H
 
 #include "element/Juce.h"
-#include "element/Signals.h"
 
 namespace Element {
 namespace Gui {
@@ -50,11 +49,11 @@ namespace Gui {
 
         WindowHook() { }
         virtual ~WindowHook() { Logger::writeToLog("~WindowHook()"); }
-        inline Element::Signal& signalClosed() { return closedSignal; }
+        inline Signal& signalClosed() { return closedSignal; }
 
     protected:
 
-        Element::Signal  closedSignal;
+        Signal  closedSignal;
 
     };
 

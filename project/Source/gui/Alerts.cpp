@@ -26,8 +26,6 @@
 namespace Element {
 namespace Alerts {
 
-    using namespace Element::Gui;
-
     static const int alertWidth  = 531;
     static const int alertHeight = 391;
     static const int alertBorder = 2;
@@ -69,21 +67,21 @@ namespace Alerts {
     int showInfoAlert (const String& title, const String& message,
                       AlertWindow::AlertIconType type /*=InfoIcon*/)
     {
-        return showAlert<AInfoAlertButtonBar> (title, message, type);
+        return showAlert<Gui::AInfoAlertButtonBar> (title, message, type);
     }
 
 
     int showOkCancelAlert (const String& title, const String& message,
                            AlertWindow::AlertIconType type)
     {
-        return showAlert<AOkCancelAlertButtonBar> (title, message, type);
+        return showAlert<Gui::AOkCancelAlertButtonBar> (title, message, type);
     }
 
 
     int showYesNoCancel (const String& title, const String& message,
                              AlertWindow::AlertIconType type)
     {
-        return showAlert<AYesNoCancelButtonBar> (title, message, type);
+        return showAlert<Gui::AYesNoCancelButtonBar> (title, message, type);
     }
 
 }}

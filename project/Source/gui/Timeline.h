@@ -20,15 +20,6 @@
 #ifndef ELEMENT_TIMELINE_H
 #define ELEMENT_TIMELINE_H
 
-#include <element/gui/TimelineBase.h>
-#include <element/gui/TimelineClip.h>
-
-namespace Element {
-namespace Gui {
-
-    using Element::Gui::TimelineBase;
-    using Element::Gui::TimelineClip;
-
-}}
+#include "element/Juce.h"
 
 #endif // TIMELINE_H

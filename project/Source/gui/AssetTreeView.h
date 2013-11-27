@@ -20,18 +20,17 @@
 #ifndef ELEMENT_TREEVIEW_TYPES_H
 #define ELEMENT_TREEVIEW_TYPES_H
 
-#include <element/gui/Icons.h>
 #include "SessionTreePanel.h"
 
 namespace Element {
 namespace Gui {
 
-    class AssetTreeViewItem :  public Element::TreeItemBase,
+    class AssetTreeViewItem :  public TreeItemBase,
                                public ValueTree::Listener
     {
     public:
 
-        AssetTreeViewItem (const Element::AssetTree::Item& item);
+        AssetTreeViewItem (const AssetTree::Item& item);
         ~AssetTreeViewItem();
 
         virtual bool mightContainSubItems();
@@ -42,7 +41,7 @@ namespace Gui {
         virtual bool isMissing();
         virtual void showPopupMenu();
         virtual void handlePopupMenuResult (int);
-        virtual Element::Icon getIcon() const;
+        virtual Icon getIcon() const;
 
         //void addSubItem();
         bool isRootAsset() const;
@@ -67,14 +66,14 @@ namespace Gui {
         void valueTreeChildOrderChanged (ValueTree& parentTree) override;
         void valueTreeParentChanged (ValueTree& tree) override;
 
-        Element::AssetTree::Item item;
+        AssetTree::Item item;
 
     protected:
 
         void addSubItems();
-        virtual AssetTreeViewItem* createAssetSubItem (const Element::AssetTree::Item&) { return nullptr; }
+        virtual AssetTreeViewItem* createAssetSubItem (const AssetTree::Item&) { return nullptr; }
         virtual void treeChildrenChanged (const ValueTree& parentTree);
-        virtual void triggerAsyncAssetRename (const Element::AssetTree::Item& item);
+        virtual void triggerAsyncAssetRename (const AssetTree::Item& item);
 
     };
 
@@ -82,11 +81,11 @@ namespace Gui {
     {
     public:
 
-        PlainTextFileTreeViewItem (const Element::AssetTree::Item& item);
+        PlainTextFileTreeViewItem (const AssetTree::Item& item);
         ~PlainTextFileTreeViewItem();
         bool acceptsFileDrop (const StringArray&) const { return false; }
-        bool acceptsDragItems (const OwnedArray <Element::AssetTree::Item>&) { return false; }
-        AssetTreeViewItem* createAssetSubItem (const Element::AssetTree::Item& child);
+        bool acceptsDragItems (const OwnedArray <AssetTree::Item>&) { return false; }
+        AssetTreeViewItem* createAssetSubItem (const AssetTree::Item& child);
         void showDocument();
         void showPopupMenu();
         void handlePopupMenuResult (int resultCode);
@@ -99,14 +98,14 @@ namespace Gui {
     {
     public:
 
-        GroupTreeViewItem (const Element::AssetTree::Item& item);
+        GroupTreeViewItem (const AssetTree::Item& item);
         virtual ~GroupTreeViewItem();
 
         bool isRootAsset() const { return item.isRoot(); }
         bool acceptsFileDrop (const StringArray&) const { return true; }
-        bool acceptsDragItems (const OwnedArray <Element::AssetTree::Item>& selectedNodes);
+        bool acceptsDragItems (const OwnedArray <AssetTree::Item>& selectedNodes);
         void checkFileStatus();
-        void moveSelectedItemsTo (OwnedArray <Element::AssetTree::Item>& selectedNodes, int insertIndex);
+        void moveSelectedItemsTo (OwnedArray <AssetTree::Item>& selectedNodes, int insertIndex);
 
         virtual void showDocument();
         virtual void showPopupMenu();
@@ -118,11 +117,11 @@ namespace Gui {
         void addCreateFileMenuItems (PopupMenu& m);
         void processCreateFileMenuItem (int item);
 
-        Element::Icon getIcon() const { return Element::Icon (Element::getIcons().folder, Colours::red); }
+        Icon getIcon() const { return Icon (getIcons().folder, Colours::red); }
 
     protected:
 
-        AssetTreeViewItem* createAssetSubItem (const Element::AssetTree::Item& child);
+        AssetTreeViewItem* createAssetSubItem (const AssetTree::Item& child);
 
     };
 

@@ -17,9 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <element/engine/GraphController.h>
-#include <element/models/ClipModel.h>
-#include <element/Pointer.h>
 
 #include "../engine/AudioEngine.h"
 #include "../engine/InternalFormat.h"
@@ -33,7 +30,6 @@
 
 #include "Session.h"
 
-using namespace Element;
 
 namespace Element {
 
@@ -45,7 +41,7 @@ namespace Element {
         Private (Session& s, Globals& g)
             : session (s)
         {
-            engine = Element::dynamicPtrCast<AudioEngine> (g.engine());
+            engine = dynamicPtrCast<AudioEngine> (g.engine());
             assert (engine != nullptr);
             playMonitor = engine->transport()->monitor();
             graph = engine->controller();

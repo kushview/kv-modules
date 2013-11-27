@@ -23,7 +23,7 @@ namespace Element {
 namespace Gui {
 
 MidiEditorComponent::MidiEditorComponent (MidiKeyboardState& k)
-    : EditorType (k)
+    : MidiEditorBody (k)
 { }
 
 MidiEditorComponent::~MidiEditorComponent()

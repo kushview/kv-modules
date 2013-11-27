@@ -17,15 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element/engine/Sequencer.h"
-#include "element/formats/PluginManager.h"
-#include "element/models/SequenceModel.h"
-
 #include "engine/AudioEngine.h"
-#include "engine/InternalFormat.h"
 #include "engine/Transport.h"
-
-#include "models/Session.h"
 
 #include "EngineControl.h"
 #include "Globals.h"
@@ -47,7 +40,7 @@ namespace Element {
         seqNode = nullptr;
     }
 
-    Element::GraphController*
+    GraphController*
     EngineControl::createSequenceController()
     {
         if (seqNode == nullptr) {

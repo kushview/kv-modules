@@ -20,9 +20,7 @@
 #ifndef ELEMENT_AUDIO_ENGINE_H
 #define ELEMENT_AUDIO_ENGINE_H
 
-#include <element/formats/PluginManager.h>
-#include <element/Engine.h>
-#include <element/Pointer.h>
+#include "element/Juce.h"
 
 namespace juce {
 
@@ -32,15 +30,14 @@ namespace juce {
 
 namespace Element {
 
-    class ClipFactory;
-    class GraphProcessor;
+
     class Globals;
     class EngineControl;
     class PatternInterface;
     class Pattern;
     class Transport;
 
-    class AudioEngine : public Element::Engine
+    class AudioEngine : public Engine
     {
     public:
 

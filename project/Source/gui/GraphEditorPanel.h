@@ -20,16 +20,12 @@
 #ifndef ELEMENT_GRAPHEDITORCOMPONENT_H
 #define ELEMENT_GRAPHEDITORCOMPONENT_H
 
-#include "element/gui/GraphEditorBase.h"
-
 namespace Element {
 namespace Gui {
 
-    typedef Element::Gui::GraphEditorBase GraphEditorCompnent;
-
     class GuiApp;
 
-    class GraphEditorPanel : public GraphEditorCompnent
+    class GraphEditorPanel : public GraphEditorBase
     {
     public:
 

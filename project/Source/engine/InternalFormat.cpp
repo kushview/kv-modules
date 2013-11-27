@@ -18,16 +18,10 @@
 */
 
 #include "element/Juce.h"
-#include "element/engine/GraphProcessor.h"
-#include "element/engine/Sequencer.h"
-#include "element/models/SequenceModel.h"
-
-#include "../models/Session.h"
-
-#include "../Globals.h"
-
+#include "models/Session.h"
 #include "AudioEngine.h"
 #include "InternalFormat.h"
+#include "Globals.h"
 
 namespace Element {
 

@@ -22,12 +22,9 @@
 #ifndef ELEMENT_MEDIA_MANAGER_H
 #define ELEMENT_MEDIA_MANAGER_H
 
-#include "element/AssetTree.h"
-#include "element/models/MediaModel.h"
+#include "element/Juce.h"
 
 namespace Element {
-
-    typedef Element::MediaPtr MediaPtr;
 
     class Session;
 

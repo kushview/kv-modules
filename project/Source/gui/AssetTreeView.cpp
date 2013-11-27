@@ -19,8 +19,6 @@
 
 #include "AssetTreeView.h"
 
-using namespace Element;
-
 namespace Element {
 namespace Gui {
 
@@ -49,7 +47,7 @@ String AssetTreeViewItem::getRenamingName() const { return item.getName(); }
 String AssetTreeViewItem::getDisplayName()  const { return item.getName(); }
 String AssetTreeViewItem::getUniqueName()   const { return item.getId(); }
 bool AssetTreeViewItem::isMissing() { return false; }
-Element::Icon AssetTreeViewItem::getIcon() const { return Element::Icon(); }
+Icon AssetTreeViewItem::getIcon() const { return Icon(); }
 void AssetTreeViewItem::setName (const String& newName) { item.setName (newName); }
 void AssetTreeViewItem::showPopupMenu() { }
 void AssetTreeViewItem::handlePopupMenuResult (int res) { }

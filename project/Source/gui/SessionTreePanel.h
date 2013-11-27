@@ -20,10 +20,7 @@
 #ifndef ELEMENT_SESSION_TREE_PANEL_H
 #define ELEMENT_SESSION_TREE_PANEL_H
 
-#include <element/gui/TreeviewBase.h>
-
 #include "../models/Session.h"
-#include <element/AssetTree.h>
 
 namespace Element {
 
@@ -33,7 +30,7 @@ namespace Gui {
 
     class GuiApp;
 
-    class SessionTreePanel : public Element::TreePanelBase
+    class SessionTreePanel : public TreePanelBase
     {
     public:
 
@@ -51,7 +48,7 @@ namespace Gui {
     };
 
 
-    class SessionMediaTreePanel :  public Element::TreePanelBase
+    class SessionMediaTreePanel :  public TreePanelBase
     {
 
     };

@@ -17,13 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <element/engine/Shuttle.h>
-#include <element/models/ClipModel.h>
 
 #include "../models/Session.h"
 #include "../MediaManager.h"
 
-using namespace Element;
 
 namespace Element {
 

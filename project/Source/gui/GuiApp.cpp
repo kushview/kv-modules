@@ -17,7 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <element/session/WorldBase.h>
 
 #include "../engine/AudioEngine.h"
 #include "../EngineControl.h"
@@ -86,30 +85,31 @@ namespace Gui {
 
     };
 
-    GuiApp::GuiApp (Element::World& world)
+    GuiApp::GuiApp (World& world)
         : AppController (world),
-          mainWindow (nullptr), windowManager (nullptr)
+          windowManager (nullptr),
+          mainWindow (nullptr)
     {
         dispatch = new Dispatch (*this);
-        LookAndFeel::setDefaultLookAndFeel (&lookAndFeel);
+        juce::LookAndFeel::setDefaultLookAndFeel (&lookAndFeel);
         windowManager = new WindowManager (*this);
     }
 
     GuiApp::~GuiApp()
     {       
-        PropertiesFile* pf = world().settings().getUserSettings();
-        pf->setValue ("main-window-state", mainWindow->getWindowStateAsString());
+        //PropertiesFile* pf = world().settings().getUserSettings();
+        //pf->setValue ("main-window-state", mainWindow->getWindowStateAsString());
 
         File f (sessionDoc->getFile());
         if (f.existsAsFile()) {
-            pf->setValue ("last-session", f.getFullPathName());
+            //pf->setValue ("last-session", f.getFullPathName());
         }
 
         mainWindow->setVisible (false);
         mainWindow->removeFromDesktop();
         mainWindow = nullptr;
         windowManager = nullptr;
-        LookAndFeel::setDefaultLookAndFeel (nullptr);
+        juce::LookAndFeel::setDefaultLookAndFeel (nullptr);
     }
 
     GuiApp*
@@ -197,15 +197,16 @@ namespace Gui {
         content->setSize (400, 300);
         mainWindow = new MainWindow (*this);
         mainWindow->setContentNonOwned (content.get(), true);
-
+#if 0
         PropertiesFile* pf = world().settings().getUserSettings();
         mainWindow->restoreWindowStateFromString (pf->getValue ("main-window-state"));
+#endif
         mainWindow->addToDesktop();
         mainWindow->setVisible (true);
 
         dispatch->startTimer (250);
 
-        File sess (pf->getValue ("last-session"));
+        File sess (File::nonexistent); // (pf->getValue ("last-session"));
         if (sess.existsAsFile()) {
             sessionDoc->loadFrom (sess, true);
             mainWindow->setName (sessionDoc->getDocumentTitle());
@@ -471,8 +472,8 @@ namespace Gui {
                 && (Commands::devicePadPress + 13) > info.commandID)
         {
             const uint16 pad = info.commandID - Commands::devicePadPress;
-            ModifierKeys modKeys = ModifierKeys::getCurrentModifiersRealtime();
-            unsigned long modifiers = 13;//kNoModifiers;
+            //ModifierKeys modKeys = ModifierKeys::getCurrentModifiersRealtime();
+            //unsigned long modifiers = 13;//kNoModifiers;
 
             if (info.isKeyDown)
                 std::clog << "Pad pressed: " << pad << std::endl;

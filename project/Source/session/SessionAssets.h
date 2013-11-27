@@ -20,16 +20,12 @@
 #ifndef ELEMENT_SESSION_ASSETS_H
 #define ELEMENT_SESSION_ASSETS_H
 
-#include <element/session/MediaStorage.h>
-#include <element/models/MediaModel.h>
-#include <element/AssetTree.h>
-
 namespace Element {
 
 class MediaManager;
 class Session;
 
-class SessionAssets :  public Element::AssetTree
+class SessionAssets :  public AssetTree
 {
 public:
 

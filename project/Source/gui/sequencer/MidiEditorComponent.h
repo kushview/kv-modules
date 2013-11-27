@@ -20,17 +20,13 @@
 #ifndef ELEMENT_STEP_SEQUENCER_BODY_H
 #define ELEMENT_STEP_SEQUENCER_BODY_H
 
-#include <element/gui/MidiEditorBody.h>
-#include <element/models/NoteSequence.h>
+#include "element/Juce.h"
 
 namespace Element {
 namespace Gui {
 
-class MidiEditorComponent :  public Element::Gui::MidiEditorBody
+class MidiEditorComponent :  public MidiEditorBody
 {
-
-    typedef Element::Gui::MidiEditorBody EditorType;
-
 public:
 
     MidiEditorComponent (MidiKeyboardState& keyboard);

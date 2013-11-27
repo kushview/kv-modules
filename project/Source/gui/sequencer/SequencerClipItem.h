@@ -20,8 +20,6 @@
 #ifndef SEQUENCERCLIPITEM_H
 #define SEQUENCERCLIPITEM_H
 
-#include "element/models/ClipModel.h"
-#include "element/models/TrackModel.h"
 #include "../Timeline.h"
 
 namespace Element {
@@ -34,6 +32,8 @@ class SequencerClipItem :  public TimelineClip
 public:
 
     SequencerClipItem (SequencerComponent& owner, const ClipModel& clipData);
+    virtual ~SequencerClipItem() { }
+    
     void paint (Graphics &g);
 
     virtual void getTime (Range<double>& time) const;
@@ -72,7 +72,7 @@ public:
 protected:
 
     SequencerComponent& sequence;
-    Element::ClipModel model;
+    ClipModel model;
 
 private:
 

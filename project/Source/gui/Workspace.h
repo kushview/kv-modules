@@ -20,7 +20,7 @@
 #ifndef ELEMENT_WORKSPACE_H
 #define ELEMENT_WORKSPACE_H
 
-#include <element/gui/Dock.h>
+#include "element/Juce.h"
 
 namespace Element {
 namespace Gui {

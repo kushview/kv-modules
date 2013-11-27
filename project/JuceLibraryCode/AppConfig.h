@@ -17,18 +17,13 @@
 //==============================================================================
 // [BEGIN_USER_CODE_SECTION]
 
-#if ! DONT_SET_USING_JUCE_NAMESPACE
-    namespace Element { }
-    using namespace Element;
-#endif
-
-#include <cassert>  // XXX:  figure out how to get this included while building
-                    // juce itself
-
 // [END_USER_CODE_SECTION]
 
 //==============================================================================
-#define JUCE_MODULE_AVAILABLE_element                    1
+#define JUCE_MODULE_AVAILABLE_element_base               1
+#define JUCE_MODULE_AVAILABLE_element_engines            1
+#define JUCE_MODULE_AVAILABLE_element_gui                1
+#define JUCE_MODULE_AVAILABLE_element_models             1
 #define JUCE_MODULE_AVAILABLE_juce_audio_basics          1
 #define JUCE_MODULE_AVAILABLE_juce_audio_devices         1
 #define JUCE_MODULE_AVAILABLE_juce_audio_formats         1
@@ -42,25 +37,8 @@
 #define JUCE_MODULE_AVAILABLE_juce_gui_basics            1
 #define JUCE_MODULE_AVAILABLE_juce_gui_extra             1
 #define JUCE_MODULE_AVAILABLE_juce_opengl                1
-
-//==============================================================================
-// element flags:
-
-#ifndef    ELEMENT_PLUGINHOST_LV2
- //#define ELEMENT_PLUGINHOST_LV2
-#endif
-
-#ifndef    ELEMENT_DOCKING
- //#define ELEMENT_DOCKING
-#endif
-
-#ifndef    ELEMENT_JACK_DEVICE
- //#define ELEMENT_JACK_DEVICE
-#endif
-
-#ifndef    ELEMENT_SESSION
- //#define ELEMENT_SESSION
-#endif
+#define JUCE_MODULE_AVAILABLE_lvtk_core                  1
+#define JUCE_MODULE_AVAILABLE_lvtk_plugins               1
 
 //==============================================================================
 // juce_audio_devices flags:
@@ -127,6 +105,10 @@
  //#define JUCE_PLUGINHOST_VST
 #endif
 
+#ifndef    JUCE_PLUGINHOST_VST3
+ //#define JUCE_PLUGINHOST_VST3
+#endif
+
 #ifndef    JUCE_PLUGINHOST_AU
  //#define JUCE_PLUGINHOST_AU
 #endif
@@ -189,6 +171,13 @@
 
 #ifndef    JUCE_WEB_BROWSER
  //#define JUCE_WEB_BROWSER
+#endif
+
+//==============================================================================
+// lvtk_core flags:
+
+#ifndef    LVTK_USE_CXX11
+ //#define LVTK_USE_CXX11
 #endif
 
 

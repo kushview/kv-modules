@@ -20,8 +20,7 @@
 #ifndef ELEMENT_CONTENT_COMPONENT_H
 #define ELEMENT_CONTENT_COMPONENT_H
 
-#include <element/Juce.h>
-#include <element/AssetTree.h>
+#include "element/Juce.h"
 
 namespace Element {
 namespace Gui {

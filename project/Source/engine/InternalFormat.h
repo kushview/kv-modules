@@ -20,8 +20,7 @@
 #ifndef ELEMENT_INTERNAL_FORMAT_H
 #define ELEMENT_INTERNAL_FORMAT_H
 
-#include <element/engine/GraphProcessor.h>
-#include <element/engine/GraphPort.h>
+#include "element/Juce.h"
 
 namespace Element {
 

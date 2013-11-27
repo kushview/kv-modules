@@ -20,6 +20,6 @@
 #ifndef ELEMENT_APP_TYPES_H
 #define ELEMENT_APP_TYPES_H
 
-#include <element/Types.h>
+#include "element/Juce.h"
 
 #endif // ELEMENT_APP_TYPES_H

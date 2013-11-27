@@ -20,9 +20,6 @@
 #ifndef ELEMENT_APP_URIS_H
 #define ELEMENT_APP_URIS_H
 
-#include <element/SymbolMap.h>
-#include <element/URIs.h>
-
 #define BEATTHANG_URI "http://bketech.com/ns/beatthang"
 
 #define ELEMENT_ABOUT_BOX       BEATTHANG_URI "#aboutBox"
@@ -32,6 +29,11 @@
 
 namespace Element {
 
+    class URIs {
+    public:
+        URIs() { }
+    };
+    
 }
 
 #endif // ELEMENT_APP_URIS_H

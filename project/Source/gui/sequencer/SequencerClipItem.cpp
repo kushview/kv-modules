@@ -57,7 +57,7 @@ void SequencerClipItem::setTime (const Range<double>& time)
 
 int SequencerClipItem::trackRequested (const int &track)
 {
-    return Element::clampNoMoreThan (track, 0, sequence.getNumTracks() - 1);
+    return clampNoMoreThan (track, 0, sequence.getNumTracks() - 1);
 }
 
 void
