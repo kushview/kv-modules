@@ -43,6 +43,9 @@ namespace Gui {
             setContentOwned (listComponent = new PluginListComponent (pluginManager.formats(), pluginList,
                                     deadmansFile, world.settings().getUserSettings()),
                              true);
+#else
+            setContentOwned (listComponent = new PluginListComponent (pluginManager.formats(), pluginList,
+                                                                      File::nonexistent, nullptr), true);
 #endif
             setResizable (true, false);
             setResizeLimits (300, 400, 800, 1500);
