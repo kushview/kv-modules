@@ -28,9 +28,10 @@
 
 #include <boost/intrusive_ptr.hpp>
 
-//namespace juce {
+
 namespace Element {
-    typedef lvtk::SymbolMap SymbolMap;
+
+typedef lvtk::SymbolMap SymbolMap;
     
 #include "audio/PortType.h"
 #include "audio/Processor.h"
@@ -61,6 +62,6 @@ namespace Element {
 #include "session/DeviceManager.h"
 #include "session/PluginManager.h"
     
-}//}
+}
 
 #endif   // ELEMENT_MODELS_H_INCLUDED

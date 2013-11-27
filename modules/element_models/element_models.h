@@ -24,7 +24,6 @@
 #include "modules/juce_audio_basics/juce_audio_basics.h"
 #include "modules/juce_data_structures/juce_data_structures.h"
 
-//namespace juce {
 namespace Element {
 
 #include "models/ObjectModel.h"
@@ -45,6 +44,6 @@ namespace Element {
 #include "models/TempoMap.h"
 #include "models/TrackModel.h"
     
-}//}
+}
 
 #endif   // ELEMENT_MODELS_H_INCLUDED

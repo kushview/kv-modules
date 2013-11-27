@@ -20,14 +20,13 @@
 #include "AppConfig.h"
 #include "element_gui.h"
 
-//namespace juce {
 namespace Element {
 
 #include "base/DecibelScaleComponent.cpp"
 #include "base/HighQualityMeter.cpp"
 #include "base/Icons.cpp"
 #include "base/MidiEditorBody.cpp"
-#include "base/Style.cpp"
+#include "base/LookAndFeel.cpp"
 #include "base/TimelineBase.cpp"
 #include "base/TimelineClip.cpp"
 #include "base/TreeviewBase.cpp"
@@ -42,4 +41,4 @@ namespace Element {
 #include "base/GraphEditorBase.cpp"
 #include "base/PluginWindow.cpp"
     
-}//}
+}

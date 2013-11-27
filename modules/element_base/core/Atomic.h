@@ -20,137 +20,133 @@
 #ifndef ELEMENT_ATOMIC_HPP
 #define ELEMENT_ATOMIC_HPP
 
-
-
-    template<typename ValueType>
-    class AtomicValue
+template<typename ValueType>
+class AtomicValue
+{
+public:
+    explicit AtomicValue (ValueType initial = ValueType())
+        : state (State::ReadWrite)
     {
-    public:
-        inline AtomicValue (ValueType initial = ValueType())
-            : state (State::ReadWrite)
+        values[0] = values[1] = initial;
+        readValue = &values [0];
+    }
+
+    inline const ValueType& get() const { return *readValue.load(); }
+
+    inline bool
+    set (ValueType newValue)
+    {
+        State expected = State::ReadWrite;
+        if (state.compare_exchange_strong (expected, State::ReadLock))
         {
-            values[0]  = initial;
-            readValue = &values [0];
+            values[1]  = newValue;
+            readValue  = &values[1];
+            state      = State::WriteRead;
+            return true;
         }
 
-        inline ValueType& get() const { return *readValue.load(); }
+        expected = State::WriteRead;
 
-        inline bool
-        set (ValueType newValue)
+        if (state.compare_exchange_strong (expected, State::LockRead))
         {
-            State expected = State::ReadWrite;
-            if (state.compare_exchange_strong (expected, State::ReadLock))
-            {
-                values[1]  = newValue;
-                readValue  = &values[1];
-                state      = State::WriteRead;
-                return true;
-            }
-
-            expected = State::WriteRead;
-
-            if (state.compare_exchange_strong (expected, State::LockRead))
-            {
-                values[0]  = newValue;
-                readValue = &values[0];
-                state    = State::ReadWrite;
-                return true;
-            }
-
-            return false;
+            values[0] = newValue;
+            readValue = &values[0];
+            state     = State::ReadWrite;
+            return true;
         }
 
-        inline ValueType
-        exchange (ValueType newValue)
-        {
-            ValueType existingValue = get();
+        return false;
+    }
 
-            while (! this->set (newValue))
-                ; // spin a little
+    inline ValueType
+    exchange (ValueType newValue)
+    {
+        ValueType existingValue = get();
 
-            return existingValue;
-        }
+        while (! this->set (newValue))
+            ; // spin a little
 
-        inline void
-        exchange (ValueType nextValue, ValueType& previousValue)
-        {
-            previousValue = exchange (nextValue);
-        }
+        return existingValue;
+    }
 
-        inline void
-        exchangeAndDelete (ValueType nextValue)
-        {
-            ValueType ptr = exchange (nextValue);
-            if (ptr != nullptr)
-                delete ptr;
-        }
+    inline void
+    exchange (ValueType nextValue, ValueType& previousValue)
+    {
+        previousValue = exchange (nextValue);
+    }
 
-    private:
+    inline void
+    exchangeAndDelete (ValueType nextValue)
+    {
+        ValueType ptr = exchange (nextValue);
+        if (ptr != nullptr)
+            delete ptr;
+    }
 
-        enum class State
-        {
-            ReadWrite,
-            ReadLock,
-            WriteRead,
-            LockRead
-        };
+private:
 
-        std::atomic<State>         state;
-        std::atomic<ValueType*>    readValue;
-        ValueType                  values[2];
+    enum class State
+    {
+        ReadWrite,
+        ReadLock,
+        WriteRead,
+        LockRead
     };
 
+    std::atomic<State>         state;
+    std::atomic<ValueType*>    readValue;
+    ValueType                  values[2];
+};
 
-    class AtomicLock
+
+class AtomicLock
+{
+public:
+
+    AtomicLock()
+        : a_mutex (ATOMIC_FLAG_INIT),
+          a_locks (0)
+    { }
+
+    inline bool
+    acquire()
     {
-    public:
+        return ! a_mutex.test_and_set (std::memory_order_acquire);
+    }
 
-        AtomicLock()
-            : a_mutex (ATOMIC_FLAG_INIT),
-              a_locks (0)
-        { }
+    inline void
+    release()
+    {
+        a_mutex.clear (std::memory_order_release);
+    }
 
-        inline bool
-        acquire()
+    inline void
+    lock()
+    {
+        a_locks.set (a_locks.get() + 1);
+        if (a_locks.get() == 1)
+            while (! acquire())
+                ; // spin
+    }
+
+    inline void
+    unlock()
+    {
+        a_locks.set (a_locks.get() - 1);
+        if (a_locks.get() < 1)
         {
-            return ! a_mutex.test_and_set (std::memory_order_acquire);
+            a_locks.set(0);
+            release();
         }
+    }
 
-        inline void
-        release()
-        {
-            a_mutex.clear (std::memory_order_release);
-        }
+    inline bool isBusy() const {  return a_locks.get() > 0; }
 
-        inline void
-        lock()
-        {
-            a_locks.set (a_locks.get() + 1);
-            if (a_locks.get() == 1)
-                while (! acquire())
-                    ; // spin
-        }
+private:
 
-        inline void
-        unlock()
-        {
-            a_locks.set (a_locks.get() - 1);
-            if (a_locks.get() < 1)
-            {
-                a_locks.set(0);
-                release();
-            }
-        }
+    std::atomic_flag    a_mutex;
+    AtomicValue<int>    a_locks;
 
-        inline bool is_busy() const {  return a_locks.get() > 0; }
-
-    private:
-
-        std::atomic_flag    a_mutex;
-        AtomicValue<int>    a_locks;
-
-    };
-
-
+};
 
 #endif // ELEMENT_ATOMIC_HPP

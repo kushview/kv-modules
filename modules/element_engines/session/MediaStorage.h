@@ -20,15 +20,9 @@
 #ifndef ELEMENT_MEDIA_STORAGE_H
 #define ELEMENT_MEDIA_STORAGE_H
 
-namespace Element {
-
-    class MediaStorage {
-
-    private:
-
-
-    };
-
-}
+class MediaStorage {
+public:
+private:
+};
 
 #endif // ELEMENT_MEDIA_STORAGE_H

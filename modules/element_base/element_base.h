@@ -36,7 +36,6 @@
 #include <lv2/lv2plug.in/ns/ext/midi/midi.h>
 #include <lv2/lv2plug.in/ns/ext/urid/urid.h>
 
-//namespace juce {
 namespace Element {
 using namespace juce;
     
@@ -67,6 +66,6 @@ using namespace juce;
 #include "util/RelativePath.h"
 #include "util/UUID.h"
     
-}//}
+}
 
 #endif   // ELEMENT_BASE_H_INCLUDED

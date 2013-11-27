@@ -25,13 +25,12 @@
 #include "modules/juce_gui_basics/juce_gui_basics.h"
 #include "modules/juce_audio_processors/juce_audio_processors.h"
 
-//namespace juce {
 namespace Element {
 
 // look and feel
 #include "base/Icons.h"
 #include "base/Stock.h"
-#include "base/Style.h"
+#include "base/LookAndFeel.h"
     
 // timelines
 #include "base/TrackHeights.h"
@@ -56,6 +55,6 @@ namespace Element {
 // embedding
 #include "embed/NativeComponent.h"
     
-}//}
+}
 
 #endif   // ELEMENT_MODELS_H_INCLUDED
