@@ -39,17 +39,13 @@ public:
    //==============================================================================
    ElementMain() {  }
 
-   const String getApplicationName()       { return "BTV"; }
-   const String getApplicationVersion()    { return "3.0.0"; }
+   const String getApplicationName()       { return "Element"; }
+   const String getApplicationVersion()    { return "0.0.1"; }
    bool moreThanOneInstanceAllowed()       { return true; }
 
    //==============================================================================
    void initialise (const String& /* commandLine */)
    {
-       int64 millis = Time::currentTimeMillis();
-
-       // this isn't necessarily set in stone, just a quick setup for testing
-       Logger::writeToLog ("Creating global data");
        world = new Globals();
 
        //Settings& settings (world->settings());
@@ -65,28 +61,14 @@ public:
        world->setEngine (engine); // this will also instantiate the session
 
        // global data is ready, so now we can start using it;
-
-       Logger::writeToLog ("Restoring plugin list");
        PluginManager& plugins (world->plugins());
        plugins.addDefaultFormats();
        plugins.addFormat (new InternalFormat (*engine));
       // plugins.restoreUserPlugins (settings);
 
-       Logger::writeToLog ("creating GUI");
        gui = Gui::GuiApp::create (*world);
-
-       Logger::writeToLog ("Activate Audio Engine");
        engine->activate();
-
-       Logger::writeToLog("Launch Gui");
        gui->run();
-       Logger::writeToLog("Gui launched");
-
-       millis = Time::currentTimeMillis() - millis;
-
-       String timeMsg ("\nBTV started in ");
-       timeMsg << ((float)millis / 1000.f) << " seconds.";
-       Logger::writeToLog (timeMsg);
    }
 
 

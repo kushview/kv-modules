@@ -20,40 +20,37 @@
 #ifndef ELEMENT_PROCESSOR_BASE_H
 #define ELEMENT_PROCESSOR_BASE_H
 
+class Processor :  public AudioPluginInstance
+{
 
+public:
 
-    class Processor :  public AudioPluginInstance
-    {
+    Processor() { }
+    virtual ~Processor() { }
 
-    public:
+    /** Returns a channel index for a given port */
+    int getChannelPort (uint32 port);
 
-        Processor() { }
-        virtual ~Processor() { }
+    /** Returns the total number of ports for this processor */
+    virtual uint32 getNumPorts();
 
-        /** Returns a channel index for a given port */
-        int getChannelPort (uint32 port);
+    /** Returns the total number of ports for a given filter */
+    virtual uint32 getNumPorts (PortType type, bool isInput);
 
-        /** Returns the total number of ports for this processor */
-        virtual uint32 getNumPorts();
+    /** Returns the port index from a 'channel' index of a particular
+        port type */
+    uint32 getNthPort (PortType type, int index, bool isInput, bool indexIsOneBased = true);
 
-        /** Returns the total number of ports for a given filter */
-        virtual uint32 getNumPorts (PortType type, bool isInput);
+    /** Returns the type for a given port */
+    virtual PortType getPortType (uint32 port);
 
-        /** Returns the port index from a 'channel' index of a particular
-            port type */
-        uint32 getNthPort (PortType type, int index, bool isInput, bool indexIsOneBased = true);
+    /** Returns true if the port is an input (destination port) */
+    virtual bool isPortInput (uint32 port);
 
-        /** Returns the type for a given port */
-        virtual PortType getPortType (uint32 port);
+    /** Returns true if the port is an output (source port) */
+    virtual bool isPortOutput (uint32 port) { return ! isPortInput (port); }
 
-        /** Returns true if the port is an input (destination port) */
-        virtual bool isPortInput (uint32 port);
-
-        /** Returns true if the port is an output (source port) */
-        virtual bool isPortOutput (uint32 port) { return ! isPortInput (port); }
-
-    };
-
+};
 
 
 #endif // ELEMENT_PROCESSOR_BASE_H

@@ -64,7 +64,7 @@ GraphController::addFilter (const PluginDescription* desc, double x, double y)
 
     if (desc != nullptr)
     {
-#if 0
+#if 1
         String errorMessage;
         Processor* instance = pluginManager.createPlugin (*desc, errorMessage);
 
