@@ -385,6 +385,15 @@ namespace Gui {
 
         switch (commandID)
         {
+            case Commands::exportAudio:
+                result.setInfo ("Export Audio", "Export to an audio file", "Exporting", 0);
+                break;
+            case Commands::exportMidi:
+                result.setInfo ("Exort MIDI", "Export to a MIDI file", "Exporting", 0);
+                break;
+            case Commands::mediaClose:
+                result.setInfo ("Close Media", "Close the current media", "Application", 0);
+                break;
             case Commands::sessionClose:
                 result.addDefaultKeypress ('w', ModifierKeys::commandModifier);
                 result.setInfo ("Close Session", "Close the current session", "Session", 0);
