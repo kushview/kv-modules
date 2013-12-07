@@ -32,13 +32,14 @@
 
     public:
 
+        
         inline PluginWrapper (AudioProcessor* plug)
         {
             jassert (plug != nullptr);
             proc = plug;
         }
 
-        inline PluginWrapper()
+        inline ~PluginWrapper()
         {
             proc = nullptr;
         }

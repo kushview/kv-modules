@@ -211,6 +211,36 @@
         <MODULEPATH id="lvtk_plugins" path="../../lvtk-juce/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
+    <XCODE_IPHONE targetFolder="Builds/iOS" externalLibraries="lilv-0">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" iosCompatibility="default" isDebug="1" optimisation="1"
+                       targetName="Element" cppLibType="libc++" headerPath="/opt/element/ios/include&#10;/opt/element/ios/include/lilv-0&#10;/opt/element/ios/include/suil-0&#10;../../Source"
+                       libraryPath="/opt/element/ios/lib"/>
+        <CONFIGURATION name="Release" iosCompatibility="default" isDebug="0" optimisation="2"
+                       targetName="Element"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="lvtk_plugins" path="../../lvtk-juce/modules"/>
+        <MODULEPATH id="lvtk_core" path="../../lvtk-juce/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_events" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_core" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="element_models" path="../modules"/>
+        <MODULEPATH id="element_gui" path="../modules"/>
+        <MODULEPATH id="element_engines" path="../modules"/>
+        <MODULEPATH id="element_base" path="../modules"/>
+      </MODULEPATHS>
+    </XCODE_IPHONE>
   </EXPORTFORMATS>
   <MODULES>
     <MODULES id="element_base" showAllCode="1" useLocalCopy="0"/>

@@ -22,12 +22,15 @@
             nsviewHandle,
             windowsHandle,
             x11Handle,
+            unknownHandle,
 #if   JUCE_LINUX
             defaultHandle = x11Handle
 #elif JUCE_MAC
             defaultHandle = nsviewHandle
 #elif JUCE_WINDOWS
             defaultHandle = windowsHandle
+#else
+            defaultHandle = unknownHandle
 #endif
         };
         
