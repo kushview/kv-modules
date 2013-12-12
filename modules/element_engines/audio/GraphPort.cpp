@@ -23,26 +23,26 @@
     }
 
     PortType
-    GraphPort::getPortType (uint32 port)
+    GraphPort::getPortType (uint32 port) const
     {
         return portType;
     }
 
     const String GraphPort::getName() const
     {
-        String name = portType.name();
-        isInput() ? name << String("In") : name << String("Out");
+        String name = portType.getName();
+        isInput() ? name << String(" In") : name << String(" Out");
         return name;
     }
 
     void GraphPort::fillInPluginDescription (PluginDescription& d) const
     {
         d.name = getName();
-        d.fileOrIdentifier = portType.uri();
-        d.uid  = portType.uri().hashCode();
+        d.fileOrIdentifier = portType.getURI();
+        d.uid  = d.fileOrIdentifier.hashCode();
         d.category = "Ports";
         d.pluginFormatName = "Internal";
-        d.manufacturerName = "BKE, LLC";
+        d.manufacturerName = "Element Project";
         d.version = "1.0";
         d.isInstrument = false;
         d.numInputChannels  = getNumInputChannels();

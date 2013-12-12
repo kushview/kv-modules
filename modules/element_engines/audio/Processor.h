@@ -20,6 +20,10 @@
 #ifndef ELEMENT_PROCESSOR_BASE_H
 #define ELEMENT_PROCESSOR_BASE_H
 
+#if 1
+typedef lvtk::PortProcessor Processor;
+#else
+
 class Processor :  public AudioPluginInstance
 {
 
@@ -51,6 +55,6 @@ public:
     virtual bool isPortOutput (uint32 port) { return ! isPortInput (port); }
 
 };
-
+#endif
 
 #endif // ELEMENT_PROCESSOR_BASE_H

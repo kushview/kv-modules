@@ -24,6 +24,9 @@
 #define ELEMENT_INVALID_PORT (uint32)-1
 #endif
 
+#if 1
+typedef lvtk::PortType PortType;
+#else
 /** The type of a port. */
 class PortType {
 public:
@@ -138,6 +141,6 @@ struct PortDescription
     bool        isInput;
     PortType    type;
 };
-
+#endif
 
 #endif /* ELEMENT_PORTTYPE_H */

@@ -1,5 +1,5 @@
 
-
+#if 0
 
 int
 Processor::getChannelPort (uint32 port)
@@ -124,3 +124,4 @@ Processor::getPortType (uint32 port)
     assert (false);
     return PortType::Unknown;
 }
+#endif

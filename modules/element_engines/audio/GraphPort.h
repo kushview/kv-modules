@@ -51,7 +51,7 @@ public:
 
     /** */
     uint32 getNumPorts();
-    PortType getPortType (uint32 port);
+    PortType getPortType (uint32 port) const;
 
     /** True if this is an audio or midi input. */
     bool isInput() const;

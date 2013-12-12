@@ -599,7 +599,7 @@ private:
 
     int32 getFreeBuffer (PortType type)
     {
-        assert (type < PortType::Unknown);
+        assert (type.id() < PortType::Unknown);
 
         Array<uint32>& nodes = allNodes [type.id()];
         for (int i = 1; i < nodes.size(); ++i)
