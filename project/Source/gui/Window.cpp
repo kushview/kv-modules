@@ -28,7 +28,11 @@ namespace Gui {
         : DialogWindow (name, Colours::darkgrey, true, true),
           gui (gui_)
     {
+#if JUCE_IOS
+        setUsingNativeTitleBar (false);
+#else
         setUsingNativeTitleBar (true);
+#endif
         setResizable (true, false);
     }
 
@@ -48,7 +52,11 @@ namespace Gui {
                                 true),
           gui (app_)
     {
+#if JUCE_IOS
+        setUsingNativeTitleBar (false);
+#else
         setUsingNativeTitleBar (true);
+#endif
         setResizable (true, false);
     }
 

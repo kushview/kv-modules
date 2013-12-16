@@ -52,7 +52,7 @@ using namespace juce;
 #include "core/URIs.h"
 #include "core/Module.h"
 #include "core/WorldBase.h"
-    
+
 #include "time/DelayLockedLoop.h"
 #include "time/Tempo.h"
 #include "time/TimeScale.h"

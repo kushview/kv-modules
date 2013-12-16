@@ -37,7 +37,11 @@ namespace Gui {
             dialogTitle = String::empty;
             resizable = false;
             useBottomRightCornerResizer = false;
+#if JUCE_IOS
+            useNativeTitleBar = false;
+#else
             useNativeTitleBar = true;
+#endif
             componentToCentreAround = nullptr;
         }
     };

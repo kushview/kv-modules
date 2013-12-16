@@ -55,13 +55,14 @@ namespace Gui {
     void
     SequencerComponent::clipClicked (TimelineClip *clip, const MouseEvent&)
     {
-        ContentComponent* cc = findParentComponentOfClass<ContentComponent>();
+        //ContentComponent* cc = findParentComponentOfClass<ContentComponent>();
         // cc->stabilize();
     }
 
     void
     SequencerComponent::clipDoubleClicked (TimelineClip *clip, const MouseEvent &clipEvent)
     {
+#if 0
         if (SequencerClipItem* c = dynamic_cast<SequencerClipItem*> (clip))
         {
             if (ContentComponent* cc = findParentComponentOfClass<ContentComponent>())
@@ -76,6 +77,7 @@ namespace Gui {
                 }
             }
         }
+#endif
     }
 
 

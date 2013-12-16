@@ -35,7 +35,6 @@ namespace Gui {
               pluginList (world.plugins().availablePlugins()),
               pluginManager (world.plugins())
         {
-            setUsingNativeTitleBar (true);
 #if 0
             const File deadMansPedalFile (getAppProperties().getUserSettings()
                                           ->getFile().getSiblingFile ("RecentlyCrashedPluginsList"));

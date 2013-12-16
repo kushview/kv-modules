@@ -151,14 +151,11 @@ namespace Gui {
     {
         if (uri == ELEMENT_PREFERENCES)
         {
-            DialogWindow::LaunchOptions opts;
-            opts.dialogBackgroundColour = Colours::darkgrey;
+            DialogOptions opts;
             opts.content.set (new PreferencesWidget (*this), true);
             opts.dialogTitle = "Preferences";
-            opts.resizable = false;
-            opts.useBottomRightCornerResizer = false;
-            opts.useNativeTitleBar = true;
             opts.componentToCentreAround = (Component*) mainWindow.get();
+
             if (DialogWindow* dw = opts.create())
                 windowManager->push (dw);
         }
@@ -203,6 +200,10 @@ namespace Gui {
 #endif
         mainWindow->addToDesktop();
         mainWindow->setVisible (true);
+        mainWindow->setUsingNativeTitleBar (true);
+        
+        Desktop& d = Desktop::getInstance();
+        d.setKioskModeComponent (mainWindow);
 
         dispatch->startTimer (250);
 
