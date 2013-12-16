@@ -1,4 +1,6 @@
-modules/element-ui/jucer/Builds
+project/Builds
+project/JuceLibraryCode/ReadMe.txt
+
 dst
 libs/vst*
 .waf-*
