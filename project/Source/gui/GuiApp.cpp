@@ -198,13 +198,16 @@ namespace Gui {
         PropertiesFile* pf = world().settings().getUserSettings();
         mainWindow->restoreWindowStateFromString (pf->getValue ("main-window-state"));
 #endif
+        
         mainWindow->addToDesktop();
         mainWindow->setVisible (true);
         mainWindow->setUsingNativeTitleBar (true);
         
+#if JUCE_IOS || JUCE_ANDROID
         Desktop& d = Desktop::getInstance();
         d.setKioskModeComponent (mainWindow);
-
+#endif
+        
         dispatch->startTimer (250);
 
         File sess (File::nonexistent); // (pf->getValue ("last-session"));

@@ -145,10 +145,8 @@
             overlay.centreWithSize (getWidth() - 2, getHeight() - 2);
 
             if (content != nullptr)
-                content->centreWithSize (getWidth() - 20, getHeight() - 20);
+                content->setBounds (36, 0, getWidth() - 36, getHeight());
         }
-
-
 
         void mouseDown (const MouseEvent& ev);
 
@@ -230,49 +228,53 @@
                       public DragAndDropContainer
         {
         public:
-
-          Grip (Component& parent_) : parent(parent_)
-          {
-              setSize (12, 16);
-          }
-
-          void paint (Graphics& g)
-          {
-
-            g.setColour(Colours::white);
-
-            const int pad = 1;
-            const int size = 1;
-            int x = 4, y = 0;
-
-            for (int i = 0 ; i < getHeight() / (pad + size); ++i)
+            
+            Grip (Component& parent_) : parent(parent_)
             {
-                y = i * (pad + size);
-                g.fillEllipse (x, y + 3, size, size);
-                g.fillEllipse (x + 2, y + 3, size, size);
+#if JUCE_IOS
+                setSize (36, 48);
+#else
+                setSize (12, 16);
+#endif
             }
-          }
-
-          void mouseDown (const MouseEvent& ev)
-          {
-            parent.setAlpha(0.9);
-            startDragging("dock-item" ,&parent, Image::null, true);
-          }
-
-          void mouseDrag (const MouseEvent& ev)
-          {
-          }
-
-          void mouseUp (const MouseEvent& ev)
-          {
-            parent.setAlpha (1);
-          }
-
+            
+            void paint (Graphics& g)
+            {
+                
+                g.setColour(Colours::white);
+                
+                const int pad = 1;
+                const int size = 1;
+                int x = 4, y = 0;
+                
+                for (int i = 0 ; i < getHeight() / (pad + size); ++i)
+                {
+                    y = i * (pad + size);
+                    g.fillEllipse (x, y + 3, size, size);
+                    g.fillEllipse (x + 2, y + 3, size, size);
+                }
+            }
+            
+            void mouseDown (const MouseEvent& ev)
+            {
+                parent.setAlpha(0.9);
+                startDragging("dock-item" ,&parent, Image::null, true);
+            }
+            
+            void mouseDrag (const MouseEvent& ev)
+            {
+            }
+            
+            void mouseUp (const MouseEvent& ev)
+            {
+                parent.setAlpha (1);
+            }
+            
         private:
-
-          ComponentDragger dragger;
-          Component& parent;
-
+            
+            ComponentDragger dragger;
+            Component& parent;
+            
         } grip;
 
     };

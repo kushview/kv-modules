@@ -145,8 +145,10 @@
       <FILE id="hWuNMg" name="URIs.h" compile="0" resource="0" file="Source/URIs.h"/>
     </GROUP>
     <GROUP id="{4C0CA2D9-7E14-3C17-C3F1-4FF581D4DAE9}" name="Templates">
-      <FILE id="qrZXVE" name="Element.cpp" compile="0" resource="0" file="Templates/Element.cpp"/>
-      <FILE id="Ag660q" name="Element.h" compile="0" resource="0" file="Templates/Element.h"/>
+      <FILE id="qrZXVE" name="ElementTemplate.cpp" compile="0" resource="0"
+            file="Templates/ElementTemplate.cpp"/>
+      <FILE id="Ag660q" name="ElementTemplate.h" compile="0" resource="0"
+            file="Templates/ElementTemplate.h"/>
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
@@ -212,13 +214,14 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <XCODE_IPHONE targetFolder="Builds/iOS" externalLibraries="lilv-0&#10;suil-0&#10;sratom-0&#10;sord-0&#10;serd-0"
-                  postbuildCommand="libdir=&quot;/opt/element/ios/lib&quot;&#10;deplibs=&quot;liblilv-0.dylib libsuil-0.dylib libserd-0.dylib libsord-0.dylib libsratom-0.dylib&quot;&#10;&#10;original=$CONFIGURATION_BUILD_DIR/$FULL_PRODUCT_NAME&#10;binary=&quot;$original/$EXECUTABLE_NAME&quot;&#10;frameworks=&quot;$original/Frameworks&quot;&#10;mkdir -p &quot;$frameworks&quot;&#10;rm -f &quot;$frameworks/*.dylib&quot;&#10;&#10;echo &quot;Copying Libraries from $libdir&quot;&#10;&#10;for deplib in $deplibs; do&#10;  echo &quot;  $deplib&quot;&#10;  cp -f &quot;$libdir/$deplib&quot; &quot;$frameworks/$deplib&quot;&#10;&#10;  install_name_tool -id &quot;@loader_path/Frameworks/$deplib&quot; &quot;$frameworks/$deplib&quot;&#10;  install_name_tool -change &quot;$libdir/$deplib&quot; &quot;@loader_path/Frameworks/$deplib&quot; &quot;$binary&quot;&#10;&#10;  for dep in $deplibs; do&#10;    install_name_tool -change &quot;$libdir/$dep&quot; &quot;@loader_path/$dep&quot; &quot;$frameworks/$deplib&quot;&#10;  done&#10;&#10;done&#10;">
+                  postbuildCommand="libdir=&quot;/opt/element/ios/lib&quot;&#10;deplibs=&quot;liblilv-0.dylib libsuil-0.dylib libserd-0.dylib libsord-0.dylib libsratom-0.dylib&quot;&#10;&#10;exit 0&#10;&#10;original=$CONFIGURATION_BUILD_DIR/$FULL_PRODUCT_NAME&#10;binary=&quot;$original/$EXECUTABLE_NAME&quot;&#10;frameworks=&quot;$original/Frameworks&quot;&#10;mkdir -p &quot;$frameworks&quot;&#10;rm -f &quot;$frameworks/*.dylib&quot;&#10;&#10;echo &quot;Copying Libraries from $libdir&quot;&#10;&#10;for deplib in $deplibs; do&#10;  echo &quot;  $deplib&quot;&#10;  cp -f &quot;$libdir/$deplib&quot; &quot;$frameworks/$deplib&quot;&#10;&#10;  install_name_tool -id &quot;@loader_path/Frameworks/$deplib&quot; &quot;$frameworks/$deplib&quot;&#10;  install_name_tool -change &quot;$libdir/$deplib&quot; &quot;@loader_path/Frameworks/$deplib&quot; &quot;$binary&quot;&#10;&#10;  for dep in $deplibs; do&#10;    install_name_tool -change &quot;$libdir/$dep&quot; &quot;@loader_path/$dep&quot; &quot;$frameworks/$deplib&quot;&#10;  done&#10;&#10;done&#10;">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" iosCompatibility="default" isDebug="1" optimisation="1"
-                       targetName="Element" cppLibType="libc++" headerPath="/opt/element/ios/include&#10;/opt/element/ios/include/lilv-0&#10;/opt/element/ios/include/suil-0&#10;../../Source"
-                       libraryPath="/opt/bketech/ios7/lib"/>
-        <CONFIGURATION name="Release" iosCompatibility="default" isDebug="0" optimisation="2"
-                       targetName="Element"/>
+                       targetName="Element" cppLibType="libc++" headerPath="/opt/element/arm/include&#10;/opt/element/arm/include/lilv-0&#10;/opt/element/arm/include/suil-0&#10;../../Source"
+                       libraryPath="/opt/element/arm/lib"/>
+        <CONFIGURATION name="Release" iosCompatibility="default" isDebug="0" optimisation="3"
+                       targetName="Element" headerPath="/opt/element/arm/include&#10;/opt/element/arm/include/lilv-0&#10;/opt/element/arm/include/suil-0&#10;../../Source"
+                       libraryPath="/opt/element/arm/lib" cppLibType="libc++"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="lvtk_plugins" path="../../lvtk-juce/modules"/>

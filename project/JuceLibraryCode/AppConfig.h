@@ -41,6 +41,13 @@
 #define JUCE_MODULE_AVAILABLE_lvtk_plugins               1
 
 //==============================================================================
+// element_base flags:
+
+#ifndef    ELEMENT_OSC
+ //#define ELEMENT_OSC
+#endif
+
+//==============================================================================
 // juce_audio_devices flags:
 
 #ifndef    JUCE_ASIO
