@@ -17,6 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if 0
 #if JUCE_LINUX
 namespace {
 #include <X11/Xutil.h>
@@ -686,4 +687,6 @@ namespace {
 
       return attachment;
    }
+
+#endif // if zero
 
