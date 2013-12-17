@@ -20,21 +20,27 @@
 #ifndef ELEMENT_BASE_H_INCLUDED
 #define ELEMENT_BASE_H_INCLUDED
 
+#include "modules/lvtk_core/lvtk_core.h"
+#include "modules/juce_cryptography/juce_cryptography.h"
+
 #include <atomic>
 #include <set>
-
-#include "modules/juce_core/juce_core.h"
-#include "modules/juce_cryptography/juce_cryptography.h"
 
 #include <boost/bind.hpp>
 #include <boost/intrusive/list.hpp>
 #include <boost/intrusive/slist_hook.hpp>
 #include <boost/signals2/signal.hpp>
 
-#include <lv2/lv2plug.in/ns/lv2core/lv2.h>
-#include <lv2/lv2plug.in/ns/ext/atom/atom.h>
-#include <lv2/lv2plug.in/ns/ext/midi/midi.h>
-#include <lv2/lv2plug.in/ns/ext/urid/urid.h>
+
+/** Config: ELEMENT_OSC
+    Set this to enable OSC handling/networking (default is enabled)
+ */
+#ifndef ELEMENT_OSC
+ #define ELEMENT_OSC 1
+#endif
+
+/* OSC Support */
+#include "osc/oscpack.h"
 
 namespace Element {
 using namespace juce;
@@ -65,7 +71,7 @@ using namespace juce;
 #include "util/RangeTypes.h"
 #include "util/RelativePath.h"
 #include "util/UUID.h"
-    
+
 }
 
 #endif   // ELEMENT_BASE_H_INCLUDED

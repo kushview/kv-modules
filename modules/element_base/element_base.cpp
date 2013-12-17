@@ -29,6 +29,9 @@
 #include "AppConfig.h"
 #include "element_base.h"
 
+/* OSC support */
+#include "osc/oscpack.cpp"
+
 // get the juce namespace recognized
 //namespace juce {
 namespace Element {
