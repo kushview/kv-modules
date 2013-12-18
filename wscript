@@ -142,26 +142,7 @@ def make_library (bld, name, libname, mods):
 
     return thelib
 
-element_modules = '''
-    juce_core
-    juce_audio_basics
-    juce_audio_formats
-    juce_audio_devices
-    juce_audio_processors
-    juce_audio_utils
-    juce_cryptography
-    juce_data_structures
-    juce_events
-    juce_graphics
-    juce_gui_basics
-    juce_gui_extra
-    juce_opengl
-'''.split()
-
-def wipe (ctx):
-    if element.is_mac(): wipe_mac_packages (ctx)
-
-def build(bld):
+def build (bld):
     proj = juce.IntrojucerProject (bld, 'project/Element.jucer')
     obj = proj.compile (bld)
     obj.includes += ['project/Source']
