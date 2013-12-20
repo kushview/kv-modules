@@ -175,7 +175,7 @@ public:
     UndoManager* getUndoManager();
 
 
-    void testPrint();
+    void testPrint() const;
 
     /** Replace the ValueTree with new data */
     void setAssetsNode (const ValueTree& data);

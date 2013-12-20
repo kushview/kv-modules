@@ -49,7 +49,7 @@
     {
         FileSearchPath emodPath (getenv ("ELEMENT_MODULE_PATH"));
 
-        if (! emodPath.getNumPaths() > 0)
+        if (! (emodPath.getNumPaths() > 0))
         {
             Logger::writeToLog ("[element] setting module path");
             File p ("/usr/local/lib/element/modules");

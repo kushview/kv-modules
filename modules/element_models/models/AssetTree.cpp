@@ -484,7 +484,7 @@ AssetTree::setAssetsNode (const ValueTree& data)
 }
 
 void
-AssetTree::testPrint()
+AssetTree::testPrint() const
 {
     std::clog << assets.toXmlString() << std::endl;
 }
