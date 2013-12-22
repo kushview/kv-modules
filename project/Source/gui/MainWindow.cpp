@@ -26,12 +26,9 @@ namespace Gui {
 
 
     MainWindow::MainWindow (GuiApp& gui_)
-        : DocumentWindow ("BTV", Colours::darkgrey, DocumentWindow::allButtons, false),
+        : DocumentWindow ("Element", Colours::darkgrey, DocumentWindow::allButtons, false),
           gui (gui_)
     {
-        //ContentComponent* content = new ContentComponent (gui_);
-        //setContentOwned (content, false);
-
         setUsingNativeTitleBar (true);
         setResizable (true, false);
 

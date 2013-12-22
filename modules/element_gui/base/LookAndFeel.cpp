@@ -18,7 +18,7 @@
 */
 
 
-LookAndFeel::LookAndFeel()
+Style::Style()
 {
     setColour (mainBackgroundColourId, Colour (0xff333333));
     setColour (treeviewHighlightColourId, Colour (0xffeeeeee));
@@ -43,18 +43,18 @@ LookAndFeel::LookAndFeel()
     setColour (HighQualityMeter::foregroundColourId, Colours::transparentWhite);
 }
 
-LookAndFeel::~LookAndFeel() {}
+Style::~Style() {}
 
-bool LookAndFeel::areScrollbarButtonsVisible() { return false; }
+bool Style::areScrollbarButtonsVisible() { return false; }
 
-void LookAndFeel::drawStretchableLayoutResizerBar (Graphics& g, int /*w*/, int /*h*/, bool /*isVerticalBar*/,
+void Style::drawStretchableLayoutResizerBar (Graphics& g, int /*w*/, int /*h*/, bool /*isVerticalBar*/,
                                              bool isMouseOver, bool isMouseDragging)
 {
     if (isMouseOver || isMouseDragging)
         g.fillAll (Colours::aquamarine.withAlpha (0.4f));
 }
 
-void LookAndFeel::drawScrollbar (Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height,
+void Style::drawScrollbar (Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height,
                                     bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown)
 {
     Path thumbPath;
@@ -84,7 +84,7 @@ void LookAndFeel::drawScrollbar (Graphics& g, ScrollBar& scrollbar, int x, int y
     g.strokePath (thumbPath, PathStrokeType (1.0f));
 }
 
-void LookAndFeel::drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
+void Style::drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
                                                 bool isMouseOver, bool /*isMouseDown*/,
                                                 ConcertinaPanel&, Component& panel)
 {
@@ -120,7 +120,7 @@ static void drawButtonShape (Graphics& g, const Path& outline, Colour baseColour
     g.strokePath (outline, PathStrokeType (1.0f));
 }
 
-void LookAndFeel::drawButtonBackground (Graphics& g, Button& button, const Colour& backgroundColour,
+void Style::drawButtonBackground (Graphics& g, Button& button, const Colour& backgroundColour,
                                            bool isMouseOverButton, bool isButtonDown)
 {
     Colour baseColour (backgroundColour.withMultipliedSaturation (button.hasKeyboardFocus (true) ? 1.3f : 0.9f)
@@ -148,7 +148,7 @@ void LookAndFeel::drawButtonBackground (Graphics& g, Button& button, const Colou
     drawButtonShape (g, outline, baseColour, height);
 }
 
-void LookAndFeel::drawTableHeaderBackground (Graphics& g, TableHeaderComponent& header)
+void Style::drawTableHeaderBackground (Graphics& g, TableHeaderComponent& header)
 {
     Rectangle<int> r (header.getLocalBounds());
 
@@ -164,10 +164,10 @@ void LookAndFeel::drawTableHeaderBackground (Graphics& g, TableHeaderComponent& 
         g.fillRect (header.getColumnPosition (i).removeFromRight (1));
 }
 
-int LookAndFeel::getTabButtonOverlap (int /*tabDepth*/)            { return -1; }
-int LookAndFeel::getTabButtonSpaceAroundImage()                    { return 1; }
+int Style::getTabButtonOverlap (int /*tabDepth*/)            { return -1; }
+int Style::getTabButtonSpaceAroundImage()                    { return 1; }
 
-void LookAndFeel::createTabTextLayout (const TabBarButton& button, float length, float depth,
+void Style::createTabTextLayout (const TabBarButton& button, float length, float depth,
                                           Colour colour, TextLayout& textLayout)
 {
     Font font (depth * 0.5f);
@@ -181,7 +181,7 @@ void LookAndFeel::createTabTextLayout (const TabBarButton& button, float length,
 }
 
 void
-LookAndFeel::drawTabButton (TabBarButton& button, Graphics& g, bool isMouseOver, bool isMouseDown)
+Style::drawTabButton (TabBarButton& button, Graphics& g, bool isMouseOver, bool isMouseDown)
 {
     const Rectangle<int> activeArea (button.getActiveArea());
 
@@ -250,7 +250,7 @@ LookAndFeel::drawTabButton (TabBarButton& button, Graphics& g, bool isMouseOver,
 }
 
 void
-LookAndFeel::drawTreeviewPlusMinusBox (Graphics& g, const Rectangle<float>& area,
+Style::drawTreeviewPlusMinusBox (Graphics& g, const Rectangle<float>& area,
                                                Colour backgroundColour, bool isOpen, bool isMouseOver)
 {
     Path p;
@@ -261,19 +261,19 @@ LookAndFeel::drawTreeviewPlusMinusBox (Graphics& g, const Rectangle<float>& area
 }
 
 bool
-LookAndFeel::areLinesDrawnForTreeView (TreeView&)
+Style::areLinesDrawnForTreeView (TreeView&)
 {
     return false;
 }
 
 int
-LookAndFeel::getTreeViewIndentSize (TreeView&)
+Style::getTreeViewIndentSize (TreeView&)
 {
     return 20;
 }
 
 void
-LookAndFeel::drawComboBox (Graphics& g, int width, int height, const bool isButtonDown,
+Style::drawComboBox (Graphics& g, int width, int height, const bool isButtonDown,
                                    int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& box)
 {
     g.fillAll (box.findColour (ComboBox::backgroundColourId));
@@ -324,7 +324,7 @@ LookAndFeel::drawComboBox (Graphics& g, int width, int height, const bool isButt
 }
 
 void
-LookAndFeel::drawPopupMenuBackground (Graphics& g, int width, int height)
+Style::drawPopupMenuBackground (Graphics& g, int width, int height)
 {
     g.fillAll (findColour (PopupMenu::backgroundColourId));
     (void) width; (void) height;
@@ -336,7 +336,7 @@ LookAndFeel::drawPopupMenuBackground (Graphics& g, int width, int height)
 }
 
 void
-LookAndFeel::drawKeymapChangeButton (Graphics& g, int width, int height,
+Style::drawKeymapChangeButton (Graphics& g, int width, int height,
                                Button& button, const String& keyDescription)
 {
     const Colour textColour (button.findColour (0x100ad01 /*KeyMappingEditorComponent::textColourId*/, true));

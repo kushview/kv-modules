@@ -20,9 +20,9 @@
 #ifndef ELEMENT_TYPES_H
 #define ELEMENT_TYPES_H
 
-typedef float        Sample;
-typedef juce::uint32 SampleCount;
-typedef juce::uint32 FrameTime;
-typedef juce::uint16 Channel;
+typedef float  Sample;
+typedef uint32 SampleCount;
+typedef uint32 FrameTime;
+typedef uint16 Channel;
 
 #endif // ELEMENT_TYPES_H

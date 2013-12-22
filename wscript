@@ -54,6 +54,10 @@ def configure (conf):
 
     for d in pkg_defs: conf.env[d] = conf.is_defined (d)
 
+    if 'clang' in conf.env.CXX[0]:
+        conf.env.append_unique ('CFLAGS', ['-Wno-deprecated-register'])
+        conf.env.append_unique ('CXXFLAGS', ['-Wno-deprecated-register'])
+
     conf.env.ELEMENT_VERSION_STRING = version_string()
     conf.define ("ELEMENT_VERSION_STRING", conf.env.VERSION_STRING)
 
@@ -124,29 +128,26 @@ def build_pc_file (bld, name, slug):
         if bld.env.FRAMEWORKDIR != "/Library/Frameworks":
             pc.LDFLAGS += " -F " + bld.env.FRAMEWORKDIR
 
-
-def make_library (bld, name, libname, mods):
-    thelib = juce.create_unified_lib (bld, libname, mods)
-    thelib.includes += [".", "element", "project/JuceLibraryCode"]
-
-    build_frameworks = True
-    if element.is_mac() and build_frameworks:
-        thelib.mac_framework            = True
-        thelib.mac_bundle_identifier    = 'org.element-project.%s' % name
-        thelib.target                   = "Frameworks/%s" % name
-    else:
-        thelib.vnum = bld.env.ELEMENT_VERSION_STRING
-
-    build_pc_file (bld, name, libname)
-    install_module_headers (bld, mods)
-
-    return thelib
-
 def build (bld):
     proj = juce.IntrojucerProject (bld, 'project/Element.jucer')
-    obj = proj.compile (bld)
-    obj.includes += ['project/Source']
-    obj.use += ['LILV', 'SUIL']
+
+    obj = bld.shlib (
+        source   = proj.getLibraryCode(),
+        includes = ['project/JuceLibraryCode'],
+        name = 'libelement',
+        target = 'element',
+        use = ['LILV', 'SUIL', 'X11', 'ALSA', 'FREETYPE2', 'GL'],
+        vnum = '0.0.1',
+    )
+
+    bld.add_group()
+
+    obj = bld.program (
+        source = proj.getProjectCode(),
+        includes = ['project/JuceLibraryCode', 'project/Source'],
+        use = ['libelement'],
+        target = 'Element'
+    )
 
 def install_headers (bld):
     if bld.options.install_headers:
@@ -192,3 +193,4 @@ from waflib import TaskGen
 @TaskGen.extension ('.mm')
 def mm_hook (self, node):
     return self.create_compiled_task ('cxx', node)
+

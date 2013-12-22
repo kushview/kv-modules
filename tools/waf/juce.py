@@ -29,10 +29,10 @@ def display_msg (conf, msg, status = None, color = None):
 @conf
 def check_juce (self):
     '''this just checks that a version of juce exists'''
-    
+
     display_msg (self, "Checking for JUCE")
     mpath = self.env.JUCE_MODULES_PATH = self.options.juce_modules
-    
+
     if os.path.exists (mpath):
         minfo = open(mpath + "/juce_core/juce_module_info")
         mdata = json.load(minfo)
@@ -44,7 +44,7 @@ def check_juce (self):
 @conf
 def check_cxx11 (self, required=False):
     line_just = self.line_just
-    
+
     if is_mac():
         self.check_cxx (linkflags=["-stdlib=libc++", "-lc++"],
                         cxxflags=["-stdlib=libc++", "-std=c++11"], mandatory=required)
@@ -56,7 +56,7 @@ def check_cxx11 (self, required=False):
     else:
         print "!!!!! SETUP CXX11 FOR " + platform.system()
         exit (1)
-    
+
     self.line_just = line_just
 
 @conf
@@ -78,9 +78,9 @@ def check_juce_modules (self, mods=None):
         juce_opengl
         juce_video'''.split()
     else: modules = mods
-    
+
     useflags = []
-    
+
     for mod in modules:
         pkgslug = '%s-3' % mod.replace ('_', '-')
         self.check_cfg (package=pkgslug, uselib_store=mod.upper(),  \
@@ -133,7 +133,7 @@ def get_deps(mod):
 class ModuleInfo:
     data     = None
     infofile = None
-    
+
     def __init__ (self, juce_info_file):
         if os.path.exists (juce_info_file):
             self.infofile = juce_info_file
@@ -141,65 +141,65 @@ class ModuleInfo:
             if None != res:
                 self.data = json.load (res)
                 res.close()
-    
+
     def isValid (self):
         return self.data != None and self.infofile != None
-    
+
     def id (self):
         return self.data ['id']
-    
+
     def name (self):
         return self.data ['name']
-    
+
     def version (self):
         return self.data ['version']
-    
+
     def description (self):
         return self.data ['description']
-    
+
     def dependencies (self):
         if None == self.data or not 'dependencies' in self.data:
             return []
-        
+
         if not len(self.data ['dependencies']) > 0:
             return []
-        
+
         deps = []
         for dep in self.data ['dependencies']:
             if None != dep ['id']:
                 deps.append (dep ['id'])
-        
+
         return deps
-    
+
     def requiredPackages (self):
         pkgs = []
-        
+
         for dep in self.dependencies():
             pkgs.append (dep.replace ('_', '-') + '-3')
-        
+
         if is_mac():
             pkgs += self.osxFrameworks()
 
         return list (set (pkgs))
-    
+
     def website (self):
         return self.data ['website']
-    
+
     def license (self):
         return self.data ['license']
-    
+
     def linuxLibs (self):
         libs = []
-        
+
         if None == self.data or not is_linux() or not 'LinuxLibs' in self.data:
             return libs
-        
+
         for lib in self.data ['LinuxLibs'].split():
             l = '-l%s' % lib
             libs.append (l)
-        
+
         return libs
-    
+
     def linkFlags (self):
         '''returns a list of linker flags in an array'''
         if is_linux ():
@@ -210,14 +210,14 @@ class ModuleInfo:
         ''' Returns an array of frameworks (as useflags) this module
             requires'''
         fwks = []
-        
+
         if None == self.data or not is_mac() or not 'OSXFrameworks' in self.data:
             return fwks
-        
+
         for fw in self.data['OSXFrameworks'].split():
             if not fw in fwks:
                 fwks.append (convert_camel (fw, True))
-        
+
         return fwks
 
 
@@ -238,7 +238,7 @@ def options (opt):
     opt.add_option ('--debug', default=False, action="store_true", dest="debug", help="Compile debuggable binaries [ Default: False ]")
 
 def configure (conf):
-    
+
     # debugging option
     if conf.options.debug:
         conf.define ("DEBUG", 1)
@@ -249,16 +249,16 @@ def configure (conf):
         conf.define ("NDEBUG", 1)
         conf.env.append_unique ('CXXFLAGS', ['-Os'])
         conf.env.append_unique ('CFLAGS', ['-Os'])
-    
+
     # output dir (build dir)
     outdir = conf.options.out
     if len (outdir) == 0:
         outdir = "build"
-    
+
     # module path
     if not conf.env.JUCE_MODULE_PATH:
         conf.env.JUCE_MODULE_PATH = os.path.join (os.path.expanduser("~"), 'juce/modules')
-    
+
     # define a library pattern suitable for plugins/modules
     # (e.g. remove the 'lib' from libplugin.XXX)
     pat = conf.env['cshlib_PATTERN']
@@ -268,7 +268,7 @@ def configure (conf):
         pat = pat[3:]
     conf.env['plugin_PATTERN'] = pat
     conf.env['plugin_EXT'] = pat[pat.rfind('.'):]
-    
+
     # do platform stuff
     if is_linux():
         conf.define ('LINUX', 1)
@@ -296,10 +296,10 @@ def extension():
 
 def find (ctx, pattern):
     '''find resources in the juce module path'''
-    
+
     if len(pattern) <= 0:
         return None
-    
+
     pattern = '%s/**/%s' % (ctx.env.JUCE_MODULE_PATH, pattern)
     return ctx.path.ant_glob (pattern)
 
@@ -309,13 +309,13 @@ def build_modular_libs (bld, mods, vnum=''):
     libs = []
     mext = extension()
     opengl_wanted = 'juce_opengl' in mods;
-    
-    for mod in mods:        
+
+    for mod in mods:
         info = get_module_info (bld, mod)
         src  = find (bld, mod + mext)
         slug = mod.replace('_', '-')
         use  = info.requiredPackages()
-        
+
         # this is a workaround that forces opengl to always
         # compile with gui_basics.
         '''
@@ -327,7 +327,7 @@ def build_modular_libs (bld, mods, vnum=''):
             if mod == 'juce_opengl' or mod == 'juce_graphics':
                 continue
         '''
-        
+
         obj = bld (
             features  = "cxx cxxshlib",
             source    = list (set (src)),
@@ -337,29 +337,29 @@ def build_modular_libs (bld, mods, vnum=''):
             includes  = [],
             linkflags = info.linkFlags()
         )
-    
+
         if len(vnum) > 0:
             obj.vnum = vnum
-                
+
         libs += [obj]
 
     return libs
 
 def create_unified_lib (bld, tgt, mods, feats="cxx cxxshlib"):
-    
+
     mext = extension()
-    
+
     mod_path = bld.env.JUCE_MODULE_PATH
     src = []
     ug  = []
-    
+
     for mod in mods:
         src += [mod_path + "/" + mod + "/" + mod + mext]
         ug += get_use_libs (mod)
-    
+
     # strip out duplicate use libs
     us = list (set (us))
-    
+
     obj = bld (
         features    = feats,
         source      = src,
@@ -383,66 +383,66 @@ class IntrojucerProject:
     data = None
     proj = None
     root = None
-    
+
     def __init__ (self, context, project):
         if os.path.exists (project):
             self.ctx = context
             self.proj = project
             data = ET.parse (self.proj)
-            
+
             if data.getroot().tag == "JUCERPROJECT":
                 self.data = data
                 self.root = data.getroot()
             else:
                 self.data = None
-    
+
     def isValid (self):
         return self.data != None and self.proj != None
-    
+
     def getProperty (self, prop):
         if self.isValid(): return self.root.attrib [prop]
         else: return ''
-    
+
     def getId (self):
         return self.getProperty ("id")
-    
+
     def getName (self):
         return self.getProperty ("name")
-    
+
     def getVersion (self):
         return self.getProperty ("version")
-    
+
     def getJucerVersion (self):
         return self.getProperty ("jucerVersion")
-    
+
     def getProjectType(self):
         return self.getProperty ("projectType")
-    
+
     def getBundleIdentifier (self):
         return self.getProperty ("bundleIdentifier")
-    
+
     def getModules (self):
-        
+
         if None == self.root:
             return []
-        
+
         mods = []
-        
+
         # have to iterate over tags MODULE and MODULES
         # because some older projects might have one, the other
         # or both
-        
+
         for mod in self.root.iter ("MODULE"):
             if 'id' in mod.attrib:
                 mods += [mod.attrib ["id"]]
-        
+
         for mod in self.root.iter ("MODULES"):
             if 'id' in mod.attrib:
                 if not mod.attrib ['id'] in mods:
                     mods += [mod.attrib ['id']]
-        
+
         return mods
-    
+
     def getDefaultExporterTag (self):
         tag = 'INVALID'
 
@@ -454,7 +454,7 @@ class IntrojucerProject:
         return tag
 
     def getModulePath (self, module):
-        
+
         tag = self.getDefaultExporterTag()
         paths = self.root.find ('EXPORTFORMATS')
 
@@ -467,34 +467,34 @@ class IntrojucerProject:
         for path in paths.iter ('MODULEPATH'):
             if module == path.attrib ['id']:
                 return os.path.join (self.getProjectDir(), '%s/%s' % (path.attrib ['path'], module))
-        
+
         return ''
-    
+
     def getProjectDir(self):
         if self.isValid():
             return os.path.relpath (os.path.join (self.proj, ".."))
         else: return ''
-    
+
     def getProjectCode(self):
         code = []
-        
+
         if None == self.root:
             return code
-    
+
         join   = os.path.join
         depth  = os.path.relpath (self.ctx.launch_dir, self.ctx.path.abspath())
         parent = os.path.dirname (self.proj)
         parent = os.path.relpath (parent, self.ctx.launch_dir)
-        
+
         for c in self.root.iter ("FILE"):
             if "compile" in c.attrib and c.attrib["compile"] == "1":
                 f = "%s" % (c.attrib ["file"])
                 #parent = join (self.proj, "..")
                 source = join (depth, join (parent, os.path.relpath (f)))
                 code.append (source)
-        
+
         return code
-    
+
     def getLibraryCode (self):
         code = []
         for mod in self.getModules():
@@ -503,7 +503,7 @@ class IntrojucerProject:
                 module_path = os.path.join (self.getProjectDir(), 'JuceLibraryCode/modules/%s' % mod)
             else:
                 module_path = self.getModulePath (mod)
-            
+
             infofile = os.path.join (module_path, 'juce_module_info')
             obj = ModuleInfo (infofile)
 
@@ -511,12 +511,12 @@ class IntrojucerProject:
                 res = open (infofile)
                 data = json.load (res)
                 res.close()
-                
+
                 if "compile" in data:
                     for i in data["compile"]:
                         if is_mac(): target_key = 'xcode'
                         else: target_key = '! xcode'
-                        
+
                         if 'target' in i and i['target'] == target_key:
                             f = '%s/%s' % (module_path, i['file'])
                             f = os.path.relpath (unicodedata.normalize("NFKD", f).encode ('ascii','ignore'))
@@ -530,30 +530,30 @@ class IntrojucerProject:
                 print "Project Dir: " + self.getProjectDir()
                 print "Module Path = " + module_path
                 exit(1)
-        
-        
+
+
         # Add binary data file if it exists
         bd = os.path.join (self.getLibraryCodePath(), 'BinaryData.cpp')
         if os.path.exists(bd): code.append (bd)
-        
+
         library_code = []
         depth = os.path.relpath (self.ctx.launch_dir, self.ctx.path.abspath())
         for c in code:
             library_code.append (os.path.join (depth, c))
-        
+
         return library_code
-    
+
     def getLibraryCodePath (self):
         return os.path.join (self.getProjectDir(), "JuceLibraryCode")
-    
+
     def getBuildableCode (self):
         return self.getProjectCode() + self.getLibraryCode()
-    
+
     def getModuleInfo (self, mod):
         return ModuleInfo (os.path.join (self.getModulePath (mod), 'juce_module_info'))
-    
+
     def getTargetName (self, configName):
-        
+
         tag = self.getDefaultExporterTag()
 
         configs = self.root.find ('EXPORTFORMATS')
@@ -566,9 +566,9 @@ class IntrojucerProject:
         for config in configs:
             if config.attrib['name'] == configName:
                 return config.attrib['targetName']
-        
+
         return 'JuceTarget'
-    
+
     def getLinkFlags (self):
         flags = []
         for mod in self.getModules():
@@ -580,10 +580,10 @@ class IntrojucerProject:
             if None != linkFlagsFunc:
                 flags += linkFlagsFunc()
         return flags
-    
+
     def getUseFlags (self):
         flags = []
-        
+
         for mod in self.getModules():
             info = self.getModuleInfo (mod)
             if is_linux():
@@ -592,12 +592,12 @@ class IntrojucerProject:
                 func = info.requiredPackages
             elif is_win32():
                 func = None
-                    
+
             if None != func:
                 flags += func()
-        
+
         return list (set (flags))
-    
+
     def compile (self, wafBuild, includeModuleCode=True):
 
         features = 'cxx '
@@ -607,9 +607,9 @@ class IntrojucerProject:
             features += 'cxxprogram'
         elif type == 'dll':
             features += 'cxxshlib'
-        
+
         # TODO: figure out which compiler we're using
-        
+
         code      = self.getProjectCode()
         cxxflags  = []
         includes  = []
@@ -617,7 +617,7 @@ class IntrojucerProject:
         useflags  = []
 
         depth = os.path.relpath (self.ctx.launch_dir, self.ctx.path.abspath())
-    
+
         # Do special things when modules are included
         if includeModuleCode:
             code += self.getLibraryCode()
@@ -625,27 +625,29 @@ class IntrojucerProject:
             for mod in self.getModules():
                 info = self.getModuleInfo (mod)
                 linkFlagsFunc = None
-                
+
                 if is_linux():
                     linkflags += info.linuxLibs()
                 elif is_mac():
                     useflags += info.osxFrameworks()
                 else: pass
 
-        
+
         # Figure a target name
         target = self.getTargetName ('Debug')
         if '' == target:
             target = 'a.out'
-        
+
         object = wafBuild (
             features  = features,
             source    = code,
             includes  = includes,
-            linkflags = linkflags,
             name      = self.getName(),
             target    = target,
-            use       = useflags
+            use       = useflags,
+            cflags    = [],
+            cxxflags  = [],
+            linkflags = linkflags,
         )
 
         # do mac bundling if applicable

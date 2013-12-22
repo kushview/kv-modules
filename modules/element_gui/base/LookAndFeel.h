@@ -8,12 +8,12 @@ enum ColourIds
     treeviewHighlightColourId       = 0x2340002
 };
 
-class JUCE_API  LookAndFeel   : public LookAndFeel_V3
+class JUCE_API  Style   : public LookAndFeel_V3
 {
 public:
 
-    LookAndFeel();
-    virtual ~LookAndFeel();
+    Style();
+    virtual ~Style();
 
     virtual void drawButtonBackground (Graphics&, Button&, const Colour& backgroundColour,
                                        bool isMouseOverButton, bool isButtonDown) override;

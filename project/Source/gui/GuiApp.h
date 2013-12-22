@@ -111,8 +111,8 @@ namespace Gui {
         Scoped<MainWindow>        mainWindow;
         Scoped<ContentComponent>  content;
 
-        CommandManager             commandManager;
-        Element::LookAndFeel       lookAndFeel;
+        CommandManager            commandManager;
+        Element::Style       lookAndFeel;
 
         class Dispatch;
         ScopedPointer<Dispatch>   dispatch;

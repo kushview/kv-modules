@@ -43,7 +43,7 @@
 #include "osc/oscpack.h"
 
 namespace Element {
-using namespace juce;
+using namespace LVTK_JUCE_NAMESPACE;
     
 #include "core/Arc.h"
 #include "core/Atomic.h"
