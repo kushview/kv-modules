@@ -16,15 +16,12 @@ def configure (conf):
     conf.load ("compiler_c compiler_cxx")
     conf.load (common_tools)
 
+    conf.env.DATADIR = os.path.join (conf.env.PREFIX, 'share')
+
     print
     juce.display_header ("Element Configuration")
-
-    if juce.is_mac() and not conf.env.REZ: conf.check_rez()
-
     conf.check_cxx11()
     conf.line_just = 40
-
-    conf.find_program ('ttl2c')
 
     # Do pkg-config stuff
     conf.check_cfg (package="lv2", uselib_store="LV2", args='--cflags --libs', mandatory=True)
@@ -71,6 +68,8 @@ def configure (conf):
 
     print
     juce.display_header ("Element Build Summary")
+    juce.display_msg (conf, "Installation Prefix", conf.env.PREFIX)
+    juce.display_msg (conf, "Installed DATADIR", conf.env.DATADIR)
     juce.display_msg (conf, "Build Element (app)", conf.env.BUILD_ELEMENT_APP)
     juce.display_msg (conf, "Build Introjucer", conf.env.BUILD_INTROJUCER)
     juce.display_msg (conf, "Jack Audio Support", conf.env.HAVE_JACK)
@@ -128,6 +127,22 @@ def build_pc_file (bld, name, slug):
         if bld.env.FRAMEWORKDIR != "/Library/Frameworks":
             pc.LDFLAGS += " -F " + bld.env.FRAMEWORKDIR
 
+def make_desktop (bld, slug):
+    if not juce.is_linux():
+        return
+
+    src = "data/%s.desktop.in" % (slug)
+    tgt = "%s.desktop" % (slug)
+
+    if os.path.exists (src):
+        bld (features = "subst",
+             source    = src,
+             target    = tgt,
+             name      = tgt,
+             ELEMENT_DATA = "%s/element" % (bld.env.DATADIR),
+             install_path = bld.env.DATADIR + "/applications"
+        )
+
 def build (bld):
     proj = juce.IntrojucerProject (bld, 'project/Element.jucer')
 
@@ -142,6 +157,7 @@ def build (bld):
 
     bld.add_group()
 
+    make_desktop (bld, 'element')
     obj = bld.program (
         source = proj.getProjectCode(),
         includes = ['project/JuceLibraryCode', 'project/Source'],

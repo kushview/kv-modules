@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Element
+Comment=Element Advanced Sequencer
+Exec=Introjucer
+Icon=@ELEMENT_DATA@/icons/element.xpm
+Terminal=0
+Type=Application
+Encoding=UTF-8
+Categories=Development;Application;
+
