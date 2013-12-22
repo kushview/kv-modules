@@ -20,8 +20,7 @@
 #ifndef ELEMENT_MIDI_H
 #define ELEMENT_MIDI_H
 
-
-    typedef uint8  MidiByte;
+typedef uint8  MidiByte;
 
 namespace Midi {
 

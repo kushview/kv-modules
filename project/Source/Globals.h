@@ -33,17 +33,29 @@ namespace Element {
     class Session;
     class Writer;
 
-    class Globals : public World
+
+    class Settings :  public ApplicationProperties
     {
     public:
 
-        ScopedPointer<URIs> uris;
+        Settings();
+        ~Settings();
+
+    };
+
+
+    class Globals : public WorldBase
+    {
+    public:
+
+        ScopedPointer<const URIs> uris;
 
         Globals();
         ~Globals();
 
         DeviceManager& devices();
         PluginManager& plugins();
+        Settings& settings();
         SymbolMap& symbols();
         MediaManager& media();
         Session& session();

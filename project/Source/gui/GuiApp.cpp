@@ -85,46 +85,45 @@ namespace Gui {
 
     };
 
-    GuiApp::GuiApp (World& world)
+    GuiApp::GuiApp (WorldBase& world)
         : AppController (world),
           windowManager (nullptr),
           mainWindow (nullptr)
     {
         dispatch = new Dispatch (*this);
-        juce::LookAndFeel::setDefaultLookAndFeel (&lookAndFeel);
+        LookAndFeel::setDefaultLookAndFeel (&lookAndFeel);
         windowManager = new WindowManager (*this);
     }
 
     GuiApp::~GuiApp()
     {       
-        //PropertiesFile* pf = world().settings().getUserSettings();
-        //pf->setValue ("main-window-state", mainWindow->getWindowStateAsString());
+        PropertiesFile* pf = globals().settings().getUserSettings();
+        pf->setValue ("mainWindowState", mainWindow->getWindowStateAsString());
 
         File f (sessionDoc->getFile());
         if (f.existsAsFile()) {
-            //pf->setValue ("last-session", f.getFullPathName());
+            pf->setValue ("lastSession", f.getFullPathName());
         }
 
         mainWindow->setVisible (false);
         mainWindow->removeFromDesktop();
         mainWindow = nullptr;
         windowManager = nullptr;
-        juce::LookAndFeel::setDefaultLookAndFeel (nullptr);
+        LookAndFeel::setDefaultLookAndFeel (nullptr);
     }
 
     GuiApp*
     GuiApp::create (Globals& g)
     {
         GuiApp* theGui (new GuiApp (g));
-
         return theGui;
     }
 
     Globals& GuiApp::globals()
     {
-        Globals* btvWorld (static_cast<Globals*> (&world()));
-        assert (btvWorld);
-        return *btvWorld;
+        Globals* g (static_cast<Globals*> (&world()));
+        assert (g);
+        return *g;
     }
 
     void
@@ -135,7 +134,6 @@ namespace Gui {
         } else if (uri == ELEMENT_LEGACY_WINDOW) {
             //windowManager->push (new ABeatThangWindow (*this));
         }
-
     }
 
     void
@@ -194,10 +192,9 @@ namespace Gui {
         content->setSize (400, 300);
         mainWindow = new MainWindow (*this);
         mainWindow->setContentNonOwned (content.get(), true);
-#if 0
-        PropertiesFile* pf = world().settings().getUserSettings();
-        mainWindow->restoreWindowStateFromString (pf->getValue ("main-window-state"));
-#endif
+
+        PropertiesFile* pf = globals().settings().getUserSettings();
+        mainWindow->restoreWindowStateFromString (pf->getValue ("mainWindowState"));
         
         mainWindow->addToDesktop();
         mainWindow->setVisible (true);
@@ -210,7 +207,7 @@ namespace Gui {
         
         dispatch->startTimer (250);
 
-        File sess (File::nonexistent); // (pf->getValue ("last-session"));
+        File sess (pf->getValue ("lastSession"));
         if (sess.existsAsFile()) {
             sessionDoc->loadFrom (sess, true);
             mainWindow->setName (sessionDoc->getDocumentTitle());

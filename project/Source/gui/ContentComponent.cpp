@@ -17,25 +17,23 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "gui/sequencer/SequencerComponent.h"
+#include "gui/Commands.h"
+#include "gui/ContentComponent.h"
+#include "gui/GraphEditorPanel.h"
+#include "gui/GuiApp.h"
+#include "gui/MainWindow.h"
+#include "gui/MainMenu.h"
+#include "gui/SessionTreePanel.h"
+#include "gui/Workspace.h"
 
-#include "../models/Session.h"
-#include "../EngineControl.h"
-#include "../Globals.h"
+#include "models/Session.h"
 
-#include "sequencer/SequencerComponent.h"
-
-#include "Commands.h"
-#include "ContentComponent.h"
-#include "GraphEditorPanel.h"
-#include "GuiApp.h"
-#include "MainWindow.h"
-#include "MainMenu.h"
-#include "SessionTreePanel.h"
-#include "Workspace.h"
+#include "EngineControl.h"
+#include "Globals.h"
 
 namespace Element {
 namespace Gui {
-
 
     ContentComponent::ContentComponent (GuiApp& app_)
         : gui(app_)
@@ -43,11 +41,17 @@ namespace Gui {
         setOpaque (true);
         addAndMakeVisible (workspace = new Workspace());
 
-        //workspace->setMainComponent (new Label (String ("Hello")));
-
         Dock& dock (workspace->getDock());
         DockItem* item = dock.createItem ("test2", "Test 2", Dock::BottomArea);
         item->setContentOwned (new MidiEditorBody (keyboard));
+
+        item = dock.createItem ("test3", "Test 3", Dock::BottomArea);
+        item->setContentOwned (new MidiEditorBody (keyboard));
+        
+        item = dock.createItem ("test4", "Test 4", Dock::TopArea);
+        item->setContentOwned (new PluginListComponent (app_.globals().plugins().formats(),
+                                                        app_.globals().plugins().availablePlugins(),
+                                                        File::nonexistent, nullptr));
 
         workspace->setMainComponent (new SequencerComponent (gui));
 

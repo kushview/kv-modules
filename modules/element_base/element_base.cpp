@@ -32,8 +32,6 @@
 /* OSC support */
 #include "osc/oscpack.cpp"
 
-// get the juce namespace recognized
-//namespace juce {
 namespace Element {
 
 #include "core/Arc.cpp"
@@ -42,4 +40,4 @@ namespace Element {
 #include "util/UUID.cpp"
 #include "core/WorldBase.cpp"
     
-}//}
+}

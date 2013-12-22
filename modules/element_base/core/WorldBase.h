@@ -1,5 +1,5 @@
 /*
-    world.hpp - This file is part of Element
+    WorldBase.h - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -17,35 +17,20 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_WORLD_HPP
-#define ELEMENT_WORLD_HPP
+#ifndef ELEMENT_WORLD_H
+#define ELEMENT_WORLD_H
 
 class Engine;
 
-class Settings
-{
+/** A global collection of an appilcation/plugin's data */
+class WorldBase {
 public:
 
-    Settings() { }
-    ~Settings() { }
-
-private:
-
-    String appName;
-
-};
-
-/** A 'global' collection of an appilcation/plugin's data */
-class World {
-public:
-
-    World();
-    virtual ~World();
+    WorldBase();
+    virtual ~WorldBase();
 
     virtual bool loadModule (const char* moduleName);
     virtual int executeModule (const char* entryModule);
-
-    Settings&       settings();
 
     Shared<Engine>  engine();
     virtual void setEngine (Shared<Engine> engine);
@@ -57,10 +42,10 @@ private:
 
     class Private;
     Scoped<Private> priv;
-
     String appName;
+
 };
 
 
 
-#endif // ELEMENT_WORLD_HPP
+#endif // ELEMENT_WORLD_H

@@ -20,7 +20,6 @@
 #include "AppConfig.h"
 #include "element_engines.h"
 
-//namespace juce {
 namespace Element {
 
 #include "audio/AtomBuffer.cpp"
@@ -44,5 +43,6 @@ namespace Element {
 #include "session/AppController.cpp"
 #include "session/DeviceManager.cpp"
 #include "session/PluginManager.cpp"
+#include "session/SessionBase.cpp"
     
-}//}
+}

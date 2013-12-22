@@ -1,5 +1,5 @@
 /*
-    range.hpp - This file is part of Element
+    RangeTypes.h - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -17,28 +17,25 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_RANGE_HPP
-#define ELEMENT_RANGE_HPP
+#ifndef ELEMENT_RANGE_TYPES_H
+#define ELEMENT_RANGE_TYPES_H
 
+class FrameSpan :  public Range<int64>
+{
 
+public:
 
-    class FrameSpan :  public Range<int64>
-    {
+    inline FrameSpan (int64 i, int64 o) : Range<int64> (i, o) { }
+    inline ~FrameSpan() { }
+    inline int64 inPoint()  const { return getStart(); }
+    inline int64 outPoint() const { return getEnd(); }
+    inline int64 length() const { return getLength(); }
+    inline bool isZero() const { return getLength() == 0; }
+    inline void setInPoint (const int64 in) { setStart (in); }
+    inline void setOutPoint (const int64 out) { setEnd (out); }
 
-    public:
+private:
 
-        inline FrameSpan (int64 i, int64 o) : Range<int64> (i, o) { }
-        inline ~FrameSpan() { }
-        inline int64 inPoint()  const { return getStart(); }
-        inline int64 outPoint() const { return getEnd(); }
-        inline int64 length() const { return getLength(); }
-        inline bool isZero() const { return getLength() == 0; }
-        inline void setInPoint (const int64 in) { setStart (in); }
-        inline void setOutPoint (const int64 out) { setEnd (out); }
+};
 
-    private:
-
-    };
-
-
-#endif // ELEMENT_RANGE_HPP
+#endif // ELEMENT_RANGE_TYPES_H

@@ -17,14 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+AppController::AppController (WorldBase& world)
+    : Controller(),
+      elementWorld (world)
+{ }
 
-    AppController::AppController (World& world)
-        : Controller(),
-          elementWorld (world)
-    { }
-
-    AppController::~AppController()
-    { }
-
-    World& AppController::world()       { return elementWorld; }
-
+AppController::~AppController() { }
+WorldBase& AppController::world()       { return elementWorld; }

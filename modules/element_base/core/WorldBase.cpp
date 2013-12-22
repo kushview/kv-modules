@@ -17,149 +17,131 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+/* Function type for loading an Element module */
+typedef Module* (*ModuleLoadFunc)();
 
-
-
-    /* Function type for loading an Element module */
-    typedef Module* (*ModuleLoadFunc)();
-
-    static Module*
-    world_load_module (const File& file)
-    {
-        if (! file.existsAsFile())
-            return nullptr;
-
-        DynamicLibrary* lib = new DynamicLibrary (file.getFullPathName());
-        if (ModuleLoadFunc load_module = (ModuleLoadFunc) lib->getFunction ("element_module_load"))
-        {
-            Module* mod  = load_module();
-            mod->library = lib;
-            return mod;
-        }
-
-        if (lib) {
-            delete lib;
-        }
-
+static Module*
+world_load_module (const File& file)
+{
+    if (! file.existsAsFile())
         return nullptr;
+
+    DynamicLibrary* lib = new DynamicLibrary (file.getFullPathName());
+    if (ModuleLoadFunc load_module = (ModuleLoadFunc) lib->getFunction ("element_module_load"))
+    {
+        Module* mod  = load_module();
+        mod->library = lib;
+        return mod;
     }
 
-    static Module*
-    world_load_module (const char* name)
-    {
-        FileSearchPath emodPath (getenv ("ELEMENT_MODULE_PATH"));
+    if (lib) {
+        delete lib;
+    }
 
-        if (! (emodPath.getNumPaths() > 0))
+    return nullptr;
+}
+
+static Module*
+world_load_module (const char* name)
+{
+    FileSearchPath emodPath (getenv ("ELEMENT_MODULE_PATH"));
+
+    if (! (emodPath.getNumPaths() > 0))
+    {
+        Logger::writeToLog ("[element] setting module path");
+        File p ("/usr/local/lib/element/modules");
+        emodPath.add (p);
+    }
+
+    Array<File> modules;
+    String module = "";
+    module << name << Module::extension();
+    emodPath.findChildFiles (modules, File::findFiles, false, module);
+
+    if (modules.size() > 0)
+        return world_load_module (modules.getFirst());
+
+    return nullptr;
+}
+
+class WorldBase::Private
+{
+public:
+    Private() { }
+    ~Private()
+    {
+        // kill all loaded modules
+        OwnedArray<DynamicLibrary> libs;
+
+        for (auto& mod : mods)
         {
-            Logger::writeToLog ("[element] setting module path");
-            File p ("/usr/local/lib/element/modules");
-            emodPath.add (p);
+            libs.add ((DynamicLibrary*) mod.second->library);
+            delete mod.second;
         }
 
-        Array<File> modules;
-        String module = "";
-        module << name << Module::extension();
-        emodPath.findChildFiles (modules, File::findFiles, false, module);
+        mods.clear();
 
-        if (modules.size() > 0)
-            return world_load_module (modules.getFirst());
-
-        return nullptr;
+        for (DynamicLibrary* l : libs)
+            l->close();
+        libs.clear (true);
     }
 
-    class World::Private
+    Shared<Engine> engine;
+    std::map<const String, Module*> mods;
+
+private:
+
+};
+
+
+WorldBase::WorldBase()
+{
+    priv = new Private ();
+}
+
+WorldBase::~WorldBase()
+{
+    priv = nullptr;
+}
+
+int
+WorldBase::executeModule (const char* name)
+{
+    typedef std::map<const String, Module*> MAP;
+    MAP::iterator mit = priv->mods.find (name);
+    if (mit != priv->mods.end())
     {
-    public:
-        Private()
-            : settings (new Settings())
-        { }
-
-        ~Private()
-        {
-            settings = nullptr;
-
-            // kill all loaded modules
-            OwnedArray<DynamicLibrary> libs;
-            for (auto& mod : mods)
-            {
-                libs.add (mod.second->library);
-                delete mod.second;
-            }
-
-            mods.clear();
-
-            for (DynamicLibrary* l : libs)
-                l->close();
-            libs.clear (true);
-
-        }
-
-        Shared<Engine> engine;
-        std::map<const String, Module*> mods;
-        ScopedPointer<Settings> settings;
-
-    private:
-
-    };
-
-
-    World::World()
-    {
-        priv = new Private ();
+        mit->second->run ((WorldData) this);
     }
 
-    World::~World()
+    return -1;
+}
+
+bool
+WorldBase::loadModule (const char* name)
+{
+    if (contains (priv->mods, name))
+        return true;
+
+    if (Module* mod = world_load_module (name))
     {
-        priv = nullptr;
+        mod->load (this);
+        priv->mods.insert (std::make_pair (name, mod));
+        return true;
     }
 
-    int
-    World::executeModule (const char* name)
-    {
-        typedef std::map<const String, Module*> MAP;
-        MAP::iterator mit = priv->mods.find (name);
-        if (mit != priv->mods.end())
-        {
-            mit->second->run (this);
-        }
+    return false;
+}
 
-        return -1;
-    }
+Shared<Engine>
+WorldBase::engine()
+{
+    return priv->engine;
+}
 
-    bool
-    World::loadModule (const char* name)
-    {
-        if (contains (priv->mods, name))
-            return true;
-
-        if (Module* mod = world_load_module (name))
-        {
-            mod->load (this);
-            priv->mods.insert (std::make_pair (name, mod));
-            return true;
-        }
-
-        return false;
-    }
-
-    Settings&
-    World::settings()
-    {
-        return *priv->settings;
-    }
-
-
-    Shared<Engine>
-    World::engine()
-    {
-        return priv->engine;
-    }
-
-    void
-    World::setEngine (Shared<Engine> e)
-    {
-        Shared<Engine> oe (priv->engine);
-        priv->engine = e;
-    }
-
-
+void
+WorldBase::setEngine (Shared<Engine> e)
+{
+    Shared<Engine> oe (priv->engine);
+    priv->engine = e;
+}

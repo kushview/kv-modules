@@ -129,8 +129,12 @@ using namespace lvtk;
     void
     PluginManager::restoreUserPlugins (ApplicationProperties& settings)
     {
-        ScopedXml xml (settings.getUserSettings()->getXmlValue ("plugin-list"));
-        if (xml)
-            priv->allPlugins.recreateFromXml (*xml);
+        if (ScopedXml xml = settings.getUserSettings()->getXmlValue ("plugin-list"))
+            restoreUserPlugins (*xml);
     }
 
+    void
+    PluginManager::restoreUserPlugins (const XmlElement& xml)
+    {
+        priv->allPlugins.recreateFromXml (xml);
+    }

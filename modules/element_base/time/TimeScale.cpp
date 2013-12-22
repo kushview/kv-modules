@@ -1,5 +1,3 @@
-// TimeScale.cpp
-//
 /****************************************************************************
    Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
 
@@ -18,7 +16,6 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 *****************************************************************************/
-
 
 void
 TimeScale::reset()

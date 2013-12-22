@@ -27,6 +27,25 @@ using namespace lvtk;
 
 namespace Element {
 
+    Settings::Settings()
+    {
+        PropertiesFile::Options opts;
+        opts.applicationName     = "Element";
+        opts.filenameSuffix      = "conf";
+        opts.osxLibrarySubFolder = "Application Support";
+        opts.storageFormat       = PropertiesFile::storeAsXML;
+
+#if JUCE_LINUX
+        opts.folderName          = ".element";
+#else
+        opts.folderName          = opts.applicationName;
+#endif
+
+        setStorageParameters (opts);
+    }
+
+    Settings::~Settings() { }
+
     class Globals::Internal
     {
     public:
@@ -34,22 +53,11 @@ namespace Element {
         Internal (Globals& g)
             : owner(g), symbols()
         {
-            lv2     = new LV2World();
-            plugins = new PluginManager (*lv2);
-            devices = new DeviceManager();
-            media   = new MediaManager();
-
-            {
-                PropertiesFile::Options opts;
-                opts.applicationName     = "Element";
-                opts.filenameSuffix      = "conf";
-                opts.folderName          = opts.applicationName;
-                opts.osxLibrarySubFolder = "Application Support";
-                opts.storageFormat       = PropertiesFile::storeAsXML;
-               // owner.settings().setStorageParameters (opts);
-            }
-
-            //plugins->restoreUserPlugins (owner.settings());
+            lv2      = new LV2World();
+            plugins  = new PluginManager (*lv2);
+            devices  = new DeviceManager();
+            media    = new MediaManager();
+            settings = new Settings();
         }
 
         void freeAll()
@@ -59,18 +67,19 @@ namespace Element {
             media    = nullptr;
             plugins  = nullptr;
             lv2      = nullptr;
+            settings = nullptr;
         }
 
         ~Internal() { }
 
         Globals& owner;
-
         SymbolMap symbols;
 
         ScopedPointer<DeviceManager> devices;
         ScopedPointer<LV2World>      lv2;
         ScopedPointer<MediaManager>  media;
         ScopedPointer<PluginManager> plugins;
+        ScopedPointer<Settings>      settings;
         ScopedPointer<Session>       session;
 
     private:
@@ -103,6 +112,13 @@ namespace Element {
         return *impl->plugins;
     }
 
+    Settings&
+    Globals::settings()
+    {
+        assert (impl->settings != nullptr);
+        return *impl->settings;
+    }
+
     SymbolMap&
     Globals::symbols()
     {
@@ -119,7 +135,7 @@ namespace Element {
     void
     Globals::setEngine (Shared<Engine> engine)
     {
-        World::setEngine (engine);
+        WorldBase::setEngine (engine);
 
         if (impl->session == nullptr) {
             impl->session = new Session (*this);

@@ -52,6 +52,7 @@
 
         void saveUserPlugins (ApplicationProperties&);
         void restoreUserPlugins (ApplicationProperties&);
+        void restoreUserPlugins (const XmlElement& xml);
 
         Processor *createPlugin (const PluginDescription& desc, String& errorMsg);
 

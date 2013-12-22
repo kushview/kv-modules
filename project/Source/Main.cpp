@@ -24,10 +24,9 @@
 #include "gui/GuiApp.h"
 #include "Globals.h"
 
-namespace Element
-{
+namespace Element {
 
-class ElementMain  : public JUCEApplication
+class Application  : public JUCEApplication
 {
 
     Scoped<Globals>     world;
@@ -36,27 +35,20 @@ class ElementMain  : public JUCEApplication
 
 public:
 
-   //==============================================================================
-   ElementMain() {  }
+   Application() { }
 
    const String getApplicationName()       { return "Element"; }
    const String getApplicationVersion()    { return "0.0.1"; }
    bool moreThanOneInstanceAllowed()       { return true; }
 
-   //==============================================================================
    void initialise (const String& /* commandLine */)
    {
        world = new Globals();
 
-       //Settings& settings (world->settings());
+       Settings& settings (world->settings());
+       if (ScopedXml dxml = settings.getUserSettings()->getXmlValue ("devices"))
+            world->devices().initialise (16, 16, dxml.get(), true, "default", nullptr);
 
-    //   Logger::writeToLog ("Restoring device settings");
-     //  {
-     //      ScopedXml dxml (settings.getUserSettings()->getXmlValue ("devices"));
-      ///     world->devices().initialise (16, 16, dxml.get(), true, "default", nullptr);
-   //    }
-
-       Logger::writeToLog ("Creating engine");
        engine.reset (new AudioEngine (*world));
        world->setEngine (engine); // this will also instantiate the session
 
@@ -64,7 +56,7 @@ public:
        PluginManager& plugins (world->plugins());
        plugins.addDefaultFormats();
        plugins.addFormat (new InternalFormat (*engine));
-      // plugins.restoreUserPlugins (settings);
+       plugins.restoreUserPlugins (settings);
 
        gui = Gui::GuiApp::create (*world);
        engine->activate();
@@ -79,19 +71,18 @@ public:
 
    void shutdown()
    {
-       //PluginManager& plugins (world->plugins());
-       //Settings& settings (world->settings());
-       //plugins.saveUserPlugins (settings);
+       PluginManager& plugins (world->plugins());
+       Settings& settings (world->settings());
+       plugins.saveUserPlugins (settings);
 
-       //if (ScopedXml el = world->devices().createStateXml())
-          // settings.getUserSettings()->setValue ("devices", el);
+       if (ScopedXml el = world->devices().createStateXml())
+           settings.getUserSettings()->setValue ("devices", el);
 
        engine->deactivate();
        world->setEngine (Shared<Engine>());
        engine.reset();
 
        std::clog << "Going away with " << engine.use_count() << " AudioEngine refs out there\n";
-
        world = nullptr;
    }
 
@@ -115,4 +106,4 @@ public:
 };
 }
 
-START_JUCE_APPLICATION (Element::ElementMain)
+START_JUCE_APPLICATION (Element::Application)

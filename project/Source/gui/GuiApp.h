@@ -100,7 +100,7 @@ namespace Gui {
 
     protected:
 
-        GuiApp (World&);
+        GuiApp (WorldBase&);
 
     private:
 
@@ -112,7 +112,7 @@ namespace Gui {
         Scoped<ContentComponent>  content;
 
         CommandManager             commandManager;
-        LookAndFeel_V3 lookAndFeel;
+        Element::LookAndFeel       lookAndFeel;
 
         class Dispatch;
         ScopedPointer<Dispatch>   dispatch;

@@ -20,21 +20,19 @@
 #ifndef ELEMENT_TEMPO_H
 #define ELEMENT_TEMPO_H
 
+class Tempo
+{
+public:
 
-    class Tempo
+    Tempo()  { }
+    ~Tempo() { }
+
+    inline static int32
+    framesPerBeat (double sampleRate, double bpmTempo)
     {
-    public:
+        return roundDoubleToInt (sampleRate * 60.0f / bpmTempo);
+    }
 
-        Tempo()  { }
-        ~Tempo() { }
-
-        inline static int32
-        framesPerBeat (double sampleRate, double bpmTempo)
-        {
-            return roundDoubleToInt (sampleRate * 60.0f / bpmTempo);
-        }
-
-    };
-
+};
 
 #endif /* ELEMENT_TEMPO_H */
