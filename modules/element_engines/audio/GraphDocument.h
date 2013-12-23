@@ -1,37 +1,56 @@
-#ifndef GRAPHDOCUMENT_HPP
-#define GRAPHDOCUMENT_HPP
+/*
+    GraphDocument.h - This file is part of Element
+    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
-    class GraphController;
-    class PluginManager;
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-    const char* const graphSuffix   = ".graph";
-    const char* const graphWildcard = "*.graph";
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-    class GraphDocument :  public FileBasedDocument
-    {
-    public:
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
-        GraphDocument (GraphController& ctl, PluginManager& plugins);
-        virtual ~GraphDocument();
+#ifndef ELEMENT_GRAPH_DOCUMENT_H
+#define ELEMENT_GRAPH_DOCUMENT_H
 
-        XmlElement* createXml() const;
-        void restoreFromXml (const XmlElement& xml);
+class GraphController;
+class PluginManager;
 
-        String getDocumentTitle();
-        Result loadDocument (const File& file);
-        Result saveDocument (const File& file);
-        File getLastDocumentOpened();
-        void setLastDocumentOpened (const File& file);
+const char* const graphSuffix   = ".graph";
+const char* const graphWildcard = "*.graph";
 
-    private:
+class GraphDocument :  public FileBasedDocument
+{
+public:
 
-        void createNodeFromXml (const XmlElement& xml);
+    GraphDocument (GraphController& ctl, PluginManager& plugins);
+    virtual ~GraphDocument();
 
-        String rootTag;
+    XmlElement* createXml() const;
+    void restoreFromXml (const XmlElement& xml);
 
-        GraphController& graph;
-        PluginManager&   plugins;
+    String getDocumentTitle();
+    Result loadDocument (const File& file);
+    Result saveDocument (const File& file);
+    File getLastDocumentOpened();
+    void setLastDocumentOpened (const File& file);
 
-    };
+private:
 
-#endif // GRAPHDOCUMENT_HPP
+    void createNodeFromXml (const XmlElement& xml);
+
+    String rootTag;
+
+    GraphController& graph;
+    PluginManager&   plugins;
+
+};
+
+#endif /* ELEMENT_GRAPH_DOCUMENT_H */

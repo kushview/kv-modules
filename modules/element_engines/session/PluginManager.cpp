@@ -17,7 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
 #include "./PluginWrapper.h"
 
 #if JUCE_MODULE_AVAILABLE_lvtk_plugins

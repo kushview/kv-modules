@@ -61,6 +61,7 @@ typedef lvtk::SymbolMap SymbolMap;
 #include "session/AppController.h"
 #include "session/DeviceManager.h"
 #include "session/PluginManager.h"
+#include "session/SessionBase.h"
     
 }
 

@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_ATOMIC_HPP
-#define ELEMENT_ATOMIC_HPP
+#ifndef ELEMENT_ATOMIC_H
+#define ELEMENT_ATOMIC_H
 
 template<typename ValueType>
 class AtomicValue
@@ -149,4 +149,4 @@ private:
 
 };
 
-#endif // ELEMENT_ATOMIC_HPP
+#endif // ELEMENT_ATOMIC_H

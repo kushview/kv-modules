@@ -134,17 +134,27 @@ def make_desktop (bld, slug):
     src = "data/%s.desktop.in" % (slug)
     tgt = "%s.desktop" % (slug)
 
+    element_data = '%s/element' % (bld.env.DATADIR)
+    element_bin  = '%s/bin' % (bld.env.PREFIX)
+
     if os.path.exists (src):
         bld (features = "subst",
              source    = src,
              target    = tgt,
              name      = tgt,
-             ELEMENT_DATA = "%s/element" % (bld.env.DATADIR),
+             ELEMENT_BINDIR = element_bin,
+             ELEMENT_DATA = element_data,
              install_path = bld.env.DATADIR + "/applications"
         )
 
+        bld.install_files (element_data, 'data/element_icon.xpm')
+
 def build (bld):
-    proj = juce.IntrojucerProject (bld, 'project/Element.jucer')
+    node = bld.path.find_resource ('project/Element.jucer')
+    proj = juce.IntrojucerProject (bld, node.relpath())
+    
+    if not proj.isValid():
+        exit(1)
 
     obj = bld.shlib (
         source   = proj.getLibraryCode(),
@@ -162,7 +172,7 @@ def build (bld):
         source = proj.getProjectCode(),
         includes = ['project/JuceLibraryCode', 'project/Source'],
         use = ['libelement'],
-        target = 'Element'
+        target = 'element'
     )
 
 def install_headers (bld):

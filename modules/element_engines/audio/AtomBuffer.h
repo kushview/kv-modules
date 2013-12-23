@@ -20,36 +20,34 @@
 #ifndef ELEMENT_ATOMBUFFER_H
 #define ELEMENT_ATOMBUFFER_H
 
+class AtomBuffer {
+public:
 
-    class AtomBuffer {
-    public:
+    AtomBuffer (LV2_URID_Map* map, uint32 capacity = 4096);
 
-        AtomBuffer (LV2_URID_Map* map, uint32 capacity = 4096);
+    void addEvent (uint32_t frame, uint32_t subframe, uint32_t size, uint32_t type, const uint8* data);
+    void addEvent (const MidiMessage& midi, uint32 frame, uint32 subframe);
+    void addEvents (const MidiBuffer& midi);
+    void addEvents (AtomBuffer& other, int nframes);
 
-        void addEvent (uint32_t frame, uint32_t subframe, uint32_t size, uint32_t type, const uint8* data);
-        void addEvent (const MidiMessage& midi, uint32 frame, uint32 subframe);
-        void addEvents (const MidiBuffer& midi);
-        void addEvents (AtomBuffer& other, int nframes);
+    void swapWith (AtomBuffer& other) { }
 
-        void swapWith (AtomBuffer& other) { }
+    void clear (bool isInput);
+    void clear ();
+    void removeUntil (uint32 frame);
 
-        void clear (bool isInput);
-        void clear ();
-        void removeUntil (uint32 frame);
+    void* getBuffer();
 
-        void* getBuffer();
+    uint32 size() const;
 
-        uint32 size() const;
+private:
 
-    private:
+    class Data;
+    Data* data;
 
-        class Data;
-        Data* data;
+    LV2_URID MidiEvent;
 
-        LV2_URID MidiEvent;
-
-        uint32 padSize (uint32_t size);
-    };
-
+    uint32 padSize (uint32_t size);
+};
 
 #endif /* ELEMENT_ATOMBUFFER_H */

@@ -4,6 +4,7 @@
               bundleIdentifier="org.element-project.Element" includeBinaryInAppConfig="1"
               jucerVersion="3.1.0" companyName="The Element Project">
   <MAINGROUP id="z1aYPy" name="Element">
+    <FILE id="wnLFot" name="wscript" compile="0" resource="0" file="../wscript"/>
     <GROUP id="{41841D39-21AF-4F27-C8C3-F7BCF368DD55}" name="Source">
       <GROUP id="{854C31B4-6E8F-C904-C229-0F9A70B999AE}" name="element">
         <FILE id="ILSFe0" name="Juce.h" compile="0" resource="0" file="Source/element/Juce.h"/>

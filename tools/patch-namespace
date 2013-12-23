@@ -8,7 +8,7 @@ function die {
     exit 1
 }
 
-srcdir="libs/juce"
+srcdir="project/JuceLibraryCode"
 
 oldns=$1
 if [ -z "$oldns" ]; then
@@ -38,7 +38,7 @@ do
 done
 
 # touch up a few quirks
-echo "  Touching up loose ends"
+echo "  Touching up a few loose ends"
 f="project/JuceLibraryCode/JuceHeader.h"
 if [ "$(uname)" == "Darwin" ]; then
     sed -i "" "s|namespace $oldns|namespace $newns|g" "$f"

@@ -1,5 +1,5 @@
 /*
-    Arc.cpp - This file is part of Element
+    SessionBase.h - This file is part of Element
     Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
 
     This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,14 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-Arc::Arc (uint32 sn, uint32 sp, uint32 dn, uint32 dp) noexcept
-    : sourceNode (sn), sourcePort (sp),
-      destNode (dn), destPort (dp)
-{ }
+#ifndef ELEMENT_SESSION_BASE_H
+#define ELEMENT_SESSION_BASE_H
+
+class SessionBase : public ObjectModel
+{
+public:
+    SessionBase();
+    virtual ~SessionBase();
+};
+
+#endif // ELEMENT_SESSION_BASE_H
