@@ -45,8 +45,8 @@ public:
         static Item createGroup (AssetTree& tree, const String& name, const String& uid);
         static Item touchFile (AssetTree& tree, const String& path, const String& uid);
 
-        inline bool isFile()  const { return data.hasType("file"); }
-        inline bool isGroup() const { return data.hasType("group") || isRoot(); }
+        inline bool isFile()  const { return data.hasType ("file"); }
+        inline bool isGroup() const { return data.hasType ("group") || isRoot(); }
         inline bool isRoot()  const { return data.hasType (tree.rootType()); }
         inline bool isValid() const { return data.isValid(); }
 
