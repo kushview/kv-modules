@@ -37,7 +37,7 @@ public:
     const char* extension()
     {
         #if __APPLE__
-         static const std::string ext = ".dylib";
+         static const char* ext = ".dylib";
         #elif _MSC_VER
          static const char* ext = ".dll";
         #else
