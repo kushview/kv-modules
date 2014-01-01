@@ -39,6 +39,7 @@ namespace Element {
 #include "base/NoteClipItem.h"
 #include "base/MidiEditorBody.h"
 
+// graph stuff
 #include "base/GraphEditorBase.h"
 
 // misc widgets
@@ -48,6 +49,9 @@ namespace Element {
 #include "base/PluginWindow.h"
 #include "base/SkinDial.h"
 #include "base/TreeviewBase.h"
+
+// assets
+#include "assets/AssetTreeView.h"
 
 // docking
 #include "docking/Dock.h"
