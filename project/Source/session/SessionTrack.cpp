@@ -18,7 +18,7 @@
 */
 
 
-#include "../models/Session.h"
+#include "../session/Session.h"
 #include "../MediaManager.h"
 
 

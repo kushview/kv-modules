@@ -18,7 +18,7 @@
 */
 
 //[Headers] You can add your own extra header files here...
-#include "../models/Session.h"
+#include "../session/Session.h"
 //[/Headers]
 
 #include "TransportBar.h"

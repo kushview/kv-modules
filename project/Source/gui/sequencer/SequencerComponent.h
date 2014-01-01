@@ -20,8 +20,8 @@
 #ifndef ELEMENT_SEQUENCER_COMPONENT_H
 #define ELEMENT_SEQUENCER_COMPONENT_H
 
-#include "../../models/Session.h"
-#include "../Timeline.h"
+#include "session/Session.h"
+#include "gui/Timeline.h"
 
 namespace Element {
 namespace Gui {

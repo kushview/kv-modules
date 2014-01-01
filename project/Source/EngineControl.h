@@ -21,7 +21,7 @@
 #define ELEMENT_ENGINECONTROL_H
 
 #include "engine/InternalFormat.h"
-#include "models/Session.h"
+#include "session/Session.h"
 
 namespace Element {
 

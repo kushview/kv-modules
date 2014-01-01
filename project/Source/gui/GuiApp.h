@@ -21,8 +21,8 @@
 #define ELEMENT_GUIAPP_H
 
 #include "element/Juce.h"
-#include "../models/Session.h"
-#include "../URIs.h"
+#include "session/Session.h"
+#include "URIs.h"
 
 #include "Preferences.h"
 #include "WindowManager.h"

@@ -17,7 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "../models/Session.h"
+#include "../session/Session.h"
 #include "SessionDocument.h"
 
 namespace Element {

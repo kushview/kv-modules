@@ -19,7 +19,7 @@
 
 #include "engine/AudioEngine.h"
 #include "engine/InternalFormat.h"
-#include "models/Session.h"
+#include "session/Session.h"
 #include "gui/Alerts.h"
 #include "gui/GuiApp.h"
 #include "Globals.h"

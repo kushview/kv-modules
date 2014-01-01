@@ -77,8 +77,7 @@ public:
     }
 
     void showDocument()
-    {
-    }
+    { }
 
     void showMultiSelectionPopupMenu()
     {
@@ -90,12 +89,12 @@ class SessionGroupItem : public GroupTreeViewItem
 {
 public:
 
-    SessionGroupItem (Session& sess, const AssetTree::Item& i)
+    SessionGroupItem (Session& sess, const AssetItem& i)
         : GroupTreeViewItem (i), session (sess)
     { }
 
     AssetTreeViewItem*
-    createAssetSubItem (const AssetTree::Item &child)
+    createAssetSubItem (const AssetItem &child)
     {
         if (child.isFile()) {
             return new PatternTreeItem (child);

@@ -27,7 +27,7 @@
 #include "gui/SessionTreePanel.h"
 #include "gui/Workspace.h"
 
-#include "models/Session.h"
+#include "session/Session.h"
 
 #include "EngineControl.h"
 #include "Globals.h"
@@ -52,6 +52,9 @@ namespace Gui {
         item->setContentOwned (new PluginListComponent (app_.globals().plugins().formats(),
                                                         app_.globals().plugins().availablePlugins(),
                                                         File::nonexistent, nullptr));
+
+        item = dock.createItem ("test5", "Test 5", Dock::TopArea);
+        item->setContentOwned (new SessionTreePanel (gui));
 
         workspace->setMainComponent (new SequencerComponent (gui));
 

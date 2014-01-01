@@ -8,3 +8,4 @@ libs/vst*
 build/
 *.pyc
 .DS_Store
+*.autosave

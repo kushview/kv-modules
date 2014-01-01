@@ -18,7 +18,7 @@
 */
 
 #include "element/Juce.h"
-#include "models/Session.h"
+#include "session/Session.h"
 #include "Globals.h"
 #include "MediaManager.h"
 #include "URIs.h"

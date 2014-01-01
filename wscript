@@ -12,6 +12,16 @@ def options(opt):
     opt.load ("compiler_c compiler_cxx")
     opt.load (common_tools)
 
+def check_juce_packages (conf):
+    conf.check_cfg (package="juce-audio-processors-3", uselib_store="JUCE_AUDIO_PROCESSORS", minimum_version='2.1.8', mandatory=True)
+    conf.check_cfg (package="juce-audio-devices-3", uselib_store="JUCE_AUDIO_DEVICES", minimum_version='2.1.8', mandatory=True)
+    conf.check_cfg (package="juce-core-3", uselib_store="JUCE_CORE", minimum_version='2.1.8', mandatory=True)
+    conf.check_cfg (package="juce-cryptography-3", uselib_store="JUCE_CRYPTOGRAPHY", minimum_version='2.1.8', mandatory=True)
+    conf.check_cfg (package="juce-gui-basics-3", uselib_store="JUCE_GUI_BASICS", minimum_version='2.1.8', mandatory=True)
+    conf.check_cfg (package="juce-gui-extra-3", uselib_store="JUCE_GUI_EXTRA", minimum_version='2.1.8', mandatory=True)
+    conf.check_cfg (package="juce-graphics-3", uselib_store="JUCE_GRAPHICS", minimum_version='2.1.8', mandatory=True)
+    conf.check_cfg (package="juce-opengl-3", uselib_store="JUCE_OPENGL", minimum_version='2.1.8', mandatory=True)
+
 def configure (conf):
     conf.load ("compiler_c compiler_cxx")
     conf.load (common_tools)
@@ -33,15 +43,6 @@ def configure (conf):
     pkg_defs = ['HAVE_LILV', 'HAVE_JACK', 'HAVE_SUIL', 'HAVE_LV2', 'HAVE_LVTK_PLUGIN', 'HAVE_LVTK_UI']
 
     if juce.is_linux():
-        conf.check_cfg (package="juce-audio-processors-3", uselib_store="JUCE_AUDIO_PROCESSORS", minimum_version='2.1.8', mandatory=True)
-        conf.check_cfg (package="juce-audio-devices-3", uselib_store="JUCE_AUDIO_DEVICES", minimum_version='2.1.8', mandatory=True)
-        conf.check_cfg (package="juce-core-3", uselib_store="JUCE_CORE", minimum_version='2.1.8', mandatory=True)
-        conf.check_cfg (package="juce-cryptography-3", uselib_store="JUCE_CRYPTOGRAPHY", minimum_version='2.1.8', mandatory=True)
-        conf.check_cfg (package="juce-gui-basics-3", uselib_store="JUCE_GUI_BASICS", minimum_version='2.1.8', mandatory=True)
-        conf.check_cfg (package="juce-gui-extra-3", uselib_store="JUCE_GUI_EXTRA", minimum_version='2.1.8', mandatory=True)
-        conf.check_cfg (package="juce-graphics-3", uselib_store="JUCE_GRAPHICS", minimum_version='2.1.8', mandatory=True)
-        conf.check_cfg (package="juce-opengl-3", uselib_store="JUCE_OPENGL", minimum_version='2.1.8', mandatory=True)
-
         conf.check_cfg (package="alsa", uselib_store="ALSA", args='--cflags --libs', mandatory=True)
         conf.check_cfg (package="x11", uselib_store="X11", args='--cflags --libs', mandatory=True)
         conf.check_cfg (package="xext", uselib_store="XEXT", args='--cflags --libs', mandatory=True)
@@ -154,7 +155,7 @@ def build (bld):
     proj = juce.IntrojucerProject (bld, node.relpath())
     
     if not proj.isValid():
-        exit(1)
+        exit (1)
 
     obj = bld.shlib (
         source   = proj.getLibraryCode(),

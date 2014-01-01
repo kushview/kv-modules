@@ -20,7 +20,7 @@
 */
 
 #include "MediaManager.h"
-#include "models/Session.h"
+#include "session/Session.h"
 
 namespace Element {
 

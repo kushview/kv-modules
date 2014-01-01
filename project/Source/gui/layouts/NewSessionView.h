@@ -22,7 +22,7 @@
 
 //[Headers]     -- You can add your own extra header files here --
 #include <element/Juce.h>
-#include "../../models/Session.h"
+#include "../../session/Session.h"
 //[/Headers]
 
 
