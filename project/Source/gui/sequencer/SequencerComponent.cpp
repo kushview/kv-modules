@@ -17,13 +17,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "../../session/Session.h"
-
-#include "../GuiCommon.h"
-#include "../ContentComponent.h"
-
-#include "SequencerClipItem.h"
-#include "SequencerComponent.h"
+#include "gui/sequencer/SequencerClipItem.h"
+#include "gui/sequencer/SequencerComponent.h"
+#include "gui/GuiCommon.h"
+#include "gui/ContentComponent.h"
+#include "session/Session.h"
 
 namespace Element {
 namespace Gui {

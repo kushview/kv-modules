@@ -18,17 +18,14 @@
 */
 
 
-#include "../engine/AudioEngine.h"
-#include "../engine/InternalFormat.h"
-#include "../engine/Transport.h"
-
-#include "../session/SessionAssets.h"
-
-#include "../EngineControl.h"
-#include "../MediaManager.h"
-#include "../Globals.h"
-
-#include "Session.h"
+#include "engine/AudioEngine.h"
+#include "engine/InternalFormat.h"
+#include "engine/Transport.h"
+#include "session/SessionAssets.h"
+#include "session/Session.h"
+#include "EngineControl.h"
+#include "MediaManager.h"
+#include "Globals.h"
 
 
 namespace Element {

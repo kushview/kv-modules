@@ -29,9 +29,7 @@ namespace Element {
     SessionAssets::SessionAssets (Session& s)
         : AssetTree (s.node(), "Session Assets", "assets", nullptr),
           session (s), related (s, *this, s.globals().media())
-    {
-
-    }
+    { }
 
     SessionAssets::~SessionAssets() { }
 

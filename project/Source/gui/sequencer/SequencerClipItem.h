@@ -17,10 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef SEQUENCERCLIPITEM_H
-#define SEQUENCERCLIPITEM_H
+#ifndef ELEMENT_SEQUENCER_CLIP_ITEM_H
+#define ELEMENT_SEQUENCER_CLIP_ITEM_H
 
-#include "../Timeline.h"
+#include "gui/Timeline.h"
 
 namespace Element {
 namespace Gui {
@@ -81,6 +81,6 @@ private:
 
 };
 
-}
-}
-#endif // SEQUENCERCLIPITEM_H
+}}
+
+#endif /* ELEMENT_SEQUENCER_CLIP_ITEM_H */
