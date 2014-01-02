@@ -56,6 +56,8 @@
 
         Processor *createPlugin (const PluginDescription& desc, String& errorMsg);
 
+        void setPlayConfig (double sampleRate, int blockSize);
+
     private:
 
         class Private;

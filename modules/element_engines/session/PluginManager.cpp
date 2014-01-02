@@ -26,7 +26,12 @@ using namespace lvtk;
     class PluginManager::Private
     {
     public:
-        Private()  {  }
+
+        Private()
+            : sampleRate (44100.0f),
+              blockSize (1024)
+        {  }
+
         ~Private() {  }
 
         KnownPluginList allPlugins;
@@ -37,6 +42,8 @@ using namespace lvtk;
         OptionalPtr<LV2World> lv2;
        #endif
 
+        double sampleRate;
+        int    blockSize;
     };
 
     PluginManager::PluginManager()
@@ -78,15 +85,16 @@ using namespace lvtk;
     Processor*
     PluginManager::createPlugin (const PluginDescription &desc, String &errorMsg)
     {
-        if (AudioPluginInstance* instance = formats().createPluginInstance (desc, 44100.f, 1024, errorMsg))
+        if (AudioPluginInstance* instance = formats().createPluginInstance (desc, priv->sampleRate, priv->blockSize, errorMsg))
         {
             if (Processor* plugin = dynamic_cast<Processor*> (instance))
             {
-                Logger::writeToLog("Got a native Processor: " + desc.pluginFormatName);
                 return plugin;
             }
             else
+            {
                 return new PluginWrapper (instance);
+            }
         }
 
         return nullptr;
@@ -123,6 +131,13 @@ using namespace lvtk;
     {
         ScopedXml elm (priv->allPlugins.createXml());
         settings.getUserSettings()->setValue ("plugin-list", elm.get());
+    }
+
+    void
+    PluginManager::setPlayConfig (double sampleRate, int blockSize)
+    {
+        priv->sampleRate = sampleRate;
+        priv->blockSize  = blockSize;
     }
 
     void
