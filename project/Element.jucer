@@ -93,8 +93,6 @@
                 file="Source/gui/sequencer/MidiEditorComponent.cpp"/>
           <FILE id="YYNkJa" name="MidiEditorComponent.h" compile="0" resource="0"
                 file="Source/gui/sequencer/MidiEditorComponent.h"/>
-          <FILE id="emFqpp" name="PatternClipItem.h" compile="0" resource="0"
-                file="Source/gui/sequencer/PatternClipItem.h"/>
           <FILE id="p9VHQK" name="SequencerClipItem.cpp" compile="1" resource="0"
                 file="Source/gui/sequencer/SequencerClipItem.cpp"/>
           <FILE id="Dn9y1k" name="SequencerClipItem.h" compile="0" resource="0"
