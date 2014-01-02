@@ -72,7 +72,7 @@ using namespace lvtk;
     {
         formats().addDefaultFormats();
        #if JUCE_MODULE_AVAILABLE_lvtk_plugins
-        formats().addFormat (new LV2PluginFormat (*priv->lv2));
+        addFormat (new LV2PluginFormat (*priv->lv2));
        #endif
     }
 
