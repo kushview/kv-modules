@@ -100,12 +100,13 @@ public:
 
         void testPrint() const { std::clog << data.toXmlString() << std::endl; }
 
-        ValueTree data;
+        ValueTree data; //XXX: this needs to be private
 
     private:
 
         friend class AssetTree;
         Item& operator = (const Item& other);
+
 
         AssetTree& tree;
 
@@ -129,6 +130,10 @@ public:
 
     /** Clear all entries from the tree */
     void clear();
+
+    /** Create XML data for this tree */
+    XmlElement* createXml() const;
+    void loadFromXml (const XmlElement& xml);
 
     /** Get this trees root file/directory */
     const File& getFile() const;

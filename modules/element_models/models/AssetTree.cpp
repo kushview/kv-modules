@@ -513,3 +513,14 @@ void AssetTree::valueTreeChildOrderChanged (ValueTree& /* parent */) { }
 void AssetTree::valueTreeParentChanged (ValueTree& /* child */) { }
 void AssetTree::valueTreePropertyChanged (ValueTree& /* tree */, const Identifier& /* property */) { }
 
+XmlElement*
+AssetTree::createXml() const
+{
+    return this->assets.createXml();
+}
+
+void
+AssetTree::loadFromXml (const XmlElement& xml)
+{
+    this->assets = ValueTree::fromXml (xml);
+}
