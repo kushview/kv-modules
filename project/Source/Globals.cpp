@@ -35,11 +35,11 @@ namespace Element {
         opts.osxLibrarySubFolder = "Application Support";
         opts.storageFormat       = PropertiesFile::storeAsXML;
 
-#if JUCE_LINUX
-        opts.folderName          = ".element";
-#else
+       #if JUCE_LINUX
+        opts.folderName          = ".config/element";
+       #else
         opts.folderName          = opts.applicationName;
-#endif
+       #endif
 
         setStorageParameters (opts);
     }
