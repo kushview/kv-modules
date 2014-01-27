@@ -48,6 +48,8 @@ def configure (conf):
         conf.check_cfg (package="xext", uselib_store="XEXT", args='--cflags --libs', mandatory=True)
         conf.check_cfg (package="freetype2", uselib_store="FREETYPE2", args='--cflags --libs', mandatory=True)
         conf.check_cfg (package="gl", uselib_store="GL", args='--cflags --libs', mandatory=True)
+        conf.check_cfg (package="glesv2", uselib_store="GLESV2", args='--cflags --libs', mandatory=True)
+        conf.check_cfg (package="egl", uselib_store="EGL", args='--cflags --libs', mandatory=True)
         pkg_defs += ['HAVE_ALSA', 'HAVE_X11', 'HAVE_XEXT', 'HAVE_FREETYPE2', 'HAVE_GL']
 
     for d in pkg_defs: conf.env[d] = conf.is_defined (d)
@@ -162,7 +164,7 @@ def build (bld):
         includes = ['project/JuceLibraryCode'],
         name = 'libelement',
         target = 'element',
-        use = ['LILV', 'SUIL', 'X11', 'ALSA', 'FREETYPE2', 'GL'],
+        use = ['LILV', 'SUIL', 'ALSA', 'FREETYPE2', 'EGL', 'GLESV2'],
         vnum = '0.0.1',
     )
 

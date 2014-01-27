@@ -19,6 +19,10 @@
 
 #include <cassert>
 
+#define JUCE_USE_XEVENTS 0
+#define JUCE_USE_X11 0
+#define JUCE_USE_EGL 1
+
 // [END_USER_CODE_SECTION]
 
 //==============================================================================
@@ -143,6 +147,13 @@
 
 #ifndef    JUCE_INCLUDE_ZLIB_CODE
  //#define JUCE_INCLUDE_ZLIB_CODE
+#endif
+
+//==============================================================================
+// juce_events flags:
+
+#ifndef    JUCE_USE_XEVENTS
+ //#define JUCE_USE_XEVENTS
 #endif
 
 //==============================================================================

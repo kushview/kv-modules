@@ -105,8 +105,11 @@ namespace Gui {
             pf->setValue ("lastSession", f.getFullPathName());
         }
 
+        render.detach();
+
         mainWindow->setVisible (false);
         mainWindow->removeFromDesktop();
+
         mainWindow = nullptr;
         windowManager = nullptr;
         LookAndFeel::setDefaultLookAndFeel (nullptr);
@@ -170,14 +173,8 @@ namespace Gui {
             windowManager->push (dw);
     }
 
-    void
-    GuiApp::showSplash()
-    { }
-
-    void
-    GuiApp::runDispatch()
-    {
-    }
+    void GuiApp::showSplash() { }
+    void GuiApp::runDispatch() { }
 
     void
     GuiApp::run()
@@ -189,23 +186,23 @@ namespace Gui {
         sessionDoc = new SessionDocument (globals().session());
 
         content = new ContentComponent (*this);
-        content->setSize (400, 300);
+        content->setSize (800, 600);
         mainWindow = new MainWindow (*this);
         mainWindow->setContentNonOwned (content.get(), true);
 
         PropertiesFile* pf = globals().settings().getUserSettings();
         mainWindow->restoreWindowStateFromString (pf->getValue ("mainWindowState"));
-        
-        mainWindow->addToDesktop();
-        mainWindow->setVisible (true);
-        mainWindow->setUsingNativeTitleBar (true);
-        
-#if JUCE_IOS || JUCE_ANDROID
+
+       #if JUCE_IOS || JUCE_ANDROID
         Desktop& d = Desktop::getInstance();
         d.setKioskModeComponent (mainWindow);
-#endif
-        
+       #endif
+
+        mainWindow->addToDesktop();
+        mainWindow->setVisible (true);
         dispatch->startTimer (250);
+
+        openWindow (ELEMENT_PLUGIN_MANAGER);
 
         File sess (pf->getValue ("lastSession"));
         if (sess.existsAsFile()) {

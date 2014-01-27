@@ -24,9 +24,13 @@
 #include "gui/GuiApp.h"
 #include "Globals.h"
 
+namespace juce {
+    extern void initEGL();
+}
+
 namespace Element {
 
-class Application  : public JUCEApplication
+class Application  : public JUCEApplication, public Timer
 {
 
     Scoped<Globals>     world;
@@ -40,6 +44,7 @@ public:
    const String getApplicationName()       { return "Element"; }
    const String getApplicationVersion()    { return "0.0.1"; }
    bool moreThanOneInstanceAllowed()       { return true; }
+
 
    void initialise (const String& /* commandLine */)
    {
@@ -59,18 +64,29 @@ public:
        plugins.restoreUserPlugins (settings);
 
        gui = Gui::GuiApp::create (*world);
+
        engine->activate();
        gui->run();
+
+       Logger::writeToLog ("Gui is running...");
    }
 
 
    void timerCallback()
    {
-
+        static bool hasQuit = false;
+        if (! hasQuit)
+        {
+            hasQuit = true;
+            quit();
+        }
    }
 
    void shutdown()
    {
+       if (gui != nullptr)
+           gui = nullptr;
+
        PluginManager& plugins (world->plugins());
        Settings& settings (world->settings());
        plugins.saveUserPlugins (settings);

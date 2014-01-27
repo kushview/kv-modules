@@ -4,7 +4,7 @@
   "version":        "0.0.1",
   "description":    "Element Base Classes",
   "website":        "http://github.org/mfisher31/element",
-  "license":        "GPL v3",
+  "license":        "GPL",
 
   "dependencies":   [ { "id": "lvtk_core", "version": "0.0.1" },
                       { "id": "juce_cryptography", "version": "3.0.0" } ],

@@ -104,6 +104,7 @@ namespace Gui {
 
     private:
 
+        OpenGLContext render;
         SessionRef sessionRef;
         ScopedPointer<SessionDocument> sessionDoc;
 
