@@ -154,6 +154,7 @@ public:
 
     /** Get this tree's name */
     String name() const;
+    String getName() const;
 
     /** Get this tree's name as a Element::Value */
     Value nameValue();

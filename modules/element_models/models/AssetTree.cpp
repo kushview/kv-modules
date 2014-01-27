@@ -413,6 +413,13 @@ AssetTree::hasParentValueTree() const
 String
 AssetTree::name() const
 {
+    jassertfalse
+    return this->getName();
+}
+
+String
+AssetTree::getName() const
+{
     return assets.getProperty ("name", "Asset Tree");
 }
 
