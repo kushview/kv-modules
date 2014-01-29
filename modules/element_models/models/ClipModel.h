@@ -26,7 +26,7 @@ public:
     
     ClipModel (const ValueTree& data) : ObjectModel (data) {}
     ClipModel (ValueTree& data, double start, double length, double offset = 0.0f)
-    : ObjectModel (data)
+        : ObjectModel (data)
     {
         assert (data.isValid());
         assert (node().hasType (Slugs::clip));
@@ -37,7 +37,7 @@ public:
     }
     
     ClipModel (double start, double length, double offset = 0.0f)
-    : ObjectModel (Slugs::clip)
+        : ObjectModel (Slugs::clip)
     {
         node().setProperty ("start", start, nullptr);
         node().setProperty ("length", length, nullptr);
@@ -46,14 +46,14 @@ public:
     }
     
     ClipModel (const File& file)
-    : ObjectModel (Slugs::clip)
+        : ObjectModel (Slugs::clip)
     {
         setMissingProperties();
         node().setProperty ("file", file.getFullPathName(), nullptr);
     }
     
     ClipModel (const ClipModel& other)
-    : ObjectModel (other.node())
+        : ObjectModel (other.node())
     { }
     
     virtual ~ClipModel() { }

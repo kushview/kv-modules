@@ -95,19 +95,21 @@ public:
         ClipModel model (source->model());
         assert (model.isValid());
 
-        assert (model.node().hasProperty (Slugs::assetId));
+        jassert (model.node().hasProperty (Slugs::assetId));
+
+        if (! model.node().hasProperty (Slugs::assetId))
+            model.node().setProperty (Slugs::assetId, String("lskd34"), nullptr);
+
         const String id = model.getProperty (Slugs::assetId);
         assert (id != String::empty);
 
         const int64 hash = id.hashCode64();
         if (data.contains (hash))
         {
-            //Logger::writeToLog("ClipFactory: using cached clip data: hash: " + String(hash));
             while (! source->setData (data [hash]));
         }
         else if (ClipData* cd = type->createClipData (engine, model))
         {
-            //Logger::writeToLog("ClipFactory: creating new clip data: hash: " + String(hash));
             Shared<ClipData> sdata (cd);
             sdata->hash = hash;
 
