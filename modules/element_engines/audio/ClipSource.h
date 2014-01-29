@@ -91,6 +91,7 @@
         }
 
         inline const ClipData* clipData() const { return data.get(); }
+        inline const ClipData* getClipData() const { return data.get(); }
 
     private:
 

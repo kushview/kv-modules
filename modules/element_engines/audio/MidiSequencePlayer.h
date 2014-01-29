@@ -26,61 +26,58 @@
  ==============================================================================
 */
 
-#ifndef ELEMENT_MIDISEQUENCE_PROCESSOR_H
-#define ELEMENT_MIDISEQUENCE_PROCESSOR_H
+#ifndef ELEMENT_MIDISEQUENCE_PLAYER_H
+#define ELEMENT_MIDISEQUENCE_PLAYER_H
 
 class Shuttle;
 
-    /** A single track midi sequencer with record functionality */
-    class MidiSequencePlayer
-    {
-    public:
+/** A single track midi sequencer with record functionality */
+class MidiSequencePlayer
+{
+public:
 
-        typedef MidiMessageSequence::MidiEventHolder EventHolder;
+    typedef MidiMessageSequence::MidiEventHolder EventHolder;
 
-        MidiSequencePlayer();
-        ~MidiSequencePlayer();
+    MidiSequencePlayer();
+    ~MidiSequencePlayer();
 
-        void renderSequence (int numSamples, MidiBuffer& midiMessages);
-        void renderSequence (MidiBuffer& target, const MidiMessageSequence& seq, int32 startFrame, int32 numSamples);
+    void renderSequence (int numSamples, MidiBuffer& midiMessages);
+    void renderSequence (MidiBuffer& target, const MidiMessageSequence& seq, int32 startFrame, int32 numSamples);
 
-        void prepareToPlay (double sampleRate, int blockSize);
-        void releaseResources();
+    void prepareToPlay (double sampleRate, int blockSize);
+    void releaseResources();
 
-        /* Get the number of loops that have played since transport time zero (used for looping) */
-        int loopRepeatIndex();
+    /* Get the number of loops that have played since transport time zero (used for looping) */
+    int loopRepeatIndex();
 
-        /* Get the current playback position (accounting for loops) for the sequence, relative to the current transport position (used for looping) */
-        double loopBeatPosition();
+    /* Get the current playback position (accounting for loops) for the sequence, relative to the current transport position (used for looping) */
+    double loopBeatPosition();
 
-        /* Get the length of the sequence expressed as a number of beats */
-        int getLengthInBeats() { return getLengthInBars() * getBeatsPerBar(); }
+    /* Get the length of the sequence expressed as a number of beats */
+    int getLengthInBeats() { return getLengthInBars() * getBeatsPerBar(); }
 
-        /* Get the length of the sequence expressed as a number of bars */
-        int getLengthInBars() { return 4; }
+    /* Get the length of the sequence expressed as a number of bars */
+    int getLengthInBars() { return 4; }
 
-        /* Get the number of beats per bar (currently hard-coded to four) */
-        double getBeatsPerBar() { return 4; }
+    /* Get the number of beats per bar (currently hard-coded to four) */
+    double getBeatsPerBar() { return 4; }
 
-        inline void setShuttle (Shuttle* s) { pShuttle = s; }
-        inline Shuttle* shuttle() const { return pShuttle; }
-        inline void setFrameOffset (int32 offset) { frameOffset = offset; }
+    inline void setShuttle (Shuttle* s) { pShuttle = s; }
+    inline Shuttle* shuttle() const { return pShuttle; }
+    inline void setFrameOffset (int32 offset) { frameOffset = offset; }
 
-    protected:
+protected:
 
-        MidiMessageSequence noteOffs;
-        ScopedPointer<MidiMessageSequence> midiSequence;
-        MidiMessage allNotesOff;
+    MidiMessageSequence noteOffs;
+    ScopedPointer<MidiMessageSequence> midiSequence;
+    MidiMessage allNotesOff;
 
-    private:
+private:
 
-        Shuttle* pShuttle;
-        int32 frameOffset;
-        double lastEventTime;
+    Shuttle* pShuttle;
+    int32 frameOffset;
+    double lastEventTime;
 
-    };
-
-
+};
 
 #endif
-
