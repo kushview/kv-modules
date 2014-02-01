@@ -48,6 +48,7 @@
         {
             ts.setTempo (120.0f);
             ts.setSampleRate (44100);
+            duration = 44100;
             ts.setTicksPerBeat (Shuttle::PPQ);
             ts.updateScale();
 
@@ -66,9 +67,16 @@
         inline double framesPerBeat() const { return mFramesPerBeat; }
         inline double beatsPerFrame() const { return mBeatsPerFrame; }
 
-        const double lengthInBeats()     const { return lengthInSeconds() * (tempo() / 60.0f); }
-        const int64  lengthInFrames()    const { return 441000; }
-        const double lengthInSeconds()   const { return (double) lengthInFrames() / sampleRate; }
+        inline void setDurationBeats (const float beats)
+        {
+            setDurationFrames (mFramesPerBeat * beats);
+        }
+
+        inline void setDurationFrames (const uint32 df) { duration = df; }
+
+        const double lengthInBeats()    const { return lengthInSeconds() * (tempo() / 60.0f); }
+        const uint32 lengthInFrames()   const { return duration; }
+        const double lengthInSeconds()  const { return (double) lengthInFrames() / sampleRate; }
 
         const double positionInBeats()   const { return positionInSeconds() * (tempo() / 60.0f); }
         const int32  positionInFrames()  const { return framePos; }
@@ -87,7 +95,7 @@
                 double oldTime = positionInBeats();
                 ts.setTempo (bpm);
                 ts.updateScale();
-                mFramesPerBeat = Tempo::framesPerBeat ((double) ts.sampleRate(), ts.tempo());
+                mFramesPerBeat = Tempo::framesPerBeat (ts.sampleRate(), ts.tempo());
                 framePos = llrint (oldTime * mFramesPerBeat);
             }
         }
@@ -99,10 +107,12 @@
                 return;
 
             const double oldTime = positionInSeconds();
+            const double oldLenSec = (double) lengthInSeconds();
             ts.setSampleRate (rate);
             ts.updateScale();
 
             framePos        = llrint (oldTime * ts.sampleRate());
+            duration        = (uint32) (oldLenSec * (float) ts.sampleRate());
             mFramesPerBeat  = Tempo::framesPerBeat (ts.sampleRate(), ts.tempo());
             mBeatsPerFrame  = 1.0f / mFramesPerBeat;
         }
@@ -150,6 +160,7 @@
         double mBeatsPerFrame;
 
         int64 framePos;
+        uint32 duration;
         double sampleRate;
         TimeScale ts;
 
