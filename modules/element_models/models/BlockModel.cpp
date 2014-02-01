@@ -20,3 +20,10 @@
 BlockModel::BlockModel() : NodeModel (Slugs::block) { }
 BlockModel::BlockModel (const Identifier& valueType) : NodeModel (valueType) { }
 BlockModel::BlockModel (const ValueTree& data) : NodeModel (data) { }
+BlockModel::BlockModel (const String& format, const String& id)
+    : NodeModel (Slugs::block)
+{
+    ValueTree v (node());
+    v.setProperty (Slugs::id, id, nullptr);
+    v.setProperty ("format", format, nullptr);
+}

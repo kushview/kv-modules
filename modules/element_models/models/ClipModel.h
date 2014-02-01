@@ -81,6 +81,30 @@ public:
         return track.getParent().indexOf (track);
     }
     
+    virtual inline int32 hashCode() const
+    {
+        if (node().hasProperty (Slugs::file))
+        {
+            const File f (node().getProperty (Slugs::file).toString());
+            return f.hashCode();
+        }
+
+        jassertfalse;
+        return 0;
+    }
+
+    virtual inline int64 hashCode64() const
+    {
+        if (node().hasProperty (Slugs::file))
+        {
+            const File f (node().getProperty (Slugs::file).toString());
+            return f.hashCode64();
+        }
+
+        jassertfalse;
+        return 0;
+    }
+
     inline bool operator== (const ClipModel& m) const { return node() == m.node(); }
     inline bool operator!= (const ClipModel& m) const { return node() != m.node(); }
     

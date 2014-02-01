@@ -20,23 +20,19 @@
 #ifndef ELEMENT_MEDIA_MODEL_H
 #define ELEMENT_MEDIA_MODEL_H
 
+class MediaModel :  public ObjectModel
+{
+public:
 
-    class MediaModel :  public ObjectModel
-    {
-    public:
+    inline MediaModel () : ObjectModel() { }
+    inline MediaModel (const Identifier& type) : ObjectModel (type) { }
+    inline MediaModel (const ValueTree& data) : ObjectModel (data) { }
 
-        inline MediaModel () : ObjectModel() { }
-        inline MediaModel (const Identifier& type) : ObjectModel (type) { }
-        inline MediaModel (const ValueTree& data) : ObjectModel (data) { }
+    virtual void setFile (const File&) { }
+    virtual File getFile() const { return File::nonexistent; }
+    virtual void getRelatedFiles (Array<File>&) { }
+};
 
-        virtual void setFile (const File&) { }
-        virtual File getFile() const { return File::nonexistent; }
-        virtual void getRelatedFiles (Array<File>&) { }
-
-    };
-
-    typedef Shared<MediaModel> MediaPtr;
-
-
+typedef Shared<MediaModel> MediaPtr;
 
 #endif // ELEMENT_MEDIA_MODEL_H

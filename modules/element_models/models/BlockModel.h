@@ -27,6 +27,7 @@ public:
     BlockModel();
     BlockModel (const Identifier& valueType);
     BlockModel (const ValueTree& data);
+    BlockModel (const String& format, const String& id);
 };
 
 #endif // ELEMENT_BLOCK_MODEL_H

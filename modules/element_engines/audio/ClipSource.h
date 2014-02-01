@@ -61,6 +61,7 @@
         inline int32 frameOffset() const { return clipOffset; }
 
         ClipModel model() const;
+        ClipModel getModel() const { return model(); }
 
         inline bool hasData() const { return data.get() != nullptr; }
         inline bool isEmpty() const { return ! hasData(); }

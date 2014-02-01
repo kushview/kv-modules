@@ -95,15 +95,11 @@ public:
         ClipModel model (source->model());
         assert (model.isValid());
 
-        jassert (model.node().hasProperty (Slugs::assetId));
+        jassert (model.node().hasProperty (Slugs::file));
 
-        if (! model.node().hasProperty (Slugs::assetId))
-            model.node().setProperty (Slugs::assetId, String("lskd34"), nullptr);
+        File f (model.getProperty(Slugs::file).toString());
+        const int64 hash = f.hashCode64();
 
-        const String id = model.getProperty (Slugs::assetId);
-        assert (id != String::empty);
-
-        const int64 hash = id.hashCode64();
         if (data.contains (hash))
         {
             while (! source->setData (data [hash]));
