@@ -169,14 +169,13 @@
         if (ev.x > getTrackWidth())
         {
             const int keyId = 127 - trackAt (ev);
-            addNote (keyId, xToTicks (ev.x, true), (float)1920.f * 0.5f, 1);
+            addNote (keyId, xToTicks (ev.x, true), (float)1920.f * 0.5f, insertChannel);
         }
     }
 
     void
     MidiEditorBody::mouseDrag (const MouseEvent &event)
     {
-
         lasso.dragLasso (event);
 
         if (trackDrag)
@@ -190,17 +189,15 @@
             const int keyId = 127 - trackAt (event);
             selectNotesOnKey (keyId, false);
 
-            if (dragTrack != trackAt (event)) {
+            if (dragTrack != trackAt (event))
+            {
                 dragTrack = trackAt (event);
 
                 if (triggerNotes())
                     keyboardState.noteOn (insertChannel, 127 - dragTrack, insertVelocity);
             }
-
         }
-
     }
-
 
     void MidiEditorBody::mouseUp (const MouseEvent& ev)
     {
@@ -217,7 +214,6 @@
             setTrackHeightsOffset (wheel.deltaY * 100.0f, true);
     }
 
-
     void MidiEditorBody::onNoteAdded (const Note& note)
     {
         if (note.isValid())
@@ -229,11 +225,6 @@
             else {
                 c->setModel (note);
             }
-
-            String msg ("Ticks to Pix: start: " );
-            msg << tickToX (note.tickStart()) << String(" len: ");
-            msg << tickToX (note.tickEnd());
-            Logger::writeToLog (msg);
 
             notes.add (c);
             addTimelineClip (c, 127 - c->keyId());
