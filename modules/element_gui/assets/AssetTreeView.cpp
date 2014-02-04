@@ -194,79 +194,22 @@ static void openOrCloseAllSubGroups (TreeViewItem& item, bool shouldOpen)
 
 static void setFilesToCompile (AssetTree::Item item, const bool shouldCompile)
 {
-   // if (item.isFile())
-       // item.getShouldCompileValue() = shouldCompile;
-//
-  //  for (int i = item.getNumChildren(); --i >= 0;)
-      //  setFilesToCompile (item.getChild (i), shouldCompile);
 }
 
 void GroupTreeViewItem::showPopupMenu()
 {
-    PopupMenu m;
-    addCreateFileMenuItems (m);
-
-    m.addSeparator();
-
-    if (isOpen())
-        m.addItem (1, "Collapse all Sub-groups");
-    else
-        m.addItem (2, "Expand all Sub-groups");
-
-    m.addSeparator();
-    m.addItem (3, "Enable compiling of all enclosed files");
-    m.addItem (4, "Disable compiling of all enclosed files");
-
-    m.addSeparator();
-    m.addItem (5, "Sort Items Alphabetically");
-    m.addItem (6, "Sort Items Alphabetically (Groups first)");
-    m.addSeparator();
-    m.addItem (7, "Rename...");
-
-    if (! isRootAsset())
-        m.addItem (8, "Delete");
-
-    launchPopupMenu (m);
 }
 
 void GroupTreeViewItem::handlePopupMenuResult (int resultCode)
 {
-    switch (resultCode)
-    {
-        case 1:     openOrCloseAllSubGroups (*this, false); break;
-        case 2:     openOrCloseAllSubGroups (*this, true); break;
-        case 3:     setFilesToCompile (item, true); break;
-        case 4:     setFilesToCompile (item, false); break;
-        case 5:     item.sortAlphabetically (false); break;
-        case 6:     item.sortAlphabetically (true); break;
-        case 7:     triggerAsyncAssetRename (item); break;
-        case 8:     deleteAllSelectedItems(); break;
-        default:    processCreateFileMenuItem (resultCode); break;
-    }
 }
 
 void GroupTreeViewItem::addCreateFileMenuItems (PopupMenu& m)
 {
-    //m.addItem (1001, "Add New Group");
-    //m.addItem (1002, "Add Existing Files...");
-
-    //m.addSeparator();
-    //NewFileWizard().addWizardsToMenu (m);
 }
 
 void GroupTreeViewItem::processCreateFileMenuItem (int menuID)
 {
-#if 0
-    switch (menuID)
-    {
-        case 1001:  addNewGroup(); break;
-        case 1002:  browseToAddExistingFiles(); break;
-
-        default:
-            NewFileWizard().runWizardFromMenu (menuID, item);
-            break;
-    }
-#endif
 }
 
 
