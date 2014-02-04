@@ -20,49 +20,49 @@
 #ifndef ELEMENT_PLUGIN_MANAGER_H
 #define ELEMENT_PLUGIN_MANAGER_H
 
-    class Settings;
+class Settings;
 
-    class PluginManager
+class PluginManager
+{
+public:
+
+    PluginManager();
+
+   #if JUCE_MODULE_AVAILABLE_lvtk_plugins
+    PluginManager (lvtk::LV2World&);
+   #endif
+
+    ~PluginManager();
+
+    void addDefaultFormats();
+    void addFormat (AudioPluginFormat*);
+
+    KnownPluginList& availablePlugins();
+
+    AudioPluginFormatManager& formats();
+    AudioPluginFormat* format (const String& fmt);
+    template<class FormatType>
+    inline FormatType* format()
     {
-    public:
+        for (int i = 0; i < formats().getNumFormats(); ++i)
+            if (FormatType* fmt = dynamic_cast<FormatType*> (formats().getFormat (i)))
+                return fmt;
+        return nullptr;
+    }
 
-        PluginManager();
+    void saveUserPlugins (ApplicationProperties&);
+    void restoreUserPlugins (ApplicationProperties&);
+    void restoreUserPlugins (const XmlElement& xml);
 
-       #if JUCE_MODULE_AVAILABLE_lvtk_plugins
-        PluginManager (lvtk::LV2World&);
-       #endif
+    Processor *createPlugin (const PluginDescription& desc, String& errorMsg);
 
-        ~PluginManager();
+    void setPlayConfig (double sampleRate, int blockSize);
 
-        void addDefaultFormats();
-        void addFormat (AudioPluginFormat*);
+private:
 
-        KnownPluginList& availablePlugins();
+    class Private;
+    Scoped<Private> priv;
 
-        AudioPluginFormatManager& formats();
-        AudioPluginFormat* format (const String& fmt);
-        template<class FormatType>
-        inline FormatType* format()
-        {
-            for (int i = 0; i < formats().getNumFormats(); ++i)
-                if (FormatType* fmt = dynamic_cast<FormatType*> (formats().getFormat (i)))
-                    return fmt;
-            return nullptr;
-        }
-
-        void saveUserPlugins (ApplicationProperties&);
-        void restoreUserPlugins (ApplicationProperties&);
-        void restoreUserPlugins (const XmlElement& xml);
-
-        Processor *createPlugin (const PluginDescription& desc, String& errorMsg);
-
-        void setPlayConfig (double sampleRate, int blockSize);
-
-    private:
-
-        class Private;
-        Scoped<Private> priv;
-
-    };
+};
 
 #endif // ELEMENT_PLUGIN_MANAGER_H
