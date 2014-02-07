@@ -38,6 +38,7 @@ namespace Slugs {
     static const Identifier graph    = "graph";
     static const Identifier group    = "group";
     static const Identifier id       = "id";
+    static const Identifier index    = "index";
     static const Identifier keyId    = "keyId";
     static const Identifier length   = "length";
     static const Identifier media    = "media";
@@ -46,6 +47,7 @@ namespace Slugs {
     static const Identifier note     = "note";
     static const Identifier path     = "path";
     static const Identifier pattern  = "pattern";
+    static const Identifier pitch    = "pitch";
     static const Identifier ppq      = "ppq";
     static const Identifier release  = "release";
     static const Identifier sampler  = "sampler";

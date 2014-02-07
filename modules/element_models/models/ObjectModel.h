@@ -57,6 +57,8 @@
         */
         ValueTree setData (const ValueTree& data);
 
+        int32 getNumChildren() const { return objectData.getNumChildren(); }
+
         /** Count the number of children with a type */
         int32 countChildrenOfType (const Identifier& slug) const;
 
