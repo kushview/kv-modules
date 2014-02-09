@@ -68,9 +68,9 @@ void Shuttle::setDurationSeconds (const double seconds)
 
 void Shuttle::setDurationFrames (const uint32 df) { duration = df; }
 
-const double Shuttle::lengthInBeats()    const { return lengthInSeconds() * (getTempo() / 60.0f); }
-const uint32 Shuttle::lengthInFrames()   const { return duration; }
-const double Shuttle::lengthInSeconds()  const { return (double) lengthInFrames() / (double) ts.sampleRate(); }
+const double Shuttle::getLengthBeats()    const { return getLengthSeconds() * (getTempo() / 60.0f); }
+const uint32 Shuttle::getLengthFrames()   const { return duration; }
+const double Shuttle::getLengthSeconds()  const { return (double) getLengthFrames() / (double) ts.sampleRate(); }
 
 const double Shuttle::positionInBeats()   const { return positionInSeconds() * (getTempo() / 60.0f); }
 const int32  Shuttle::positionInFrames()  const { return framePos; }
@@ -104,7 +104,7 @@ void Shuttle::setSampleRate (double rate)
         return;
 
     const double oldTime = positionInSeconds();
-    const double oldLenSec = (double) lengthInSeconds();
+    const double oldLenSec = (double) getLengthSeconds();
     ts.setSampleRate (rate);
     ts.updateScale();
 
@@ -114,13 +114,13 @@ void Shuttle::setSampleRate (double rate)
     mBeatsPerFrame  = 1.0f / mFramesPerBeat;
 }
 
-int Shuttle::remainingFrames() const { return lengthInFrames() - framePos; }
+int Shuttle::remainingFrames() const { return getLengthFrames() - framePos; }
 
 void Shuttle::advance (int nframes)
 {
     framePos += nframes;
-    if (duration > 0 && framePos > lengthInFrames())
-        framePos = framePos - lengthInFrames();
+    if (duration > 0 && framePos >= getLengthFrames())
+        framePos = framePos - getLengthFrames();
 }
 
 bool Shuttle::getCurrentPosition (CurrentPositionInfo &result)

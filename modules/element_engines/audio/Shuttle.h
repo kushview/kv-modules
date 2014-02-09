@@ -50,9 +50,9 @@ public:
     void setDurationFrames (const uint32 df);
     void setDurationSeconds (const double seconds);
 
-    const double lengthInBeats()    const;
-    const uint32 lengthInFrames()   const;
-    const double lengthInSeconds()  const;
+    const double getLengthBeats()    const;
+    const uint32 getLengthFrames()   const;
+    const double getLengthSeconds()  const;
 
     const double positionInBeats()   const;
     const int32  positionInFrames()  const;

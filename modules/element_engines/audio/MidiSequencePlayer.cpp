@@ -18,6 +18,7 @@
 */
 
 #if JUCE_COMPLETION
+#include "../../element_base/element_base.h"
 #include "MidiSequencePlayer.h"
 #include "JuceHeader.h"
 #endif
@@ -30,6 +31,7 @@
 MidiSequencePlayer::MidiSequencePlayer()
     : midiSequence (new MidiMessageSequence())
 {
+    frameOffset = 0;
     pShuttle = nullptr;
 }
 
@@ -69,12 +71,6 @@ MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequenc
         }
 
         target.addEvent (*msg, timeStamp);
-
-        if (msg->isNoteOn()) {
-            Logger::writeToLog ("NOTE ON: " + String (msg->getNoteNumber()));
-        } else if (msg->isNoteOff()) {
-            Logger::writeToLog ("NOTE OFF: " + String (msg->getNoteNumber()));
-        }
 
         lastEventTime = tick;
         ++ev;

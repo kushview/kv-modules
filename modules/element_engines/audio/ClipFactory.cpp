@@ -92,8 +92,8 @@ public:
     void attachSourceData (ClipType* type, ClipSource* source)
     {
         ClipModel model (source->model());
-        assert (model.isValid());
 
+        jassert (model.isValid());
         jassert (model.node().hasProperty (Slugs::file));
 
         File f (model.getProperty(Slugs::file).toString());
@@ -102,18 +102,17 @@ public:
         if (data.contains (hash))
         {
             while (! source->setData (data [hash])) { }
-            DBG ("set hashed data: " + String(hash));
         }
         else if (ClipData* cd = type->createClipData (engine, model))
         {
             Shared<ClipData> sdata (cd);
             sdata->hash = hash;
-            sdata->prepare (44100.f, 256);
+            sdata->prepare (48000.f, 256);
             while (! source->setData (sdata)) { }
             data.set (hash, sdata);
-            DBG ("set created data: " + String (hash));
         }
-        else {
+        else
+        {
             assert (false);
         }
     }
