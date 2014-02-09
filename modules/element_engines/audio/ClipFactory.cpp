@@ -17,7 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
 // a dummy clip that can be used for testing purposes
 class DummyClip :  public ClipSource
 {
@@ -27,7 +26,7 @@ public:
 
     DummyClip()
     {
-        Logger::writeToLog ("DummyClip(): created");
+        DBG ("DummyClip(): created");
         blockSize = 0;
     }
 
@@ -102,17 +101,17 @@ public:
 
         if (data.contains (hash))
         {
-            while (! source->setData (data [hash]));
+            while (! source->setData (data [hash])) { }
+            DBG ("set hashed data: " + String(hash));
         }
         else if (ClipData* cd = type->createClipData (engine, model))
         {
             Shared<ClipData> sdata (cd);
             sdata->hash = hash;
-
             sdata->prepare (44100.f, 256);
-
-            while (! source->setData (sdata));
+            while (! source->setData (sdata)) { }
             data.set (hash, sdata);
+            DBG ("set created data: " + String (hash));
         }
         else {
             assert (false);
@@ -132,9 +131,9 @@ public:
 ClipFactory::ClipFactory (Engine& e)
 {
     impl = new Impl (*this, e);
-#if JUCE_DEBUG
+   #if JUCE_DEBUG
     registerType (new DummyClip::Type());
-#endif
+   #endif
 }
 
 
@@ -165,5 +164,3 @@ ClipFactory::createSource (const ClipModel& model)
 ClipType* ClipFactory::getType (const int32 t) { return impl->types.getUnchecked (t); }
 void ClipFactory::registerType (ClipType* type) { impl->types.addIfNotAlreadyThere (type); }
 int32 ClipFactory::numTypes() const { return impl->types.size(); }
-
-

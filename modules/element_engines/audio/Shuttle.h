@@ -20,154 +20,73 @@
 #ifndef ELEMENT_SHUTTLE_H
 #define ELEMENT_SHUTTLE_H
 
+/** A mini-transport for use in a processable that can loop */
+class Shuttle :  public AudioPlayHead
+{
+public:
 
-    /** A mini-transport for use in a processable that can loop */
-    class Shuttle :  public AudioPlayHead
+    static const int32 PPQ;
+
+    /** This function should be used when loading midi data.  e.g. opening
+        a midi file that has a different ppq than the Shuttle */
+    static double scaledTick (double sourceTick, const int32 srcPpq);
+
+    struct Position :  public AudioPlayHead::CurrentPositionInfo
     {
-    public:
-
-        static const int32 PPQ = 1920;
-
-        /** This function should be used when loading midi data.  e.g. opening
-            a midi file that has a different ppq than the Shuttle */
-        static inline double
-        scaledTick (double sourceTick, const int32 srcPpq)
-        {
-            if (srcPpq == Shuttle::PPQ || srcPpq <= 0)
-                return sourceTick;
-
-            return sourceTick * ((double) Shuttle::PPQ / (double) srcPpq);
-        }
-
-        struct Position :  public AudioPlayHead::CurrentPositionInfo
-        {
-            double timeInBeats;
-        };
-
-        Shuttle()
-        {
-            ts.setTempo (120.0f);
-            ts.setSampleRate (44100);
-            duration = 44100;
-            ts.setTicksPerBeat (Shuttle::PPQ);
-            ts.updateScale();
-
-            framePos = 0;
-            mFramesPerBeat  = Tempo::framesPerBeat ((double) ts.sampleRate(), ts.tempo());
-            mBeatsPerFrame  = 1.0f / mFramesPerBeat;
-            playing = recording = false;
-        }
-
-        ~Shuttle() { }
-
-        inline bool isLooping()   const { return looping; }
-        inline bool isPlaying()   const { return playing; }
-        inline bool isRecording() const { return recording; }
-
-        inline double framesPerBeat() const { return mFramesPerBeat; }
-        inline double beatsPerFrame() const { return mBeatsPerFrame; }
-
-        inline void setDurationBeats (const float beats)
-        {
-            setDurationFrames (mFramesPerBeat * beats);
-        }
-
-        inline void setDurationFrames (const uint32 df) { duration = df; }
-
-        const double lengthInBeats()    const { return lengthInSeconds() * (tempo() / 60.0f); }
-        const uint32 lengthInFrames()   const { return duration; }
-        const double lengthInSeconds()  const { return (double) lengthInFrames() / sampleRate; }
-
-        const double positionInBeats()   const { return positionInSeconds() * (tempo() / 60.0f); }
-        const int32  positionInFrames()  const { return framePos; }
-        const double positionInSeconds() const { return (double) framePos / (double) ts.sampleRate(); }
-
-        void resetRecording() { }
-
-        const TimeScale& scale() const { return ts; }
-        float tempo() const { return ts.tempo(); }
-
-        inline void
-        setTempo (float bpm)
-        {
-            if (tempo() != bpm)
-            {
-                double oldTime = positionInBeats();
-                ts.setTempo (bpm);
-                ts.updateScale();
-                mFramesPerBeat = Tempo::framesPerBeat (ts.sampleRate(), ts.tempo());
-                framePos = llrint (oldTime * mFramesPerBeat);
-            }
-        }
-
-        inline void
-        setSampleRate (double rate)
-        {
-            if (sampleRate == rate)
-                return;
-
-            const double oldTime = positionInSeconds();
-            const double oldLenSec = (double) lengthInSeconds();
-            ts.setSampleRate (rate);
-            ts.updateScale();
-
-            framePos        = llrint (oldTime * ts.sampleRate());
-            duration        = (uint32) (oldLenSec * (float) ts.sampleRate());
-            mFramesPerBeat  = Tempo::framesPerBeat (ts.sampleRate(), ts.tempo());
-            mBeatsPerFrame  = 1.0f / mFramesPerBeat;
-        }
-
-        inline int remainingFrames() const { return lengthInFrames() - framePos; }
-
-        inline void advance (int nframes)
-        {
-            framePos += nframes;
-            if (framePos > lengthInFrames())
-                framePos = framePos - lengthInFrames();
-        }
-
-        inline bool
-        getCurrentPosition (CurrentPositionInfo &result)
-        {
-            result.bpm = (double) ts.tempo();
-            result.frameRate = AudioPlayHead::fps24;
-
-            result.isLooping   = true;
-            result.isPlaying   = this->isPlaying();
-            result.isRecording = this->isRecording();
-
-            result.ppqLoopStart = ppqLoopStart;
-            result.ppqLoopEnd   = ppqLoopEnd;
-            result.ppqPosition  = ts.tickFromFrame (framePos);
-            result.ppqPositionOfLastBarStart = 0.0f;
-
-            result.editOriginTime = 0.0f;
-            result.timeInSamples  = positionInFrames();
-            result.timeInSeconds  = positionInSeconds();
-            result.timeSigDenominator = ts.beatsPerBar();
-            result.timeSigDenominator = ts.beatDivisor();
-
-            return true;
-        }
-
-    protected:
-
-        bool playing, recording, looping;
-
-    private:
-
-        double mFramesPerBeat;
-        double mBeatsPerFrame;
-
-        int64 framePos;
-        uint32 duration;
-        double sampleRate;
-        TimeScale ts;
-
-        double ppqLoopStart;
-        double ppqLoopEnd;
-
+        double timeInBeats;
     };
 
+    Shuttle();
+    ~Shuttle();
+
+    bool isLooping()   const;
+    bool isPlaying()   const;
+    bool isRecording() const;
+
+    double getFramesPerBeat() const;
+    double getBeatsPerFrame() const;
+
+    void setDurationBeats (const float beats);
+    void setDurationFrames (const uint32 df);
+    void setDurationSeconds (const double seconds);
+
+    const double lengthInBeats()    const;
+    const uint32 lengthInFrames()   const;
+    const double lengthInSeconds()  const;
+
+    const double positionInBeats()   const;
+    const int32  positionInFrames()  const;
+    const double positionInSeconds() const;
+
+    void resetRecording();
+
+    const TimeScale& getTimeScale() const;
+    float getTempo() const;
+    void setTempo (float bpm);
+
+    double getSampleRate() const;
+    void setSampleRate (double rate);
+    int remainingFrames() const;
+    void advance (int nframes);
+    bool getCurrentPosition (CurrentPositionInfo &result);
+
+protected:
+
+    bool playing, recording, looping;
+
+private:
+
+    double mFramesPerBeat;
+    double mBeatsPerFrame;
+
+    int64 framePos;
+    uint32 duration;
+    double sampleRate;
+    TimeScale ts;
+
+    double ppqLoopStart;
+    double ppqLoopEnd;
+
+};
 
 #endif // ELEMENT_SHUTTLE_H

@@ -39,6 +39,7 @@ namespace Element {
 #include "audio/SequenceCursor.cpp"
 #include "audio/Sequencer.cpp"
 #include "audio/SequencerTrack.cpp"
+#include "audio/Shuttle.cpp"
     
 #include "session/AppController.cpp"
 #include "session/DeviceManager.cpp"

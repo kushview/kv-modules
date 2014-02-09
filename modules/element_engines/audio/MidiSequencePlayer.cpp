@@ -17,6 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if JUCE_COMPLETION
+#include "MidiSequencePlayer.h"
+#include "JuceHeader.h"
+#endif
 
 #define NOTE_CHANNEL       1
 #define NOTE_VELOCITY      0.8f
@@ -42,15 +46,13 @@ void MidiSequencePlayer::prepareToPlay (double sampleRate, int /* blockSize */)
 
 void
 MidiSequencePlayer::releaseResources()
-{
-
-}
+{ }
 
 void
 MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequence& seq,
                                     int32 startInSequence, int32 numSamples)
 {
-    const TimeScale& ts (pShuttle->scale());
+    const TimeScale& ts (pShuttle->getTimeScale());
     const int32 numEvents = seq.getNumEvents();
     const double start = (double) ts.tickFromFrame (frameOffset + startInSequence);
 
@@ -67,6 +69,13 @@ MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequenc
         }
 
         target.addEvent (*msg, timeStamp);
+
+        if (msg->isNoteOn()) {
+            Logger::writeToLog ("NOTE ON: " + String (msg->getNoteNumber()));
+        } else if (msg->isNoteOff()) {
+            Logger::writeToLog ("NOTE OFF: " + String (msg->getNoteNumber()));
+        }
+
         lastEventTime = tick;
         ++ev;
     }
