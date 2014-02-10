@@ -280,6 +280,14 @@
 #endif
         }
 
+        inline int32
+        secondsToX (double time) const
+        {
+            int64 frame = llrint (time * (double) scale.sampleRate());
+            int pixel = scale.pixelFromFrame (frame);
+            return pixel + mTrackWidth;
+        }
+
         inline int64
         xToFrame (int x) const
         {

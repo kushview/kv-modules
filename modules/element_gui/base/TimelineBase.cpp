@@ -88,6 +88,7 @@
 
     void TimelineIndicator::parentSizeChanged()
     {
+        // DBG ("TimelineIndicator::parentSizeChanged: pos = " + String (position()) + " x = " + String(timeline()->timeToX (position())));
         setBounds (timeline()->timeToX (position()),
                    0, 1, timeline()->getHeight());
     }
