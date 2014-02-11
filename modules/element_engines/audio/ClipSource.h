@@ -60,8 +60,7 @@
         inline int64 frameLength() const { return frames.getLength(); }
         inline int32 frameOffset() const { return clipOffset; }
 
-        ClipModel model() const;
-        ClipModel getModel() const { return model(); }
+        ClipModel getModel() const;
 
         inline bool hasData() const { return data.get() != nullptr; }
         inline bool isEmpty() const { return ! hasData(); }
@@ -87,7 +86,7 @@
         }
 
         inline void setTime (const double in, const double len) {
-            frames.setStart (llrint (in * 44100.0f));
+            frames.setStart  (llrint (in * 44100.0f));
             frames.setLength (llrint (len * 44100.0f));
         }
 

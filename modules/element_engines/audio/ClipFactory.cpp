@@ -17,6 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if JUCE_COMPLETION
+#include "modules/element_engines/element_engines.h"
+#endif
+
 // a dummy clip that can be used for testing purposes
 class DummyClip :  public ClipSource
 {
@@ -64,7 +68,7 @@ public:
             return new ClipData();
         }
 
-        bool canCreateFrom (const ClipModel& model) { return model.getProperty("type",String::empty) == String("dummy"); }
+        bool canCreateFrom (const ClipModel& model) { return model.getProperty("type", String::empty) == String("dummy"); }
         bool canCreateFrom (const File &file) { return false; }
         ClipSource* createSource (Engine&, const File&) { return new DummyClip(); }
         ClipSource* createSource (Engine&, const ClipModel&) { return new DummyClip(); }
@@ -91,13 +95,11 @@ public:
 
     void attachSourceData (ClipType* type, ClipSource* source)
     {
-        ClipModel model (source->model());
+        const ClipModel model (source->getModel());
 
         jassert (model.isValid());
         jassert (model.node().hasProperty (Slugs::file));
-
-        File f (model.getProperty(Slugs::file).toString());
-        const int64 hash = f.hashCode64();
+        const int64 hash = model.hashCode64();
 
         if (data.contains (hash))
         {

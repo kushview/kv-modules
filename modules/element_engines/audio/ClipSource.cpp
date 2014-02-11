@@ -40,13 +40,13 @@ ClipSource::connectValues (bool disconnect)
 void
 ClipSource::setModel (const ClipModel& m)
 {
-    state  = m.node();
-    start.referTo (model().startValue());
-    length.referTo (model().lengthValue());
+    state = m.node();
+    start.referTo (getModel().startValue());
+    length.referTo (getModel().lengthValue());
 }
 
 ClipModel
-ClipSource::model() const
+ClipSource::getModel() const
 {
     return ClipModel (state);
 }

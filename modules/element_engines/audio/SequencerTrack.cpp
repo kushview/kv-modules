@@ -18,74 +18,76 @@
 */
 
 
-    SequencerTrack::SequencerTrack (Sequencer& o, const TrackModel& t)
-        : sequencer (o)
-    {
-        track = new TrackModel (t);
-        state = track->state();
+SequencerTrack::SequencerTrack (Sequencer& o, const TrackModel& t)
+    : sequencer (o)
+{
+    track = new TrackModel (t);
+    state = track->state();
 
-        armed.referTo (track->armedValue());
-        muted.referTo (track->mutedValue());
-        soloed.referTo (track->soloedValue());
-        volume.referTo (track->volumeValue());
+    armed.referTo (track->armedValue());
+    muted.referTo (track->mutedValue());
+    soloed.referTo (track->soloedValue());
+    volume.referTo (track->volumeValue());
 
-        bin.setScoped (true);
+    bin.setScoped (true);
 
-        setPlayConfigDetails (2, 2, 44100.0f, 1024);
+    setPlayConfigDetails (2, 2, o.getSampleRate(), o.getBlockSize());
+}
+
+SequencerTrack::~SequencerTrack()
+{
+
+}
+
+ClipSource*
+SequencerTrack::cursorClip() const
+{
+    return sequencer.trackClip (trackIndex);
+}
+
+void
+SequencerTrack::prepareToPlay (double sampleRate, int blockSize)
+{
+    setPlayConfigDetails (getNumInputChannels(), getNumOutputChannels(),
+                          sampleRate, blockSize);
+
+    for (ClipSource* clip : bin) {
+        clip->prepareToPlay (blockSize, sampleRate);
     }
+}
 
-    SequencerTrack::~SequencerTrack()
-    {
-
+void
+SequencerTrack::releaseResources()
+{
+    for (ClipSource* clip : bin) {
+        clip->releaseResources();
     }
+}
 
-    ClipSource*
-    SequencerTrack::cursorClip() const
+void
+SequencerTrack::processBlock (AudioSampleBuffer &buffer, MidiBuffer &midi)
+{
+    if (! sequencer.position().isPlaying)
+        return;
+
+    if (ClipSource* src = cursorClip())
     {
-        return sequencer.trackClip (trackIndex);
-    }
+        AudioSourceChannelInfo info (buffer);
+        info.clearActiveBufferRegion();
 
-    void
-    SequencerTrack::prepareToPlay (double sampleRate, int blockSize)
-    {
-        setPlayConfigDetails (getNumInputChannels(), getNumOutputChannels(),
-                              sampleRate, blockSize);
+        const int64 start = sequencer.position().timeInSamples - src->frameStart();
+        const int64 end   = start + buffer.getNumSamples();
 
-        for (ClipSource* clip : bin) {
-            clip->prepareToPlay (blockSize, sampleRate);
+
+        DBG ("frame start: " + String (src->frameStart()) + " start: " + String(start) + " end " + String (end));
+        if (end > 0 && end < src->frameEnd()) {
+            src->setNextReadPosition (start);
+            src->getNextAudioBlock (info);
         }
     }
+}
 
-    void
-    SequencerTrack::releaseResources()
-    {
-        for (ClipSource* clip : bin) {
-            clip->releaseResources();
-        }
-    }
+void SequencerTrack::processBlockBypassed (AudioSampleBuffer&, MidiBuffer&)
+{
 
-    void
-    SequencerTrack::processBlock (AudioSampleBuffer &buffer, MidiBuffer &midi)
-    {
-        if (! sequencer.position().isPlaying)
-            return;
-
-        if (ClipSource* src = cursorClip())
-        {
-            AudioSourceChannelInfo info (buffer);
-            info.clearActiveBufferRegion();
-
-            const int64 start = sequencer.position().timeInSamples - src->frameStart();
-            const int64 end   = start + buffer.getNumSamples();
-
-            if (end > 0 && end < src->frameEnd()) {
-                src->setNextReadPosition (start);
-                src->getNextAudioBlock (info);
-            }
-        }
-    }
-
-    void SequencerTrack::processBlockBypassed (AudioSampleBuffer&, MidiBuffer&)
-    {
-
-    }
+}

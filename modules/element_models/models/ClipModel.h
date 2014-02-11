@@ -105,6 +105,8 @@ public:
         return 0;
     }
 
+    String getTypeString() const { return node().getProperty (Slugs::type, String::empty); }
+
     inline bool operator== (const ClipModel& m) const { return node() == m.node(); }
     inline bool operator!= (const ClipModel& m) const { return node() != m.node(); }
     
