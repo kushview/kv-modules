@@ -81,13 +81,17 @@
 
     protected:
 
-        inline void setTime (const Range<double>& time) {
-            setTime (time.getStart(), time.getLength());
+        inline virtual void setTime (const Range<double>& time) {
+            setTimeSeconds (time);
         }
 
-        inline void setTime (const double in, const double len) {
-            frames.setStart  (llrint (in * 44100.0f));
-            frames.setLength (llrint (len * 44100.0f));
+        inline void setTimeSeconds (const Range<double>& time) {
+            setTimeSeconds (time.getStart(), time.getLength());
+        }
+
+        inline void setTimeSeconds (const double in, const double len) {
+            frames.setStart  (llrint (in * 48000.0f));
+            frames.setLength (llrint (len * 48000.0f));
         }
 
         inline const ClipData* clipData() const { return data.get(); }

@@ -5,10 +5,8 @@
       * Michael Fisher <mfisher@bketech.com>
 */
 
-
-
 ClipSource::ClipSource()
-    : frames (0, 44100),
+    : frames (0, 48000),
       looping (false)
 {
     connectValues();
@@ -55,5 +53,5 @@ void
 ClipSource::valueChanged (Value &value)
 {
     if (start.refersToSameSourceAs (value) || length.refersToSameSourceAs (value))
-        setTime (start.getValue(), length.getValue());
+        setTime (Range<double> (start.getValue(), length.getValue()));
 }

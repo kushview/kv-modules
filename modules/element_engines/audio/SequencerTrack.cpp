@@ -78,8 +78,6 @@ SequencerTrack::processBlock (AudioSampleBuffer &buffer, MidiBuffer &midi)
         const int64 start = sequencer.position().timeInSamples - src->frameStart();
         const int64 end   = start + buffer.getNumSamples();
 
-
-        DBG ("frame start: " + String (src->frameStart()) + " start: " + String(start) + " end " + String (end));
         if (end > 0 && end < src->frameEnd()) {
             src->setNextReadPosition (start);
             src->getNextAudioBlock (info);
