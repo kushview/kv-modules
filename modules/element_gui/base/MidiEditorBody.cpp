@@ -17,7 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
+#if JUCE_COMPLETION
+#include "modules/element_gui/element_gui.h"
+#endif
 
     NoteSelection::NoteSelection() { }
     NoteSelection::~NoteSelection() { }
@@ -169,7 +171,9 @@
         if (ev.x > getTrackWidth())
         {
             const int keyId = 127 - trackAt (ev);
-            addNote (keyId, xToTicks (ev.x, true), (float)1920.f * 0.5f, insertChannel);
+            const double ticks (xToTicks (ev.x, true));
+            DBG ("TICK: " + String (ticks));
+            addNote (keyId, ticks, (float)1920.f * 0.5f, insertChannel);
         }
     }
 
@@ -218,6 +222,7 @@
     {
         if (note.isValid())
         {
+            DBG (note.node().toXmlString());
             NoteClipItem* c = findFreeClip<NoteClipItem>();
 
             if (c == nullptr)
@@ -389,7 +394,7 @@
         }
 
         if (ev.mods.isCommandDown()) {
-            addNote (keyId, xToBeat (ev.x, true), insertLength, insertChannel);
+            addNote (keyId, xToTicks (ev.x, true), insertLength, insertChannel);
         }
 
         lasso.beginLasso (ev, this);

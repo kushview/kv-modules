@@ -62,6 +62,7 @@ using namespace LVTK_JUCE_NAMESPACE;
 #include "time/DelayLockedLoop.h"
 #include "time/Tempo.h"
 #include "time/TimeScale.h"
+#include "time/TimeStamp.h"
     
 #include "util/Utils.h"
 #include "util/Convert.h"
@@ -74,4 +75,4 @@ using namespace LVTK_JUCE_NAMESPACE;
 
 }
 
-#endif   // ELEMENT_BASE_H_INCLUDED
+#endif // ELEMENT_BASE_H_INCLUDED

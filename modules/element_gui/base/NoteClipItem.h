@@ -53,36 +53,19 @@ public:
     inline void
     getTime (Range<double> &time) const
     {
-#if 0
-        double scale = 1.0f / (double) Shuttle::PPQ;
-        double start = scale * model.tickStart();
-        double end   = scale * model.tickEnd();
-        double tempo = (double) timeline().timeScale().tempo();
-
-        time.setStart (60.f / tempo * start);
-        time.setEnd   (60.f / tempo * end);
-#else
         time.setStart (model.tickStart());
         time.setEnd (model.tickEnd());
-#endif
     }
 
     inline void
     setTime (const Range<double> &time)
     {
-#if 0
-        double scale = (double) Shuttle::PPQ;
-        double tempo = (double) timeline().timeScale().tempo();
-
-        model.move (deltas, (time.getStart() * (tempo / 60.f) * scale));
-        model.resize (deltas, (time.getLength() * (tempo / 60.f) * scale));
-        model.applyEdits (deltas);
-#else
         model.move (deltas, (time.getStart()));
         model.resize (deltas, (time.getLength()));
         model.applyEdits (deltas);
-#endif
     }
+
+    inline TimeUnit getTimeUnit() const { return TimeUnit::Ticks; }
 
     inline void
     paint (Graphics &g)

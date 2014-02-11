@@ -78,8 +78,6 @@ class TimelineBase : public AsyncUpdater,
 {
 
 public:
-
-
     TimelineBase();
     virtual ~TimelineBase();
 
@@ -251,82 +249,22 @@ protected:
         return heights.trackAtY (point.getY());
     }
 
-    inline int32
-    tickToX (const double tick) const
-    {
-        return mTrackWidth + scale.pixelFromTick (llrint (tick));
-    }
+    int32 beatToX (double beat) const;
+    int32 frameToX (double frame) const;
+    int32 secondsToX (double time) const;
+    int32 tickToX (const double tick) const;
+    int32 timeToX (double time, TimeUnit unit = TimeUnit::Seconds) const;
 
-    inline double
-    tickToTime (const double tick) const
-    {
-        int64 frame = scale.frameFromTick (tick);
-        return (double) frame / (double) scale.sampleRate();
-    }
+    int64 xToFrame    (int x) const;
+    double xToSeconds (int32 x) const;
+    double xToTicks   (int32 x, bool snap = false) const;
+    double xToBeat    (int x, bool snap = false) const;
+    double xToTime    (int x, const TimeUnit unit = TimeUnit::Seconds) const;
 
-    inline int
-    timeToX (double time) const
-    {
-#if 0
-        int64 frame = llrint (time * (double) scale.sampleRate());
-        int pixel = scale.pixelFromFrame (frame);
-        return pixel + mTrackWidth;
-#else
-        return tickToX (time);
-#endif
-    }
+    double tickToTime (const double tick) const;
 
-    inline int32
-    secondsToX (double time) const
-    {
-        int64 frame = llrint (time * (double) scale.sampleRate());
-        int pixel = scale.pixelFromFrame (frame);
-        return pixel + mTrackWidth;
-    }
-
-    inline int64
-    xToFrame (int x) const
-    {
-        normalX (x);
-        return scale.frameFromPixel (x);
-    }
-
-    inline double
-    xToSeconds (int32 x) const
-    {
-        normalX (x);
-        return ((double) scale.frameFromPixel (x) / (double) scale.sampleRate());
-    }
-
-    inline double
-    xToTicks (int32 x, bool snap = false) const
-    {
-        normalX (x);
-        return (double) snap ? scale.tickFromPixel (scale.pixelSnap (x))
-                             : scale.tickFromPixel (x);
-    }
-
-    inline double
-    xToTime (int x) const
-    {
-        //return xToSeconds (x);
-        return xToTicks (x);
-    }
-
-    inline double
-    xToBeat (int x, bool snap = false) const
-    {
-        return xToTicks (x) / (double) scale.ticksPerBeat();
-    }
-
-
-    inline int
-    timeToWidth (const Range<double>& time) const
-    {
-        return timeToX (time.getEnd()) - timeToX (time.getStart());
-    }
-
-    inline double getTime() const { return playheadIndicator->position(); }
+    int timeToWidth (const Range<double>& time, const TimeUnit unit = TimeUnit::Seconds) const;
+    double getTime() const;
 
     void recycleClip (TimelineClip* clip);
     void updateClip (TimelineClip* clip);
