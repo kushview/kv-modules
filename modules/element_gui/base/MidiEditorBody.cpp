@@ -172,7 +172,7 @@
         {
             const int keyId = 127 - trackAt (ev);
             const double ticks (xToTicks (ev.x, true));
-            DBG ("TICK: " + String (ticks));
+
             addNote (keyId, ticks, (float)1920.f * 0.5f, insertChannel);
         }
     }
@@ -222,7 +222,6 @@
     {
         if (note.isValid())
         {
-            DBG (note.node().toXmlString());
             NoteClipItem* c = findFreeClip<NoteClipItem>();
 
             if (c == nullptr)

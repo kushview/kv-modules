@@ -258,6 +258,7 @@ Sequencer::valueTreeChildAdded (ValueTree& parent, ValueTree& child)
         if (SequencerTrack* track = trackProcessor (TrackModel (parent)))
         {
             ClipModel model (child);
+            DBG ("length: " + String(model.length()));
             if (ClipSource* clip = engine.createSource (model))
             {
                 clip->prepareToPlay (getBlockSize(), getSampleRate());

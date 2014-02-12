@@ -156,9 +156,10 @@ TimelineBase::TimelineBase()
     mTrackWidth = 0;
     mMaxTrackWidth = 200;
 
-    scale.setSampleRate (44100);
+    scale.setSampleRate (48000);
     scale.setTempo (120.f);
     scale.setTicksPerBeat (1920);
+    scale.setPixelsPerBeat (30);
     scale.updateScale();
 
     pixPerUnit = (double) scale.pixelsPerBeat();
