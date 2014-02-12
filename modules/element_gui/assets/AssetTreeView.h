@@ -45,11 +45,8 @@ public:
     // dragging stuff
     File getDraggableFile() const
     {
-        std::clog << "get draggable file\n";
-
         if (item.isFile())
             return item.getFile();
-
 
         return TreeItemBase::getDraggableFile();
     }

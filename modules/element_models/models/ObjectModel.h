@@ -20,66 +20,63 @@
 #ifndef ELEMENT_OBJECT_MODEL_H
 #define ELEMENT_OBJECT_MODEL_H
 
+/** A thin wrapper around a juce ValueTree */
+class ObjectModel
+{
+public:
+    explicit ObjectModel (const ValueTree& data = ValueTree::invalid);
+    ObjectModel (const Identifier& slugId);
+    virtual ~ObjectModel() { }
 
-    /** A thin wrapper around a juce ValueTree */
-    class ObjectModel
-    {
-    public:
+    /** Get a property from the underlying ValueTree */
+    inline var getProperty (const Identifier& id, const var& d = var::null) const { return objectData.getProperty (id, d); }
 
+    /** Get a property as a juce Value from the ValueTree */
+    Value getPropertyAsValue (const Identifier& property);
 
-        explicit ObjectModel (const ValueTree& data = ValueTree::invalid);
-        ObjectModel (const Identifier& slugId);
-        virtual ~ObjectModel() { }
+    /** Get the ValueTree's type */
+    inline Identifier getType() const { return objectData.getType(); }
 
-        /** Get a property from the underlying ValueTree */
-        inline var getProperty (const Identifier& id, const var& d = var::null) const { return objectData.getProperty (id, d); }
+    /** Determine this objects ValueTree type */
+    inline bool hasType (const Identifier& type) const { return objectData.hasType (type); }
 
-        /** Get a property as a juce Value from the ValueTree */
-        Value getPropertyAsValue (const Identifier& property);
+    /** Access to the underlying ValueTree (const version) */
+    const ValueTree& node() const { return objectData; }
 
-        /** Get the ValueTree's type */
-        inline Identifier getType() const { return objectData.getType(); }
+    /** Access to the underlying ValueTree */
+    ValueTree node() { return objectData; }
 
-        /** Determine this objects ValueTree type */
-        inline bool hasType (const Identifier& type) const { return objectData.hasType (type); }
+    /** Replace this objects ValueTree with another
+        If you need to do something special when data is set, then override
+        the canAcceptData and setNodeData methods
 
-        /** Access to the underlying ValueTree (const version) */
-        const ValueTree& node() const { return objectData; }
+        @param The new data to use
+    */
+    ValueTree setData (const ValueTree& data);
 
-        /** Access to the underlying ValueTree */
-        ValueTree node() { return objectData; }
+    int32 getNumChildren() const { return objectData.getNumChildren(); }
 
-        /** Replace this objects ValueTree with another
-            If you need to do something special when data is set, then override
-            the canAcceptData and setNodeData methods
+    /** Count the number of children with a type */
+    int32 countChildrenOfType (const Identifier& slug) const;
 
-            @param The new data to use
-        */
-        ValueTree setData (const ValueTree& data);
+protected:
 
-        int32 getNumChildren() const { return objectData.getNumChildren(); }
+    /** Override this to handle special data validation This is called
+        during setData
 
-        /** Count the number of children with a type */
-        int32 countChildrenOfType (const Identifier& slug) const;
+        @param data The new data to set
+    */
+    virtual bool canAcceptData (const ValueTree& data);
 
-    protected:
+    /** Override this to handle special data setting. This is called during
+        setData and only if canAcceptData returns true
 
-        /** Override this to handle special data validation This is called
-            during setData
+        @param data The data being setData
+    */
+    virtual void setNodeData (const ValueTree& data);
+    ValueTree objectData;
 
-            @param data The new data to set
-        */
-        virtual bool canAcceptData (const ValueTree& data);
-
-        /** Override this to handle special data setting. This is called during
-            setData and only if canAcceptData returns true
-
-            @param data The data being setData
-        */
-        virtual void setNodeData (const ValueTree& data);
-        ValueTree objectData;
-
-    };
+};
 
 
 #endif  /* ELEMENT_OBJECT_MODEL_H */
