@@ -84,7 +84,9 @@ public:
 
     Impl (ClipFactory& owner, Engine& e)
         : engine (e), factory (owner)
-    { }
+    {
+        sampleRate.setValue ((double) 48000.f);
+    }
 
     ~Impl()
     {
@@ -125,6 +127,7 @@ public:
     OwnedArray<ClipSource> sources;
     OwnedArray<ClipType>   types;
     HashMap<int64, Shared<ClipData> > data;
+    Value sampleRate;
 
 };
 
@@ -154,12 +157,20 @@ ClipFactory::createSource (const ClipModel& model)
 
     ClipSource* source = type != nullptr ? type->createSource (impl->engine, model)
                                          : nullptr;
-    if (source) {
+    if (source)
+    {
+        source->parentRate.referTo (impl->sampleRate);
         source->setModel (model);
         impl->attachSourceData (type, source);
     }
 
     return source;
+}
+
+void
+ClipFactory::setSampleRate (const double rate)
+{
+    impl->sampleRate = rate;
 }
 
 ClipType* ClipFactory::getType (const int32 t) { return impl->types.getUnchecked (t); }

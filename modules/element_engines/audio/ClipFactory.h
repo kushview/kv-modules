@@ -56,6 +56,8 @@ public:
     int32 numTypes() const;
     void registerType (ClipType* type);
 
+    void setSampleRate (const double rate);
+
 private:
 
     class Impl; friend class Impl;

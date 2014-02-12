@@ -81,6 +81,11 @@
 
     protected:
 
+        inline double getParentRate() const
+        {
+            return (double) parentRate.getValue();
+        }
+
         inline virtual void setTime (const Range<double>& time) {
             setTimeSeconds (time);
         }
@@ -90,11 +95,16 @@
         }
 
         inline void setTimeSeconds (const double in, const double len) {
-            frames.setStart  (llrint (in * 48000.0f));
-            frames.setLength (llrint (len * 48000.0f));
+            setTimeFrames (std::floor (in * getParentRate()),
+                           llrint (len * getParentRate()));
         }
 
-        inline const ClipData* clipData() const { return data.get(); }
+        inline void setTimeFrames (int64 in, int64 len)
+        {
+            frames.setStart  (in);
+            frames.setLength (len);
+        }
+
         inline const ClipData* getClipData() const { return data.get(); }
 
     private:
@@ -103,6 +113,7 @@
         friend class Sequencer;
         friend class SequencerTrack;
 
+        Value parentRate;
         ValueTree state;
 
         // realtime params

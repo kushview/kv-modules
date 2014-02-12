@@ -5,10 +5,15 @@
       * Michael Fisher <mfisher@bketech.com>
 */
 
+#if JUCE_COMPLETION
+#include "modules/element_engines/element_engines.h"
+#endif
+
 ClipSource::ClipSource()
-    : frames (0, 48000),
+    : frames (0, 0),
       looping (false)
 {
+    parentRate = 48000.f;
     connectValues();
 }
 
@@ -26,12 +31,14 @@ ClipSource::connectValues (bool disconnect)
         start.removeListener (this);
         length.removeListener (this);
         offset.removeListener (this);
+        parentRate.removeListener (this);
     }
     else
     {
         start.addListener (this);
         length.addListener (this);
         offset.addListener (this);
+        parentRate.addListener (this);
     }
 }
 
@@ -53,5 +60,7 @@ void
 ClipSource::valueChanged (Value &value)
 {
     if (start.refersToSameSourceAs (value) || length.refersToSameSourceAs (value))
+        setTime (Range<double> (start.getValue(), length.getValue()));
+    else if (parentRate.refersToSameSourceAs (value))
         setTime (Range<double> (start.getValue(), length.getValue()));
 }
