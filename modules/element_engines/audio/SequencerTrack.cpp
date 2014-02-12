@@ -17,6 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if JUCE_COMPLETION
+#include "modules/element_engines/element_engines.h"
+#endif
 
 SequencerTrack::SequencerTrack (Sequencer& o, const TrackModel& t)
     : sequencer (o)
@@ -70,16 +73,35 @@ SequencerTrack::processBlock (AudioSampleBuffer &buffer, MidiBuffer &midi)
     if (! sequencer.position().isPlaying)
         return;
 
+    buffer.clear();
+
     if (ClipSource* src = cursorClip())
     {
+        const int32 clipStart = sequencer.position().timeInSamples - src->frameStart();
+        const int32 clipEnd   = clipStart + buffer.getNumSamples();
+
+        if (clipEnd <= 0)
+            return;
+
         AudioSourceChannelInfo info (buffer);
-        info.clearActiveBufferRegion();
 
-        const int64 start = sequencer.position().timeInSamples - src->frameStart();
-        const int64 end   = start + buffer.getNumSamples();
-
-        if (end > 0 && end < src->frameEnd()) {
-            src->setNextReadPosition (start);
+        if (clipStart < 0)
+        {
+            src->setNextReadPosition (0);
+            info.numSamples = clipStart + buffer.getNumSamples();
+            info.startSample = -clipStart;
+            src->getNextAudioBlock (info);
+        }
+        else if (clipStart >= 0 && clipEnd <= src->frameEnd())
+        {
+            src->setNextReadPosition (clipStart);
+            src->getNextAudioBlock (info);
+        }
+        else if (clipStart < src->frameEnd() && clipEnd >= src->frameEnd())
+        {
+            src->setNextReadPosition (0);
+            info.numSamples = src->frameEnd() - clipStart;
+            info.startSample = 0;
             src->getNextAudioBlock (info);
         }
     }

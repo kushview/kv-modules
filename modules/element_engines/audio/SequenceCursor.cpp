@@ -17,6 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if JUCE_COMPLETION
+#include "modules/element_engines/element_engines.h"
+#endif
 
 // Constructor.
 SequenceCursor::SequenceCursor (Sequencer& seq, int64 frame, DataType sync_type)
