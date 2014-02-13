@@ -18,7 +18,7 @@
 */
 
 #if JUCE_COMPLETION
-#include "../../element_base/element_base.h"
+#include "modules/element_base/element_base.h"
 #include "MidiSequencePlayer.h"
 #include "JuceHeader.h"
 #endif
@@ -31,14 +31,15 @@
 MidiSequencePlayer::MidiSequencePlayer()
     : midiSequence (new MidiMessageSequence())
 {
+    numBars     = 4;
     frameOffset = 0;
-    pShuttle = nullptr;
+    shuttle    = nullptr;
 }
 
 MidiSequencePlayer::~MidiSequencePlayer ()
 {
     midiSequence = nullptr;
-    pShuttle      = nullptr;
+    shuttle      = nullptr;
 }
 
 void MidiSequencePlayer::prepareToPlay (double sampleRate, int /* blockSize */)
@@ -54,7 +55,7 @@ void
 MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequence& seq,
                                     int32 startInSequence, int32 numSamples)
 {
-    const TimeScale& ts (pShuttle->getTimeScale());
+    const TimeScale& ts (shuttle->getTimeScale());
     const int32 numEvents = seq.getNumEvents();
     const double start = (double) ts.tickFromFrame (frameOffset + startInSequence);
 
@@ -77,15 +78,15 @@ MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequenc
     }
 }
 
-int
-MidiSequencePlayer::loopRepeatIndex()
+int32
+MidiSequencePlayer::getLoopRepeatIndex() const
 { 
-    return static_cast<int> (floor (pShuttle->positionInBeats())) / getLengthInBeats();
+    return static_cast<int> (floor (shuttle->positionInBeats())) / (double) getBeatLength();
 }
 
 double
-MidiSequencePlayer::loopBeatPosition()
+MidiSequencePlayer::getLoopBeatPosition() const
 {
-    return pShuttle->positionInBeats() - (loopRepeatIndex() * getLengthInBeats());
+    return shuttle->positionInBeats() - (getLoopRepeatIndex() * getBeatLength());
 }
 

@@ -47,36 +47,38 @@ public:
     void prepareToPlay (double sampleRate, int blockSize);
     void releaseResources();
 
-    /* Get the number of loops that have played since transport time zero (used for looping) */
-    int loopRepeatIndex();
+    /* Get the number of loops that have played since transport time zero (used
+       for looping) */
+    int32 getLoopRepeatIndex() const;
 
-    /* Get the current playback position (accounting for loops) for the sequence, relative to the current transport position (used for looping) */
-    double loopBeatPosition();
+    /* Get the current playback position (accounting for loops) for the sequence,
+       relative to the current transport position (used for looping) */
+    double getLoopBeatPosition() const;
 
     /* Get the length of the sequence expressed as a number of beats */
-    int getLengthInBeats() { return getLengthInBars() * getBeatsPerBar(); }
+    inline int32 getBeatLength() const { return getBarLength() * getBeatsPerBar(); }
 
     /* Get the length of the sequence expressed as a number of bars */
-    int getLengthInBars() { return 4; }
+    inline int32 getBarLength() const { return numBars; }
+    inline void setBarLength (int32 newNumBars) { numBars = newNumBars; }
 
     /* Get the number of beats per bar (currently hard-coded to four) */
-    double getBeatsPerBar() { return 4; }
+    int32 getBeatsPerBar() const { return 4; }
 
-    inline void setShuttle (Shuttle* s) { pShuttle = s; }
-    inline Shuttle* shuttle() const { return pShuttle; }
+    inline void setShuttle (Shuttle* s) { shuttle = s; }
+    inline Shuttle* getShuttle() const { return shuttle; }
     inline void setFrameOffset (int32 offset) { frameOffset = offset; }
 
 protected:
-
     MidiMessageSequence noteOffs;
     ScopedPointer<MidiMessageSequence> midiSequence;
     MidiMessage allNotesOff;
 
 private:
-
-    Shuttle* pShuttle;
+    Shuttle* shuttle;
     int32 frameOffset;
     double lastEventTime;
+    int32 numBars;
 
 };
 
