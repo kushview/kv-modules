@@ -68,7 +68,7 @@ Shuttle::getCurrentPosition (CurrentPositionInfo &result)
     result.ppqPositionOfLastBarStart = 0.0f;
 
     result.editOriginTime = 0.0f;
-    result.timeInSamples  = getPositionSeconds();
+    result.timeInSamples  = getPositionFrames();
     result.timeInSeconds  = getPositionSeconds();
     result.timeSigNumerator = ts.beatsPerBar();
     result.timeSigDenominator = ts.beatDivisor();
