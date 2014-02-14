@@ -46,17 +46,17 @@ public:
     double getFramesPerBeat() const;
     double getBeatsPerFrame() const;
 
-    void setDurationBeats (const float beats);
-    void setDurationFrames (const uint32 df);
-    void setDurationSeconds (const double seconds);
+    void setLengthBeats (const float beats);
+    void setLengthFrames (const uint32 df);
+    void setLengthSeconds (const double seconds);
 
     const double getLengthBeats()    const;
     const uint32 getLengthFrames()   const;
     const double getLengthSeconds()  const;
 
-    const double positionInBeats()   const;
-    const int32  positionInFrames()  const;
-    const double positionInSeconds() const;
+    const double getPositionBeats()   const;
+    const int32  getPositionFrames()  const;
+    const double getPositionSeconds() const;
 
     void resetRecording();
 
@@ -66,7 +66,7 @@ public:
 
     double getSampleRate() const;
     void setSampleRate (double rate);
-    int remainingFrames() const;
+    int getRemainingFrames() const;
     void advance (int nframes);
     bool getCurrentPosition (CurrentPositionInfo &result);
 
@@ -76,8 +76,8 @@ protected:
 
 private:
 
-    double mFramesPerBeat;
-    double mBeatsPerFrame;
+    double framesPerBeat;
+    double beatsPerFrame;
 
     int64 framePos;
     uint32 duration;

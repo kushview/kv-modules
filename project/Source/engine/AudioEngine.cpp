@@ -157,7 +157,7 @@ namespace Element {
                     for (int i = 0; i < numOutputChannels; ++i)
                         zeromem (outputChannelData[i], sizeof (float) * (size_t) numSamples);
                 }
-                else if (engine->transport()->remainingFrames() >= numSamples)
+                else if (engine->transport()->getRemainingFrames() >= numSamples)
                 {
                     processor->processBlock (buffer, incomingMidi);
                 }

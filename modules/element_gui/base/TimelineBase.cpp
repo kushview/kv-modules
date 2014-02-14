@@ -39,7 +39,7 @@ void
 TimelineIndicator::setPosition (double time, bool musical)
 {
     if (musical) {
-        const float bpm = (float) timeline()->timeScale().tempo();
+        const float bpm = (float) timeline()->timeScale().getTempo();
         time = (time * (60.0f / bpm));
     }
 
@@ -342,7 +342,7 @@ TimelineBase::valueChanged (Value &value)
     {
         updateTimeScale = true;
         scale.setTempo ((double) tempo.getValue());
-        scale.setPixelsPerBeat (60.f * ((double)scale.tempo() / 120.f));
+        scale.setPixelsPerBeat (60.f * ((double)scale.getTempo() / 120.f));
     }
 
     if (updateTimeScale)
@@ -360,7 +360,7 @@ double
 TimelineBase::tickToTime (const double tick) const
 {
     int64 frame = scale.frameFromTick (tick);
-    return (double) frame / (double) scale.sampleRate();
+    return (double) frame / (double) scale.getSampleRate();
 }
 
 int32
@@ -388,7 +388,7 @@ TimelineBase::timeToX (double time, const TimeUnit unit) const
 int32
 TimelineBase::secondsToX (double time) const
 {
-    int64 frame = llrint (time * (double) scale.sampleRate());
+    int64 frame = llrint (time * (double) scale.getSampleRate());
     int pixel = scale.pixelFromFrame (frame);
     return pixel + mTrackWidth;
 }
@@ -411,7 +411,7 @@ double
 TimelineBase::xToSeconds (int32 x) const
 {
     normalX (x);
-    return ((double) scale.frameFromPixel (x) / (double) scale.sampleRate());
+    return ((double) scale.frameFromPixel (x) / (double) scale.getSampleRate());
 }
 
 double

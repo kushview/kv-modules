@@ -42,90 +42,20 @@ Shuttle::Shuttle()
     ts.updateScale();
 
     framePos = 0;
-    mFramesPerBeat  = Tempo::framesPerBeat ((double) ts.sampleRate(), ts.tempo());
-    mBeatsPerFrame  = 1.0f / mFramesPerBeat;
-    playing = recording = false;
+    framesPerBeat  = Tempo::framesPerBeat ((double) ts.getSampleRate(), ts.getTempo());
+    beatsPerFrame  = 1.0f / framesPerBeat;
+    playing = recording = looping = false;
 }
 
 Shuttle::~Shuttle() { }
 
-bool Shuttle::isLooping()   const { return looping; }
-bool Shuttle::isPlaying()   const { return playing; }
-bool Shuttle::isRecording() const { return recording; }
+double Shuttle::getBeatsPerFrame() const { return beatsPerFrame; }
+double Shuttle::getFramesPerBeat() const { return framesPerBeat; }
 
-double Shuttle::getFramesPerBeat() const { return mFramesPerBeat; }
-double Shuttle::getBeatsPerFrame() const { return mBeatsPerFrame; }
-
-void Shuttle::setDurationBeats (const float beats)
+bool
+Shuttle::getCurrentPosition (CurrentPositionInfo &result)
 {
-    setDurationFrames (mFramesPerBeat * beats);
-}
-
-void Shuttle::setDurationSeconds (const double seconds)
-{
-    setDurationFrames (llrint (getSampleRate() * seconds));
-}
-
-void Shuttle::setDurationFrames (const uint32 df) { duration = df; }
-
-const double Shuttle::getLengthBeats()    const { return getLengthSeconds() * (getTempo() / 60.0f); }
-const uint32 Shuttle::getLengthFrames()   const { return duration; }
-const double Shuttle::getLengthSeconds()  const { return (double) getLengthFrames() / (double) ts.sampleRate(); }
-
-const double Shuttle::positionInBeats()   const { return positionInSeconds() * (getTempo() / 60.0f); }
-const int32  Shuttle::positionInFrames()  const { return framePos; }
-const double Shuttle::positionInSeconds() const { return (double) framePos / (double) ts.sampleRate(); }
-
-void Shuttle::resetRecording() { }
-
-const TimeScale& Shuttle::getTimeScale() const { return ts; }
-float Shuttle::getTempo() const { return ts.tempo(); }
-
-void Shuttle::setTempo (float bpm)
-{
-    if (getTempo() != bpm)
-    {
-        double oldTime = positionInBeats();
-        ts.setTempo (bpm);
-        ts.updateScale();
-        mFramesPerBeat = Tempo::framesPerBeat (ts.sampleRate(), ts.tempo());
-        framePos = llrint (oldTime * mFramesPerBeat);
-    }
-}
-
-double Shuttle::getSampleRate() const
-{
-    return (double) ts.sampleRate();
-}
-
-void Shuttle::setSampleRate (double rate)
-{
-    if (sampleRate == rate)
-        return;
-
-    const double oldTime = positionInSeconds();
-    const double oldLenSec = (double) getLengthSeconds();
-    ts.setSampleRate (rate);
-    ts.updateScale();
-
-    framePos        = llrint (oldTime * ts.sampleRate());
-    duration        = (uint32) (oldLenSec * (float) ts.sampleRate());
-    mFramesPerBeat  = Tempo::framesPerBeat (ts.sampleRate(), ts.tempo());
-    mBeatsPerFrame  = 1.0f / mFramesPerBeat;
-}
-
-int Shuttle::remainingFrames() const { return getLengthFrames() - framePos; }
-
-void Shuttle::advance (int nframes)
-{
-    framePos += nframes;
-    if (duration > 0 && framePos >= getLengthFrames())
-        framePos = framePos - getLengthFrames();
-}
-
-bool Shuttle::getCurrentPosition (CurrentPositionInfo &result)
-{
-    result.bpm = (double) ts.tempo();
+    result.bpm = (double) ts.getTempo();
     result.frameRate = AudioPlayHead::fps24;
 
     result.isLooping   = true;
@@ -138,10 +68,79 @@ bool Shuttle::getCurrentPosition (CurrentPositionInfo &result)
     result.ppqPositionOfLastBarStart = 0.0f;
 
     result.editOriginTime = 0.0f;
-    result.timeInSamples  = positionInFrames();
-    result.timeInSeconds  = positionInSeconds();
-    result.timeSigDenominator = ts.beatsPerBar();
+    result.timeInSamples  = getPositionSeconds();
+    result.timeInSeconds  = getPositionSeconds();
+    result.timeSigNumerator = ts.beatsPerBar();
     result.timeSigDenominator = ts.beatDivisor();
 
     return true;
 }
+
+const double Shuttle::getLengthBeats()    const { return getLengthSeconds() * (getTempo() / 60.0f); }
+const uint32 Shuttle::getLengthFrames()   const { return duration; }
+const double Shuttle::getLengthSeconds()  const { return (double) duration / (double) ts.getSampleRate(); }
+
+const double Shuttle::getPositionBeats()   const { return getPositionSeconds() * (getTempo() / 60.0f); }
+const int32  Shuttle::getPositionFrames()  const { return framePos; }
+const double Shuttle::getPositionSeconds() const { return (double) framePos / (double) ts.getSampleRate(); }
+
+int    Shuttle::getRemainingFrames() const { return getLengthFrames() - framePos; }
+double Shuttle::getSampleRate()      const { return (double) ts.getSampleRate(); }
+float  Shuttle::getTempo()           const { return ts.getTempo(); }
+const TimeScale& Shuttle::getTimeScale() const { return ts; }
+
+bool Shuttle::isLooping()   const { return looping; }
+bool Shuttle::isPlaying()   const { return playing; }
+bool Shuttle::isRecording() const { return recording; }
+
+void
+Shuttle::resetRecording()
+{
+    // TODO:
+}
+
+void Shuttle::setLengthBeats   (const float beats) { setLengthFrames (framesPerBeat * beats); }
+void Shuttle::setLengthSeconds (const double seconds) { setLengthFrames (llrint (getSampleRate() * seconds)); }
+void Shuttle::setLengthFrames  (const uint32 df) { duration = df; }
+
+void
+Shuttle::setTempo (float bpm)
+{
+    if (getTempo() != bpm)
+    {
+        double oldTime = getPositionBeats();
+        ts.setTempo (bpm);
+        ts.updateScale();
+        framesPerBeat = Tempo::framesPerBeat (ts.getSampleRate(), ts.getTempo());
+        framePos = llrint (oldTime * framesPerBeat);
+    }
+}
+
+void
+Shuttle::setSampleRate (double rate)
+{
+    if (sampleRate == rate)
+        return;
+
+    const double oldTime = getPositionSeconds();
+    const double oldLenSec = (double) getLengthSeconds();
+    ts.setSampleRate (rate);
+    ts.updateScale();
+
+    framePos        = llrint (oldTime * ts.getSampleRate());
+    duration        = (uint32) (oldLenSec * (float) ts.getSampleRate());
+    framesPerBeat  = Tempo::framesPerBeat (ts.getSampleRate(), ts.getTempo());
+    beatsPerFrame  = 1.0f / framesPerBeat;
+}
+
+
+
+void
+Shuttle::advance (int nframes)
+{
+    framePos += nframes;
+    if (duration > 0 && framePos >= duration)
+        framePos = framePos - duration;
+}
+
+

@@ -1,5 +1,4 @@
-/****************************************************************************
-   TimeScale.h
+/* TimeScale.h - This file is part of Element
 
    Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
    Adapted/Modified 2013 Michael Fisher <mfisher31@gmail.com>
@@ -17,13 +16,12 @@
    You should have received a copy of the GNU General Public License along
    with this program; if not, write to the Free Software Foundation, Inc.,
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-*****************************************************************************/
+*/
 
 #ifndef ELEMENT_TIMESCALE_H
 #define ELEMENT_TIMESCALE_H
 
-
+#define beatToFrame (beat, bpm, rate)
 
 /** Time scaling helper class */
 class TimeScale
@@ -57,7 +55,7 @@ public:
 
     /** Sample rate (frames per second) */
     void setSampleRate (unsigned int rate) { mSampleRate = rate; }
-    unsigned int sampleRate() const { return mSampleRate; }
+    unsigned int getSampleRate() const { return mSampleRate; }
 
     /** Resolution (ticks per quarter note; PPQN) */
     void setTicksPerBeat (unsigned short ticks) { mTicksPerBeat = ticks; }
@@ -366,7 +364,7 @@ public:
 
     /** Return the timescale's current tempo (at the first node) */
     float
-    tempo() const
+    getTempo() const
 	{
         Node *node = mNodes.first();
         return (node ? node->tempo : 120.0f);

@@ -59,34 +59,42 @@ MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequenc
     const int32 numEvents = seq.getNumEvents();
     const double start = (double) ts.tickFromFrame (frameOffset + startInSequence);
 
-    for (int32 ev = seq.getNextIndexAtTime (start); ev < numEvents;)
+    for (int32 i = seq.getNextIndexAtTime (start); i < numEvents;)
     {
-        const double tick = seq.getEventTime (ev);
+        const EventHolder* const ev = seq.getEventPointer (i);
+        const double tick = ev->message.getTimeStamp();
         const int32 frameInSeq = ts.frameFromTick (tick);
-        const int32 timeStamp  = frameInSeq - startInSequence;
+        const int32 timeStamp = frameInSeq - startInSequence;
 
-        MidiMessage* msg = &seq.getEventPointer(ev)->message;
-        if (timeStamp >= numSamples || ! msg)
-        {
+        if (timeStamp >= numSamples)
             break;
+
+        target.addEvent (ev->message, timeStamp);
+
+        if (ev->message.isNoteOn())
+        {
+            const double ots = ev->noteOffObject->message.getTimeStamp() / (double) Shuttle::PPQ;
+            if (ots >= (double) getBeatLength())
+            {
+                ts.frameFromTick (ots * (double) Shuttle::PPQ);
+            }
         }
 
-        target.addEvent (*msg, timeStamp);
-
         lastEventTime = tick;
-        ++ev;
+
+        ++i;
     }
 }
 
 int32
 MidiSequencePlayer::getLoopRepeatIndex() const
 { 
-    return static_cast<int> (floor (shuttle->positionInBeats())) / (double) getBeatLength();
+    return static_cast<int> (floor (shuttle->getPositionBeats())) / (double) getBeatLength();
 }
 
 double
 MidiSequencePlayer::getLoopBeatPosition() const
 {
-    return shuttle->positionInBeats() - (getLoopRepeatIndex() * getBeatLength());
+    return shuttle->getPositionBeats() - (getLoopRepeatIndex() * getBeatLength());
 }
 
