@@ -82,7 +82,7 @@ private:
     int64 framePos;
     uint32 duration;
     double sampleRate;
-    TimeScale ts;
+    Element::TimeScale ts;
 
     double ppqLoopStart;
     double ppqLoopEnd;

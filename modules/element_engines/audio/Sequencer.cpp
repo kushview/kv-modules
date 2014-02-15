@@ -258,7 +258,6 @@ Sequencer::valueTreeChildAdded (ValueTree& parent, ValueTree& child)
         if (SequencerTrack* track = trackProcessor (TrackModel (parent)))
         {
             ClipModel model (child);
-            DBG ("length: " + String(model.length()));
             if (ClipSource* clip = engine.createSource (model))
             {
                 clip->prepareToPlay (getBlockSize(), getSampleRate());
@@ -268,12 +267,12 @@ Sequencer::valueTreeChildAdded (ValueTree& parent, ValueTree& child)
             }
             else
             {
-                Logger::writeToLog ("ClipFactory failed to create clip");
+                DBG ("ClipFactory failed to create clip");
             }
         }
         else
         {
-            std::clog << " couldn't extract a Track processor from the model\n";
+            DBG (" couldn't extract a Track processor from the model");
         }
     }
 }

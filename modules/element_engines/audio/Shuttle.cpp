@@ -37,14 +37,15 @@ Shuttle::Shuttle()
 {
     ts.setTempo (120.0f);
     ts.setSampleRate (48000);
-    duration = 48000 * 4;
     ts.setTicksPerBeat (Shuttle::PPQ);
     ts.updateScale();
 
+    duration = 48000 * 4;
     framePos = 0;
     framesPerBeat  = Tempo::framesPerBeat ((double) ts.getSampleRate(), ts.getTempo());
     beatsPerFrame  = 1.0f / framesPerBeat;
-    playing = recording = looping = false;
+    playing = recording = false;
+    looping = true;
 }
 
 Shuttle::~Shuttle() { }
@@ -101,18 +102,24 @@ Shuttle::resetRecording()
 
 void Shuttle::setLengthBeats   (const float beats) { setLengthFrames (framesPerBeat * beats); }
 void Shuttle::setLengthSeconds (const double seconds) { setLengthFrames (llrint (getSampleRate() * seconds)); }
-void Shuttle::setLengthFrames  (const uint32 df) { duration = df; }
+void Shuttle::setLengthFrames  (const uint32 df) { duration = df; jassertfalse; }
 
 void
 Shuttle::setTempo (float bpm)
 {
-    if (getTempo() != bpm)
+
+    if (ts.getTempo() != bpm && bpm > 0.0f)
     {
         double oldTime = getPositionBeats();
+        double oldLen  = getLengthBeats();
+
         ts.setTempo (bpm);
         ts.updateScale();
-        framesPerBeat = Tempo::framesPerBeat (ts.getSampleRate(), ts.getTempo());
+        framesPerBeat = (double) Tempo::framesPerBeat ((double) ts.getSampleRate(), ts.getTempo());
+
+        beatsPerFrame  = 1.0f / framesPerBeat;
         framePos = llrint (oldTime * framesPerBeat);
+        duration = (uint32) llrint (oldLen * framesPerBeat);
     }
 }
 
@@ -133,14 +140,12 @@ Shuttle::setSampleRate (double rate)
     beatsPerFrame  = 1.0f / framesPerBeat;
 }
 
-
-
 void
 Shuttle::advance (int nframes)
 {
     framePos += nframes;
+
+    DBG ("shuttle dur: " + String(duration));
     if (duration > 0 && framePos >= duration)
         framePos = framePos - duration;
 }
-
-
