@@ -20,19 +20,21 @@
 #ifndef ELEMENT_RANGE_TYPES_H
 #define ELEMENT_RANGE_TYPES_H
 
-class FrameSpan :  public Range<int64>
+#include <stdint.h>
+
+class FrameSpan :  public Range<int64_t>
 {
 
 public:
 
-    inline FrameSpan (int64 i, int64 o) : Range<int64> (i, o) { }
+    inline FrameSpan (int64_t i, int64_t o) : Range<int64_t> (i, o) { }
     inline ~FrameSpan() { }
-    inline int64 inPoint()  const { return getStart(); }
-    inline int64 outPoint() const { return getEnd(); }
-    inline int64 length() const { return getLength(); }
+    inline int64_t inPoint()  const { return getStart(); }
+    inline int64_t outPoint() const { return getEnd(); }
+    inline int64_t length() const { return getLength(); }
     inline bool isZero() const { return getLength() == 0; }
-    inline void setInPoint (const int64 in) { setStart (in); }
-    inline void setOutPoint (const int64 out) { setEnd (out); }
+    inline void setInPoint (const int64_t in) { setStart (in); }
+    inline void setOutPoint (const int64_t out) { setEnd (out); }
 
 private:
 

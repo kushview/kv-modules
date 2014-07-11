@@ -24,6 +24,7 @@
 
 namespace FileHelpers {
 
+    using juce::int64;
     int64 calculateStreamHashCode (InputStream& stream);
     int64 calculateFileHashCode (const File& file);
 
@@ -77,7 +78,7 @@ public:
 private:
     File file;
     Time fileModificationTime;
-    int64 fileHashCode, fileSize;
+    juce::int64 fileHashCode, fileSize;
 };
 
 
