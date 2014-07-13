@@ -29,7 +29,7 @@ namespace Gui {
         : DocumentWindow ("Element", Colours::darkgrey, DocumentWindow::allButtons, false),
           gui (gui_)
     {
-        setUsingNativeTitleBar (false);
+        setUsingNativeTitleBar (true);
         setResizable (true, false);
 
         mainMenu = new MainMenu (*this);

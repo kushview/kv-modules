@@ -12,5 +12,5 @@ fi
 if [ -d "build/Applications/Element.app" ]; then
     $runner build/Applications/Element.app/Contents/MacOS/Element
 else
-    $runner build/src/element/element
+    $runner build/element
 fi

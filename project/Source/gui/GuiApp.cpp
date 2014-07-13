@@ -202,8 +202,6 @@ namespace Gui {
         mainWindow->setVisible (true);
         dispatch->startTimer (250);
 
-        openWindow (ELEMENT_PLUGIN_MANAGER);
-
         File sess (pf->getValue ("lastSession"));
         if (sess.existsAsFile()) {
             sessionDoc->loadFrom (sess, true);

@@ -17,12 +17,14 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include "JuceHeader.h"
 #include "engine/AudioEngine.h"
 #include "engine/InternalFormat.h"
 #include "session/Session.h"
 #include "gui/Alerts.h"
 #include "gui/GuiApp.h"
 #include "Globals.h"
+
 
 namespace juce {
     extern void initEGL();
@@ -42,7 +44,7 @@ public:
    Application() { }
 
    const String getApplicationName()       { return "Element"; }
-   const String getApplicationVersion()    { return "0.0.1"; }
+   const String getApplicationVersion()    { return ProjectInfo::versionString; }
    bool moreThanOneInstanceAllowed()       { return true; }
 
 

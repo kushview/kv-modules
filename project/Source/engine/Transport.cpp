@@ -47,7 +47,7 @@ namespace Element {
         }
 
         if (playing) {
-            playPos->set (positionInSeconds());
+            playPos->set (getPositionSeconds());
         }
 
     }
@@ -61,11 +61,10 @@ namespace Element {
     void
     Transport::postProcess (int nframes)
     {
-        if (tempo() != nextTempo.get())
+        if (getTempo() != nextTempo.get())
         {
             setTempo (nextTempo.get());
-            std::clog << "Realtime Transport Update: BPM: " << tempo() << std::endl;
-            nextTempo.set (tempo());
+            nextTempo.set (getTempo());
         }
     }
 }

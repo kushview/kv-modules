@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cross=i686-w64-mingw32
+gccver="4.9"
+gccdir="/usr/lib/gcc/${cross}/${gccver}"
+sysdir="/usr/${cross}/lib"
+tgtdir="build"
+
+cp -vf /opt/mantis/i686-w64-mingw32/lib/*.dll build
+cp "${gccdir}/libgcc_s_sjlj-1.dll" "${tgtdir}"
+cp "${gccdir}/libstdc++-6.dll" "${tgtdir}"
+cp "${sysdir}/libwinpthread-1.dll" "${tgtdir}"

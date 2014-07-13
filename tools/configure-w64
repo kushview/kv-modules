@@ -1,0 +1,7 @@
+#!/bin/bash
+
+export CPPFLAGS="-I/opt/mantis/i686-w64-mingw32/include"
+export PKG_CONFIG_PATH=/opt/mantis/i686-w64-mingw32/lib/pkgconfig
+export PKG_CONFIG_LIBDIR=$PKG_CONFIG_PATH
+
+./waf configure --cross=i686-w64-mingw32 $*
