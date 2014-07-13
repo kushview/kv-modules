@@ -6,8 +6,6 @@ import os, sys
 sys.path.append (os.getcwd() + "/tools/waf")
 import cross, juce
 
-common_tools = 'juce'
-
 def options(opt):
     opt.load ("compiler_c compiler_cxx cross juce")
 
@@ -150,7 +148,7 @@ def make_desktop (bld, slug):
 
         bld.install_files (element_data, 'data/element_icon.xpm')
 
-def build (bld):
+def build_mingw (bld):
     node = bld.path.find_resource ('project/Element.jucer')
     proj = juce.IntrojucerProject (bld, node.relpath())
     
@@ -189,7 +187,6 @@ def build (bld):
 
     bld.add_group()
 
-    make_desktop (bld, 'element')
     obj = bld.program (
         source = proj.getProjectCode(),
         includes = ['project/JuceLibraryCode', 'project/Source'],
@@ -197,6 +194,48 @@ def build (bld):
         target = 'element',
         linkflags = ['-mwindows']
     )
+
+def build_linux (bld):
+    node = bld.path.find_resource ('project/Element.jucer')
+    proj = juce.IntrojucerProject (bld, node.relpath())
+
+    if not proj.isValid():
+        exit (1)
+
+    linuxEnv = bld.env.derive()
+
+    obj = bld.shlib (
+        source   = proj.getLibraryCode(),
+        includes = ['project/JuceLibraryCode'],
+        name = 'libelement',
+        target = 'element',
+        use = ['LILV', 'SUIL', 'ALSA', 'FREETYPE2'],
+        vnum = '0.0.1',
+        env = linuxEnv
+    )
+
+    use_egl = False
+    if use_egl:
+        pass
+    else:
+        obj.use += ['GL']
+
+    bld.add_group()
+
+    make_desktop (bld, 'element')
+    obj = bld.program (
+        source = proj.getProjectCode(),
+        includes = ['project/JuceLibraryCode', 'project/Source'],
+        use = ['libelement'],
+        target = 'element',
+        linkflags = '-Wl,-rpath,$ORIGIN'
+    )
+
+def build (bld):
+    if cross.is_windows (bld):
+        build_mingw (bld)
+    else:
+        build_linux (bld)
 
 def install_headers (bld):
     if bld.options.install_headers:

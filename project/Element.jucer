@@ -270,6 +270,6 @@
                JUCE_CHECK_MEMORY_LEAKS="disabled" JUCE_X11="disabled" ELEMENT_PLATFORM_EGL="enabled"
                JUCE_USE_X11="disabled" JUCE_USE_EGL="enabled" JUCE_XEVENTS="enabled"
                JUCE_ASIO="disabled" JUCE_WASAPI="disabled" JUCE_DIRECTSOUND="disabled"
-               JUCE_ALSA="disabled" JUCE_USE_ANDROID_OPENSLES="disabled" JUCE_USE_CDREADER="disabled"
+               JUCE_ALSA="enabled" JUCE_USE_ANDROID_OPENSLES="disabled" JUCE_USE_CDREADER="disabled"
                JUCE_USE_CDBURNER="disabled"/>
 </JUCERPROJECT>
