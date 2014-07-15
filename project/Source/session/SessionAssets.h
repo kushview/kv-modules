@@ -34,9 +34,8 @@ public:
 
 protected:
 
-    Session& session;
-
     friend class Session;
+    Session& session;
 
     class RelatedFileQueue :  public AsyncUpdater
     {

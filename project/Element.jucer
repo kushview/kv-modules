@@ -244,6 +244,39 @@
         <MODULEPATH id="juce_opengl" path="../../libjuce/src/modules"/>
       </MODULEPATHS>
     </XCODE_IPHONE>
+    <ANDROID targetFolder="Builds/Android" androidActivityClass="com.yourcompany.Element"
+             androidSDKPath="${user.home}/SDKs/android-sdk" androidNDKPath="${user.home}/SDKs/android-ndk"
+             androidMinimumSDK="8" androidInternetNeeded="1" androidKeyStore="${user.home}/.android/debug.keystore"
+             androidKeyStorePass="android" androidKeyAlias="androiddebugkey"
+             androidKeyAliasPass="android">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" androidArchitectures="armeabi armeabi-v7a" isDebug="1"
+                       optimisation="1" targetName="Element"/>
+        <CONFIGURATION name="Release" androidArchitectures="armeabi armeabi-v7a" isDebug="0"
+                       optimisation="2" targetName="Element"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="lvtk_plugins" path="../../lvtk-juce/modules"/>
+        <MODULEPATH id="lvtk_core" path="../../lvtk-juce/modules"/>
+        <MODULEPATH id="juce_opengl" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_events" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_core" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../libjuce/src/modules"/>
+        <MODULEPATH id="element_models" path="../modules"/>
+        <MODULEPATH id="element_gui" path="../modules"/>
+        <MODULEPATH id="element_engines" path="../modules"/>
+        <MODULEPATH id="element_base" path="../modules"/>
+      </MODULEPATHS>
+    </ANDROID>
   </EXPORTFORMATS>
   <MODULES>
     <MODULES id="element_base" showAllCode="1" useLocalCopy="0"/>

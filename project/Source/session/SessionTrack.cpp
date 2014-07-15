@@ -58,15 +58,13 @@ namespace Element {
         return invalid;
     }
 
-    Session::Track
-    Session::Track::next() const
+    Session::Track Session::Track::next() const
     {
         return Track (session.get(), session->sequenceNode().getChild (
                           session->sequenceNode().indexOf (trackData) + 1));
     }
 
-    Session::Track
-    Session::Track::previous() const
+    Session::Track Session::Track::previous() const
     {
         return Track (session.get(), session->sequenceNode().getChild (
                       session->sequenceNode().indexOf (trackData) - 1));
@@ -79,8 +77,7 @@ namespace Element {
         session->sequenceNode().removeChild (trackData, undoManager());
     }
 
-    bool
-    Session::Track::supportsAsset (const AssetItem &asset) const
+    bool Session::Track::supportsAsset (const AssetItem &asset) const
     {
         return supportsFile (asset.getFile());
     }
