@@ -122,7 +122,7 @@ namespace Element {
 
                 for (int i = numOutputChannels; i < numInputChannels; ++i)
                 {
-                    channels[totalNumChans] = tempBuffer.getSampleData (i - numOutputChannels, 0);
+                    channels[totalNumChans] = tempBuffer.getWritePointer (i - numOutputChannels, 0);
                     memcpy (channels[totalNumChans], inputChannelData[i], sizeof (float) * (size_t) numSamples);
                     ++totalNumChans;
                 }

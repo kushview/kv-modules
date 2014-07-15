@@ -170,7 +170,7 @@ public:
 
     void perform (AudioSampleBuffer& sharedBufferChans, const OwnedArray <MidiBuffer>&, const int numSamples)
     {
-        float* data = sharedBufferChans.getSampleData (channel, 0);
+        float* data = sharedBufferChans.getWritePointer (channel, 0);
 
         for (int i = numSamples; --i >= 0;)
         {
@@ -241,7 +241,7 @@ public:
     void perform (AudioSampleBuffer& sharedBufferChans, const OwnedArray <MidiBuffer>& sharedMidiBuffers, const int numSamples)
     {
         for (int i = totalChans; --i >= 0;) {
-            channels[i] = sharedBufferChans.getSampleData (audioChannelsToUse.getUnchecked (i), 0);
+            channels[i] = sharedBufferChans.getWritePointer (audioChannelsToUse.getUnchecked (i), 0);
         }
 
         AudioSampleBuffer buffer (channels, totalChans, numSamples);
