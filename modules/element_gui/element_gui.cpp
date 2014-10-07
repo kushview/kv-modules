@@ -23,23 +23,24 @@
 namespace Element {
 
 #include "assets/AssetTreeView.cpp"
-
 #include "base/DecibelScaleComponent.cpp"
-#include "base/GraphEditorBase.cpp"
 #include "base/HighQualityMeter.cpp"
 #include "base/Icons.cpp"
-#include "base/MidiEditorBody.cpp"
 #include "base/LookAndFeel.cpp"
-#include "base/PluginWindow.cpp"
-#include "base/TimelineBase.cpp"
-#include "base/TimelineClip.cpp"
 #include "base/TreeviewBase.cpp"
-
 #include "docking/Dock.cpp"
 #include "docking/DockArea.cpp"
 #include "docking/DockItem.cpp"
 #include "docking/DockLayout.cpp"
 
 #include "embed/NativeComponent.cpp"
-    
+
+#if JUCE_MODULE_AVAILABLE_element_engines
+ #include "base/GraphEditorBase.cpp"
+ #include "base/MidiEditorBody.cpp"
+ #include "base/PluginWindow.cpp"
+ #include "base/TimelineBase.cpp"
+ #include "base/TimelineClip.cpp"
+#endif
+
 }

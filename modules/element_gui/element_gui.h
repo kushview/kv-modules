@@ -21,9 +21,14 @@
 #define ELEMENT_GUI_H_INCLUDED
 
 #include "../element_models/element_models.h"
-#include "../element_engines/element_engines.h"
+
+#if JUCE_MODULE_AVAILABLE_element_engines
+ #include "../element_engines/element_engines.h"
+ #include "modules/juce_audio_processors/juce_audio_processors.h"
+#endif
+
 #include "modules/juce_gui_basics/juce_gui_basics.h"
-#include "modules/juce_audio_processors/juce_audio_processors.h"
+
 
 namespace Element {
 
@@ -33,20 +38,25 @@ namespace Element {
 #include "base/LookAndFeel.h"
     
 // timelines
-#include "base/TrackHeights.h"
-#include "base/TimelineBase.h"
-#include "base/TimelineClip.h"
-#include "base/NoteClipItem.h"
-#include "base/MidiEditorBody.h"
+#if JUCE_MODULE_AVAILABLE_element_engines
+ #include "base/TrackHeights.h"
+ #include "base/TimelineBase.h"
+ #include "base/TimelineClip.h"
+ #include "base/NoteClipItem.h"
+ #include "base/MidiEditorBody.h"
 
 // graph stuff
 #include "base/GraphEditorBase.h"
 
+// misc audio/video engine stuff
+#include "base/PluginWindow.h"
+    
+#endif
+    
 // misc widgets
 #include "base/DecibelScaleComponent.h"
 #include "base/HighQualityMeter.h"
 #include "base/IconButton.h"
-#include "base/PluginWindow.h"
 #include "base/SkinDial.h"
 #include "base/TreeviewBase.h"
 
