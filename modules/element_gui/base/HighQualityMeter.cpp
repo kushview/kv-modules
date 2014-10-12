@@ -190,6 +190,14 @@ HighQualityMeter::HighQualityMeter (const int numPorts)
     m_fScale (0.0f),
     m_iPeakFalloff (HQ_METER_PEAK_FALLOFF)
 {
+    getLookAndFeel().setColour (HighQualityMeter::levelOverColourId, Colours::yellow.darker());
+    getLookAndFeel().setColour (HighQualityMeter::level0dBColourId, Colours::whitesmoke);
+    getLookAndFeel().setColour (HighQualityMeter::level3dBColourId, Colours::lightgreen);
+    getLookAndFeel().setColour (HighQualityMeter::level6dBColourId, Colours::green);
+    getLookAndFeel().setColour (HighQualityMeter::level10dBColourId, Colours::darkgreen.darker());
+    getLookAndFeel().setColour (HighQualityMeter::backgroundColourId, Colours::transparentBlack);
+    getLookAndFeel().setColour (HighQualityMeter::foregroundColourId, Colours::transparentWhite);
+
     for (int i = 0; i < LevelCount; i++)
         m_levels[i] = 0;
 
