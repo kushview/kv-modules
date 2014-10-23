@@ -1,6 +1,6 @@
 
-#ifndef ELEMENT_GUI_DOCK_HPP
-#define ELEMENT_GUI_DOCK_HPP
+#ifndef ELEMENT_GUI_DOCK_H
+#define ELEMENT_GUI_DOCK_H
 
 
     class DockArea;
@@ -279,4 +279,4 @@
 
     };
 
-#endif /* ELEMENT_GUI_DOCK_HPP */
+#endif /* ELEMENT_GUI_DOCK_H */

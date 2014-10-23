@@ -1,7 +1,7 @@
 /*
     Utility.h - This file is part of Element
 
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
       * Adapted from Introjucer Utilities - http://juce.com
 
     This program is free software; you can redistribute it and/or modify

@@ -1,14 +1,14 @@
 /*
   skindial.hpp - __CLASS__ Definition
 
-  Copyright (C) 2013  BKE, LLC.  All rights reserved.
+  Copyright (C) 2014  Kushview, LLC.  All rights reserved.
   Michael Fisher <mfisher@bketech.com>
 
  */
 /** @skindial.hpp */
 
-#ifndef BKE_SKINDIAL_HPP
-#define BKE_SKINDIAL_HPP
+#ifndef ELEMENT_SKINDIAL_H
+#define ELEMENT_SKINDIAL_H
 
    class SkinDial : public Slider
    {
@@ -90,4 +90,4 @@
 
    };
 
-#endif /* BKE_SKINDIAL_HPP */
+#endif /* ELEMENT_SKINDIAL_H */

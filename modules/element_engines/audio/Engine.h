@@ -1,6 +1,6 @@
 /*
     Engine.h - This file is part of Element
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_ENGINE_BASE_HPP
-#define ELEMENT_ENGINE_BASE_HPP
+#ifndef ELEMENT_ENGINE_BASE_H
+#define ELEMENT_ENGINE_BASE_H
 
 
 class Engine
@@ -30,4 +30,4 @@ public:
     
 };
 
-#endif // ELEMENT_ENGINE_BASE_HPP
+#endif // ELEMENT_ENGINE_BASE_H

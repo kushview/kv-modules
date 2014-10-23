@@ -1,15 +1,15 @@
 /*
   jack.hpp - Jack Audio helper class
 
-  Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+  Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
  */
 /** @file jack.hpp */
 
 #if ELEMENT_JACK_DEVICE
 
-#ifndef ELEMENT_JACK_HPP
-#define ELEMENT_JACK_HPP
+#ifndef ELEMENT_JACK_H
+#define ELEMENT_JACK_H
 
 #include <vector>
 #include <jack/jack.h>
@@ -122,6 +122,6 @@ namespace Element {
     };
 
 }
-#endif /* ELEMENT_JACK_HPP */
+#endif /* ELEMENT_JACK_H */
 
 #endif

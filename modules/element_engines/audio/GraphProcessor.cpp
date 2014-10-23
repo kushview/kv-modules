@@ -1,6 +1,6 @@
 /*
    This file is part of Element
-   Copyright (c) 2013  Michael Fisher <mfisher31@gmail.com>
+   Copyright (c) 2014  Kushview, LLC.  All rights reserved.
 
    Adapted from JUCE's AudioProcessorGraph
 

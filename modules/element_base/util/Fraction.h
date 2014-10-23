@@ -1,6 +1,6 @@
 /*
     fraction.hpp - This file is part of Element
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
 */
 /** @headerfile util/fraction.hpp */
 
-#ifndef ELEMENT_FRACTION_HPP
-#define ELEMENT_FRACTION_HPP
+#ifndef ELEMENT_FRACTION_H
+#define ELEMENT_FRACTION_H
 
 
     struct FractionalGain
@@ -53,4 +53,4 @@
 
 
 
-#endif  /* ELEMENT_FRACTION_HPP */
+#endif  /* ELEMENT_FRACTION_H */

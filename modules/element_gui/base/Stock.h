@@ -5,8 +5,8 @@
  *      Author: mfisher
  */
 
-#ifndef STOCK_HPP_
-#define STOCK_HPP_
+#ifndef STOCK_H_
+#define STOCK_H_
 
 
 
@@ -22,4 +22,4 @@
         };
     };
 
-#endif /* STOCK_HPP_ */
+#endif /* STOCK_H_ */

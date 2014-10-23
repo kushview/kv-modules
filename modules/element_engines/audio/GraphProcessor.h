@@ -1,6 +1,6 @@
 /*
     graph-processor.hpp - This file is part of Element
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     Adapted from the original JUCE AudioProcessorGraph
 
@@ -19,8 +19,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_GRAPH_PROCESSOR_HPP
-#define ELEMENT_GRAPH_PROCESSOR_HPP
+#ifndef ELEMENT_GRAPH_PROCESSOR_H
+#define ELEMENT_GRAPH_PROCESSOR_H
 
 
 //==============================================================================
@@ -414,4 +414,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphProcessor)
 };
 
-#endif   // ELEMENT_GRAPH_PROCESSOR_HPP
+#endif   // ELEMENT_GRAPH_PROCESSOR_H

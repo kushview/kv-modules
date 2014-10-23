@@ -21,8 +21,8 @@
 
 */
 
-#ifndef ELEMENT_LINKEDLIST_HPP
-#define ELEMENT_LINKEDLIST_HPP
+#ifndef ELEMENT_LINKEDLIST_H
+#define ELEMENT_LINKEDLIST_H
 
 
 /** A doubly linked list

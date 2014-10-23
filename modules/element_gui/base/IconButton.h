@@ -5,8 +5,8 @@
  *      Author: mfisher
  */
 
-#ifndef BKE_ICONBUTTON_HPP
-#define BKE_ICONBUTTON_HPP
+#ifndef ELEMENT_ICONBUTTON_H
+#define ELEMENT_ICONBUTTON_H
 
 
     class IconButton : public Button,
@@ -118,4 +118,4 @@
         StretchableLayoutManager layout;
     };
 
-#endif /* BKE_ICONBUTTON_HPP */
+#endif /* ELEMENT_ICONBUTTON_H */

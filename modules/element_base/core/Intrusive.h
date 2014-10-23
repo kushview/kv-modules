@@ -1,7 +1,7 @@
 /*
     list.hpp
 
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,8 +18,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_LIST_HPP
-#define ELEMENT_LIST_HPP
+#ifndef ELEMENT_LIST_H
+#define ELEMENT_LIST_H
 
 
     /** templates for creating fast linked lists.
@@ -92,4 +92,4 @@
     };
 
 
-#endif  // ELEMENT_LIST_HPP
+#endif  // ELEMENT_LIST_H

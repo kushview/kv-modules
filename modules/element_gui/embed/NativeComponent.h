@@ -1,15 +1,15 @@
 /*
  native.hpp - Native Widget Embedding
  
- Copyright (C) 2013  BKE, LLC.  All rights reserved.
+ Copyright (C) 2014  Kushview, LLC.  All rights reserved.
  Michael Fisher <mfisher@bketech.com>
  
  */
 
 /** @file native.hpp */
 
-#ifndef BKE_NATIVE_HPP
-#define BKE_NATIVE_HPP
+#ifndef ELEMENT_NATIVE_H
+#define ELEMENT_NATIVE_H
 
     
     class NativeComponent : public Component
@@ -71,4 +71,4 @@
         
     };
 
-#endif /* BKE_NATIVE_HPP */
+#endif /* ELEMENT_NATIVE_H */

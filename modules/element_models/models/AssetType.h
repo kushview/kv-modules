@@ -1,6 +1,6 @@
 /*
     AssetType.h - This file is part of Element
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_ASSET_TYPE_HPP
-#define ELEMENT_ASSET_TYPE_HPP
+#ifndef ELEMENT_ASSET_TYPE_H
+#define ELEMENT_ASSET_TYPE_H
 
 
 class AssetType
@@ -123,4 +123,4 @@ private:
 };
 
 
-#endif // ASSETTYPE_HPP
+#endif // ASSETTYPE_H

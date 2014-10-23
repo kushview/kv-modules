@@ -1,5 +1,5 @@
-#ifndef PLUGINWINDOW_HPP
-#define PLUGINWINDOW_HPP
+#ifndef PLUGINWINDOW_H
+#define PLUGINWINDOW_H
 
 
     /** A desktop window containing a plugin's UI. */
@@ -28,4 +28,4 @@
     
     };
 
-#endif // PLUGINWINDOW_HPP
+#endif // PLUGINWINDOW_H

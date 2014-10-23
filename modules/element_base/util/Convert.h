@@ -1,6 +1,6 @@
 /*
     Convert.h - This file is part of Element
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef LIB_UTIL_CONVERT_HPP
-#define LIB_UTIL_CONVERT_HPP
+#ifndef LIB_UTIL_CONVERT_H
+#define LIB_UTIL_CONVERT_H
 #if 0
     // most of this is obsolete
 /** Convert decibels to gain */
@@ -93,4 +93,4 @@ uri_to_path (const std::string& uri)
     return res;
 }
 #endif
-#endif /* LIB_UTIL_CONVERT_HPP */
+#endif /* LIB_UTIL_CONVERT_H */

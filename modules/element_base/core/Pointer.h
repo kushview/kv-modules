@@ -16,8 +16,8 @@
 */
 /** @file pointer.hpp */
 
-#ifndef ELEMENT_POINTER_HPP
-#define ELEMENT_POINTER_HPP
+#ifndef ELEMENT_POINTER_H
+#define ELEMENT_POINTER_H
 
 
 #define ELEMENT_FORCE_BOOST_SHARED_PTR 0
@@ -159,4 +159,4 @@ inline Shared<T> makeShared (A0& a0, A1& a1, A2& a2, A3& a3)
 
 
 
-#endif /* ELEMENT_POINTER_HPP */
+#endif /* ELEMENT_POINTER_H */

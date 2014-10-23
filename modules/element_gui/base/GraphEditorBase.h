@@ -22,8 +22,8 @@
   ==============================================================================
 */
 
-#ifndef ELEMENT_GUI_GRAPH_EDITOR_HPP
-#define ELEMENT_GUI_GRAPH_EDITOR_HPP
+#ifndef ELEMENT_GUI_GRAPH_EDITOR_H
+#define ELEMENT_GUI_GRAPH_EDITOR_H
 
     class GraphController;
     class FilterComponent;
@@ -85,4 +85,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphEditorBase)
 };
 
-#endif   // ELEMENT_GUI_GRAPH_EDITOR_HPP
+#endif   // ELEMENT_GUI_GRAPH_EDITOR_H

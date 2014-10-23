@@ -17,8 +17,8 @@
 */
 /** @file dll.hpp */
 
-#ifndef ELEMENT_DLL_HPP
-#define ELEMENT_DLL_HPP
+#ifndef ELEMENT_DLL_H
+#define ELEMENT_DLL_H
 
 #include <cmath>
 
@@ -102,4 +102,4 @@ private:
     }
 };
 
-#endif  /* ELEMENT_DLL_HPP */
+#endif  /* ELEMENT_DLL_H */
