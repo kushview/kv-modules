@@ -20,9 +20,6 @@
 #ifndef ELEMENT_TANGO_H
 #define ELEMENT_TANGO_H
 
-#include "element/Juce.h"
-#include "element/Pointer.h"
-
 namespace Tango {
 
     inline Image
