@@ -76,6 +76,16 @@ protected:
     virtual void setNodeData (const ValueTree& data);
     ValueTree objectData;
 
+    template<typename POD>
+    inline void stabilizePropertyPOD (const Identifier& prop, const POD& defaultValue = var::null) {
+        if (objectData.isValid())
+            objectData.setProperty (prop, (POD) objectData.getProperty (prop, defaultValue), nullptr);
+    }
+
+    inline void stabilizePropertyString (const Identifier& prop, const String& defaultValue = String::empty) {
+        if (objectData.isValid())
+            objectData.setProperty (prop, objectData.getProperty (prop, defaultValue).toString(), nullptr);
+    }
 };
 
 
