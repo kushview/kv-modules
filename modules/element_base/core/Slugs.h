@@ -45,8 +45,10 @@ namespace Slugs {
     static const Identifier name     = "name";
     static const Identifier nodeId   = "nodeId";
     static const Identifier note     = "note";
+    static const Identifier offset   = "offset";
     static const Identifier path     = "path";
     static const Identifier pattern  = "pattern";
+    static const Identifier parent   = "parent";
     static const Identifier pitch    = "pitch";
     static const Identifier ppq      = "ppq";
     static const Identifier release  = "release";
@@ -60,7 +62,6 @@ namespace Slugs {
     static const Identifier velocity = "velocity";
     static const Identifier version  = "version";
     static const Identifier volume   = "volume";
-
 }
 
 #endif /* ELEMENT_SLUGS_H */
