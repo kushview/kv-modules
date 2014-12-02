@@ -150,6 +150,9 @@ TimelineBase::handleAsyncUpdate()
 
 TimelineBase::TimelineBase()
 {
+    freeClips.clear();
+    clips.clear();
+    pixelOffset = 0;
     heights.ensureTracks (512, TrackHeights::Mini);
     heights.setOffset (0);
 
@@ -164,7 +167,7 @@ TimelineBase::TimelineBase()
 
     pixPerUnit = (double) scale.pixelsPerBeat();
 
-    timeSpan.setLength (4.0);
+    timeSpan.setLength (1.0);
     addAndMakeVisible (playheadIndicator = new TimelineIndicator);
     playheadIndicator->setAlwaysOnTop (true);
 
@@ -190,17 +193,9 @@ TimelineBase::addTimelineClip (TimelineClip* clip, int track)
     updateClip (clip);
 }
 
-
-void
-TimelineBase::paint (Graphics& g)
+void TimelineBase::paintOverChildren (Graphics& g)
 {
-    g.setColour (Colour (0xff454545));
-    g.fillAll();
-
-    // track header divider line
-    g.setColour (Colours::black.withAlpha (0.5f));
-    g.drawVerticalLine (mTrackWidth + 1, 0, getHeight());
-
+    const int numTracks = getNumTracks();
     int track = heights.trackAtY (0);
     Rectangle<int> r;
 
@@ -211,7 +206,7 @@ TimelineBase::paint (Graphics& g)
         r.setY (heights.trackY (track));
         r.setHeight (heights.get (track));
 
-        if (r.getY() > getHeight() || track > getNumTracks())
+        if (r.getY() > getHeight() || track >= numTracks)
             break;
 
         if (! heights.trackIsVisible (track)) {
@@ -235,9 +230,57 @@ TimelineBase::paint (Graphics& g)
 
         ++track;
     }
+}
 
+void
+TimelineBase::paint (Graphics& g)
+{
+    g.setColour (Colour (0xff454545));
+    g.fillAll();
+
+    // track header divider line
+    g.setColour (Colours::black.withAlpha (0.5f));
+    g.drawVerticalLine (mTrackWidth + 1, 0, getHeight());
+
+#if 0
+    int track = heights.trackAtY (0);
+    Rectangle<int> r;
+
+    while (true)
+    {
+        r.setX (0);
+        r.setWidth (mTrackWidth);
+        r.setY (heights.trackY (track));
+        r.setHeight (heights.get (track));
+
+        if (r.getY() > getHeight() || track >= getNumTracks())
+            break;
+
+        if (! heights.trackIsVisible (track)) {
+            ++track;
+            continue;
+        }
+
+        if (mTrackWidth > 0) {
+            g.saveState();
+            paintTrackHeader (g, track, r);
+            g.restoreState();
+        }
+
+        r.setX (mTrackWidth);
+        r.setWidth (getWidth() - mTrackWidth);
+        r.setHeight (r.getHeight() + heights.spacing());
+
+        g.saveState();
+        paintTrackLane (g, track, r);
+        g.restoreState();
+
+        ++track;
+    }
+#endif
 
     g.saveState();
+
 
     g.setColour (Colours::white);
 
@@ -270,23 +313,30 @@ TimelineBase::paint (Graphics& g)
     g.resetToDefaultState();
 }
 
-void
-TimelineBase::resized()
+void TimelineBase::resized()
 {
 
 }
 
-double
-TimelineBase::getMajorTickSize()
+double TimelineBase::getMajorTickSize()
 {
     return 0.0f;
 }
 
+TimelineClip* TimelineBase::getFirstClipOnTrack (int track) const
+{
+   for (TimelineClip* c : clips) {
+       if (c && c->trackIndex() == track)
+           return c;
+   }
+   return nullptr;
+}
 
 
 void
 TimelineBase::mouseDown (const MouseEvent &ev)
 {
+    dragX = ev.x; dragY = ev.y;
     if (this == getComponentAt (ev.getPosition()))
     {
         if (ev.x > mTrackWidth)
@@ -300,20 +350,32 @@ TimelineBase::mouseDown (const MouseEvent &ev)
 void
 TimelineBase::mouseDrag (const MouseEvent &ev)
 {
+    const int deltaX = ev.x - dragX;
+    const int deltaY = ev.y - dragY;
+    pixelOffset += deltaX;
+    DBG ("dx: " << deltaX << " dy: " << deltaY << " y: " << ev.y << " time: " << xToTime (ev.x));
+    dragX = ev.x;
+    dragY = ev.y;
+    if (deltaY)
+        setTrackHeightsOffset (deltaY, true);
 
+    triggerAsyncUpdate();
 }
 
 void
 TimelineBase::mouseUp (const MouseEvent &ev)
 {
-
+    triggerAsyncUpdate();
 }
 
 void
 TimelineBase::removeClips()
 {
-    freeClips.clear();
-    clips.clear();
+    if (freeClips.size())
+        freeClips.clear();
+
+    if (clips.size())
+        clips.clear();
 }
 
 void TimelineBase::scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRangeStart) { }
@@ -323,10 +385,9 @@ void
 TimelineBase::updateClip (TimelineClip* clip)
 {
     assert (clip);
-    addAndMakeVisible (clip);
 
-    Range<double> time;
-    clip->getTime (time);
+    ClipRange<double> time;
+    clip->getClipRange (time);
 
     const Range<int> hrange (trackHeight (clip->trackIndex()));
     clip->setBounds (timeToX (time.getStart(), clip->getTimeUnit()), hrange.getStart(),
@@ -353,7 +414,7 @@ TimelineBase::valueChanged (Value &value)
 int32
 TimelineBase::tickToX (const double tick) const
 {
-    return mTrackWidth + scale.pixelFromTick (llrint (tick));
+    return mTrackWidth + pixelOffset + scale.pixelFromTick (llrint (tick));
 }
 
 double
@@ -366,7 +427,7 @@ TimelineBase::tickToTime (const double tick) const
 int32
 TimelineBase::beatToX (double beat) const
 {
-    return tickToX (beat * scale.ticksPerBeat());
+    return tickToX (beat * (double) scale.ticksPerBeat());
 }
 
 int32
@@ -390,14 +451,14 @@ TimelineBase::secondsToX (double time) const
 {
     int64 frame = llrint (time * (double) scale.getSampleRate());
     int pixel = scale.pixelFromFrame (frame);
-    return pixel + mTrackWidth;
+    return pixel + mTrackWidth + pixelOffset;
 }
 
 int32
 TimelineBase::frameToX (double f) const
 {
     int pixel = scale.pixelFromFrame (llrint (f));
-    return pixel + mTrackWidth;
+    return pixel + mTrackWidth + pixelOffset;
 }
 
 int64

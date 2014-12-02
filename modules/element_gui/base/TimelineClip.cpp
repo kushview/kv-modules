@@ -27,7 +27,7 @@ TimelineClip::TimelineClip (TimelineBase& timeline)
     setInterceptsMouseClicks (true, true);
     setName ("TimelineClip");
     lastSnap = getBoundsInParent().getX();
-    isResizing = false;
+    isResizing = trimming = false;
 }
 
 TimelineClip::~TimelineClip() { }
@@ -44,21 +44,26 @@ TimelineClip::mouseDoubleClick (const MouseEvent &event)
     timeline().clipDoubleClicked (this, event);
 }
 
-void
-TimelineClip::mouseDown (const MouseEvent& ev)
+void TimelineClip::mouseDown (const MouseEvent& ev)
 {
     owner.clipClicked (this, ev);
 
+#if 0
     if (ev.mods.isPopupMenu()) {
         PopupMenu menu;
         menu.addItem (1, "Menu Item");
         menu.show();
     }
+#endif
 
     isResizing = ev.x >= getWidth() - 2;
+    trimming   = ev.x >= 0 && ev.x < 3;
+
 
     if (ev.mods.isLeftButtonDown()) {
         dragger.startDraggingComponent (this, ev);
+        mouseDownX = ev.x;
+        getClipRangeInternal (dragRange);
     }
 }
 
@@ -70,43 +75,41 @@ TimelineClip::mouseDrag (const MouseEvent& ev)
     // use the dragger to compute an x delta from the last drag
     Rectangle<int> r (getBoundsInParent());
     dragger.dragComponent (this, ev, nullptr);
-    int32 pixel = owner.pixelSnap (getBoundsInParent().getX());
+    const int32 pixel = getBoundsInParent().getX();
     int32 snap = pixel;
     setBounds (r); // reset it back to normal
     const TimeUnit unit (getTimeUnit());
 
-    if (snap != lastSnap)
+   // if (snap != lastSnap)
     {
         // apply movement if snapping has changed
-        Range<double> time;
-        getTimeInternal (time);
+        ClipRange<double> time;
+        const ClipRange<double> old;
+        getClipRangeInternal (time);
+        getClipRangeInternal (const_cast<ClipRange<double>& >(old));
 
-        if (! isResizing)
+        if (! isResizing && ! trimming)
         {
-            double oldStart = time.getStart();
-            double oldEnd   = time.getEnd();
+            time.setStart (owner.xToTime (pixel, unit));
+            time.setLength (old.getLength());
+            time.setOffset (old.getOffset());
+            setClipRangeInternal (time);
 
-            time = time.movedToStartAt (owner.xToTime (snap, unit));
-            setTimeInternal (time);
-
-            owner.clipMoved (this, ev, time.getStart() - oldStart,
-                                       time.getEnd() - oldEnd);
+            owner.clipMoved (this, ev, time.getStart() - old.getStart(),
+                                       time.getEnd() - old.getEnd());
         }
-        else
+        else if (isResizing)
         {
-            Range<double> old = time;
-
-            int snapResize = owner.pixelSnap (getBoundsInParent().getX() + ev.x);
-            pixel = owner.timeToX (time.getEnd(), unit);
-
-            while (snapResize <= snap) {
-                snapResize = owner.pixelSnap (pixel++);
-            }
-
-            time.setEnd (owner.xToTime (snapResize, unit));
-            setTimeInternal (time);
-
+            time.setEnd (owner.xToTime (getBoundsInParent().getX() + ev.x, unit));
+            setClipRangeInternal (time);
             owner.clipMoved (this, ev, 0.0f, time.getEnd() - old.getEnd());
+        }
+        else if (trimming)
+        {
+            time.setStart (owner.xToTime (getBoundsInParent().getX() + ev.x, unit));
+            time.setOffset (dragRange.getOffset() + (time.getStart() - dragRange.getStart()));
+            setClipRangeInternal (time);
+            owner.clipMoved (this, ev, 0.0f, time.getOffset() - old.getOffset());
         }
 
         lastSnap = snap;
@@ -128,14 +131,17 @@ TimelineClip::mouseDrag (const MouseEvent& ev)
         ++changes;
     }
 
-    if (changes)
+    if (changes) {
         owner.updateClip (this);
+        repaint();
+    }
 }
 
 void
 TimelineClip::mouseUp (const MouseEvent &ev)
 {
     isResizing = false;
+    trimming = false;
 }
 
 void
@@ -163,9 +169,9 @@ TimelineBase& TimelineClip::timeline() { return owner; }
 const TimelineBase& TimelineClip::timeline() const { return owner; }
 
 void
-TimelineClip::mouseMove (const MouseEvent& e)
+TimelineClip::mouseMove (const MouseEvent& ev)
 {
-    if (e.x >= getWidth() - 2)
+    if (ev.x >= getWidth() - 2 || (ev.x >= 0 && ev.x < 3))
     {
         setMouseCursor (MouseCursor (MouseCursor::LeftRightResizeCursor));
     }
@@ -175,14 +181,12 @@ TimelineClip::mouseMove (const MouseEvent& e)
     }
 }
 
-void
-TimelineClip::setTimeInternal (const Range<double>& time)
+void TimelineClip::getClipRangeInternal (ClipRange<double>& range)
 {
-    setTime (time);
+    getClipRange (range);
 }
 
-void
-TimelineClip::getTimeInternal (Range<double>& time)
+void TimelineClip::setClipRangeInternal (const ClipRange<double>& range)
 {
-    getTime (time);
+    setClipRange (range);
 }

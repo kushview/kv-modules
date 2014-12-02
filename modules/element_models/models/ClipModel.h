@@ -25,6 +25,10 @@ class ClipModel :  public ObjectModel
 public:
     
     ClipModel (const ValueTree& data) : ObjectModel (data) {}
+    ClipModel (const Identifier& type) : ObjectModel (type) {
+
+    }
+
     ClipModel (ValueTree& data, double start, double length, double offset = 0.0f)
         : ObjectModel (data)
     {
@@ -49,7 +53,7 @@ public:
         : ObjectModel (Slugs::clip)
     {
         setMissingProperties();
-        node().setProperty ("file", file.getFullPathName(), nullptr);
+        objectData.setProperty ("file", file.getFullPathName(), nullptr);
     }
     
     ClipModel (const ClipModel& other)
@@ -114,9 +118,13 @@ private:
     
     ClipModel& operator= (const ClipModel&);
     
-    inline void
+protected:
+    virtual inline void
     setMissingProperties()
     {
+        if (! objectData.isValid())
+            return;
+
         if (! node().hasProperty("start"))
             node().setProperty ("start", 0.0f, nullptr);
         if (! node().hasProperty("length"))

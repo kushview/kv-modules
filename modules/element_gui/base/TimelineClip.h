@@ -21,11 +21,29 @@
 
 class TimelineBase;
 
+template<typename T>
+class ClipRange : public Range<T> {
+public:
+
+    ClipRange() : offset (T()) { }
+    T getOffset() const { return offset; }
+    void setOffset (const T val) { offset = val; }
+
+private:
+    T offset;
+};
+
 class TimelineClip : public Component
 {
 public:
 
     virtual ~TimelineClip();
+
+    enum EditType {
+        Move = 1,
+        TrimLeft,
+        TrimRight
+    };
 
     inline void
     adjustTrackIndex (int trackDelta, bool notify)
@@ -38,8 +56,16 @@ public:
     virtual bool resizable() const { return true; }
     virtual bool timeIsMusical() const { return false; }
 
-    virtual void getTime (Range<double>& time) const = 0;
-    virtual void setTime (const Range<double>& time) = 0;
+    virtual void getTime (Range<double>&) const { }
+    virtual void setTime (const Range<double>&) { }
+    virtual void getClipRange (ClipRange<double>& loc) {
+        getTime (loc);
+        loc.setOffset (0);
+    }
+    virtual void setClipRange (const ClipRange<double>& loc) {
+        setTime (loc);
+    }
+
     virtual TimeUnit getTimeUnit() const { return TimeUnit::Seconds; }
     virtual int32 trackIndex() const = 0;
 
@@ -86,11 +112,15 @@ private:
     ComponentDragger dragger;
 
     int lastSnap, currentTrack;
-    bool isResizing, selected;
+    bool isResizing, trimming, selected;
+    ClipRange<double> dragRange;
+    int mouseDownX;
 
     void setTrackIndex (const int track, bool notify);
     void setTimeInternal (const Range<double>& time);
     void getTimeInternal (Range<double>& time);
+    void setClipRangeInternal (const ClipRange<double>& range);
+    void getClipRangeInternal (ClipRange<double>& range);
 
 };
 

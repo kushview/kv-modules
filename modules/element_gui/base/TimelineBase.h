@@ -94,11 +94,21 @@ public:
         headerBackgroundColourId    = 0x9900002
     };
 
+    inline void setAllTrackHeights (const int height) {
+        for (int i = getNumTracks(); --i >= 0;)
+            setTrackHeight (i, height);
+    }
+
+    inline void setTrackHeight (int track, int height)
+    {
+        heights.set (track, (height <= 0) ? TrackHeights::Normal : height);
+    }
+
     inline
     void getVisibleRange (double &in, double &out)
     {
-        in = xToTime (0);
-        out = xToTime (getWidth());
+        in = xToTime (timeOffset);
+        out = xToTime (timeOffset + getWidth());
     }
 
 
@@ -152,6 +162,7 @@ public:
 
         if (offset != heights.offset())
         {
+            DBG ("set offset: " << offset);
             heights.setOffset (offset);
             triggerAsyncUpdate();
         }
@@ -167,6 +178,7 @@ public:
     const TimeScale& timeScale() const { return scale; }
 
     virtual void paint (Graphics& g);
+    virtual void paintOverChildren (Graphics& g);
     virtual void resized();
 
     virtual void mouseDown (const MouseEvent &event);
@@ -269,6 +281,8 @@ protected:
     void recycleClip (TimelineClip* clip);
     void updateClip (TimelineClip* clip);
 
+    TimelineClip* getFirstClipOnTrack (int track) const;
+
     template<class ClipType>
     inline ClipType* findFreeClip()
     {
@@ -286,7 +300,6 @@ protected:
 
     virtual void paintTrackHeader (Graphics& g, int track, const Rectangle<int>& area) { }
     virtual void paintTrackLane (Graphics& g, int track, const Rectangle<int>& area) { }
-
     virtual void refreshComponentForTrack (const int track) { }
 
     virtual inline Range<int>
@@ -318,6 +331,7 @@ private:
     TimelinePosition position;
     Range<double> timeSpan; // a.k.a the suggested visible range
     double timeOffset;
+    int pixelOffset, dragX, dragY;
     double pixPerUnit;
 
     OwnedArray<TimelineClip> clips, freeClips;
@@ -332,6 +346,7 @@ private:
     void normalX (int32& x) const
     {
         x -= mTrackWidth;
+        x -= pixelOffset;
     }
 };
 
