@@ -124,7 +124,7 @@ static XmlElement* createNodeXml (GraphProcessor::Node* const node) noexcept
     AudioPluginInstance* plugin = dynamic_cast <AudioPluginInstance*> (node->audioProcessor());
     if (plugin == nullptr)
     {
-        jassertfalse
+        jassertfalse;
         return nullptr;
     }
 
