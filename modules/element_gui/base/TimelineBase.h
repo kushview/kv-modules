@@ -200,6 +200,8 @@ public:
     inline double getTempo() const { return tempo.getValue(); }
     inline Value& getTempoValue() { return tempo; }
     inline void setTempo (double bpm) { tempo.setValue (bpm); }
+    inline double getTimeOffset (TimeUnit unit = TimeUnit::Seconds) const { return xToTime (0, unit); }
+    inline int getPixelOffset() const { return pixelOffset; }
 
     inline uint16 ticksPerBeat() const { return scale.ticksPerBeat(); }
 
