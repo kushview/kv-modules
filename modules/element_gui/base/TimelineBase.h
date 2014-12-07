@@ -17,6 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if JUCE_COMPLETION
+#include "JuceHeader.h"
+#endif
+
 #ifndef ELEMENT_TIMELINE_BASE_H
 #define ELEMENT_TIMELINE_BASE_H
 
@@ -90,7 +94,7 @@ public:
     double getMajorTickSize();
 
     enum ColourIDs {
-        bodybackgroundColourId      = 0x9900001,
+        bodyBackgroundColourId      = 0x9900001,
         headerBackgroundColourId    = 0x9900002
     };
 
@@ -147,8 +151,7 @@ public:
         return heights.totalHeight (getNumTracks());
     }
 
-    inline
-    void setTrackHeightsOffset (int offset, bool offsetIsDelta)
+    inline void setTrackHeightsOffset (int offset, bool offsetIsDelta)
     {
 
         if (offsetIsDelta)
@@ -162,14 +165,12 @@ public:
 
         if (offset != heights.offset())
         {
-            DBG ("set offset: " << offset);
             heights.setOffset (offset);
             triggerAsyncUpdate();
         }
     }
 
-    inline void
-    setTrackVisibility (const BigInteger& vis)
+    inline void setTrackVisibility (const BigInteger& vis)
     {
         heights.setEnablement (vis);
         triggerAsyncUpdate();
@@ -318,6 +319,7 @@ protected:
     virtual void timerCallback() { }
 
 private:
+
 
     ScopedPointer<Component> topLeftWidget;
     ScopedPointer<TimelineIndicator> playheadIndicator;

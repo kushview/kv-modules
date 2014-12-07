@@ -24,6 +24,7 @@
 TimelineClip::TimelineClip (TimelineBase& timeline)
     : owner (timeline)
 {
+    selected = false;
     setInterceptsMouseClicks (true, true);
     setName ("TimelineClip");
     lastSnap = getBoundsInParent().getX();

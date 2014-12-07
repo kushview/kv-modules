@@ -279,9 +279,9 @@ TimelineBase::paint (Graphics& g)
     }
 #endif
 
+#if 0
+    // paint grid lines
     g.saveState();
-
-
     g.setColour (Colours::white);
 
     for (int beat = scale.beatFromPixel (timeToX (timeSpan.getStart())) - 1;
@@ -311,6 +311,8 @@ TimelineBase::paint (Graphics& g)
 
     g.restoreState();
     g.resetToDefaultState();
+#endif
+
 }
 
 void TimelineBase::resized()
@@ -337,6 +339,7 @@ void
 TimelineBase::mouseDown (const MouseEvent &ev)
 {
     dragX = ev.x; dragY = ev.y;
+
     if (this == getComponentAt (ev.getPosition()))
     {
         if (ev.x > mTrackWidth)
@@ -350,16 +353,22 @@ TimelineBase::mouseDown (const MouseEvent &ev)
 void
 TimelineBase::mouseDrag (const MouseEvent &ev)
 {
-    const int deltaX = ev.x - dragX;
-    const int deltaY = ev.y - dragY;
-    pixelOffset += deltaX;
-    DBG ("dx: " << deltaX << " dy: " << deltaY << " y: " << ev.y << " time: " << xToTime (ev.x));
+    //if (ev.mods.isAltDown())
+    {
+        const int deltaX = ev.x - dragX;
+        const int deltaY = ev.y - dragY;
+        // DBG ("dx: " << deltaX << " dy: " << deltaY << " y: " << ev.y << " time: " << xToTime (ev.x));
+
+        pixelOffset += deltaX;
+
+        if (deltaY)
+            setTrackHeightsOffset (deltaY, true);
+
+        triggerAsyncUpdate();
+    }
+
     dragX = ev.x;
     dragY = ev.y;
-    if (deltaY)
-        setTrackHeightsOffset (deltaY, true);
-
-    triggerAsyncUpdate();
 }
 
 void
