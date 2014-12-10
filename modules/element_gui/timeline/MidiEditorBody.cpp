@@ -205,7 +205,7 @@
 
     void MidiEditorBody::mouseUp (const MouseEvent& ev)
     {
-        TimelineBase::mouseUp (ev);
+        TimelineComponent::mouseUp (ev);
         lasso.endLasso();
         trackDrag = keyboardDrag = false;
         trackDeltaY = 0;

@@ -79,7 +79,8 @@ public:
     unsigned short verticalZoom() const { return mVerticalZoom; }
 
 	// Fastest rounding-from-float helper.
-    static unsigned long uroundf (float x) { return (unsigned long) (x >= 0.0f ? x + 0.5f : x - 0.5f); }
+    static uint64_t uroundf (float x) { return static_cast<uint64_t> (x >= 0.0f ? x + 0.5f : x - 0.5f); }
+    static int64_t  roundf  (float x) { return static_cast<int64_t> (x >= 0.0f ? x + 0.5f : x - 0.5f); }
 
 	// Beat divisor (snap index) accessors.
     static unsigned short snapFromIndex (int index);
@@ -231,8 +232,8 @@ public:
     void updateScale();
 
 	// Frame/pixel convertors.
-    int pixelFromFrame (unsigned long frame) const { return uroundf((mPixelRate * frame) / mFrameRate); }
-    unsigned long frameFromPixel (int x) const { return uroundf((mFrameRate * x) / mPixelRate); }
+    int pixelFromFrame (int64_t frame) const { return roundf ((mPixelRate * frame) / mFrameRate); }
+    int64_t frameFromPixel (int x) const { return roundf ((mFrameRate * x) / mPixelRate); }
 
 	// Frame/bar general converters.
     unsigned short

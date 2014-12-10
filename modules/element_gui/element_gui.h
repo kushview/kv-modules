@@ -39,17 +39,17 @@ namespace Element {
     
 // timelines
 #if JUCE_MODULE_AVAILABLE_element_engines
- #include "base/TrackHeights.h"
- #include "base/TimelineBase.h"
- #include "base/TimelineClip.h"
- #include "base/NoteClipItem.h"
- #include "base/MidiEditorBody.h"
+ #include "timeline/TrackHeights.h"
+ #include "timeline/TimelineComponent.h"
+ #include "timeline/TimelineClip.h"
+ #include "timeline/NoteClipItem.h"
+ #include "timeline/MidiEditorBody.h"
 
-// graph stuff
-#include "base/GraphEditorBase.h"
+ // graph stuff
+ #include "base/GraphEditorBase.h"
 
-// misc audio/video engine stuff
-#include "base/PluginWindow.h"
+ // misc audio/video engine stuff
+ #include "base/PluginWindow.h"
     
 #endif
     

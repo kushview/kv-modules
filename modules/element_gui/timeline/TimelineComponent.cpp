@@ -103,12 +103,12 @@ void TimelineIndicator::setColour (const Colour& newColor)
     this->repaint();
 }
 
-TimelineBase*
+TimelineComponent*
 TimelineIndicator::timeline() const
 {
     if (owner == nullptr)
     {
-        owner = findParentComponentOfClass<TimelineBase>();
+        owner = findParentComponentOfClass<TimelineComponent>();
         if (owner == nullptr) {
             jassertfalse; // this needs to be owned by a timeline base object
         }
@@ -125,7 +125,7 @@ TimelineIndicator::getUnits() const
 
 
 void
-TimelineBase::recycleClip (TimelineClip* clip)
+TimelineComponent::recycleClip (TimelineClip* clip)
 {
     clips.removeObject (clip, false);
     removeChildComponent (clip);
@@ -133,7 +133,7 @@ TimelineBase::recycleClip (TimelineClip* clip)
 }
 
 void
-TimelineBase::handleAsyncUpdate()
+TimelineComponent::handleAsyncUpdate()
 {
     for (TimelineClip* clip : clips)
     {
@@ -148,7 +148,7 @@ TimelineBase::handleAsyncUpdate()
     repaint();
 }
 
-TimelineBase::TimelineBase()
+TimelineComponent::TimelineComponent()
 {
     freeClips.clear();
     clips.clear();
@@ -175,13 +175,13 @@ TimelineBase::TimelineBase()
     scale.setDisplayFormat (TimeScale::BBT);
 }
 
-TimelineBase::~TimelineBase()
+TimelineComponent::~TimelineComponent()
 {
     tempo.removeListener (this);
 }
 
 void
-TimelineBase::addTimelineClip (TimelineClip* clip, int track)
+TimelineComponent::addTimelineClip (TimelineClip* clip, int track)
 {
     if (clip == nullptr)
         return;
@@ -193,7 +193,7 @@ TimelineBase::addTimelineClip (TimelineClip* clip, int track)
     updateClip (clip);
 }
 
-void TimelineBase::paintOverChildren (Graphics& g)
+void TimelineComponent::paintOverChildren (Graphics& g)
 {
     const int numTracks = getNumTracks();
     int track = heights.trackAtY (0);
@@ -233,7 +233,7 @@ void TimelineBase::paintOverChildren (Graphics& g)
 }
 
 void
-TimelineBase::paint (Graphics& g)
+TimelineComponent::paint (Graphics& g)
 {
     g.setColour (Colour (0xff454545));
     g.fillAll();
@@ -315,17 +315,17 @@ TimelineBase::paint (Graphics& g)
 
 }
 
-void TimelineBase::resized()
+void TimelineComponent::resized()
 {
 
 }
 
-double TimelineBase::getMajorTickSize()
+double TimelineComponent::getMajorTickSize()
 {
     return 0.0f;
 }
 
-TimelineClip* TimelineBase::getFirstClipOnTrack (int track) const
+TimelineClip* TimelineComponent::getFirstClipOnTrack (int track) const
 {
    for (TimelineClip* c : clips) {
        if (c && c->trackIndex() == track)
@@ -336,7 +336,7 @@ TimelineClip* TimelineBase::getFirstClipOnTrack (int track) const
 
 
 void
-TimelineBase::mouseDown (const MouseEvent &ev)
+TimelineComponent::mouseDown (const MouseEvent &ev)
 {
     dragX = ev.x; dragY = ev.y;
 
@@ -351,7 +351,7 @@ TimelineBase::mouseDown (const MouseEvent &ev)
 }
 
 void
-TimelineBase::mouseDrag (const MouseEvent &ev)
+TimelineComponent::mouseDrag (const MouseEvent &ev)
 {
     //if (ev.mods.isAltDown())
     {
@@ -372,13 +372,13 @@ TimelineBase::mouseDrag (const MouseEvent &ev)
 }
 
 void
-TimelineBase::mouseUp (const MouseEvent &ev)
+TimelineComponent::mouseUp (const MouseEvent &ev)
 {
     triggerAsyncUpdate();
 }
 
 void
-TimelineBase::removeClips()
+TimelineComponent::removeClips()
 {
     if (freeClips.size())
         freeClips.clear();
@@ -387,11 +387,11 @@ TimelineBase::removeClips()
         clips.clear();
 }
 
-void TimelineBase::scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRangeStart) { }
-void TimelineBase::sliderValueChanged (Slider* slider) { }
+void TimelineComponent::scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRangeStart) { }
+void TimelineComponent::sliderValueChanged (Slider* slider) { }
 
 void
-TimelineBase::updateClip (TimelineClip* clip)
+TimelineComponent::updateClip (TimelineClip* clip)
 {
     assert (clip);
 
@@ -404,7 +404,7 @@ TimelineBase::updateClip (TimelineClip* clip)
 }
 
 void
-TimelineBase::valueChanged (Value &value)
+TimelineComponent::valueChanged (Value &value)
 {
     bool updateTimeScale = false;
 
@@ -421,26 +421,26 @@ TimelineBase::valueChanged (Value &value)
 
 /* Time Conversions */
 int32
-TimelineBase::tickToX (const double tick) const
+TimelineComponent::tickToX (const double tick) const
 {
     return mTrackWidth + pixelOffset + scale.pixelFromTick (llrint (tick));
 }
 
 double
-TimelineBase::tickToTime (const double tick) const
+TimelineComponent::tickToTime (const double tick) const
 {
     int64 frame = scale.frameFromTick (tick);
     return (double) frame / (double) scale.getSampleRate();
 }
 
 int32
-TimelineBase::beatToX (double beat) const
+TimelineComponent::beatToX (double beat) const
 {
     return tickToX (beat * (double) scale.ticksPerBeat());
 }
 
 int32
-TimelineBase::timeToX (double time, const TimeUnit unit) const
+TimelineComponent::timeToX (double time, const TimeUnit unit) const
 {
     switch (unit)
     {
@@ -456,7 +456,7 @@ TimelineBase::timeToX (double time, const TimeUnit unit) const
 }
 
 int32
-TimelineBase::secondsToX (double time) const
+TimelineComponent::secondsToX (double time) const
 {
     int64 frame = llrint (time * (double) scale.getSampleRate());
     int pixel = scale.pixelFromFrame (frame);
@@ -464,28 +464,28 @@ TimelineBase::secondsToX (double time) const
 }
 
 int32
-TimelineBase::frameToX (double f) const
+TimelineComponent::frameToX (double f) const
 {
     int pixel = scale.pixelFromFrame (llrint (f));
     return pixel + mTrackWidth + pixelOffset;
 }
 
 int64
-TimelineBase::xToFrame (int x) const
+TimelineComponent::xToFrame (int x) const
 {
     normalX (x);
     return scale.frameFromPixel (x);
 }
 
 double
-TimelineBase::xToSeconds (int32 x) const
+TimelineComponent::xToSeconds (int32 x) const
 {
     normalX (x);
     return ((double) scale.frameFromPixel (x) / (double) scale.getSampleRate());
 }
 
 double
-TimelineBase::xToTicks (int32 x, bool snap) const
+TimelineComponent::xToTicks (int32 x, bool snap) const
 {
     normalX (x);
     return (double) snap ? scale.tickFromPixel (scale.pixelSnap (x))
@@ -493,7 +493,7 @@ TimelineBase::xToTicks (int32 x, bool snap) const
 }
 
 double
-TimelineBase::xToTime (int x, const TimeUnit unit) const
+TimelineComponent::xToTime (int x, const TimeUnit unit) const
 {
     switch (unit)
     {
@@ -508,15 +508,18 @@ TimelineBase::xToTime (int x, const TimeUnit unit) const
     return xToSeconds (x);
 }
 
-double
-TimelineBase::xToBeat (int x, bool snap) const
+double TimelineComponent::xToBeat (int x, bool snap) const
 {
     return xToTicks (x) / (double) scale.ticksPerBeat();
 }
 
 
-int
-TimelineBase::timeToWidth (const Range<double>& time, const TimeUnit unit) const
+int TimelineComponent::timeToWidth (const Range<double>& time, const TimeUnit unit) const
 {
     return timeToX (time.getEnd(), unit) - timeToX (time.getStart(), unit);
+}
+
+int TimelineComponent::timeToWidth (const double& length, TimeUnit /*unit*/) const
+{
+    return scale.pixelFromFrame (scale.getSampleRate() * length);
 }

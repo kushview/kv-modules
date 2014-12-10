@@ -27,7 +27,7 @@ public:
 
     typedef std::pair<MidiMessage, MidiMessage> MsgPair;
 
-    NoteClipItem (TimelineBase& owner, const Note& m)
+    NoteClipItem (TimelineComponent& owner, const Note& m)
         : TimelineClip (owner),
           model (m)
     {

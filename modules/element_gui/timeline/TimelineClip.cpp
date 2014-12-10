@@ -21,7 +21,7 @@
 #include "modules/element_gui/element_gui.h"
 #endif
 
-TimelineClip::TimelineClip (TimelineBase& timeline)
+TimelineClip::TimelineClip (TimelineComponent& timeline)
     : owner (timeline)
 {
     selected = false;
@@ -93,7 +93,6 @@ TimelineClip::mouseDrag (const MouseEvent& ev)
         {
             time.setStart (owner.xToTime (pixel, unit));
             time.setLength (old.getLength());
-            time.setOffset (old.getOffset());
             setClipRangeInternal (time);
 
             owner.clipMoved (this, ev, time.getStart() - old.getStart(),
@@ -166,11 +165,10 @@ TimelineClip::setTrackIndex (const int32 track, bool notify)
 
 uint16 TimelineClip::ticksPerBeat() const { return timeline().timeScale().ticksPerBeat(); }
 
-TimelineBase& TimelineClip::timeline() { return owner; }
-const TimelineBase& TimelineClip::timeline() const { return owner; }
+TimelineComponent& TimelineClip::timeline() { return owner; }
+const TimelineComponent& TimelineClip::timeline() const { return owner; }
 
-void
-TimelineClip::mouseMove (const MouseEvent& ev)
+void TimelineClip::mouseMove (const MouseEvent& ev)
 {
     if (ev.x >= getWidth() - 2 || (ev.x >= 0 && ev.x < 3))
     {

@@ -32,7 +32,7 @@
 
     };
 
-    class MidiEditorBody :  public TimelineBase,
+    class MidiEditorBody :  public TimelineComponent,
                             public LassoSource<NoteClipItem*>,
                             private ValueTree::Listener
     {

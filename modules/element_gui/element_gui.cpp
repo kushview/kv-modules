@@ -37,10 +37,10 @@ namespace Element {
 
 #if JUCE_MODULE_AVAILABLE_element_engines
  #include "base/GraphEditorBase.cpp"
- #include "base/MidiEditorBody.cpp"
  #include "base/PluginWindow.cpp"
- #include "base/TimelineBase.cpp"
- #include "base/TimelineClip.cpp"
+ #include "timeline/MidiEditorBody.cpp"
+ #include "timeline/TimelineComponent.cpp"
+ #include "timeline/TimelineClip.cpp"
 #endif
 
 }

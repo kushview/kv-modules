@@ -24,7 +24,7 @@
 #ifndef ELEMENT_TIMELINE_BASE_H
 #define ELEMENT_TIMELINE_BASE_H
 
-class TimelineBase;
+class TimelineComponent;
 class TimelineClip;
 
 class TimelineIndicator : public Component
@@ -54,14 +54,14 @@ public:
 
 protected:
 
-   TimelineBase* timeline() const;
+   TimelineComponent* timeline() const;
 
 private:
 
    int lastSnap;
    bool shouldSnap, isDragable;
 
-   mutable TimelineBase* owner;
+   mutable TimelineComponent* owner;
    ComponentDragger dragger;
    Colour           color;
 
@@ -73,7 +73,7 @@ private:
 struct TimelinePosition : public AudioPlayHead::CurrentPositionInfo
 { };
 
-class TimelineBase : public AsyncUpdater,
+class TimelineComponent : public AsyncUpdater,
                      public Component,
                      public Slider::Listener,
                      public ScrollBar::Listener,
@@ -82,8 +82,8 @@ class TimelineBase : public AsyncUpdater,
 {
 
 public:
-    TimelineBase();
-    virtual ~TimelineBase();
+    TimelineComponent();
+    virtual ~TimelineComponent();
 
     inline double getBegin() const { return timeSpan.getStart(); }
 
@@ -137,7 +137,6 @@ public:
             mTrackWidth = mMaxTrackWidth;
             resized();
         }
-
     }
 
     inline int getTrackWidth() const
@@ -192,6 +191,7 @@ public:
     inline TimelineIndicator* indicator() { return playheadIndicator.get(); }
     inline void setIndicator (TimelineIndicator* indicator)
     {
+
         addAndMakeVisible (playheadIndicator = indicator);
     }
 
@@ -204,6 +204,11 @@ public:
     inline int getPixelOffset() const { return pixelOffset; }
 
     inline uint16 ticksPerBeat() const { return scale.ticksPerBeat(); }
+
+    int timeToWidth (const Range<double>& time, const TimeUnit unit = TimeUnit::Seconds) const;
+    int timeToWidth (const double& length, TimeUnit unit = TimeUnit::Seconds) const;
+
+    double getTime() const;
 
 protected:
 
@@ -278,8 +283,7 @@ protected:
 
     double tickToTime (const double tick) const;
 
-    int timeToWidth (const Range<double>& time, const TimeUnit unit = TimeUnit::Seconds) const;
-    double getTime() const;
+
 
     void recycleClip (TimelineClip* clip);
     void updateClip (TimelineClip* clip);

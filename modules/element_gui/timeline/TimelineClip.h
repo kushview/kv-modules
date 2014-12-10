@@ -19,15 +19,21 @@
 #ifndef ELEMENT_TIMELINE_CLIP_H
 #define ELEMENT_TIMELINE_CLIP_H
 
-class TimelineBase;
+class TimelineComponent;
 
 template<typename T>
 class ClipRange : public Range<T> {
 public:
 
     ClipRange() : offset (T()) { }
-    T getOffset() const { return offset; }
-    void setOffset (const T val) { offset = val; }
+    inline T getOffset() const { return offset; }
+    inline void setOffset (const T val) { offset = val; }
+
+    inline ClipRange<T>& operator= (const ClipRange& o) {
+        Range<T>::operator= (o);
+        offset = o.offset;
+        return *this;
+    }
 
 private:
     T offset;
@@ -93,10 +99,10 @@ public:
 
 protected:
 
-    TimelineClip (TimelineBase&);
+    TimelineClip (TimelineComponent&);
     void recycle();
-    TimelineBase& timeline();
-    const TimelineBase& timeline() const;
+    TimelineComponent& timeline();
+    const TimelineComponent& timeline() const;
 
     virtual void reset() { }
     virtual void selectedStateChanged() { }
@@ -106,9 +112,9 @@ protected:
 
 private:
 
-    friend class TimelineBase;
+    friend class TimelineComponent;
 
-    TimelineBase& owner;
+    TimelineComponent& owner;
     ComponentDragger dragger;
 
     int lastSnap, currentTrack;
