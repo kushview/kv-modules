@@ -106,12 +106,12 @@ void AssetTreeViewItem::valueTreeChildAdded (ValueTree& parent, ValueTree& child
     treeChildrenChanged (parent);
 }
 
-void AssetTreeViewItem::valueTreeChildRemoved (ValueTree& parent, ValueTree& child)
+void AssetTreeViewItem::valueTreeChildRemoved (ValueTree& parent, ValueTree& child, int /*indexRemoved*/)
 {
     treeChildrenChanged (parent);
 }
 
-void AssetTreeViewItem::valueTreeChildOrderChanged (ValueTree& parent)
+void AssetTreeViewItem::valueTreeChildOrderChanged (ValueTree& parent, int /*oldIndex*/, int /*newIndex*/)
 {
     treeChildrenChanged (parent);
 }

@@ -24,7 +24,12 @@
 #include "modules/juce_gui_extra/juce_gui_extra.h"
 #include "modules/juce_audio_devices/juce_audio_devices.h"
 #include "modules/juce_audio_processors/juce_audio_processors.h"
-#include "modules/lvtk_plugins/lvtk_plugins.h"
+
+#ifdef JUCE_MODULE_AVAILABLE_lvtk_plugins
+ #include "modules/lvtk_plugins/lvtk_plugins.h"
+#else
+ #include "modules/lvtk_core/lvtk_core.h"
+#endif
 
 #include <boost/intrusive_ptr.hpp>
 

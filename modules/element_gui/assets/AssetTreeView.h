@@ -54,8 +54,8 @@ public:
     // value tree
     void valueTreePropertyChanged (ValueTree& tree, const Identifier& property) override;
     void valueTreeChildAdded (ValueTree& parentTree, ValueTree& childWhichHasBeenAdded) override;
-    void valueTreeChildRemoved (ValueTree& parentTree, ValueTree& childWhichHasBeenRemoved) override;
-    void valueTreeChildOrderChanged (ValueTree& parentTree) override;
+    void valueTreeChildRemoved (ValueTree& parentTree, ValueTree& childWhichHasBeenRemoved, int indexFromWhichChildWasRemoved) override;
+    void valueTreeChildOrderChanged (ValueTree& parentTree, int oldIndex, int newIndex) override;
     void valueTreeParentChanged (ValueTree& tree) override;
 
     AssetItem item;
