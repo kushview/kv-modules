@@ -19,80 +19,77 @@
 
 
 
-    class DeviceManager::Private
+class DeviceManager::Private
+{
+public:
+
+    Private() { }
+    ~Private() { }
+
+    Shared<Engine> activeEngine;
+};
+
+DeviceManager::DeviceManager()
+{
+    impl = new Private();
+}
+
+DeviceManager::~DeviceManager()
+{
+    closeAudioDevice();
+    attach (Shared<Engine>());
+}
+
+void DeviceManager::attach (Shared<Engine> engine)
+{
+    if (impl->activeEngine == engine)
+        return;
+
+    Shared<Engine> old = impl->activeEngine;
+
+    if (old != nullptr)
     {
-    public:
-
-        Private() { }
-        ~Private() { }
-
-        Shared<Engine> activeEngine;
-    };
-
-    DeviceManager::DeviceManager()
-    {
-        impl = new Private();
+        removeAudioCallback (&old->callback());
     }
 
-    DeviceManager::~DeviceManager()
-    {
+    if (engine)
+        addAudioCallback (&engine->callback());
+    else
         closeAudioDevice();
-        attach (Shared<Engine>());
-    }
 
-    void
-    DeviceManager::attach (Shared<Engine> engine)
-    {
-        if (impl->activeEngine == engine)
-            return;
+    impl->activeEngine = engine;
+}
 
-        Shared<Engine> old = impl->activeEngine;
+static void
+addNotNull (OwnedArray <AudioIODeviceType>& list, AudioIODeviceType* const device)
+{
+    if (device != nullptr)
+        list.add (device);
+}
 
-        if (old != nullptr)
-        {
-            removeAudioCallback (&old->callback());
-        }
-
-        if (engine)
-            addAudioCallback (&engine->callback());
-        else
-            closeAudioDevice();
-
-        impl->activeEngine = engine;
-    }
-
-    static void
-    addNotNull (OwnedArray <AudioIODeviceType>& list, AudioIODeviceType* const device)
-    {
-        if (device != nullptr)
-            list.add (device);
-    }
-
-    void
-    DeviceManager::createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list)
-    {
-        addNotNull (list, AudioIODeviceType::createAudioIODeviceType_WASAPI(true));
-        addNotNull (list, AudioIODeviceType::createAudioIODeviceType_DirectSound());
-        addNotNull (list, AudioIODeviceType::createAudioIODeviceType_ASIO());
-        addNotNull (list, AudioIODeviceType::createAudioIODeviceType_CoreAudio());
-        addNotNull (list, AudioIODeviceType::createAudioIODeviceType_iOSAudio());
-        addNotNull (list, AudioIODeviceType::createAudioIODeviceType_ALSA());
-        // addNotNull (list, AudioIODeviceType::createAudioIODeviceType_JACK());
-        addNotNull (list, AudioIODeviceType::createAudioIODeviceType_OpenSLES());
-        addNotNull (list, AudioIODeviceType::createAudioIODeviceType_Android());
-    }
+void
+DeviceManager::createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list)
+{
+    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_WASAPI(true));
+    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_DirectSound());
+    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_ASIO());
+    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_CoreAudio());
+    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_iOSAudio());
+    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_ALSA());
+    // addNotNull (list, AudioIODeviceType::createAudioIODeviceType_JACK());
+    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_OpenSLES());
+    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_Android());
+}
 
 
 
-    void
-    DeviceManager::getAudioDrivers (StringArray& drivers)
-    {
-        for (auto* d : getAvailableDeviceTypes())
-            drivers.add (d->getTypeName());
-    }
+void DeviceManager::getAudioDrivers (StringArray& drivers)
+{
+    for (auto* d : getAvailableDeviceTypes())
+        drivers.add (d->getTypeName());
+}
 
-    void
-    DeviceManager::selectAudioDriver (const String& name)
-    {
-        setCurrentAudioDeviceType (name, true);
-    }
+void DeviceManager::selectAudioDriver (const String& name)
+{
+    setCurrentAudioDeviceType (name, true);
+}
