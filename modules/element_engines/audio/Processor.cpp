@@ -17,7 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if 0
+#if 1
 int
 Processor::getChannelPort (uint32 port)
 {

@@ -35,8 +35,6 @@
 
 
 namespace Element {
-
-typedef lvtk::SymbolMap SymbolMap;
     
 #include "audio/PortType.h"
 #include "audio/Processor.h"

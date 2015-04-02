@@ -20,7 +20,7 @@
 #ifndef ELEMENT_PROCESSOR_BASE_H
 #define ELEMENT_PROCESSOR_BASE_H
 
-#if 1
+#if 0
 typedef lvtk::PortProcessor Processor;
 #else
 

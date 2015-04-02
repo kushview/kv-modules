@@ -36,10 +36,10 @@ using namespace lvtk;
 
         KnownPluginList allPlugins;
         AudioPluginFormatManager formats;
-        OptionalPtr<SymbolMap> symbols;
-
+        
        #if JUCE_MODULE_AVAILABLE_lvtk_plugins
         OptionalPtr<LV2World> lv2;
+        OptionalPtr<SymbolMap> symbols;
        #endif
 
         double sampleRate;
