@@ -17,8 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
-//==============================================================================
 class PinComponent   : public Component,
                        public SettableTooltipClient
 {
@@ -732,7 +730,6 @@ void GraphEditorBase::resized()
 
 void GraphEditorBase::changeListenerCallback (ChangeBroadcaster*)
 {
-    std::clog << "GraphEditorBase::changeListenerCallback()\n";
     updateComponents();
 }
 
@@ -898,8 +895,6 @@ void GraphEditorBase::endDraggingConnector (const MouseEvent& e)
     }
 }
 
-
-//==============================================================================
 class TooltipBar   : public Component,
                      private Timer
 {

@@ -25,10 +25,10 @@
 #ifndef ELEMENT_GUI_GRAPH_EDITOR_H
 #define ELEMENT_GUI_GRAPH_EDITOR_H
 
-    class GraphController;
-    class FilterComponent;
-    class ConnectorComponent;
-    class PinComponent;
+class GraphController;
+class FilterComponent;
+class ConnectorComponent;
+class PinComponent;
 
 /** A panel that displays and edits a ProcessorGraph. */
 
@@ -56,14 +56,12 @@ public:
     void onGraphChanged();
     void updateComponents();
 
-    //==============================================================================
     void beginConnectorDrag (const uint32 sourceFilterID, const int sourceFilterChannel,
                              const uint32 destFilterID, const int destFilterChannel,
                              const MouseEvent& e);
     void dragConnector (const MouseEvent& e);
     void endDraggingConnector (const MouseEvent& e);
 
-    //==============================================================================
     virtual bool isInterestedInDragSource (const SourceDetails& dragSourceDetails) { return true; }
     //virtual void itemDragEnter (const SourceDetails& dragSourceDetails);
     //virtual void itemDragMove (const SourceDetails& dragSourceDetails);
@@ -76,11 +74,9 @@ public:
     virtual bool shouldDrawDragImageWhenOver() { return true; }
 
 protected:
-
     GraphController& graph;
 
 private:
-
     ScopedPointer<ConnectorComponent> draggingConnector;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphEditorBase)
 };

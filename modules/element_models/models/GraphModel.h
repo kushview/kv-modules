@@ -20,20 +20,16 @@
 #ifndef ELEMENT_GRAPH_MODEL_H
 #define ELEMENT_GRAPH_MODEL_H
 
-    class GraphModel :  public BlockModel
-    {
-    public:
+class GraphModel :  public BlockModel
+{
+public:
+    GraphModel() : BlockModel ("graph") { }
+    ~GraphModel() { }
 
-        GraphModel() : BlockModel ("graph") { }
-        ~GraphModel() { }
-
-        inline int32 countBlocks() const {
-            return countChildrenOfType (Slugs::block);
-        }
-
-    private:
-
-    };
+    inline int32 countBlocks() const {
+        return countChildrenOfType (Slugs::block);
+    }
+};
 
 
 #endif // ELEMENT_GRAPH_MODEL_H
