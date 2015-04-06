@@ -692,8 +692,7 @@ GraphEditorBase::getComponentForFilter (const uint32 filterID) const
     return nullptr;
 }
 
-ConnectorComponent*
-GraphEditorBase::getComponentForConnection (const Arc& arc) const
+ConnectorComponent* GraphEditorBase::getComponentForConnection (const Arc& arc) const
 {
     for (int i = getNumChildComponents(); --i >= 0;)
     {

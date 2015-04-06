@@ -30,8 +30,7 @@ class FilterComponent;
 class ConnectorComponent;
 class PinComponent;
 
-/** A panel that displays and edits a ProcessorGraph. */
-
+/** A panel that displays and edits a GraphProcessor. */
 class GraphEditorBase   : public Component,
                           public ChangeListener,
                           public DragAndDropTarget
