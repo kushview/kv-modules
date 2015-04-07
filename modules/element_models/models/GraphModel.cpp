@@ -1,5 +1,5 @@
 /*
-    GraphModel.h - This file is part of Element
+    GraphModel.cpp - This file is part of Element
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -17,18 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_GRAPH_MODEL_H
-#define ELEMENT_GRAPH_MODEL_H
-
-class GraphModel :  public BlockModel
-{
-public:
-    GraphModel() : BlockModel (Slugs::graph) { }
-    ~GraphModel() { }
-
-    void addPlugin () { }
-    void addSubGraph (const GraphModel& graph);
-};
-
-
-#endif // ELEMENT_GRAPH_MODEL_H
+GraphModel::GraphModel() { }
+GraphModel::~GraphModel() { }
+void GraphModel::addPlugin () { }
+void GraphModel::addSubGraph (const GraphModel& graph) { }

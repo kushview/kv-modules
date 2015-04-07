@@ -752,13 +752,11 @@ GraphProcessor::~GraphProcessor()
     clear();
 }
 
-const String
-GraphProcessor::getName() const
+const String GraphProcessor::getName() const
 {
     return "Processing Graph";
 }
 
-//==============================================================================
 void GraphProcessor::clear()
 {
     nodes.clear();
@@ -767,8 +765,7 @@ void GraphProcessor::clear()
     handleAsyncUpdate();
 }
 
-GraphProcessor::Node*
-GraphProcessor::getNodeForId (const uint32 nodeId) const
+GraphProcessor::Node* GraphProcessor::getNodeForId (const uint32 nodeId) const
 {
     for (int i = nodes.size(); --i >= 0;)
         if (nodes.getUnchecked(i)->nodeId == nodeId)
@@ -777,8 +774,7 @@ GraphProcessor::getNodeForId (const uint32 nodeId) const
     return nullptr;
 }
 
-GraphProcessor::Node*
-GraphProcessor::addNode (Processor* const newProcessor, uint32 nodeId)
+GraphProcessor::Node* GraphProcessor::addNode (Processor* const newProcessor, uint32 nodeId)
 {
     if (newProcessor == nullptr || (void*)newProcessor == (void*)this)
     {
