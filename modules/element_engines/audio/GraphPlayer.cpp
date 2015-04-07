@@ -16,7 +16,6 @@
         setRootGraph (nullptr);
     }
 
-    //==============================================================================
     void GraphPlayer::setRootGraph (GraphProcessor* const nextGraph)
     {
         if (processor != nextGraph)
@@ -24,8 +23,7 @@
             if (nextGraph != nullptr && sampleRate > 0 && blockSize > 0)
             {
                 nextGraph->setPlayConfigDetails (numInputChans, numOutputChans,
-                                                       sampleRate, blockSize);
-
+                                                 sampleRate, blockSize);
                 nextGraph->prepareToPlay (sampleRate, blockSize);
             }
 
@@ -43,7 +41,6 @@
         }
     }
 
-    //==============================================================================
     void GraphPlayer::audioDeviceIOCallback (const float** const inputChannelData, const int numInputChannels,
                                              float** const outputChannelData, const int numOutputChannels,
                                              const int numSamples)
@@ -132,8 +129,10 @@
 
         if (processor != nullptr)
         {
-            if (isPrepared)
+            if (isPrepared) {
                 processor->releaseResources();
+                isPrepared = false;
+            }
 
             GraphProcessor* const oldProcessor = processor;
             setRootGraph (nullptr);
