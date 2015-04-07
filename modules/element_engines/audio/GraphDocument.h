@@ -29,7 +29,6 @@ const char* const graphWildcard = "*.graph";
 class GraphDocument :  public FileBasedDocument
 {
 public:
-
     GraphDocument (GraphController& ctl, PluginManager& plugins);
     virtual ~GraphDocument();
 

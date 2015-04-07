@@ -65,15 +65,10 @@ void GraphDocument::restoreFromXml (const XmlElement& xml)
 
     forEachXmlChildElementWithTagName (xml, e, "arc")
     {
-        std::clog << "connecting " <<
-        graph.addConnection ((uint32)e->getIntAttribute ("source-block"),
+        graph.addConnection ((uint32) e->getIntAttribute ("source-block"),
                              e->getIntAttribute ("source-port"),
-                             (uint32)e->getIntAttribute ("dest-block"),
-                             e->getIntAttribute ("dest-port")) << std::endl;
-        std::clog << e->getIntAttribute ("source-block") << " "
-                  << e->getIntAttribute ("source-port") << " "
-                  << e->getIntAttribute ("dest-block") << " "
-                  << e->getIntAttribute ("dest-port") << std::endl;
+                             (uint32) e->getIntAttribute ("dest-block"),
+                             e->getIntAttribute ("dest-port"));
     }
 
     graph.removeIllegalConnections();
@@ -153,15 +148,13 @@ static XmlElement* createNodeXml (GraphProcessor::Node* const node) noexcept
 
 void GraphDocument::createNodeFromXml (const XmlElement& xml)
 {
-    std::clog << "GraphDocument::createNodeFromXml\n";
     PluginDescription pd;
-
     forEachXmlChildElement (xml, e)
     {
         if (pd.loadFromXml (*e))
             break;
     }
-#if 0
+#if 1
     String errorMessage;
     Processor* instance = plugins.createPlugin (pd, errorMessage);
 #else
@@ -169,7 +162,6 @@ void GraphDocument::createNodeFromXml (const XmlElement& xml)
 #endif
     if (instance == nullptr)
     {
-        // xxx handle ins + outs
     }
 
     if (instance == nullptr)
