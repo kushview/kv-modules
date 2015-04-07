@@ -1,5 +1,5 @@
 /*
-    ProcessorBase.h - This file is part of Element
+    Processor.h - This file is part of Element
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -20,15 +20,10 @@
 #ifndef ELEMENT_PROCESSOR_BASE_H
 #define ELEMENT_PROCESSOR_BASE_H
 
-#if 0
-typedef lvtk::PortProcessor Processor;
-#else
-
 class Processor :  public AudioPluginInstance
 {
 
 public:
-
     Processor() { }
     virtual ~Processor() { }
 
@@ -42,7 +37,7 @@ public:
     virtual uint32 getNumPorts (PortType type, bool isInput);
     
     /** Returns the port index from a 'channel' index of a particular
-     port type */
+        port type */
     uint32 getNthPort (PortType type, int index, bool isInput, bool indexIsOneBased = true);
     
     /** Returns the type for a given port */
@@ -52,14 +47,18 @@ public:
     virtual bool isPortInput (uint32 port);
     
     /** Returns true if the port is an output (source port) */
-    virtual bool isPortOutput (uint32 port) { return ! isPortInput (port); }
+    inline bool isPortOutput (uint32 port) { return ! isPortInput (port); }
     
     /** Write data to a port */
     virtual bool writeToPort (uint32 port, uint32 size, uint32 protocol, void const* data);
     
     bool writeControlValue (uint32 port, float value);
-
+    
+    static uint32 getNumPorts (AudioProcessor*);
+    static uint32 getNumPorts (AudioProcessor*, PortType type, bool isInput);
+    static PortType getPortType (AudioProcessor*, uint32 port);
+    static bool isPortInput (AudioProcessor*, uint32 port);
+    static bool writeToPort (AudioProcessor*, uint32 port, uint32 size, uint32 protocol, void const* data);
 };
-#endif
 
 #endif // ELEMENT_PROCESSOR_BASE_H
