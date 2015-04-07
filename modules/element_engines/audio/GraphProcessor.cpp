@@ -208,14 +208,6 @@ public:
 
         while (audioChannelsToUse.size() < totalChans)
             audioChannelsToUse.add (0);
-#if ELEMENT_DEBUG_GRAPH
-        std::clog << "ProcessBufferOp()\n";
-        std::clog << "   total chans: " << totalChans << std::endl;
-        for (int i = 0; i < totalChans; ++i)
-        {
-            std::clog << "    " << i << " -> " << audioChannelsToUse.getUnchecked(i) << std::endl;
-        }
-#endif
     }
 
     ProcessBufferOp (const GraphProcessor::Node::Ptr& node_,
@@ -715,8 +707,8 @@ GraphProcessor::Node::prepare (const double sampleRate, const int blockSize,
     {
         setParentGraph (graph);
         proc->setPlayConfigDetails (proc->getNumInputChannels(),
-                                         proc->getNumOutputChannels(),
-                                         sampleRate, blockSize);
+                                    proc->getNumOutputChannels(),
+                                    sampleRate, blockSize);
         proc->prepareToPlay (sampleRate, blockSize);
 
         isPrepared = true;
@@ -1215,7 +1207,7 @@ GraphProcessor::fillInPluginDescription (PluginDescription& d) const
     d.uid = d.name.hashCode();
     d.category = "Graphs";
     d.pluginFormatName = "Internal";
-    d.manufacturerName = "BKE, LLC";
+    d.manufacturerName = "Kushview, LLC";
     d.version = "1.0";
     d.isInstrument = acceptsMidi();
     d.numInputChannels = getNumInputChannels();
