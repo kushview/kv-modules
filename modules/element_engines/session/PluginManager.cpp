@@ -29,7 +29,7 @@ using namespace lvtk;
 
         Private()
             : sampleRate (44100.0f),
-              blockSize (1024)
+              blockSize (512)
         {  }
 
         ~Private() {  }
