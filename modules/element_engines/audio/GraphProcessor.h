@@ -68,6 +68,8 @@ public:
         /** The actual processor object that this node represents. */
         Processor* audioProcessor() const noexcept           { return proc; }
 
+        AudioPluginInstance* getAudioPluginInstance() const;
+        
         /** The actual processor object dynamic_cast'd to ProcType */
         template<class ProcType>
         inline ProcType* processor() const { return dynamic_cast<ProcType*> (proc.get()); }

@@ -724,6 +724,14 @@ void GraphProcessor::Node::unprepare()
     }
 }
 
+AudioPluginInstance* GraphProcessor::Node::getAudioPluginInstance() const
+{
+    if (PluginWrapper* wrapper = dynamic_cast<PluginWrapper*> (proc.get()))
+        return wrapper->getWrappedAudioPluginInstance();
+    
+    return dynamic_cast<AudioPluginInstance*> (proc.get());
+}
+
 void GraphProcessor::Node::setParentGraph (GraphProcessor* const graph) const
 {
     if (GraphProcessor::AudioGraphIOProcessor* const ioProc

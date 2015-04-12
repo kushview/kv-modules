@@ -122,6 +122,7 @@ public:
         return Processor::isPortInput (proc, port);
     }
     
+    inline AudioPluginInstance* getWrappedAudioPluginInstance() const { return dynamic_cast<AudioPluginInstance*> (proc.get()); }
 private:
     ScopedPointer<AudioProcessor> proc;
 

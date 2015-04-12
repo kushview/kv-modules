@@ -64,6 +64,7 @@ namespace Element {
 #include "session/AppController.h"
 #include "session/DeviceManager.h"
 #include "session/PluginManager.h"
+#include "session/PluginWrapper.h"
 #include "session/SessionBase.h"
     
 }
