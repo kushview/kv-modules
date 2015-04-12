@@ -238,6 +238,10 @@ public:
 
         AudioSampleBuffer buffer (channels, totalChans, numSamples);
         processor->processBlock (buffer, *sharedMidiBuffers.getUnchecked (midiBufferToUse));
+        if (node->getGain() != node->getLastGain()) {
+            buffer.applyGainRamp (0, numSamples, node->getGain(), node->getLastGain());
+            node->updateGain();
+        }
     }
 
     const GraphProcessor::Node::Ptr node;
@@ -690,6 +694,7 @@ GraphProcessor::Node::Node (const uint32 nodeId_, Processor* const processor_) n
       proc (processor_),
       isPrepared (false)
 {
+    gain.set(1.0f); lastGain.set(1.0f);
     jassert (proc != nullptr);
 }
 

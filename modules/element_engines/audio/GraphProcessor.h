@@ -41,8 +41,7 @@ class JUCE_API  GraphProcessor :  public Processor,
                                   public AsyncUpdater
 {
 public:
-
-    //==============================================================================
+    
     /** Creates an empty graph. */
     GraphProcessor();
 
@@ -51,7 +50,6 @@ public:
     */
     ~GraphProcessor();
 
-    //==============================================================================
     /** Represents one of the nodes, or processors, in an AudioProcessorGraph.
 
         To create a node, call ProcessorGraph::addNode().
@@ -59,7 +57,7 @@ public:
     class JUCE_API  Node   : public ReferenceCountedObject
     {
     public:
-        //==============================================================================
+        
         /** The ID number assigned to this node.
             This is assigned by the graph that owns it, and can't be changed.
         */
@@ -89,6 +87,14 @@ public:
         /** A convenient typedef for referring to a pointer to a node object. */
         typedef ReferenceCountedObjectPtr <Node> Ptr;
 
+        void setGain (const float g) {
+            gain.set (g);
+        }
+        
+        float getGain() const { return gain.get(); }
+        float getLastGain() const {return lastGain.get(); }
+        void updateGain() { lastGain.set (gain.get()); }
+        
     private:
         //==============================================================================
         friend class GraphProcessor;
@@ -102,6 +108,8 @@ public:
         void prepare (double sampleRate, int blockSize, GraphProcessor*);
         void unprepare();
 
+        AtomicValue<float> gain, lastGain;
+        
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Node)
     };
 
