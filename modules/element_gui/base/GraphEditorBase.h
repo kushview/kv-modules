@@ -29,6 +29,7 @@ class GraphController;
 class FilterComponent;
 class ConnectorComponent;
 class PinComponent;
+class PluginWindow;
 
 /** A panel that displays and edits a GraphProcessor. */
 class GraphEditorBase   : public Component,
@@ -74,10 +75,16 @@ public:
 
 protected:
     GraphController& graph;
-
+    virtual Component* wrapAudioProcessorEditor (AudioProcessorEditor* ed);
+    
 private:
+    friend class FilterComponent;
     ScopedPointer<ConnectorComponent> draggingConnector;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphEditorBase)
+    Component* createContainerForNode (GraphProcessor::Node::Ptr node, bool useGenericEditor);
+    AudioProcessorEditor* createEditorForNode (GraphProcessor::Node::Ptr node, bool useGenericEditor);
+    PluginWindow* getOrCreateWindowForNode (GraphProcessor::Node::Ptr f, bool useGeneric);
+    
 };
 
 #endif   // ELEMENT_GUI_GRAPH_EDITOR_H

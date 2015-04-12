@@ -1,31 +1,30 @@
-#ifndef PLUGINWINDOW_H
-#define PLUGINWINDOW_H
+#ifndef ELEMENT_PLUGIN_WINDOW_H
+#define ELEMENT_PLUGIN_WINDOW_H
 
-
-    /** A desktop window containing a plugin's UI. */
-    class PluginWindow  : public DocumentWindow
-    {
-
-        typedef GraphProcessor::Node GraphNode;
-        PluginWindow (Component* const uiComp, GraphNode* node, const bool generic);
-
-    public:
-
-        static PluginWindow* getWindowFor (GraphNode* node, bool useGenericView);
-        static void closeCurrentlyOpenWindowsFor (const uint32 nodeId);
-        static void closeAllCurrentlyOpenWindows();
-
-        ~PluginWindow();
-
-        void moved();
-        void closeButtonPressed();
-        void resized();
-
-    private:
-        
-        GraphNode* owner;
-        bool isGeneric;
+/** A desktop window containing a plugin's UI. */
+class PluginWindow  : public DocumentWindow
+{
+public:
+    typedef GraphProcessor::Node GraphNode;
+    static PluginWindow* getWindowFor (GraphNode* node);
+    static PluginWindow* createWindowFor (GraphNode* node, Component* editor);
     
-    };
+    static void closeCurrentlyOpenWindowsFor (const uint32 nodeId);
+    static void closeAllCurrentlyOpenWindows();
 
-#endif // PLUGINWINDOW_H
+    ~PluginWindow();
+
+    Toolbar* getToolbar() const;
+    
+    // component/document window
+    void moved();
+    void closeButtonPressed();
+    void resized();
+
+private:
+    PluginWindow (Component* const uiComp, GraphNode* node);
+    GraphNode* owner;
+
+};
+
+#endif // ELEMENT_PLUGIN_WINDOW_H

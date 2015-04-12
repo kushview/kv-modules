@@ -103,8 +103,7 @@ private:
 class FilterComponent    : public Component
 {
 public:
-    FilterComponent (GraphController& graph_,
-                     const uint32 filterID_)
+    FilterComponent (GraphController& graph_, const uint32 filterID_)
         : graph (graph_),
           filterID (filterID_),
           numInputs (0),
@@ -145,7 +144,7 @@ public:
             menu.addItem (1, "Remove this block...");
             menu.addItem (2, "Disconnect all ports");
             menu.addSeparator();
-            //menu.addItem (5, "Embed plugin UI");
+            menu.addItem (5, "Embed plugin UI");
             menu.addItem (3, "Show plugin UI");
             menu.addItem (4, "Show generic UI");
 
@@ -166,15 +165,14 @@ public:
             {
                 if (GraphProcessor::Node::Ptr f = graph.getNodeForId (filterID))
                 {
-                    if (PluginWindow* const w = PluginWindow::getWindowFor (f, r == 4))
-                        w->toFront (true);
+                    if (PluginWindow* win = getGraphPanel()->getOrCreateWindowForNode (f, r == 4))
+                        win->toFront (true);
                 }
             }
             else if (r == 5)
             {
                 if (GraphProcessor::Node::Ptr f = graph.getNodeForId (filterID))
                 {
-
                     AudioProcessorEditor* ui = nullptr;
                     bool useGenericView      = false;
 
@@ -188,16 +186,17 @@ public:
                     if (useGenericView)
                         ui = new GenericAudioProcessorEditor (f->audioProcessor());
 
+                    if (ui) delete ui;
                     if (ui != nullptr)
                     {
-                        PluginWindow::closeCurrentlyOpenWindowsFor (filterID);
-                        embedded = ui;
-
-                        if (AudioPluginInstance* const plugin = dynamic_cast <AudioPluginInstance*> (f->audioProcessor()))
-                            ui->setName (plugin->getName());
-
-                        setSize (ui->getWidth(), ui->getHeight());
-                        addAndMakeVisible (ui);
+//                        PluginWindow::closeCurrentlyOpenWindowsFor (filterID);
+//                        embedded = ui;
+//
+//                        if (AudioPluginInstance* const plugin = dynamic_cast <AudioPluginInstance*> (f->audioProcessor()))
+//                            ui->setName (plugin->getName());
+//
+//                        setSize (ui->getWidth(), ui->getHeight());
+//                        addAndMakeVisible (ui);
                     }
                 }
             }
@@ -226,7 +225,7 @@ public:
         if (e.mouseWasClicked() && e.getNumberOfClicks() == 2)
         {
             if (const GraphProcessor::Node::Ptr f = graph.getNodeForId (filterID))
-                if (PluginWindow* const w = PluginWindow::getWindowFor (f, false))
+                if (PluginWindow* const w = getGraphPanel()->getOrCreateWindowForNode (f, false))
                     w->toFront (true);
         }
         else if (! e.mouseWasClicked())
@@ -794,8 +793,8 @@ void GraphEditorBase::updateComponents()
 }
 
 void GraphEditorBase::beginConnectorDrag (const uint32 sourceFilterID, const int sourceFilterChannel,
-                                           const uint32 destFilterID, const int destFilterChannel,
-                                           const MouseEvent& e)
+                                          const uint32 destFilterID, const int destFilterChannel,
+                                          const MouseEvent& e)
 {
     draggingConnector = dynamic_cast <ConnectorComponent*> (e.originalComponent);
     if (draggingConnector == nullptr)
@@ -855,6 +854,34 @@ void GraphEditorBase::dragConnector (const MouseEvent& e)
     }
 }
 
+Component* GraphEditorBase::createContainerForNode (GraphProcessor::Node::Ptr node, bool useGenericEditor)
+{
+    if (AudioProcessorEditor* ed = createEditorForNode (node, useGenericEditor))
+        if (Component* comp = wrapAudioProcessorEditor (ed))
+            return comp;
+    return nullptr;
+}
+
+Component* GraphEditorBase::wrapAudioProcessorEditor(AudioProcessorEditor *ed) { return ed; }
+
+AudioProcessorEditor* GraphEditorBase::createEditorForNode (GraphProcessor::Node::Ptr node, bool useGenericEditor)
+{
+    ScopedPointer<AudioProcessorEditor> ui = nullptr;
+    
+    if (! useGenericEditor)
+    {
+        ui = node->audioProcessor()->createEditorIfNeeded();
+        
+        if (ui == nullptr)
+            useGenericEditor = true;
+    }
+    
+    if (useGenericEditor)
+        ui = new GenericAudioProcessorEditor (node->audioProcessor());
+    
+    return (nullptr != ui) ? ui.release() : nullptr;
+}
+
 void GraphEditorBase::endDraggingConnector (const MouseEvent& e)
 {
     if (draggingConnector == nullptr)
@@ -892,6 +919,23 @@ void GraphEditorBase::endDraggingConnector (const MouseEvent& e)
 
         graph.addConnection (srcFilter, srcChannel, dstFilter, dstChannel);
     }
+}
+
+PluginWindow* GraphEditorBase::getOrCreateWindowForNode (GraphProcessor::Node::Ptr f, bool useGeneric)
+{
+    PluginWindow* w = PluginWindow::getWindowFor (f);
+    
+    if (! w)
+    {
+        ScopedPointer<Component> c (createContainerForNode (f, useGeneric));
+        if (c)
+        {
+            w = PluginWindow::createWindowFor (f, c.get());
+            if (w) c.release();
+        }
+    }
+
+    return w;
 }
 
 class TooltipBar   : public Component,

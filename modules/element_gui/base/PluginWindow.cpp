@@ -17,96 +17,127 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+static Array <PluginWindow*> activePluginWindows;
 
+class PluginWindowToolbar : public Toolbar
+{
+public:
+    PluginWindowToolbar() { }
+    ~PluginWindowToolbar() { }
+    
+};
 
-    class PluginWindow;
-    static Array <PluginWindow*> activePluginWindows;
-
-    PluginWindow::PluginWindow (Component* const ui, GraphProcessor::Node* node, const bool generic)
-        : DocumentWindow (ui->getName(), Colours::lightgrey,
-                          DocumentWindow::minimiseButton | DocumentWindow::closeButton),
-          owner (node), isGeneric (generic)
+class PluginWindowContent : public Component
+{
+public:
+    PluginWindowContent (Component* const _editor)
+        : editor (_editor)
     {
-        setContentOwned (ui, true);
-        setTopLeftPosition (owner->properties.getWithDefault ("uiLastX", Random::getSystemRandom().nextInt (500)),
-                            owner->properties.getWithDefault ("uiLastY", Random::getSystemRandom().nextInt (500)));
-
-        setVisible (true);
-        setResizable(true, false);
-        activePluginWindows.add (this);
+        addAndMakeVisible (toolbar = new PluginWindowToolbar());
+        addAndMakeVisible (editor);
+        setSize (editor->getWidth(), editor->getHeight());
+        toolbar->setBounds (0, 0, getWidth(), 48);
+        resized();
     }
+    
+    ~PluginWindowContent() { }
+    
+    void resized()
+    {
+        Rectangle<int> r (getLocalBounds());
+        
+        if (toolbar->getThickness())
+        {
+            toolbar->setBounds (r.removeFromTop (toolbar->getThickness()));
+        }
+        
+        editor->setBounds (r);
+    }
+    
+    Toolbar* getToolbar() const { return toolbar.get(); }
+    
+private:
+    ScopedPointer<PluginWindowToolbar> toolbar;
+    ScopedPointer<Component> editor, leftPanel, rightPanel;
+};
 
-    void PluginWindow::closeCurrentlyOpenWindowsFor (const uint32 nodeId)
+PluginWindow::PluginWindow (Component* const ui, GraphProcessor::Node* node)
+    : DocumentWindow (ui->getName(), Colours::lightgrey,
+                      DocumentWindow::minimiseButton | DocumentWindow::closeButton),
+      owner (node)
+{
+#if 0
+    setContentOwned (new PluginWindowContent (ui), true);
+#else
+    setContentOwned (ui, true);
+#endif
+    
+    setTopLeftPosition (owner->properties.getWithDefault ("uiLastX", Random::getSystemRandom().nextInt (500)),
+                        owner->properties.getWithDefault ("uiLastY", Random::getSystemRandom().nextInt (500)));
+    setVisible (true);
+    setResizable(true, false);
+    activePluginWindows.add (this);
+}
+
+void PluginWindow::closeCurrentlyOpenWindowsFor (const uint32 nodeId)
+{
+    for (int i = activePluginWindows.size(); --i >= 0;)
+        if (activePluginWindows.getUnchecked(i)->owner->nodeId == nodeId)
+            delete activePluginWindows.getUnchecked(i);
+}
+
+void PluginWindow::closeAllCurrentlyOpenWindows()
+{
+    if (activePluginWindows.size() > 0)
     {
         for (int i = activePluginWindows.size(); --i >= 0;)
-            if (activePluginWindows.getUnchecked(i)->owner->nodeId == nodeId)
-                delete activePluginWindows.getUnchecked(i);
+            delete activePluginWindows.getUnchecked(i);
+
+        Component dummyModalComp;
+        dummyModalComp.enterModalState();
+        MessageManager::getInstance()->runDispatchLoopUntil (50);
     }
+}
 
-    void PluginWindow::closeAllCurrentlyOpenWindows()
-    {
-        if (activePluginWindows.size() > 0)
-        {
-            for (int i = activePluginWindows.size(); --i >= 0;)
-                delete activePluginWindows.getUnchecked(i);
+Toolbar* PluginWindow::getToolbar() const
+{
+    if (PluginWindowContent* pwc = dynamic_cast<PluginWindowContent*> (getContentComponent()))
+        return pwc->getToolbar();
+    return nullptr;
+}
 
-            Component dummyModalComp;
-            dummyModalComp.enterModalState();
-            MessageManager::getInstance()->runDispatchLoopUntil (50);
-        }
-    }
+void PluginWindow::resized()
+{
+    DocumentWindow::resized();
+}
 
-    void PluginWindow::resized()
-    {
-        DocumentWindow::resized();
-    }
+PluginWindow* PluginWindow::getWindowFor (GraphProcessor::Node* node)
+{
+    for (int i = activePluginWindows.size(); --i >= 0;)
+        if (activePluginWindows.getUnchecked(i)->owner == node)
+            return activePluginWindows.getUnchecked(i);
 
-    PluginWindow* PluginWindow::getWindowFor (GraphProcessor::Node* node,
-                                              bool useGenericView)
-    {
-        for (int i = activePluginWindows.size(); --i >= 0;)
-            if (activePluginWindows.getUnchecked(i)->owner == node
-                 && activePluginWindows.getUnchecked(i)->isGeneric == useGenericView)
-                return activePluginWindows.getUnchecked(i);
+    return nullptr;
+}
 
-        AudioProcessorEditor* ui = nullptr;
+PluginWindow* PluginWindow::createWindowFor (GraphNode* node, Component* ed)
+{
+    return new PluginWindow (ed, node);
+}
 
-        if (! useGenericView)
-        {
-            ui = node->audioProcessor()->createEditorIfNeeded();
+PluginWindow::~PluginWindow()
+{
+    activePluginWindows.removeFirstMatchingValue (this);
+    clearContentComponent();
+}
 
-            if (ui == nullptr)
-                useGenericView = true;
-        }
+void PluginWindow::moved()
+{
+    owner->properties.set ("uiLastX", getX());
+    owner->properties.set ("uiLastY", getY());
+}
 
-        if (useGenericView)
-            ui = new GenericAudioProcessorEditor (node->audioProcessor());
-
-        if (ui != nullptr)
-        {
-            if (AudioPluginInstance* const plugin = dynamic_cast <AudioPluginInstance*> (node->audioProcessor()))
-                ui->setName (plugin->getName());
-
-            return new PluginWindow (ui, node, useGenericView);
-        }
-
-        return nullptr;
-    }
-
-    PluginWindow::~PluginWindow()
-    {
-        activePluginWindows.removeFirstMatchingValue (this);
-        clearContentComponent();
-    }
-
-    void PluginWindow::moved()
-    {
-        owner->properties.set ("uiLastX", getX());
-        owner->properties.set ("uiLastY", getY());
-    }
-
-    void PluginWindow::closeButtonPressed()
-    {
-        delete this;
-    }
-
+void PluginWindow::closeButtonPressed()
+{
+    delete this;
+}
