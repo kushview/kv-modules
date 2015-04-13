@@ -75,7 +75,7 @@ public:
 
 protected:
     GraphController& graph;
-    virtual Component* wrapAudioProcessorEditor (AudioProcessorEditor* ed);
+    virtual Component* wrapAudioProcessorEditor (AudioProcessorEditor* ed, GraphProcessor::Node::Ptr editorNode);
     
 private:
     friend class FilterComponent;

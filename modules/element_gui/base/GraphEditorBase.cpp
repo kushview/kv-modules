@@ -857,12 +857,12 @@ void GraphEditorBase::dragConnector (const MouseEvent& e)
 Component* GraphEditorBase::createContainerForNode (GraphProcessor::Node::Ptr node, bool useGenericEditor)
 {
     if (AudioProcessorEditor* ed = createEditorForNode (node, useGenericEditor))
-        if (Component* comp = wrapAudioProcessorEditor (ed))
+        if (Component* comp = wrapAudioProcessorEditor (ed, node))
             return comp;
     return nullptr;
 }
 
-Component* GraphEditorBase::wrapAudioProcessorEditor(AudioProcessorEditor *ed) { return ed; }
+Component* GraphEditorBase::wrapAudioProcessorEditor(AudioProcessorEditor* ed, GraphProcessor::Node::Ptr) { return ed; }
 
 AudioProcessorEditor* GraphEditorBase::createEditorForNode (GraphProcessor::Node::Ptr node, bool useGenericEditor)
 {
