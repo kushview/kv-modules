@@ -83,7 +83,6 @@ public:
         /** Returns true if the process is a graph */
         bool isSubgraph() const noexcept;
 
-        //==============================================================================
         /** A convenient typedef for referring to a pointer to a node object. */
         typedef ReferenceCountedObjectPtr <Node> Ptr;
 
@@ -95,8 +94,13 @@ public:
         float getLastGain() const {return lastGain.get(); }
         void updateGain() { lastGain.set (gain.get()); }
         
+        ValueTree getMetadata() const { return metadata; }
+        void setMetadata (const ValueTree& meta, bool copy = false)
+        {
+            metadata = (copy) ? meta.createCopy() : meta;
+        }
+        
     private:
-        //==============================================================================
         friend class GraphProcessor;
 
         const ScopedPointer<Processor> proc;
@@ -109,6 +113,8 @@ public:
         void unprepare();
 
         AtomicValue<float> gain, lastGain;
+        
+        ValueTree metadata;
         
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Node)
     };
@@ -386,7 +392,8 @@ public:
     inline ValueTree getGraphState() const { return graphState.graph; }
 
 protected:
-
+    
+    virtual Node* createNode (uint32 nodeId, Processor* proc) { return new Node (nodeId, proc); }
     virtual void preRenderNodes() { }
     virtual void postRenderNodes() { }
 

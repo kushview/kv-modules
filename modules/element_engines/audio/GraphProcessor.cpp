@@ -692,7 +692,8 @@ GraphProcessor::Connection::Connection (const uint32 sourceNode_, const uint32 s
 GraphProcessor::Node::Node (const uint32 nodeId_, Processor* const processor_) noexcept
     : nodeId (nodeId_),
       proc (processor_),
-      isPrepared (false)
+      isPrepared (false),
+      metadata ("metadata")
 {
     gain.set(1.0f); lastGain.set(1.0f);
     jassert (proc != nullptr);
@@ -820,13 +821,15 @@ GraphProcessor::Node* GraphProcessor::addNode (Processor* const newProcessor, ui
 
     newProcessor->setPlayHead (getPlayHead());
 
-    Node* const n = new Node (nodeId, newProcessor);
-    nodes.add (n);
-    n->setParentGraph (this);
-
-    triggerAsyncUpdate();
-
-    return n;
+    if (Node* const n = createNode (nodeId, newProcessor))
+    {
+        n->setParentGraph (this);
+        nodes.add (n);
+        triggerAsyncUpdate();
+        return n;
+    }
+    
+    return nullptr;
 }
 
 bool GraphProcessor::removeNode (const uint32 nodeId)
