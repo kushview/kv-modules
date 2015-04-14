@@ -22,9 +22,11 @@ class PinComponent   : public Component,
 {
 public:
     PinComponent (GraphController& graph_, const uint32 filterID_,
-                  const uint32 index_, const bool isInput_)
+                  const uint32 index_, const bool isInput_,
+                  const PortType type_)
         : filterID (filterID_),
           port (index_),
+          type (type_),
           isInput (isInput_),
           graph (graph_)
     {
@@ -58,13 +60,22 @@ public:
 
         Path p;
         p.addEllipse (w * 0.25f, h * 0.25f, w * 0.5f, h * 0.5f);
-
         p.addRectangle (w * 0.4f, isInput ? (0.5f * h) : 0.0f, w * 0.2f, h * 0.5f);
-
-        g.setColour (Colours::green); //XXX (port == GraphController::midiChannelNumber ? Colours::red : Colours::green);
+        g.setColour (getColor());
         g.fillPath (p);
     }
 
+    Colour getColor() const
+    {
+        switch (this->type)
+        {
+            case PortType::Audio: return Colours::lightgreen; break;
+            case PortType::Control: return Colours::lightblue;  break;
+            default: return Colours::black; break;
+        }
+        
+        return Colours::black;
+    }
     void mouseDown (const MouseEvent& e)
     {
         getGraphPanel()->beginConnectorDrag (isInput ? 0 : filterID,
@@ -86,6 +97,7 @@ public:
 
     const uint32 filterID;
     const uint32 port;
+    const PortType type;
     const bool   isInput;
 
 private:
@@ -350,9 +362,9 @@ public:
 #if 1
             for (i = 0; i < f->audioProcessor()->getNumPorts(); ++i)
             {
-                // const PortType t (f->audioProcessor()->getPortType (i));
+                const PortType t (f->audioProcessor()->getPortType (i));
                 const bool isInput (f->audioProcessor()->isPortInput (i));
-                addAndMakeVisible (new PinComponent (graph, filterID, i, isInput));
+                addAndMakeVisible (new PinComponent (graph, filterID, i, isInput, t));
             }
 #else
             for (i = 0; i < f->audioProcessor()->getNumInputChannels(); ++i)
