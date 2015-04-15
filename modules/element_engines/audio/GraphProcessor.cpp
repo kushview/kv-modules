@@ -688,25 +688,23 @@ GraphProcessor::Connection::Connection (const uint32 sourceNode_, const uint32 s
     : Arc (sourceNode_, sourcePort_, destNode_, destPort_)
 { }
 
-//==============================================================================
 GraphProcessor::Node::Node (const uint32 nodeId_, Processor* const processor_) noexcept
     : nodeId (nodeId_),
       proc (processor_),
       isPrepared (false),
       metadata ("metadata")
 {
+    parent = nullptr;
     gain.set(1.0f); lastGain.set(1.0f);
     jassert (proc != nullptr);
 }
 
-bool
-GraphProcessor::Node::isSubgraph() const noexcept
+bool GraphProcessor::Node::isSubgraph() const noexcept
 {
     return (dynamic_cast<GraphProcessor*> (proc.get()) != nullptr);
 }
 
-void
-GraphProcessor::Node::prepare (const double sampleRate, const int blockSize,
+void GraphProcessor::Node::prepare (const double sampleRate, const int blockSize,
                                          GraphProcessor* const graph)
 {
     if (! isPrepared)
@@ -727,6 +725,7 @@ void GraphProcessor::Node::unprepare()
     {
         isPrepared = false;
         proc->releaseResources();
+        parent = nullptr;
     }
 }
 
@@ -738,8 +737,14 @@ AudioPluginInstance* GraphProcessor::Node::getAudioPluginInstance() const
     return dynamic_cast<AudioPluginInstance*> (proc.get());
 }
 
-void GraphProcessor::Node::setParentGraph (GraphProcessor* const graph) const
+GraphProcessor* GraphProcessor::Node::getParentGraph() const
 {
+    return parent;
+}
+
+void GraphProcessor::Node::setParentGraph (GraphProcessor* const graph)
+{
+    parent = graph;
     if (GraphProcessor::AudioGraphIOProcessor* const ioProc
             = dynamic_cast <GraphProcessor::AudioGraphIOProcessor*> (proc.get()))
         ioProc->setParentGraph (graph);
@@ -747,7 +752,6 @@ void GraphProcessor::Node::setParentGraph (GraphProcessor* const graph) const
         ioProc->setGraph (graph);
 }
 
-//==============================================================================
 GraphProcessor::GraphProcessor()
     : lastNodeId (0),
       renderingBuffers (1, 1),

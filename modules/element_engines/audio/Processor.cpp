@@ -17,6 +17,15 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+uint32 Processor::getPortForAudioChannel (AudioProcessor* proc, int chan, bool isInput)
+{
+    if (isInput) {
+        return static_cast<uint32> (chan);
+    }
+    
+    return static_cast<uint32> (proc->getNumInputChannels() + chan);
+}
+
 uint32 Processor::getNumPorts (AudioProcessor* proc)
 {
     return proc->getNumInputChannels() + proc->getNumOutputChannels() +

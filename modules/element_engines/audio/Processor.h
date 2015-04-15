@@ -54,6 +54,7 @@ public:
     
     bool writeControlValue (uint32 port, float value);
     
+    static uint32 getPortForAudioChannel (AudioProcessor*, int, bool);
     static uint32 getNumPorts (AudioProcessor*);
     static uint32 getNumPorts (AudioProcessor*, PortType type, bool isInput);
     static PortType getPortType (AudioProcessor*, uint32 port);

@@ -100,6 +100,10 @@ public:
             metadata = (copy) ? meta.createCopy() : meta;
         }
         
+        /* returns the parent graph. If one has not been set, then
+           this will return nullptr */
+        GraphProcessor* getParentGraph() const;
+        
     private:
         friend class GraphProcessor;
 
@@ -108,14 +112,14 @@ public:
 
         Node (uint32 nodeId, Processor*) noexcept;
 
-        void setParentGraph (GraphProcessor*) const;
+        void setParentGraph (GraphProcessor*);
         void prepare (double sampleRate, int blockSize, GraphProcessor*);
         void unprepare();
 
         AtomicValue<float> gain, lastGain;
         
         ValueTree metadata;
-        
+        GraphProcessor* parent;
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Node)
     };
 
