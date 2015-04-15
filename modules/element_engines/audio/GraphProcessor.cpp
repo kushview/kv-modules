@@ -237,11 +237,16 @@ public:
         }
 
         AudioSampleBuffer buffer (channels, totalChans, numSamples);
+        for (int i = totalChans; --i >= 0;)
+            node->setInputRMS (i, buffer.getRMSLevel (i, 0, numSamples));
+                                   
         processor->processBlock (buffer, *sharedMidiBuffers.getUnchecked (midiBufferToUse));
         if (node->getGain() != node->getLastGain()) {
             buffer.applyGainRamp (0, numSamples, node->getGain(), node->getLastGain());
             node->updateGain();
         }
+        for (int i = totalChans; --i >= 0;)
+            node->setOutputRMS (i, buffer.getRMSLevel (i, 0, numSamples));
     }
 
     const GraphProcessor::Node::Ptr node;
@@ -699,6 +704,17 @@ GraphProcessor::Node::Node (const uint32 nodeId_, Processor* const processor_) n
     jassert (proc != nullptr);
 }
 
+void GraphProcessor::Node::setInputRMS (int chan, float val)
+{
+    if (chan < inRMS.size())
+        inRMS.getUnchecked(chan)->set(val);
+}
+void GraphProcessor::Node::setOutputRMS (int chan, float val)
+{
+    if (chan < outRMS.size())
+        outRMS.getUnchecked(chan)->set(val);
+}
+
 bool GraphProcessor::Node::isSubgraph() const noexcept
 {
     return (dynamic_cast<GraphProcessor*> (proc.get()) != nullptr);
@@ -707,14 +723,33 @@ bool GraphProcessor::Node::isSubgraph() const noexcept
 void GraphProcessor::Node::prepare (const double sampleRate, const int blockSize,
                                          GraphProcessor* const graph)
 {
+    
     if (! isPrepared)
     {
+        AudioPluginInstance* instance = getAudioPluginInstance();
+        
         setParentGraph (graph);
-        proc->setPlayConfigDetails (proc->getNumInputChannels(),
-                                    proc->getNumOutputChannels(),
-                                    sampleRate, blockSize);
-        proc->prepareToPlay (sampleRate, blockSize);
+        instance->setPlayConfigDetails (instance->getNumInputChannels(),
+                                        instance->getNumOutputChannels(),
+                                        sampleRate, blockSize);
+        instance->prepareToPlay (sampleRate, blockSize);
 
+        inRMS.clearQuick(true);
+        for (int i = 0; i < instance->getNumInputChannels(); ++i)
+        {
+            AtomicValue<float>* avf = new AtomicValue<float>();
+            avf->set(0);
+            inRMS.add (avf);
+        }
+        
+        outRMS.clearQuick(true);
+        for (int i = 0; i < instance->getNumInputChannels(); ++i)
+        {
+            AtomicValue<float>* avf = new AtomicValue<float>();
+            avf->set(0);
+            outRMS.add(avf);
+        }
+        
         isPrepared = true;
     }
 }
@@ -794,6 +829,7 @@ GraphProcessor::Node* GraphProcessor::getNodeForId (const uint32 nodeId) const
 
 GraphProcessor::Node* GraphProcessor::addNode (Processor* const newProcessor, uint32 nodeId)
 {
+    
     if (newProcessor == nullptr || (void*)newProcessor == (void*)this)
     {
         jassertfalse;
@@ -827,7 +863,9 @@ GraphProcessor::Node* GraphProcessor::addNode (Processor* const newProcessor, ui
 
     if (Node* const n = createNode (nodeId, newProcessor))
     {
-        n->setParentGraph (this);
+        DBG("add node");
+        //n->setParentGraph (this);
+        n->prepare (getSampleRate(), getBlockSize(), this);
         nodes.add (n);
         triggerAsyncUpdate();
         return n;
