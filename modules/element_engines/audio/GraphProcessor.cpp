@@ -197,28 +197,14 @@ public:
     ProcessBufferOp (const GraphProcessor::Node::Ptr& node_,
                      const Array <int>& audioChannelsToUse_,
                      const int totalChans_,
-                     const int midiBufferToUse_)
-        : node (node_),
-          processor (node_->audioProcessor()),
-          audioChannelsToUse (audioChannelsToUse_),
-          totalChans (jmax (1, totalChans_)),
-          midiBufferToUse (midiBufferToUse_)
-    {
-        channels.calloc ((size_t) totalChans);
-
-        while (audioChannelsToUse.size() < totalChans)
-            audioChannelsToUse.add (0);
-    }
-
-    ProcessBufferOp (const GraphProcessor::Node::Ptr& node_,
-                     const Array <int>& audioChannelsToUse_,
-                     const int totalChans_,
                      const int midiBufferToUse_,
                      const Array <int> chans [PortType::Unknown])
         : node (node_),
           processor (node_->audioProcessor()),
           audioChannelsToUse (audioChannelsToUse_),
           totalChans (jmax (1, totalChans_)),
+          numAudioIns (node_->getAudioPluginInstance()->getNumInputChannels()),
+          numAudioOuts (node_->getAudioPluginInstance()->getNumOutputChannels()),
           midiBufferToUse (midiBufferToUse_)
     {
         channels.calloc ((size_t) totalChans);
@@ -237,15 +223,17 @@ public:
         }
 
         AudioSampleBuffer buffer (channels, totalChans, numSamples);
-        for (int i = totalChans; --i >= 0;)
+        for (int i = numAudioIns; --i >= 0;)
             node->setInputRMS (i, buffer.getRMSLevel (i, 0, numSamples));
                                    
         processor->processBlock (buffer, *sharedMidiBuffers.getUnchecked (midiBufferToUse));
         if (node->getGain() != node->getLastGain()) {
-            buffer.applyGainRamp (0, numSamples, node->getGain(), node->getLastGain());
+            buffer.applyGainRamp (0, numSamples, node->getLastGain(), node->getGain());
             node->updateGain();
         }
-        for (int i = totalChans; --i >= 0;)
+//        DBG ("num outs: " << numAudioOuts);
+//        DBG ("test: " << buffer.getRMSLevel (0, 0, numSamples));
+        for (int i = 0; i < numAudioOuts; ++i)
             node->setOutputRMS (i, buffer.getRMSLevel (i, 0, numSamples));
     }
 
@@ -255,7 +243,7 @@ public:
 private:
     Array <int> audioChannelsToUse;
     HeapBlock <float*> channels;
-    int totalChans;
+    int totalChans, numAudioIns, numAudioOuts;
     int midiBufferToUse;
 
     JUCE_DECLARE_NON_COPYABLE (ProcessBufferOp)
@@ -706,13 +694,16 @@ GraphProcessor::Node::Node (const uint32 nodeId_, Processor* const processor_) n
 
 void GraphProcessor::Node::setInputRMS (int chan, float val)
 {
-    if (chan < inRMS.size())
+    if (chan < inRMS.size()) {
         inRMS.getUnchecked(chan)->set(val);
+    }
 }
+
 void GraphProcessor::Node::setOutputRMS (int chan, float val)
 {
-    if (chan < outRMS.size())
+    if (chan < outRMS.size()) {
         outRMS.getUnchecked(chan)->set(val);
+    }
 }
 
 bool GraphProcessor::Node::isSubgraph() const noexcept
@@ -723,7 +714,6 @@ bool GraphProcessor::Node::isSubgraph() const noexcept
 void GraphProcessor::Node::prepare (const double sampleRate, const int blockSize,
                                          GraphProcessor* const graph)
 {
-    
     if (! isPrepared)
     {
         AudioPluginInstance* instance = getAudioPluginInstance();
@@ -743,7 +733,7 @@ void GraphProcessor::Node::prepare (const double sampleRate, const int blockSize
         }
         
         outRMS.clearQuick(true);
-        for (int i = 0; i < instance->getNumInputChannels(); ++i)
+        for (int i = 0; i < instance->getNumOutputChannels(); ++i)
         {
             AtomicValue<float>* avf = new AtomicValue<float>();
             avf->set(0);
@@ -863,8 +853,6 @@ GraphProcessor::Node* GraphProcessor::addNode (Processor* const newProcessor, ui
 
     if (Node* const n = createNode (nodeId, newProcessor))
     {
-        DBG("add node");
-        //n->setParentGraph (this);
         n->prepare (getSampleRate(), getBlockSize(), this);
         nodes.add (n);
         triggerAsyncUpdate();
