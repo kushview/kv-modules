@@ -104,7 +104,11 @@ class AtomicLock
 public:
 
     AtomicLock()
+#if _MSC_VER
+		: a_mutex(),
+#else
         : a_mutex (ATOMIC_FLAG_INIT),
+#endif
           a_locks (0)
     { }
 

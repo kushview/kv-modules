@@ -31,6 +31,14 @@
 #include <boost/intrusive/slist_hook.hpp>
 #include <boost/signals2/signal.hpp>
 
+#if _MSC_VER
+#ifdef min
+#undef min
+#endif
+#ifdef max
+#undef max
+#endif
+#endif
 
 /** Config: ELEMENT_OSC
     Set this to enable OSC handling/networking (default is enabled)

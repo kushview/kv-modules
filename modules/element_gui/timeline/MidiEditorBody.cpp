@@ -40,9 +40,9 @@
 
     //=========================================================================
     MidiEditorBody::MidiEditorBody (MidiKeyboardState& k)
-        : keyboardState (k),
-          shouldTriggerNotes ("trigger-notes")
-    {
+        : keyboardState (k)
+	{
+		shouldTriggerNotes.setValue (false);
         sequence.setOwned (new NoteSequence());
         sequenceNode = sequence->node();
         sequenceNode.addListener (this);
