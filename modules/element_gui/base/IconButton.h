@@ -11,11 +11,8 @@
 class IconButton : public Button,
                    public ButtonListener
 {
-    //boost::signal<void()> clickedSignal;
-
 public:
-
-    IconButton (const String& section, const String& slug,
+    IconButton (const String&, const String& slug,
                 bool toggle = false)
         : Button (slug), padding (0), isToggle (toggle)
     {
@@ -42,18 +39,18 @@ public:
     void paintButton (Graphics& g, bool mouseIsOver, bool mouseIsDown)
     {
         g.setColour (Colours::grey);
-        g.fillRoundedRectangle (0, 0, getWidth(), getHeight(), 3);
+        g.fillRoundedRectangle (0.0f, 0.0f, (float)getWidth(), (float)getHeight(), 3.0f);
 
         g.setColour (Colours::darkgrey);
-        g.drawRoundedRectangle (0, 0, getWidth(), getHeight(), 3, 1);
+        g.drawRoundedRectangle (0.0f, 0.0f, (float)getWidth(), (float)getHeight(), 3.0f, 1.0f);
 
-        Rectangle<float> r (4, 4, getHeight() - 8, getHeight() - 8);
+        Rectangle<float> r (4.0f, 4.0f, (float)getHeight() - 8.0f, (float)getHeight() - 8.0f);
 
         icon->drawWithin (g, r, RectanglePlacement::centred,
                                 getIconAlpha (mouseIsDown, mouseIsOver));
     }
 
-    void buttonClicked (Button* btn) {
+    void buttonClicked (Button*) {
     //    clickedSignal();
     }
 
@@ -66,19 +63,19 @@ private:
     {
         if (isToggle && getToggleState())
         {
-            return 1.0;
+            return 1.0f;
         }
         else if (isDown)
         {
-            return 0.95;
+            return 0.95f;
         }
         else if (isOver)
         {
-            return 0.80;
+            return 0.80f;
         }
         else
         {
-            return 0.70;
+            return 0.70f;
         }
     }
 };

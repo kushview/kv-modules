@@ -217,7 +217,7 @@ protected:
         @param clip The clip that was clicked
         @param clipEvent The MouseEvent of the click
     */
-    virtual void clipClicked (TimelineClip* clip, const MouseEvent& clipEvent) { }
+    virtual void clipClicked (TimelineClip*, const MouseEvent&) { }
 
     /** Called when a clip is double clicked on the timeline.
         Override this if you need to modify clips related to the passed clip
@@ -226,7 +226,7 @@ protected:
         @param clip The clip that was clicked
         @param clipEvent The MouseEvent of the click
     */
-    virtual void clipDoubleClicked (TimelineClip* clip, const MouseEvent& clipEvent) { }
+    virtual void clipDoubleClicked (TimelineClip*, const MouseEvent&) { }
 
     /** Called when a clip is moved on the timeline.
         Override this if you need to modify clips related to the passed clip
@@ -237,7 +237,7 @@ protected:
         @param deltaStart The change in the start time
         @param deltaEnd The change in the end time
     */
-    virtual void clipMoved (TimelineClip* clip, const MouseEvent&, double deltaStart, double deltaEnd) { }
+    virtual void clipMoved (TimelineClip*, const MouseEvent&, double, double) { }
 
     /** Called when a clip is moved from one track to another
         Override this if you need to modify clips related to the passed clip
@@ -246,14 +246,14 @@ protected:
         @param clip The clip that was moved
         @param deltaTracks The change in track index
     */
-    virtual void clipChangedTrack (TimelineClip* clip, int deltaTracks) { }
+    virtual void clipChangedTrack (TimelineClip*, int) { }
 
 
     /** Called when the timeline body is clicked */
-    virtual void timelineBodyClicked (const MouseEvent& ev, int track) { }
+    virtual void timelineBodyClicked (const MouseEvent&, int) { }
 
     /** Called when the timeline header area is clicked */
-    virtual void timelineTrackHeadersClicked (const MouseEvent& ev, int track) { }
+    virtual void timelineTrackHeadersClicked (const MouseEvent&, int) { }
 
     /** Add a clip to the timeline at a given track */
     void addTimelineClip (TimelineClip* clip, int track = 0);
@@ -303,9 +303,9 @@ protected:
         return nullptr;
     }
 
-    virtual void paintTrackHeader (Graphics& g, int track, const Rectangle<int>& area) { }
-    virtual void paintTrackLane (Graphics& g, int track, const Rectangle<int>& area) { }
-    virtual void refreshComponentForTrack (const int track) { }
+    virtual void paintTrackHeader (Graphics&, int, const Rectangle<int>&) { }
+    virtual void paintTrackLane (Graphics&, int, const Rectangle<int>&) { }
+    virtual void refreshComponentForTrack (const int) { }
 
     virtual inline Range<int>
     trackHeight (int track) const

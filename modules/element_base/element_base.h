@@ -23,6 +23,12 @@
 #include "modules/lvtk_core/lvtk_core.h"
 #include "modules/juce_cryptography/juce_cryptography.h"
 
+#if _MSC_VER
+ #pragma warning( disable : 4305 )
+ #pragma warning( disable : 4512 )
+ #pragma warning( disable : 4996 )
+#endif
+
 #include <atomic>
 #include <set>
 
@@ -32,12 +38,12 @@
 #include <boost/signals2/signal.hpp>
 
 #if _MSC_VER
-#ifdef min
-#undef min
-#endif
-#ifdef max
-#undef max
-#endif
+ #ifdef min
+  #undef min
+ #endif
+ #ifdef max
+  #undef max
+ #endif
 #endif
 
 /** Config: ELEMENT_OSC

@@ -68,22 +68,19 @@
       Image img;
       int nframes, frame, pixel;
 
-      inline void
-      updateFramePixel()
+      inline void updateFramePixel()
       {
-         const float ratio = valueToProportionOfLength (getValue());
-         frame = nframes * ratio;
+         const double ratio = valueToProportionOfLength (getValue());
+         frame = juce::roundDoubleToInt (nframes * ratio);
          pixel = isImageVertical() ? frame * img.getWidth() : frame * img.getHeight();
       }
 
-      inline bool
-      isImageVertical()
+      inline bool isImageVertical() const
       {
          return img.getHeight() > img.getWidth();
       }
 
-      inline int
-      frameSize()
+      inline int  frameSize() const
       {
          return isImageVertical() ? img.getWidth() : img.getHeight();
       }

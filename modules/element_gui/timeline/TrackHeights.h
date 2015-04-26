@@ -53,7 +53,7 @@ public:
         if (h < 0)
             h = -1;
 
-        while (size() < t + 1)
+        while (size() < (size_t)t + 1)
             add();
 
         mHeights[t] = h;
@@ -65,7 +65,7 @@ public:
     inline int
     get (int track_index) const
     {
-        return track_index < size() ? mHeights.at (track_index) : -1;
+        return (size_t)track_index < size() ? mHeights.at (track_index) : -1;
     }
 
     size_t  size()   const { return mHeights.size(); }
@@ -105,7 +105,7 @@ public:
     {
         int y = mOffset;
 
-        for (int i = 0; i < size(); ++i)
+        for (int i = 0; i < (int)size(); ++i)
         {
             if (i == track)
                 return y;
@@ -185,7 +185,7 @@ public:
         if (sz <= 0)
             sz = TrackHeights::Normal;
 
-        while (mHeights.size() < numTracks)
+        while ((int)mHeights.size() < numTracks)
         {
             add (sz);
             int index = size() - 1;

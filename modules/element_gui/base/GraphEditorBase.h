@@ -62,7 +62,7 @@ public:
     void dragConnector (const MouseEvent& e);
     void endDraggingConnector (const MouseEvent& e);
 
-    virtual bool isInterestedInDragSource (const SourceDetails& dragSourceDetails) { return true; }
+    virtual bool isInterestedInDragSource (const SourceDetails& /*details*/) { return true; }
     //virtual void itemDragEnter (const SourceDetails& dragSourceDetails);
     //virtual void itemDragMove (const SourceDetails& dragSourceDetails);
     //virtual void itemDragExit (const SourceDetails& dragSourceDetails);

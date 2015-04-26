@@ -30,7 +30,7 @@ public:
     void addEvents (const MidiBuffer& midi);
     void addEvents (AtomBuffer& other, int nframes);
 
-    void swapWith (AtomBuffer& other) { }
+    void swapWith(AtomBuffer&) { jassertfalse;  }
 
     void clear (bool isInput);
     void clear ();

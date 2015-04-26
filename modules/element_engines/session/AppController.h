@@ -36,6 +36,7 @@ protected:
 private:
 
     WorldBase& elementWorld;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AppController);
 };
 
 #endif  /* ELEMENT_APP_CONTROLLER_H */
