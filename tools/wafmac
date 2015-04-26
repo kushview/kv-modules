@@ -1,7 +1,0 @@
-#!/bin/bash
-
-PATH=/opt/element/sdks/qt5/bin:$PATH \
-PKG_CONFIG_PATH=/opt/element/sdks/qt5/lib/pkgconfig:/usr/local/lib/pkgconfig \
-CXX=/usr/bin/clang++ \
-CC=/usr/bin/clang \
-./waf --apple-version-min=10.7 $*
