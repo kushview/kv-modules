@@ -34,7 +34,7 @@
         DockItem* createItem (const String& id, const String& name, Dock::Placement placement);
         DockItem* getItem    (const String& id);
 
-        void paint (Graphics& g) { }
+        void paint (Graphics&) { }
 
         void resized();
 

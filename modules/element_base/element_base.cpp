@@ -30,7 +30,9 @@
 #include "element_base.h"
 
 /* OSC support */
-#include "osc/oscpack.cpp"
+#if ELEMENT_OSC
+ #include "osc/oscpack.cpp"
+#endif
 
 namespace Element {
 

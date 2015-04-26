@@ -17,8 +17,7 @@
 
 *****************************************************************************/
 
-void
-TimeScale::reset()
+void TimeScale::reset()
 {
     mNodes.setScoped (true);
     mMarkers.setScoped (true);
@@ -38,10 +37,7 @@ TimeScale::reset()
     updateScale();
 }
 
-
-// (Re)nitializer method.
-void
-TimeScale::clear (void)
+void TimeScale::clear (void)
 {
     mSnapPerBeat = 4;
     mHorizontalZoom = 100;
@@ -57,10 +53,7 @@ TimeScale::clear (void)
 	reset();
 }
 
-
-// Sync method.
-void
-TimeScale::sync (const TimeScale& ts)
+void TimeScale::sync (const TimeScale& ts)
 {
 	// Copy master parameters...
     mSampleRate     = ts.mSampleRate;
@@ -93,10 +86,7 @@ TimeScale::sync (const TimeScale& ts)
     updateScale();
 }
 
-
-// Copy method.
-TimeScale&
-TimeScale::copyFrom (const TimeScale& ts)
+TimeScale& TimeScale::copyFrom (const TimeScale& ts)
 {
     if (&ts != this)
     {
@@ -116,10 +106,7 @@ TimeScale::copyFrom (const TimeScale& ts)
 	return *this;
 }
 
-
-// Update scale coefficient divisor factors.
-void
-TimeScale::Node::update()
+void TimeScale::Node::update()
 {
     ticksPerBeat = ts->ticksPerBeat();
     tickRate     = tempo * ticksPerBeat;
@@ -139,10 +126,7 @@ TimeScale::Node::update()
 	}
 }
 
-
-// Update time-scale node position metrics.
-void
-TimeScale::Node::reset (TimeScale::Node *node)
+void TimeScale::Node::reset (TimeScale::Node *node)
 {
     if (bar > node->bar)
         frame = node->frameFromBar (bar);
@@ -154,10 +138,7 @@ TimeScale::Node::reset (TimeScale::Node *node)
     pixel = ts->pixelFromFrame (frame);
 }
 
-
-// Tempo accessor/convertors.
-void
-TimeScale::Node::setTempoEx (float extempo, unsigned short beattype_ex)
+void TimeScale::Node::setTempoEx (float extempo, unsigned short beattype_ex)
 {
     if (beattype_ex > beatType)
         extempo /= float (1 << (beattype_ex - beatType));
@@ -167,8 +148,7 @@ TimeScale::Node::setTempoEx (float extempo, unsigned short beattype_ex)
     tempo = extempo;
 }
 
-float
-TimeScale::Node::tempoEx (unsigned short beatType_) const
+float TimeScale::Node::tempoEx (unsigned short beatType_) const
 {
     float extempo = tempo;
 
@@ -180,10 +160,7 @@ TimeScale::Node::tempoEx (unsigned short beatType_) const
     return extempo;
 }
 
-
-// Beat/frame snap filters.
-unsigned long
-TimeScale::Node::tickSnap (unsigned long tick_, unsigned short p) const
+unsigned long TimeScale::Node::tickSnap (unsigned long tick_, unsigned short p) const
 {
     unsigned long ticksnap = tick_ - tick;
     if (ts->snapPerBeat() > 0)
@@ -194,18 +171,12 @@ TimeScale::Node::tickSnap (unsigned long tick_, unsigned short p) const
     return tick + ticksnap;
 }
 
-
-// Time-scale cursor frame positioning reset.
-void
-TimeScale::Cursor::reset (TimeScale::Node *node)
+void TimeScale::Cursor::reset (TimeScale::Node *node)
 {
     node = (node ? node : ts->nodes().first());
 }
 
-
-// Time-scale cursor node seeker (by frame).
-TimeScale::Node*
-TimeScale::Cursor::seekFrame (unsigned long iFrame) const
+TimeScale::Node* TimeScale::Cursor::seekFrame (unsigned long iFrame) const
 {
     if (node == 0)
     {
@@ -232,10 +203,7 @@ TimeScale::Cursor::seekFrame (unsigned long iFrame) const
 	return node;
 }
 
-
-// Time-scale cursor node seeker (by bar).
-TimeScale::Node*
-TimeScale::Cursor::seekBar (unsigned short sbar) const
+TimeScale::Node* TimeScale::Cursor::seekBar (unsigned short sbar) const
 {
     if (node == 0)
     {
@@ -262,10 +230,7 @@ TimeScale::Cursor::seekBar (unsigned short sbar) const
 	return node;
 }
 
-
-// Time-scale cursor node seeker (by beat).
-TimeScale::Node*
-TimeScale::Cursor::seekBeat (unsigned int sbeat) const
+TimeScale::Node* TimeScale::Cursor::seekBeat (unsigned int sbeat) const
 {
 	if (node == 0) {
 		node = ts->nodes().first();
@@ -290,10 +255,7 @@ TimeScale::Cursor::seekBeat (unsigned int sbeat) const
 	return node;
 }
 
-
-// Time-scale cursor node seeker (by tick).
-TimeScale::Node*
-TimeScale::Cursor::seekTick (unsigned long stick) const
+TimeScale::Node* TimeScale::Cursor::seekTick (unsigned long stick) const
 {
     if (node == 0)
     {
@@ -320,10 +282,7 @@ TimeScale::Cursor::seekTick (unsigned long stick) const
 	return node;
 }
 
-
-// Time-scale cursor node seeker (by pixel).
-TimeScale::Node*
-TimeScale::Cursor::seekPixel (int px) const
+TimeScale::Node* TimeScale::Cursor::seekPixel (int px) const
 {
 	if (node == 0) {
 		node = ts->nodes().first();
@@ -349,10 +308,7 @@ TimeScale::Cursor::seekPixel (int px) const
 	return node;
 }
 
-
-// Node list specifics.
-TimeScale::Node*
-TimeScale::addNode (unsigned long frame_, float tempo_, unsigned short beat_type_,
+TimeScale::Node* TimeScale::addNode (unsigned long frame_, float tempo_, unsigned short beat_type_,
                      unsigned short beats_per_bar_, unsigned short beat_divisor_)
 {
     Node *node	= 0;
@@ -411,9 +367,7 @@ TimeScale::addNode (unsigned long frame_, float tempo_, unsigned short beat_type
     return node;
 }
 
-
-void
-TimeScale::updateNode (TimeScale::Node *node)
+void TimeScale::updateNode (TimeScale::Node *node)
 {
 	// Update coefficients...
     node->update();
@@ -438,8 +392,7 @@ TimeScale::updateNode (TimeScale::Node *node)
 }
 
 
-void
-TimeScale::removeNode (TimeScale::Node *node)
+void TimeScale::removeNode (TimeScale::Node *node)
 {
 	// Don't ever remove the very first node... 
     Node *node_prev = node->prev();
@@ -468,11 +421,7 @@ TimeScale::removeNode (TimeScale::Node *node)
     updateMarkers (prev);
 }
 
-
-
-// Complete time-scale update method.
-void
-TimeScale::updateScale()
+void TimeScale::updateScale()
 {
 	// Update time-map independent coefficients...
     mPixelRate = 1.20f * float (mHorizontalZoom * mPixelsPerBeat);
@@ -495,180 +444,18 @@ TimeScale::updateScale()
     updateMarkers (mNodes.first());
 }
 
-#if 0
-// Convert frames to time string and vice-versa.
-unsigned long TimeScale::frameFromText (
-	const QString& sText, bool bDelta, unsigned long iFrame )
-{
-	switch (m_displayFormat) {
-
-		case BBT:
-		{
-			// Time frame code in bars.beats.ticks ...
-			unsigned short bars  = sText.section('.', 0, 0).toUShort();
-			unsigned int   beats = sText.section('.', 1, 1).toUInt();
-			unsigned long  ticks = sText.section('.', 2).toULong();
-			Node *pNode;
-			if (bDelta) {
-				pNode = m_cursor.seekFrame(iFrame);
-				if (pNode)
-					bars += pNode->bar;
-			} else {
-				if (bars > 0)
-					--bars;
-				if (beats > 0)
-					--beats;
-			}
-			pNode = m_cursor.seekBar(bars);
-			if (pNode) {
-				beats += (bars - pNode->bar) * pNode->beatsPerBar;
-				ticks += pNode->tick + beats * pNode->ticksPerBeat;
-				iFrame = pNode->frameFromTick(ticks);
-			}
-			break;
-		}
-
-		case Time:
-		{
-			// Time frame code in hh:mm:ss.zzz ...
-			unsigned int hh = sText.section(':', 0, 0).toUInt();
-			unsigned int mm = sText.section(':', 1, 1).toUInt();
-			float secs = sText.section(':', 2).toFloat();
-			mm   += 60 * hh;
-			secs += 60.f * float(mm);
-			iFrame = uroundf(secs * float(m_iSampleRate));
-			break;
-		}
-
-		case Frames:
-		default:
-		{
-			iFrame = sText.toULong();
-			break;
-		}
-	}
-
-	return iFrame;
-}
-
-
-QString TimeScale::textFromFrame (
-	unsigned long iFrame, bool bDelta, unsigned long iDelta )
-{
-	QString sText;
-
-	switch (m_displayFormat) {
-
-		case BBT:
-		{
-			// Time frame code in bars.beats.ticks ...
-			unsigned short bars  = 0;
-			unsigned int   beats = 0;
-			unsigned long  ticks = 0;
-			Node *pNode = m_cursor.seekFrame(iFrame);
-			if (pNode) {
-				if (bDelta) {
-					ticks = pNode->tickFromFrame(iFrame + iDelta)
-						  - pNode->tickFromFrame(iFrame);
-				} else {
-					ticks = pNode->tickFromFrame(iFrame)
-						  - pNode->tick;
-				}
-				if (ticks >= (unsigned long) pNode->ticksPerBeat) {
-					beats  = (unsigned int) (ticks / pNode->ticksPerBeat);
-					ticks -= (unsigned long) (beats * pNode->ticksPerBeat);
-				}
-				if (beats >= (unsigned int) pNode->beatsPerBar) {
-					bars   = (unsigned short) (beats / pNode->beatsPerBar);
-					beats -= (unsigned int) (bars * pNode->beatsPerBar);
-				}
-				if (!bDelta)
-					bars += pNode->bar;
-			}
-			if (!bDelta) {
-				++bars;
-				++beats;
-			}
-			sText.sprintf("%u.%u.%03lu", bars, beats, ticks);
-			break;
-		}
-
-		case Time:
-		{
-			// Time frame code in hh:mm:ss.zzz ...
-			unsigned int hh, mm, ss, zzz;
-			float secs = float(bDelta ? iDelta : iFrame) / float(m_iSampleRate);
-			hh = mm = ss = 0;
-			if (secs >= 3600.0f) {
-				hh = (unsigned int) (secs / 3600.0f);
-				secs -= float(hh) * 3600.0f;
-			}
-			if (secs >= 60.0f) {
-				mm = (unsigned int) (secs / 60.0f);
-				secs -= float(mm) * 60.0f;
-			}
-			if (secs >= 0.0f) {
-				ss = (unsigned int) secs;
-				secs -= float(ss);
-			}
-			zzz = (unsigned int) (secs * 1000.0f);
-			sText.sprintf("%02u:%02u:%02u.%03u", hh, mm, ss, zzz);
-			break;
-		}
-
-		case Frames:
-		default:
-		{
-			sText = QString::number(bDelta ? iDelta : iFrame);
-			break;
-		}
-	}
-
-	return sText;
-}
-
-
-// Convert ticks to time string and vice-versa.
-unsigned long TimeScale::tickFromText (
-	const QString& sText, bool bDelta, unsigned long iTick )
-{
-	unsigned long iFrame = 0;
-	if (bDelta) {
-		Node *pNode = m_cursor.seekTick(iTick);
-		iFrame = (pNode ? pNode->frameFromTick(iTick) : 0);
-	}
-	return tickFromFrame(frameFromText(sText, bDelta, iFrame));
-}
-
-
-QString TimeScale::textFromTick (
-	unsigned long iTick, bool bDelta, unsigned long iDelta )
-{
-	Node *pNode = m_cursor.seekTick(iTick);
-	unsigned long iFrame = (pNode ? pNode->frameFromTick(iTick) : 0);
-	if (bDelta > 0 && pNode) {
-		iTick += iDelta;
-		pNode  = m_cursor.seekTick(iTick);
-		iDelta = (pNode ? pNode->frameFromTick(iTick) - iFrame : 0);
-	}
-	return textFromFrame(iFrame, bDelta, iDelta);
-}
-#endif
-
 // Beat divisor (snap index) map.
-static int32 s_snap_per_beat[] = {
+static unsigned short s_snap_per_beat[] = {
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 21, 24, 28, 32, 48, 64, 96
 };
 
 const int c_snap_item_count = sizeof (s_snap_per_beat) / sizeof (int32);
 
 // Beat divisor (snap index) accessors.
-unsigned short
-TimeScale::snapFromIndex (int index)
+unsigned short TimeScale::snapFromIndex (int index)
 {
     return s_snap_per_beat [index];
 }
-
 
 // Beat divisor (snap index) accessors.
 int
@@ -682,34 +469,8 @@ TimeScale::indexFromSnap (unsigned short snap_per_beat)
 	return 0;
 }
 
-#if 0
-// Beat divisor (snap index) text item list.
-QStringList TimeScale::snapItems ( int iSnap )
-{
-	QStringList items;
-
-	if (iSnap == 0) {
-		items.append(QObject::tr("None"));
-		++iSnap;
-	}
-
-	QString sPrefix = QObject::tr("Beat");
-	if (iSnap == 1) {
-		items.append(sPrefix);
-		++iSnap;
-	}
-
-	sPrefix += "/%1";
-    while (iSnap < c_snap_item_count)
-        items.append(sPrefix.arg(s_snap_per_beat[iSnap++]));
-
-	return items;
-}
-#endif
-
 // Tick/Frame range conversion (delta conversion).
-unsigned long
-TimeScale::frameFromTickRange ( unsigned long iTickStart, unsigned long iTickEnd )
+unsigned long TimeScale::frameFromTickRange (unsigned long iTickStart, unsigned long iTickEnd)
 {
     Node *pNode = mCursor.seekTick(iTickStart);
     unsigned long iFrameStart = (pNode ? pNode->frameFromTick(iTickStart) : 0);
@@ -719,8 +480,7 @@ TimeScale::frameFromTickRange ( unsigned long iTickStart, unsigned long iTickEnd
 }
 
 
-unsigned long
-TimeScale::tickFromFrameRange (unsigned long iFrameStart, unsigned long iFrameEnd)
+unsigned long TimeScale::tickFromFrameRange (unsigned long iFrameStart, unsigned long iFrameEnd)
 {
     Node *pNode = mCursor.seekFrame(iFrameStart);
     unsigned long iTickStart = (pNode ? pNode->tickFromFrame(iFrameStart) : 0);
@@ -730,15 +490,13 @@ TimeScale::tickFromFrameRange (unsigned long iFrameStart, unsigned long iFrameEn
 }
 
 // Location marker reset method.
-void
-TimeScale::MarkerCursor::reset (TimeScale::Marker *marker)
+void TimeScale::MarkerCursor::reset (TimeScale::Marker *marker)
 {
     marker = (marker ? marker : ts->markers().first());
 }
 
 // Location marker seek methods.
-TimeScale::Marker*
-TimeScale::MarkerCursor::seekFrame (unsigned long iFrame )
+TimeScale::Marker* TimeScale::MarkerCursor::seekFrame (unsigned long iFrame )
 {
 	if (marker == 0) {
 		marker = ts->markers().first();
@@ -764,35 +522,30 @@ TimeScale::MarkerCursor::seekFrame (unsigned long iFrame )
 	return marker;
 }
 
-TimeScale::Marker*
-TimeScale::MarkerCursor::seekBar (unsigned short iBar )
+TimeScale::Marker* TimeScale::MarkerCursor::seekBar (unsigned short iBar )
 {
     return seekFrame (ts->frameFromBar (iBar));
 }
 
-TimeScale::Marker*
-TimeScale::MarkerCursor::seekBeat (unsigned int iBeat )
+TimeScale::Marker* TimeScale::MarkerCursor::seekBeat (unsigned int iBeat )
 {
     return seekFrame (ts->frameFromBeat (iBeat));
 }
 
-TimeScale::Marker*
-TimeScale::MarkerCursor::seekTick (unsigned long iTick)
+TimeScale::Marker* TimeScale::MarkerCursor::seekTick (unsigned long iTick)
 {
     return seekFrame (ts->frameFromTick (iTick));
 }
 
-TimeScale::Marker*
-TimeScale::MarkerCursor::seekPixel (int x)
+TimeScale::Marker* TimeScale::MarkerCursor::seekPixel (int x)
 {
-    return seekFrame (ts->frameFromPixel (x));
+    return seekFrame (static_cast<unsigned long> (ts->frameFromPixel (x)));
 }
 
 
 
 // Location markers list specifics.
-TimeScale::Marker*
-TimeScale::addMarker (unsigned long target_frame, const std::string& txt,
+TimeScale::Marker* TimeScale::addMarker (unsigned long target_frame, const std::string& txt,
                                                    const std::string& rgb )
 {
     Marker *marker	= 0;

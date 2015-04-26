@@ -41,14 +41,16 @@
 #endif
 
 /** Config: ELEMENT_OSC
-    Set this to enable OSC handling/networking (default is enabled)
+    Set this to enable OSC handling/networking (default is disabled)
  */
 #ifndef ELEMENT_OSC
- #define ELEMENT_OSC 1
+ #define ELEMENT_OSC 0
 #endif
 
 /* OSC Support */
-#include "osc/oscpack.h"
+#if ELEMENT_OSC
+ #include "osc/oscpack.h"
+#endif
 
 namespace Element {
 using namespace LVTK_JUCE_NAMESPACE;

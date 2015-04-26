@@ -86,12 +86,11 @@ namespace Midi {
         return noteToText (127 - note, zeroOctave);
     }
 
-    inline void
-    split (uint16 src, MidiByte* dst)
+    inline void split (uint16 src, MidiByte* dst)
     {
         // XXX:  This isn't correct
-        dst [0] = src / 128;
-        dst [1] = src % 128;
+        dst [0] = static_cast<MidiByte> (src / 128);
+        dst [1] = static_cast<MidiByte> (src % 128);
     }
 
     inline bool

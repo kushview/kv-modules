@@ -180,8 +180,7 @@ TimelineComponent::~TimelineComponent()
     tempo.removeListener (this);
 }
 
-void
-TimelineComponent::addTimelineClip (TimelineClip* clip, int track)
+void TimelineComponent::addTimelineClip (TimelineClip* clip, int track)
 {
     if (clip == nullptr)
         return;

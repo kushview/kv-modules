@@ -108,16 +108,14 @@ public:
         heights.set (track, (height <= 0) ? TrackHeights::Normal : height);
     }
 
-    inline
-    void getVisibleRange (double &in, double &out)
+    inline void getVisibleRange (double &in, double &out)
     {
-        in = xToTime (timeOffset);
-        out = xToTime (timeOffset + getWidth());
+        in = xToTime ((int) timeOffset);
+        out = xToTime ((int) timeOffset + getWidth());
     }
 
 
-    inline int
-    pixelSnap (int pixel) const
+    inline int pixelSnap (int pixel) const
     {
         return scale.pixelSnap (pixel - mTrackWidth) + mTrackWidth;
     }

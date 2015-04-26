@@ -187,9 +187,8 @@ public:
     void setAssetsNode (const ValueTree& data);
 
 protected:
-
-    virtual void assetAdded (const AssetTree::Item& item) { }
-    virtual void assetRemoved (const AssetTree::Item& item) { }
+    virtual void assetAdded (const AssetTree::Item&) { }
+    virtual void assetRemoved (const AssetTree::Item&) { }
 
 private:
 

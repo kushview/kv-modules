@@ -71,7 +71,7 @@ public:
         {
             case PortType::Audio: return Colours::lightgreen; break;
             case PortType::Control: return Colours::lightblue;  break;
-            default: return Colours::black; break;
+            default: break;
         }
         
         return Colours::black;
