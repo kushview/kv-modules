@@ -86,11 +86,7 @@ public:
         libs.clear (true);
     }
 
-    Shared<Engine> engine;
     std::map<const String, Module*> mods;
-
-private:
-
 };
 
 
@@ -104,8 +100,7 @@ WorldBase::~WorldBase()
     priv = nullptr;
 }
 
-int
-WorldBase::executeModule (const char* name)
+int WorldBase::executeModule (const char* name)
 {
     typedef std::map<const String, Module*> MAP;
     MAP::iterator mit = priv->mods.find (name);
@@ -117,8 +112,7 @@ WorldBase::executeModule (const char* name)
     return -1;
 }
 
-bool
-WorldBase::loadModule (const char* name)
+bool WorldBase::loadModule (const char* name)
 {
     if (contains (priv->mods, name))
         return true;
@@ -131,17 +125,4 @@ WorldBase::loadModule (const char* name)
     }
 
     return false;
-}
-
-Shared<Engine>
-WorldBase::engine()
-{
-    return priv->engine;
-}
-
-void
-WorldBase::setEngine (Shared<Engine> e)
-{
-    Shared<Engine> oe (priv->engine);
-    priv->engine = e;
 }

@@ -26,7 +26,7 @@ public:
     Private() { }
     ~Private() { }
 
-    Shared<Engine> activeEngine;
+    EnginePtr activeEngine;
 };
 
 DeviceManager::DeviceManager()
@@ -37,15 +37,15 @@ DeviceManager::DeviceManager()
 DeviceManager::~DeviceManager()
 {
     closeAudioDevice();
-    attach (Shared<Engine>());
+    attach (nullptr);
 }
 
-void DeviceManager::attach (Shared<Engine> engine)
+void DeviceManager::attach (EnginePtr engine)
 {
     if (impl->activeEngine == engine)
         return;
 
-    Shared<Engine> old = impl->activeEngine;
+    EnginePtr old = impl->activeEngine;
 
     if (old != nullptr)
     {

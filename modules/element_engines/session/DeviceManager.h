@@ -20,31 +20,29 @@
 #ifndef ELEMENT_DEVICE_MANAGER_H
 #define ELEMENT_DEVICE_MANAGER_H
 
-    class Engine;
+class DeviceManager :  public AudioDeviceManager
+{
+public:
 
-    class DeviceManager :  public AudioDeviceManager
-    {
-    public:
+    typedef AudioDeviceManager::AudioDeviceSetup AudioSettings;
 
-        typedef AudioDeviceManager::AudioDeviceSetup AudioSettings;
+    DeviceManager();
+    ~DeviceManager();
 
-        DeviceManager();
-        ~DeviceManager();
+    void createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list);
 
-        void createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list);
+    void getAudioDrivers (StringArray& drivers);
+    void selectAudioDriver (const String& name);
 
-        void getAudioDrivers (StringArray& drivers);
-        void selectAudioDriver (const String& name);
+    void attach (EnginePtr engine);
 
-        void attach (Shared<Engine> engine);
+private:
 
-    private:
+    friend class World;
 
-        friend class World;
+    class Private;
+    Scoped<Private> impl;
 
-        class Private;
-        Scoped<Private> impl;
-
-    };
+};
 
 #endif // ELEMENT_DEVICE_MANAGER_H

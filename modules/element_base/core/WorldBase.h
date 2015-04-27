@@ -17,35 +17,27 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_WORLD_H
-#define ELEMENT_WORLD_H
+#ifndef ELEMENT_WORLD_BASE_H
+#define ELEMENT_WORLD_BASE_H
 
 class Engine;
 
 /** A global collection of an appilcation/plugin's data */
 class WorldBase {
 public:
-
     WorldBase();
     virtual ~WorldBase();
 
     virtual bool loadModule (const char* moduleName);
     virtual int executeModule (const char* entryModule);
 
-    Shared<Engine>  engine();
-    virtual void setEngine (Shared<Engine> engine);
-
     void setAppName (const String& name) { appName = name; }
     virtual const String& getAppName() const { return appName; }
 
 private:
-
     class Private;
     Scoped<Private> priv;
     String appName;
-
 };
-
-
 
 #endif // ELEMENT_WORLD_H
