@@ -24,7 +24,6 @@ public:
     virtual void drawTreeviewPlusMinusBox (Graphics&, const Rectangle<float>& area, Colour backgroundColour, bool isOpen, bool isMouseOver) override;
     virtual int getTreeViewIndentSize (TreeView&) override;
 
-
     virtual void drawComboBox (Graphics& g, int width, int height, bool isButtonDown,
                                int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& box) override;
 
