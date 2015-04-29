@@ -20,7 +20,6 @@
 #ifndef ELEMENT_BASE_H_INCLUDED
 #define ELEMENT_BASE_H_INCLUDED
 
-#include "modules/lvtk_core/lvtk_core.h"
 #include "modules/juce_cryptography/juce_cryptography.h"
 
 #if _MSC_VER
@@ -59,21 +58,24 @@
 #endif
 
 namespace Element {
-using namespace LVTK_JUCE_NAMESPACE;
-
+using namespace juce;
 #include "core/Arc.h"
 #include "core/Atomic.h"
 #include "core/Controller.h"
 #include "core/Intrusive.h"
 #include "core/LinkedList.h"
+#include "core/Module.h"
 #include "core/Monitor.h"
+#include "core/Parameter.h"
 #include "core/Pointer.h"
+#include "core/PortType.h"
+#include "core/RingBuffer.h"
+#include "core/Semaphore.h"
 #include "core/Signals.h"
 #include "core/Slugs.h"
 #include "core/Types.h"
-#include "core/URIs.h"
-#include "core/Module.h"
 #include "core/WorldBase.h"
+#include "core/WorkThread.h"
 
 #include "time/DelayLockedLoop.h"
 #include "time/Tempo.h"

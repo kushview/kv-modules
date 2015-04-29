@@ -20,6 +20,7 @@
 #ifndef ELEMENT_BUFFER_H
 #define ELEMENT_BUFFER_H
 
+#if ELEMENT_BUFFER_FACTORY
 class Buffer;
 class BufferFactory;
 
@@ -79,6 +80,6 @@ public:
     BufferRef (Buffer* buf)
         : boost::intrusive_ptr<Buffer> (buf, true) { }
 };
-
+#endif
 
 #endif /* ELEMENT_BUFFER_H */

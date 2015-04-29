@@ -6,8 +6,7 @@
   "website":        "http://github.org/mfisher31/element",
   "license":        "GPL",
 
-  "dependencies":   [ { "id": "lvtk_core", "version": "0.0.1" },
-                      { "id": "juce_cryptography", "version": "3.0.0" } ],
+  "dependencies":   [ { "id": "juce_core", "version": "3.0.0" } ],
 
   "include":        "element_base.h",
 

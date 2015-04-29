@@ -25,23 +25,13 @@
 #include "modules/juce_audio_devices/juce_audio_devices.h"
 #include "modules/juce_audio_processors/juce_audio_processors.h"
 
-#ifdef JUCE_MODULE_AVAILABLE_lvtk_plugins
- #include "modules/lvtk_plugins/lvtk_plugins.h"
-#else
- #include "modules/lvtk_core/lvtk_core.h"
-#endif
-
-#include <boost/intrusive_ptr.hpp>
-
-
 namespace Element {
-    
-#include "audio/PortType.h"
+//#include "audio/PortType.h"
 #include "audio/Processor.h"
     
-#include "audio/Buffer.h"
-#include "audio/AtomBuffer.h"
-#include "audio/BufferFactory.h"
+//#include "audio/Buffer.h"
+//#include "audio/AtomBuffer.h"
+//#include "audio/BufferFactory.h"
 #include "audio/ClipFactory.h"
 #include "audio/ClipSource.h"
 #include "audio/DataType.h"

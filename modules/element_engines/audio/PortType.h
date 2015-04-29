@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_PORTTYPE_H
-#define ELEMENT_PORTTYPE_H
+#ifndef ELEMENT_PORTTYPE_H_OLD
+#define ELEMENT_PORTTYPE_H_OLD
 
 #ifndef ELEMENT_INVALID_PORT
 #define ELEMENT_INVALID_PORT (uint32)-1

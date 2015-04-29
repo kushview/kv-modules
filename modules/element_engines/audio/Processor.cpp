@@ -19,11 +19,8 @@
 
 uint32 Processor::getPortForAudioChannel (AudioProcessor* proc, int chan, bool isInput)
 {
-    if (isInput) {
-        return static_cast<uint32> (chan);
-    }
-    
-    return static_cast<uint32> (proc->getNumInputChannels() + chan);
+    return (isInput) ? static_cast<uint32> (chan)
+                     : static_cast<uint32> (proc->getNumInputChannels() + chan);
 }
 
 uint32 Processor::getNumPorts (AudioProcessor* proc)
@@ -157,7 +154,7 @@ uint32 Processor::getNthPort (PortType type, int index, bool isInput, bool oneBa
     }
     
     jassertfalse;
-    return LV2UI_INVALID_PORT_INDEX;
+    return ELEMENT_INVALID_PORT;
 }
 
 bool Processor::isPortInput (uint32 port)

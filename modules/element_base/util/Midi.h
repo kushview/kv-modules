@@ -129,18 +129,8 @@ namespace Midi {
         inline void
         update (const MidiByte* msg)
         {
-            switch ((int32) lv2_midi_message_type (msg))
-            {
-            case LV2_MIDI_CTL_MSB_BANK:
-                msb = msg [2];
-                break;
-            case LV2_MIDI_CTL_LSB_BANK:
-                lsb = msg [2];
-                break;
-            default:
-                    return;
-                break;
-            }
+            /* needs implemented */
+            jassertfalse;
         }
     };
 

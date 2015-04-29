@@ -20,11 +20,14 @@
 #include "AppConfig.h"
 #include "element_engines.h"
 
+// This is included here to avoid problems with circular dependencies
+#include "../element_lv2/element_lv2.h"
+
 namespace Element {
 
-#include "audio/AtomBuffer.cpp"
-#include "audio/Buffer.cpp"
-#include "audio/BufferFactory.cpp"
+//#include "audio/AtomBuffer.cpp"
+//#include "audio/Buffer.cpp"
+//#include "audio/BufferFactory.cpp"
 #include "audio/ClipFactory.cpp"
 #include "audio/ClipSource.cpp"
 #include "audio/EngineBase.cpp"
