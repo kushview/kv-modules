@@ -20,15 +20,7 @@
 #ifndef ELEMENT_GUI_H_INCLUDED
 #define ELEMENT_GUI_H_INCLUDED
 
-#include "../element_models/element_models.h"
-
-#if JUCE_MODULE_AVAILABLE_element_engines
- #include "../element_engines/element_engines.h"
- #include "modules/juce_audio_processors/juce_audio_processors.h"
-#endif
-
 #include "modules/juce_gui_basics/juce_gui_basics.h"
-
 
 namespace Element {
 

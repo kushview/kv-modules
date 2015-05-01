@@ -22,8 +22,7 @@
         return uint32 (1);
     }
 
-    PortType
-    GraphPort::getPortType (uint32 port) const
+    PortType GraphPort::getPortType (uint32) const
     {
         return portType;
     }

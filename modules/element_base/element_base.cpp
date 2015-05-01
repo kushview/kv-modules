@@ -34,9 +34,14 @@
  #include "osc/oscpack.cpp"
 #endif
 
+#if JUCE_WINDOWS
+ #include <windows.h>
+#endif
+
 namespace Element {
 #include "core/Arc.cpp"
 #include "core/RingBuffer.cpp"
+#include "core/Semaphore.cpp"
 #include "core/WorkThread.cpp"
 #include "core/WorldBase.cpp"
 #include "time/TimeScale.cpp"

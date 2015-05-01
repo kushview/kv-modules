@@ -127,7 +127,7 @@ namespace Midi {
         /** Update the bank from a MIDI bank message. Does nothing if @c msg
             isn't MIDI cc 0 or cc 32 */
         inline void
-        update (const MidiByte* msg)
+        update (const MidiByte*)
         {
             /* needs implemented */
             jassertfalse;

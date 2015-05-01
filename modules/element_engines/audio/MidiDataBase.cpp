@@ -58,10 +58,9 @@ MidiDataBase::addNote (const Note& note)
     return note.eventId() > 0;
 }
 
-void MidiDataBase::buildHashTable (ValueTree& noteData) { }
+void MidiDataBase::buildHashTable (ValueTree&) { }
 
-bool
-MidiDataBase::editNote (const Note& note)
+bool MidiDataBase::editNote (const Note& note)
 {
     if (note.eventId() <= 0)
         return false;

@@ -46,7 +46,7 @@ bool AssetTreeViewItem::isMissing() { return false; }
 Element::Icon AssetTreeViewItem::getIcon() const { return Element::Icon(); }
 void AssetTreeViewItem::setName (const String& newName) { item.setName (newName); }
 void AssetTreeViewItem::showPopupMenu() { }
-void AssetTreeViewItem::handlePopupMenuResult (int res) { }
+void AssetTreeViewItem::handlePopupMenuResult (int) { }
 void AssetTreeViewItem::itemOpennessChanged (bool isNowOpen)
 {
     if (isNowOpen) {
@@ -101,12 +101,12 @@ void AssetTreeViewItem::valueTreePropertyChanged (ValueTree& tree, const Identif
         repaintItem();
 }
 
-void AssetTreeViewItem::valueTreeChildAdded (ValueTree& parent, ValueTree& child)
+void AssetTreeViewItem::valueTreeChildAdded (ValueTree& parent, ValueTree& /*child*/)
 {
     treeChildrenChanged (parent);
 }
 
-void AssetTreeViewItem::valueTreeChildRemoved (ValueTree& parent, ValueTree& child, int /*indexRemoved*/)
+void AssetTreeViewItem::valueTreeChildRemoved (ValueTree& parent, ValueTree& /*child*/, int /*indexRemoved*/)
 {
     treeChildrenChanged (parent);
 }
@@ -116,7 +116,7 @@ void AssetTreeViewItem::valueTreeChildOrderChanged (ValueTree& parent, int /*old
     treeChildrenChanged (parent);
 }
 
-void AssetTreeViewItem::valueTreeParentChanged (ValueTree& v)
+void AssetTreeViewItem::valueTreeParentChanged (ValueTree&)
 {
 }
 
@@ -155,7 +155,7 @@ void GroupTreeViewItem::addFiles (const StringArray& files, int insertIndex)
     }
 }
 
-void GroupTreeViewItem::moveSelectedItemsTo (OwnedArray <AssetTree::Item>& selectedNodes, int insertIndex)
+void GroupTreeViewItem::moveSelectedItemsTo (OwnedArray <AssetTree::Item>& /*selectedNodes*/, int /*insertIndex*/)
 {
    // moveItems (selectedNodes, item, insertIndex);
 }
@@ -192,23 +192,25 @@ static void openOrCloseAllSubGroups (TreeViewItem& item, bool shouldOpen)
             openOrCloseAllSubGroups (*sub, shouldOpen);
 }
 
-static void setFilesToCompile (AssetTree::Item item, const bool shouldCompile)
+#if 0
+static void setFilesToCompile (AssetTree::Item /*item*/, const bool /*shouldCompile*/)
 {
 }
+#endif
 
 void GroupTreeViewItem::showPopupMenu()
 {
 }
 
-void GroupTreeViewItem::handlePopupMenuResult (int resultCode)
+void GroupTreeViewItem::handlePopupMenuResult (int /*resultCode*/)
 {
 }
 
-void GroupTreeViewItem::addCreateFileMenuItems (PopupMenu& m)
+void GroupTreeViewItem::addCreateFileMenuItems (PopupMenu& /*menu*/)
 {
 }
 
-void GroupTreeViewItem::processCreateFileMenuItem (int menuID)
+void GroupTreeViewItem::processCreateFileMenuItem (int /*menuID*/)
 {
 }
 
@@ -229,7 +231,8 @@ String PlainTextFileTreeViewItem::getDisplayName() const
     return item.getName();
 }
 
-static File findCorrespondingHeaderOrCpp (const File& f)
+#if 0
+static File findCorrespondingHeaderOrCpp (const File& /*f*/)
 {
 #if 0
     if (f.hasFileExtension (sourceFileExtensions))
@@ -239,8 +242,9 @@ static File findCorrespondingHeaderOrCpp (const File& f)
 #endif
     return File::nonexistent;
 }
+#endif
 
-void PlainTextFileTreeViewItem::setName (const String& newName)
+void PlainTextFileTreeViewItem::setName (const String& /*newName*/)
 {
 #if 0
     if (newName != File::createLegalFileName (newName))

@@ -353,7 +353,7 @@ private:
             if (proc->isPortOutput (port))
             {
                 const int outputChan = proc->getChannelPort (port);
-                if (outputChan >= numIns && outputChan < numOuts)
+                if (outputChan >= (int)numIns && outputChan < (int)numOuts)
                 {
                     const int bufIndex = getFreeBuffer (portType);
                     channelsToUse [portType.id()].add (bufIndex);
@@ -391,7 +391,7 @@ private:
             if (sourceNodes.size() == 0)
             {
                 // unconnected input channel
-                if (inputChan >= numOuts)
+                if (inputChan >= (int)numOuts)
                 {
                     bufIndex = getReadOnlyEmptyBuffer();
                     assert (bufIndex >= 0);
@@ -427,7 +427,7 @@ private:
                     jassert (bufIndex >= 0);
                 }
 
-                if (inputChan < numOuts
+                if (inputChan < (int)numOuts
                      && isBufferNeededLater (ourRenderingIndex,
                                              port, srcNode, srcPort))
                 {
@@ -564,7 +564,7 @@ private:
             jassert (bufIndex >= 0);
             channelsToUse[portType.id()].add (bufIndex);
 
-            if (inputChan < numOuts)
+            if (inputChan < (int)numOuts)
             {
                 const int outputPort = proc->getNthPort (portType, inputChan, false, false);
                 markBufferAsContaining (bufIndex, portType, node->nodeId, outputPort);

@@ -14,6 +14,10 @@
     CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+#if _MSC_VER
+ #pragma warning( disable : 4127 )
+#endif
+
 #if JUCE_DEBUG
 #define ELEMENT_WORKER_LOG(x) Logger::writeToLog(x)
 #else
@@ -102,7 +106,7 @@ WorkThread::run()
         if (workId == 0)
             continue;
         
-        if (size > bufferSize)
+        if (size > static_cast<uint32> (bufferSize))
         {
             bufferSize = nextPowerOfTwo (size);
             buffer.realloc (bufferSize);

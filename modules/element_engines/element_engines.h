@@ -20,10 +20,10 @@
 #ifndef ELEMENT_ENGINES_H_INCLUDED
 #define ELEMENT_ENGINES_H_INCLUDED
 
-#include "../element_models/element_models.h"
 #include "modules/juce_gui_extra/juce_gui_extra.h"
 #include "modules/juce_audio_devices/juce_audio_devices.h"
 #include "modules/juce_audio_processors/juce_audio_processors.h"
+#include "../element_models/element_models.h"
 
 namespace Element {
 //#include "audio/PortType.h"
