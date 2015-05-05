@@ -25,6 +25,7 @@ class Engine : public ReferenceCountedObject
 public:
     virtual ~Engine() { }
     virtual AudioIODeviceCallback& callback() = 0;
+    virtual MidiInputCallback& getMidiInputCallback() = 0;
 };
 
 typedef ReferenceCountedObjectPtr<Engine> EnginePtr;

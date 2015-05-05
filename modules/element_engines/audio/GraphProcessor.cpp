@@ -21,7 +21,6 @@ const int GraphProcessor::midiChannelIndex = 0x1000;
 namespace GraphRender
 {
 
-
 class Task
 {
 public:
@@ -32,7 +31,7 @@ public:
                           const OwnedArray <MidiBuffer>& sharedMidiBuffers,
                           const int numSamples) = 0;
 
-    JUCE_LEAK_DETECTOR (Task)
+    JUCE_LEAK_DETECTOR (Task);
 };
 
 
@@ -712,16 +711,15 @@ bool GraphProcessor::Node::isSubgraph() const noexcept
 }
 
 void GraphProcessor::Node::prepare (const double sampleRate, const int blockSize,
-                                         GraphProcessor* const graph)
+                                    GraphProcessor* const graph)
 {
     if (! isPrepared)
     {
         AudioPluginInstance* instance = getAudioPluginInstance();
-        
-        setParentGraph (graph);
         instance->setPlayConfigDetails (instance->getNumInputChannels(),
                                         instance->getNumOutputChannels(),
                                         sampleRate, blockSize);
+        setParentGraph (graph);
         instance->prepareToPlay (sampleRate, blockSize);
 
         inRMS.clearQuick(true);
@@ -771,7 +769,7 @@ void GraphProcessor::Node::setParentGraph (GraphProcessor* const graph)
 {
     parent = graph;
     if (GraphProcessor::AudioGraphIOProcessor* const ioProc
-            = dynamic_cast <GraphProcessor::AudioGraphIOProcessor*> (proc.get()))
+            = dynamic_cast<GraphProcessor::AudioGraphIOProcessor*> (proc.get()))
         ioProc->setParentGraph (graph);
     else if (GraphPort* const ioProc = dynamic_cast <GraphPort*> (proc.get()))
         ioProc->setGraph (graph);
@@ -1157,23 +1155,18 @@ void GraphProcessor::handleAsyncUpdate()
     buildRenderingSequence();
 }
 
-//==============================================================================
-void
-GraphProcessor::prepareToPlay (double /*sampleRate*/, int estimatedSamplesPerBlock)
+void GraphProcessor::prepareToPlay (double /*sampleRate*/, int estimatedSamplesPerBlock)
 {
-#if 1
     currentAudioInputBuffer = nullptr;
     currentAudioOutputBuffer.setSize (jmax (1, getNumOutputChannels()), estimatedSamplesPerBlock);
     currentMidiInputBuffer = nullptr;
     currentMidiOutputBuffer.clear();
-#endif
     clearRenderingSequence();
     buildRenderingSequence();
 }
 
 void GraphProcessor::releaseResources()
 {
-#if 1
     for (int i = 0; i < nodes.size(); ++i)
         nodes.getUnchecked(i)->unprepare();
 
@@ -1184,7 +1177,6 @@ void GraphProcessor::releaseResources()
     currentAudioOutputBuffer.setSize (1, 1);
     currentMidiInputBuffer = nullptr;
     currentMidiOutputBuffer.clear();
-#endif
 }
 
 void GraphProcessor::reset()
@@ -1201,6 +1193,7 @@ void GraphProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMe
     currentAudioInputBuffer = &buffer;
     currentAudioOutputBuffer.setSize (jmax (1, buffer.getNumChannels()), numSamples);
     currentAudioOutputBuffer.clear();
+
     currentMidiInputBuffer = &midiMessages;
     currentMidiOutputBuffer.clear();
 
@@ -1221,8 +1214,7 @@ void GraphProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMe
     midiMessages.addEvents (currentMidiOutputBuffer, 0, buffer.getNumSamples(), 0);
 }
 
-const
-String GraphProcessor::getInputChannelName (int channelIndex) const
+const String GraphProcessor::getInputChannelName (int channelIndex) const
 {
     return "Input " + String (channelIndex + 1);
 }
@@ -1242,8 +1234,7 @@ bool GraphProcessor::producesMidi() const  { return true; }
 void GraphProcessor::getStateInformation (MemoryBlock& /*destData*/) { }
 void GraphProcessor::setStateInformation (const void* /*data*/, int /*sizeInBytes*/) { }
 
-void
-GraphProcessor::fillInPluginDescription (PluginDescription& d) const
+void GraphProcessor::fillInPluginDescription (PluginDescription& d) const
 {
     d.name = getName();
     d.uid = d.name.hashCode();
@@ -1256,7 +1247,6 @@ GraphProcessor::fillInPluginDescription (PluginDescription& d) const
     d.numOutputChannels = getNumOutputChannels();
 }
 
-//==============================================================================
 GraphProcessor::AudioGraphIOProcessor::AudioGraphIOProcessor (const IODeviceType type_)
     : type (type_),
       graph (nullptr)
@@ -1298,7 +1288,6 @@ void GraphProcessor::AudioGraphIOProcessor::fillInPluginDescription (PluginDescr
     d.numOutputChannels = getNumOutputChannels();
     if (type == audioInputNode && graph != nullptr)
         d.numOutputChannels = graph->getNumOutputChannels();
-
 }
 
 void GraphProcessor::AudioGraphIOProcessor::prepareToPlay (double, int)
@@ -1343,9 +1332,9 @@ void GraphProcessor::AudioGraphIOProcessor::processBlock (AudioSampleBuffer& buf
             graph->currentMidiOutputBuffer.addEvents (midiMessages, 0, buffer.getNumSamples(), 0);
             break;
 
-        case midiInputNode:
+        case midiInputNode: {
             midiMessages.addEvents (*graph->currentMidiInputBuffer, 0, buffer.getNumSamples(), 0);
-            break;
+        } break;
 
         default:
             break;
@@ -1432,13 +1421,11 @@ void GraphProcessor::AudioGraphIOProcessor::setStateInformation (const void*, in
 void GraphProcessor::AudioGraphIOProcessor::setParentGraph (GraphProcessor* const newGraph)
 {
     graph = newGraph;
-
     if (graph != nullptr)
     {
         setPlayConfigDetails (type == audioOutputNode ? graph->getNumOutputChannels() : 0,
                               type == audioInputNode ? graph->getNumInputChannels() : 0,
-                              getSampleRate(),
-                              getBlockSize());
+                              graph->getSampleRate(), graph->getBlockSize());
         updateHostDisplay();
     }
 }

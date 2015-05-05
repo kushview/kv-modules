@@ -17,8 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
-
 class DeviceManager::Private
 {
 public:
@@ -50,35 +48,39 @@ void DeviceManager::attach (EnginePtr engine)
     if (old != nullptr)
     {
         removeAudioCallback (&old->callback());
+        removeMidiInputCallback (String::empty, &old->getMidiInputCallback());
     }
 
     if (engine)
+    {
         addAudioCallback (&engine->callback());
+        addMidiInputCallback (String::empty, &engine->getMidiInputCallback());
+    }
     else
+    {
         closeAudioDevice();
+    }
 
     impl->activeEngine = engine;
 }
 
-static void
-addNotNull (OwnedArray <AudioIODeviceType>& list, AudioIODeviceType* const device)
+static void addIfNotNull (OwnedArray <AudioIODeviceType>& list, AudioIODeviceType* const device)
 {
     if (device != nullptr)
         list.add (device);
 }
 
-void
-DeviceManager::createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list)
+void DeviceManager::createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list)
 {
-    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_WASAPI(true));
-    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_DirectSound());
-    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_ASIO());
-    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_CoreAudio());
-    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_iOSAudio());
-    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_ALSA());
+    addIfNotNull (list, AudioIODeviceType::createAudioIODeviceType_WASAPI(true));
+    addIfNotNull (list, AudioIODeviceType::createAudioIODeviceType_DirectSound());
+    addIfNotNull (list, AudioIODeviceType::createAudioIODeviceType_ASIO());
+    addIfNotNull (list, AudioIODeviceType::createAudioIODeviceType_CoreAudio());
+    addIfNotNull (list, AudioIODeviceType::createAudioIODeviceType_iOSAudio());
+    addIfNotNull (list, AudioIODeviceType::createAudioIODeviceType_ALSA());
     // addNotNull (list, AudioIODeviceType::createAudioIODeviceType_JACK());
-    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_OpenSLES());
-    addNotNull (list, AudioIODeviceType::createAudioIODeviceType_Android());
+    addIfNotNull (list, AudioIODeviceType::createAudioIODeviceType_OpenSLES());
+    addIfNotNull (list, AudioIODeviceType::createAudioIODeviceType_Android());
 }
 
 

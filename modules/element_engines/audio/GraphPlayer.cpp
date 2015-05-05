@@ -156,5 +156,4 @@
     void GraphPlayer::handleIncomingMidiMessage (MidiInput*, const MidiMessage& message)
     {
         messageCollector.addMessageToQueue (message);
-        std::clog << "queued MIDI " << message.isNoteOnOrOff() << std::endl;
     }
