@@ -100,6 +100,8 @@ public:
             metadata = (copy) ? meta.createCopy() : meta;
         }
         
+        bool isMidiIONode() const;
+
         /* returns the parent graph. If one has not been set, then
            this will return nullptr */
         GraphProcessor* getParentGraph() const;

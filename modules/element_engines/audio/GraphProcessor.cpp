@@ -691,6 +691,14 @@ GraphProcessor::Node::Node (const uint32 nodeId_, Processor* const processor_) n
     jassert (proc != nullptr);
 }
 
+bool GraphProcessor::Node::isMidiIONode() const
+{
+    typedef GraphProcessor::AudioGraphIOProcessor IOP;
+    if (IOP* iop = dynamic_cast<IOP*> (proc.get()))
+        return iop->getType() == IOP::midiInputNode || iop->getType() == IOP::midiOutputNode;
+    return false;
+}
+
 void GraphProcessor::Node::setInputRMS (int chan, float val)
 {
     if (chan < inRMS.size()) {
