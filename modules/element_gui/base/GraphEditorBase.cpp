@@ -30,7 +30,7 @@ public:
           isInput (isInput_),
           graph (graph_)
     {
-        if (const GraphProcessor::Node::Ptr node = graph.getNodeForId (filterID_))
+        if (const GraphNodePtr node = graph.getNodeForId (filterID_))
         {
             String tip;
 
@@ -145,7 +145,7 @@ public:
         if (e.mods.isPopupMenu())
         {
 
-            GraphProcessor::Node::Ptr node = graph.getNodeForId (filterID);
+            GraphNodePtr node = graph.getNodeForId (filterID);
 
             PopupMenu menu;
 
@@ -175,7 +175,7 @@ public:
             }
             else if (r == 3 || r == 4)
             {
-                if (GraphProcessor::Node::Ptr f = graph.getNodeForId (filterID))
+                if (GraphNodePtr f = graph.getNodeForId (filterID))
                 {
                     if (PluginWindow* win = getGraphPanel()->getOrCreateWindowForNode (f, r == 4))
                         win->toFront (true);
@@ -183,7 +183,7 @@ public:
             }
             else if (r == 5)
             {
-                if (GraphProcessor::Node::Ptr f = graph.getNodeForId (filterID))
+                if (GraphNodePtr f = graph.getNodeForId (filterID))
                 {
                     AudioProcessorEditor* ui = nullptr;
                     bool useGenericView      = false;
@@ -236,7 +236,7 @@ public:
     {
         if (e.mouseWasClicked() && e.getNumberOfClicks() == 2)
         {
-            if (const GraphProcessor::Node::Ptr f = graph.getNodeForId (filterID))
+            if (const GraphNodePtr f = graph.getNodeForId (filterID))
                 if (PluginWindow* const w = getGraphPanel()->getOrCreateWindowForNode (f, false))
                     w->toFront (true);
         }
@@ -313,7 +313,7 @@ public:
 
     void update()
     {
-        const GraphProcessor::Node::Ptr f (graph.getNodeForId (filterID));
+        const GraphNodePtr f (graph.getNodeForId (filterID));
 
         if (f == nullptr)
         {
@@ -778,7 +778,7 @@ void GraphEditorBase::updateComponents()
 #if 1
     for (int i = graph.getNumFilters(); --i >= 0;)
     {
-        const GraphProcessor::Node::Ptr f (graph.getNode (i));
+        const GraphNodePtr f (graph.getNode (i));
 
         if (getComponentForFilter (f->nodeId) == 0)
         {
@@ -866,7 +866,7 @@ void GraphEditorBase::dragConnector (const MouseEvent& e)
     }
 }
 
-Component* GraphEditorBase::createContainerForNode (GraphProcessor::Node::Ptr node, bool useGenericEditor)
+Component* GraphEditorBase::createContainerForNode (GraphNodePtr node, bool useGenericEditor)
 {
     if (AudioProcessorEditor* ed = createEditorForNode (node, useGenericEditor))
         if (Component* comp = wrapAudioProcessorEditor (ed, node))
@@ -874,9 +874,9 @@ Component* GraphEditorBase::createContainerForNode (GraphProcessor::Node::Ptr no
     return nullptr;
 }
 
-Component* GraphEditorBase::wrapAudioProcessorEditor(AudioProcessorEditor* ed, GraphProcessor::Node::Ptr) { return ed; }
+Component* GraphEditorBase::wrapAudioProcessorEditor(AudioProcessorEditor* ed, GraphNodePtr) { return ed; }
 
-AudioProcessorEditor* GraphEditorBase::createEditorForNode (GraphProcessor::Node::Ptr node, bool useGenericEditor)
+AudioProcessorEditor* GraphEditorBase::createEditorForNode (GraphNodePtr node, bool useGenericEditor)
 {
     ScopedPointer<AudioProcessorEditor> ui = nullptr;
     
@@ -933,7 +933,7 @@ void GraphEditorBase::endDraggingConnector (const MouseEvent& e)
     }
 }
 
-PluginWindow* GraphEditorBase::getOrCreateWindowForNode (GraphProcessor::Node::Ptr f, bool useGeneric)
+PluginWindow* GraphEditorBase::getOrCreateWindowForNode (GraphNodePtr f, bool useGeneric)
 {
     PluginWindow* w = PluginWindow::getWindowFor (f);
     

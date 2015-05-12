@@ -192,7 +192,7 @@ private:
 class ProcessBufferOp : public Task
 {
 public:
-    ProcessBufferOp (const GraphProcessor::Node::Ptr& node_,
+    ProcessBufferOp (const GraphNodePtr& node_,
                      const Array <int>& audioChannelsToUse_,
                      const int totalChans_,
                      const int midiBufferToUse_,
@@ -235,7 +235,7 @@ public:
             node->setOutputRMS (i, buffer.getRMSLevel (i, 0, numSamples));
     }
 
-    const GraphProcessor::Node::Ptr node;
+    const GraphNodePtr node;
     AudioProcessor* const processor;
 
 private:
@@ -268,7 +268,7 @@ public:
 
         for (int i = 0; i < orderedNodes.size(); ++i)
         {
-            createRenderingOpsForNode ((GraphProcessor::Node*) orderedNodes.getUnchecked(i),
+            createRenderingOpsForNode ((GraphNode*) orderedNodes.getUnchecked(i),
                                        renderingOps, i);
             markUnusedBuffersFree (i);
         }
@@ -326,7 +326,7 @@ private:
     }
 
     //==============================================================================
-    void createRenderingOpsForNode (GraphProcessor::Node* const node,
+    void createRenderingOpsForNode (GraphNode* const node,
                                     Array<void*>& renderingOps,
                                     const int ourRenderingIndex)
     {
@@ -642,7 +642,7 @@ private:
     {
         while (stepIndexToSearchFrom < orderedNodes.size())
         {
-            const GraphProcessor::Node* const node = (const GraphProcessor::Node*) orderedNodes.getUnchecked (stepIndexToSearchFrom);
+            const GraphNode* const node = (const GraphNode*) orderedNodes.getUnchecked (stepIndexToSearchFrom);
 
             {
                 for (uint32 i = 0; i < node->audioProcessor()->getNumPorts(); ++i)
@@ -679,109 +679,6 @@ GraphProcessor::Connection::Connection (const uint32 sourceNode_, const uint32 s
     : Arc (sourceNode_, sourcePort_, destNode_, destPort_)
 { }
 
-GraphProcessor::Node::Node (const uint32 nodeId_, Processor* const processor_) noexcept
-    : nodeId (nodeId_),
-      proc (processor_),
-      isPrepared (false),
-      metadata ("metadata")
-{
-    parent = nullptr;
-    gain.set(1.0f); lastGain.set(1.0f);
-    jassert (proc != nullptr);
-}
-
-bool GraphProcessor::Node::isMidiIONode() const
-{
-    typedef GraphProcessor::AudioGraphIOProcessor IOP;
-    if (IOP* iop = dynamic_cast<IOP*> (proc.get()))
-        return iop->getType() == IOP::midiInputNode || iop->getType() == IOP::midiOutputNode;
-    return false;
-}
-
-void GraphProcessor::Node::setInputRMS (int chan, float val)
-{
-    if (chan < inRMS.size()) {
-        inRMS.getUnchecked(chan)->set(val);
-    }
-}
-
-void GraphProcessor::Node::setOutputRMS (int chan, float val)
-{
-    if (chan < outRMS.size()) {
-        outRMS.getUnchecked(chan)->set(val);
-    }
-}
-
-bool GraphProcessor::Node::isSubgraph() const noexcept
-{
-    return (dynamic_cast<GraphProcessor*> (proc.get()) != nullptr);
-}
-
-void GraphProcessor::Node::prepare (const double sampleRate, const int blockSize,
-                                    GraphProcessor* const graph)
-{
-    if (! isPrepared)
-    {
-        AudioPluginInstance* instance = getAudioPluginInstance();
-        instance->setPlayConfigDetails (instance->getNumInputChannels(),
-                                        instance->getNumOutputChannels(),
-                                        sampleRate, blockSize);
-        setParentGraph (graph);
-        instance->prepareToPlay (sampleRate, blockSize);
-
-        inRMS.clearQuick(true);
-        for (int i = 0; i < instance->getNumInputChannels(); ++i)
-        {
-            AtomicValue<float>* avf = new AtomicValue<float>();
-            avf->set(0);
-            inRMS.add (avf);
-        }
-        
-        outRMS.clearQuick(true);
-        for (int i = 0; i < instance->getNumOutputChannels(); ++i)
-        {
-            AtomicValue<float>* avf = new AtomicValue<float>();
-            avf->set(0);
-            outRMS.add(avf);
-        }
-        
-        isPrepared = true;
-    }
-}
-
-void GraphProcessor::Node::unprepare()
-{
-    if (isPrepared)
-    {
-        isPrepared = false;
-        proc->releaseResources();
-        parent = nullptr;
-    }
-}
-
-AudioPluginInstance* GraphProcessor::Node::getAudioPluginInstance() const
-{
-    if (PluginWrapper* wrapper = dynamic_cast<PluginWrapper*> (proc.get()))
-        return wrapper->getWrappedAudioPluginInstance();
-    
-    return dynamic_cast<AudioPluginInstance*> (proc.get());
-}
-
-GraphProcessor* GraphProcessor::Node::getParentGraph() const
-{
-    return parent;
-}
-
-void GraphProcessor::Node::setParentGraph (GraphProcessor* const graph)
-{
-    parent = graph;
-    if (GraphProcessor::AudioGraphIOProcessor* const ioProc
-            = dynamic_cast<GraphProcessor::AudioGraphIOProcessor*> (proc.get()))
-        ioProc->setParentGraph (graph);
-    else if (GraphPort* const ioProc = dynamic_cast <GraphPort*> (proc.get()))
-        ioProc->setGraph (graph);
-}
-
 GraphProcessor::GraphProcessor()
     : lastNodeId (0),
       renderingBuffers (1, 1),
@@ -813,7 +710,7 @@ void GraphProcessor::clear()
     handleAsyncUpdate();
 }
 
-GraphProcessor::Node* GraphProcessor::getNodeForId (const uint32 nodeId) const
+GraphNode* GraphProcessor::getNodeForId (const uint32 nodeId) const
 {
     for (int i = nodes.size(); --i >= 0;)
         if (nodes.getUnchecked(i)->nodeId == nodeId)
@@ -822,7 +719,7 @@ GraphProcessor::Node* GraphProcessor::getNodeForId (const uint32 nodeId) const
     return nullptr;
 }
 
-GraphProcessor::Node* GraphProcessor::addNode (Processor* const newProcessor, uint32 nodeId)
+GraphNode* GraphProcessor::addNode (Processor* const newProcessor, uint32 nodeId)
 {
     
     if (newProcessor == nullptr || (void*)newProcessor == (void*)this)
@@ -856,7 +753,7 @@ GraphProcessor::Node* GraphProcessor::addNode (Processor* const newProcessor, ui
 
     newProcessor->setPlayHead (getPlayHead());
 
-    if (Node* const n = createNode (nodeId, newProcessor))
+    if (GraphNode* const n = createNode (nodeId, newProcessor))
     {
         n->prepare (getSampleRate(), getBlockSize(), this);
         nodes.add (n);
@@ -922,7 +819,7 @@ bool GraphProcessor::canConnect (const uint32 sourceNode,
     if (sourceNode == destNode)
         return false;
 
-    const Node* const source = getNodeForId (sourceNode);
+    const GraphNode* const source = getNodeForId (sourceNode);
     if (source == nullptr
          || (sourcePort >= source->proc->getNumPorts())
          || (! source->proc->isPortOutput (sourcePort)))
@@ -930,7 +827,7 @@ bool GraphProcessor::canConnect (const uint32 sourceNode,
         return false;
     }
 
-    const Node* const dest = getNodeForId (destNode);
+    const GraphNode* const dest = getNodeForId (destNode);
 
     if (dest == nullptr
          || (destPort >= dest->proc->getNumPorts())
@@ -948,11 +845,8 @@ bool GraphProcessor::canConnect (const uint32 sourceNode,
     return getConnectionBetween (sourceNode, sourcePort, destNode, destPort) == nullptr;
 }
 
-bool
-GraphProcessor::addConnection (const uint32 sourceNode,
-                               const uint32 sourcePort,
-                               const uint32 destNode,
-                               const uint32 destPort)
+bool GraphProcessor::addConnection (const uint32 sourceNode, const uint32 sourcePort,
+                                    const uint32 destNode, const uint32 destPort)
 {
     if (! canConnect (sourceNode, sourcePort, destNode, destPort))
         return false;
@@ -969,8 +863,8 @@ bool
 GraphProcessor::connectChannels (PortType type, uint32 sourceNode, int32 sourceChannel,
                                  uint32 destNode, int32 destChannel)
 {
-    Node* src = getNodeForId (sourceNode);
-    Node* dst = getNodeForId (destNode);
+    GraphNode* src = getNodeForId (sourceNode);
+    GraphNode* dst = getNodeForId (destNode);
     if (! src && ! dst)
         return false;
 
@@ -1031,8 +925,8 @@ bool GraphProcessor::isConnectionLegal (const Connection* const c) const
 {
     jassert (c != nullptr);
 #if 1
-    const Node* const source = getNodeForId (c->sourceNode);
-    const Node* const dest   = getNodeForId (c->destNode);
+    const GraphNode* const source = getNodeForId (c->sourceNode);
+    const GraphNode* const dest   = getNodeForId (c->destNode);
 
     return source != nullptr
             && dest != nullptr
@@ -1117,13 +1011,12 @@ void GraphProcessor::buildRenderingSequence()
 
             for (int i = 0; i < nodes.size(); ++i)
             {
-                Node* const node = nodes.getUnchecked(i);
-
+                GraphNode* const node = nodes.getUnchecked(i);
                 node->prepare (getSampleRate(), getBlockSize(), this);
 
                 int j = 0;
                 for (; j < orderedNodes.size(); ++j)
-                    if (table.isAnInputTo (node->nodeId, ((Node*) orderedNodes.getUnchecked(j))->nodeId))
+                    if (table.isAnInputTo (node->nodeId, ((GraphNode*) orderedNodes.getUnchecked(j))->nodeId))
                       break;
 
                 orderedNodes.insert (j, node);

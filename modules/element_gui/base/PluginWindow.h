@@ -5,7 +5,6 @@
 class PluginWindow  : public DocumentWindow
 {
 public:
-    typedef GraphProcessor::Node GraphNode;
     static PluginWindow* getWindowFor (GraphNode* node);
     static PluginWindow* createWindowFor (GraphNode* node, Component* editor);
     

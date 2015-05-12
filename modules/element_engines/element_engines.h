@@ -26,6 +26,8 @@
 #include "../element_models/element_models.h"
 
 namespace Element {
+
+class GraphProcessor;
 //#include "audio/PortType.h"
 #include "audio/Processor.h"
     
@@ -36,7 +38,8 @@ namespace Element {
 #include "audio/ClipSource.h"
 #include "audio/DataType.h"
 #include "audio/Engine.h"
-    
+
+#include "audio/GraphNode.h"
 #include "audio/GraphProcessor.h"
 #include "audio/GraphController.h"
 #include "audio/GraphDocument.h"
@@ -56,7 +59,6 @@ namespace Element {
 #include "session/PluginManager.h"
 #include "session/PluginWrapper.h"
 #include "session/SessionBase.h"
-    
 }
 
 #endif   // ELEMENT_MODELS_H_INCLUDED

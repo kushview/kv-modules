@@ -61,7 +61,7 @@ private:
     ScopedPointer<Component> editor, leftPanel, rightPanel;
 };
 
-PluginWindow::PluginWindow (Component* const ui, GraphProcessor::Node* node)
+PluginWindow::PluginWindow (Component* const ui, GraphNode* node)
     : DocumentWindow (ui->getName(), Colours::lightgrey,
                       DocumentWindow::minimiseButton | DocumentWindow::closeButton),
       owner (node)
@@ -111,7 +111,7 @@ void PluginWindow::resized()
     DocumentWindow::resized();
 }
 
-PluginWindow* PluginWindow::getWindowFor (GraphProcessor::Node* node)
+PluginWindow* PluginWindow::getWindowFor (GraphNode* node)
 {
     for (int i = activePluginWindows.size(); --i >= 0;)
         if (activePluginWindows.getUnchecked(i)->owner == node)

@@ -21,10 +21,9 @@
                        public ValueTree::Listener
     {
     public:
-
         typedef AudioPlayHead::CurrentPositionInfo Position;
-        typedef GraphProcessor::Node::Ptr NodePtr;
-        typedef ReferenceCountedArray<GraphProcessor::Node> NodeArray;
+        typedef GraphNodePtr NodePtr;
+        typedef ReferenceCountedArray<GraphNode> NodeArray;
 
         /** Create a new sequencer graph
             Sequencer needs the Audio engine for managing clip data as

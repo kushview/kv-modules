@@ -33,6 +33,7 @@ namespace Element {
 #include "audio/EngineBase.cpp"
 #include "audio/GraphController.cpp"
 #include "audio/GraphDocument.cpp"
+#include "audio/GraphNode.cpp"
 #include "audio/GraphPlayer.cpp"
 #include "audio/GraphPort.cpp"
 #include "audio/GraphProcessor.cpp"

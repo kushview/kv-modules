@@ -42,7 +42,7 @@ public:
 
     static const uint32 invalidNodeId = (uint32)-1;
 
-    typedef GraphProcessor::Node::Ptr NodePtr;
+    typedef GraphNodePtr NodePtr;
 
     //==============================================================================
     GraphController (GraphProcessor&, PluginManager&);

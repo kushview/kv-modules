@@ -19,7 +19,7 @@
 
 
 
-static XmlElement* createNodeXml (GraphProcessor::Node* const node) noexcept;
+static XmlElement* createNodeXml (GraphNode* const node) noexcept;
 
 GraphDocument::GraphDocument (GraphController& g, PluginManager& p)
     : FileBasedDocument (graphSuffix, graphWildcard,
@@ -114,7 +114,7 @@ void GraphDocument::setLastDocumentOpened (const File& /*file*/)
 
 
 //==============================================================================
-static XmlElement* createNodeXml (GraphProcessor::Node* const node) noexcept
+static XmlElement* createNodeXml (GraphNode* const node) noexcept
 {
     AudioPluginInstance* plugin = dynamic_cast <AudioPluginInstance*> (node->audioProcessor());
     if (plugin == nullptr)
@@ -167,7 +167,7 @@ void GraphDocument::createNodeFromXml (const XmlElement& xml)
     if (instance == nullptr)
         return;
 
-    GraphProcessor::Node::Ptr node (
+    GraphNodePtr node (
                 graph.getGraph().addNode (instance, xml.getIntAttribute ("uid")));
 
     if (const XmlElement* const state = xml.getChildByName ("state"))

@@ -11,7 +11,7 @@
 
 static Sequencer::NodePtr
 trackNode (const TrackModel& t) {
-    return dynamic_cast<GraphProcessor::Node*> (
+    return dynamic_cast<GraphNode*> (
         t.state().getProperty ("node", var::null).getObject());
 }
 
@@ -128,7 +128,7 @@ Sequencer::NodePtr
 Sequencer::getNodeFor (const ValueTree& state)
 {
     NodePtr invalid = nullptr;
-    NodePtr ptr = dynamic_cast<GraphProcessor::Node*> (state.getProperty ("node", var::null).getObject());
+    NodePtr ptr = dynamic_cast<GraphNode*> (state.getProperty ("node", var::null).getObject());
 
     if (! ptr)
         return invalid;

@@ -48,89 +48,7 @@ public:
     */
     ~GraphProcessor();
 
-    /** Represents one of the nodes, or processors, in an AudioProcessorGraph.
-
-        To create a node, call ProcessorGraph::addNode().
-    */
-    class JUCE_API  Node   : public ReferenceCountedObject
-    {
-    public:
-        
-        /** The ID number assigned to this node.
-            This is assigned by the graph that owns it, and can't be changed.
-        */
-        const uint32 nodeId;
-
-        /** The actual processor object that this node represents. */
-        Processor* audioProcessor() const noexcept           { return proc; }
-
-        AudioPluginInstance* getAudioPluginInstance() const;
-        
-        /** The actual processor object dynamic_cast'd to ProcType */
-        template<class ProcType>
-        inline ProcType* processor() const { return dynamic_cast<ProcType*> (proc.get()); }
-
-        /** A set of user-definable properties that are associated with this node.
-
-            This can be used to attach values to the node for whatever purpose seems
-            useful. For example, you might store an x and y position if your application
-            is displaying the nodes on-screen.
-        */
-        NamedValueSet properties;
-
-        /** Returns true if the process is a graph */
-        bool isSubgraph() const noexcept;
-
-        /** A convenient typedef for referring to a pointer to a node object. */
-        typedef ReferenceCountedObjectPtr <Node> Ptr;
-
-        void setGain (const float g) {
-            gain.set (g);
-        }
-        
-        float getGain() const { return gain.get(); }
-        float getLastGain() const {return lastGain.get(); }
-        void updateGain() { lastGain.set (gain.get()); }
-        
-        ValueTree getMetadata() const { return metadata; }
-        void setMetadata (const ValueTree& meta, bool copy = false)
-        {
-            metadata = (copy) ? meta.createCopy() : meta;
-        }
-        
-        bool isMidiIONode() const;
-
-        /* returns the parent graph. If one has not been set, then
-           this will return nullptr */
-        GraphProcessor* getParentGraph() const;
-        
-        void setInputRMS (int chan, float val);
-        float getInputRMS(int chan) const { return (chan < inRMS.size()) ? inRMS.getUnchecked(chan)->get() : 0.0f; }
-        void setOutputRMS (int chan, float val);
-        float getOutpputRMS(int chan) const { return (chan < outRMS.size()) ? outRMS.getUnchecked(chan)->get() : 0.0f; }
-        
-    private:
-        friend class GraphProcessor;
-
-        const ScopedPointer<Processor> proc;
-        bool isPrepared;
-
-        Node (uint32 nodeId, Processor*) noexcept;
-
-        void setParentGraph (GraphProcessor*);
-        void prepare (double sampleRate, int blockSize, GraphProcessor*);
-        void unprepare();
-
-        AtomicValue<float> gain, lastGain;
-        OwnedArray<AtomicValue<float> > inRMS, outRMS;
-        
-        ValueTree metadata;
-        GraphProcessor* parent;
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Node)
-    };
-
-    //==============================================================================
-    /** Represents a connection between two channels of two nodes in an AudioProcessorGraph.
+   /** Represents a connection between two channels of two nodes in an AudioProcessorGraph.
 
         To create a connection, use AudioProcessorGraph::addConnection().
     */
@@ -156,13 +74,13 @@ public:
         This will return nullptr if the index is out of range.
         @see getNodeForId
     */
-    Node* getNode (const int index) const                           { return nodes [index]; }
+    GraphNode* getNode (const int index) const                           { return nodes [index]; }
 
     /** Searches the graph for a node with the given ID number and returns it.
         If no such node was found, this returns nullptr.
         @see getNode
     */
-    Node* getNodeForId (const uint32 nodeId) const;
+    GraphNode* getNodeForId (const uint32 nodeId) const;
 
     /** Adds a node to the graph.
 
@@ -175,7 +93,7 @@ public:
 
         If this succeeds, it returns a pointer to the newly-created node.
     */
-    Node* addNode (Processor* newProcessor, uint32 nodeId = 0);
+    GraphNode* addNode (Processor* newProcessor, uint32 nodeId = 0);
 
     /** Deletes a node within the graph which has the specified ID.
 
@@ -388,15 +306,14 @@ public:
     inline ValueTree getGraphState() const { return graphState.graph; }
 
 protected:
-    virtual Node* createNode (uint32 nodeId, Processor* proc) { return new Node (nodeId, proc); }
+    virtual GraphNode* createNode (uint32 nodeId, Processor* proc) { return new GraphNode (nodeId, proc); }
     virtual void preRenderNodes() { }
     virtual void postRenderNodes() { }
 
 private:
     typedef ArcTable<Connection> LookupTable;
-
-    ReferenceCountedArray <Node> nodes;
-    OwnedArray <Connection> connections;
+    ReferenceCountedArray<GraphNode> nodes;
+    OwnedArray<Connection> connections;
 
     struct GraphState {
         ValueTree graph;

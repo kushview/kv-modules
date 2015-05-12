@@ -46,12 +46,12 @@ int GraphController::getNumFilters() const noexcept
     return processor.getNumNodes();
 }
 
-const GraphProcessor::Node::Ptr GraphController::getNode (const int index) const noexcept
+const GraphNodePtr GraphController::getNode (const int index) const noexcept
 {
     return processor.getNode (index);
 }
 
-const GraphProcessor::Node::Ptr
+const GraphNodePtr
 GraphController::getNodeForId (const uint32 uid) const noexcept
 {
     return processor.getNodeForId (uid);
@@ -68,7 +68,7 @@ GraphController::addFilter (const PluginDescription* desc, double x, double y)
         String errorMessage;
         Processor* instance = pluginManager.createPlugin (*desc, errorMessage);
 
-        GraphProcessor::Node* node = nullptr;
+        GraphNode* node = nullptr;
 
         if (instance != nullptr)
             node = processor.addNode (instance);
@@ -113,7 +113,7 @@ void GraphController::removeIllegalConnections()
 
 void GraphController::setNodePosition (const int nodeId, double x, double y)
 {
-    const GraphProcessor::Node::Ptr n (processor.getNodeForId (nodeId));
+    const GraphNodePtr n (processor.getNodeForId (nodeId));
 
     if (n != nullptr)
     {
@@ -126,7 +126,7 @@ void GraphController::getNodePosition (const int nodeId, double& x, double& y) c
 {
     x = y = 0;
 
-    const GraphProcessor::Node::Ptr n (processor.getNodeForId (nodeId));
+    const GraphNodePtr n (processor.getNodeForId (nodeId));
 
     if (n != nullptr)
     {
