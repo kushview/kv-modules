@@ -15,7 +15,6 @@
    A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 */
 
-
 const int GraphProcessor::midiChannelIndex = 0x1000;
 
 namespace GraphRender

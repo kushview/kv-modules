@@ -22,8 +22,6 @@
 #ifndef ELEMENT_GRAPH_PROCESSOR_H
 #define ELEMENT_GRAPH_PROCESSOR_H
 
-
-//==============================================================================
 /**
     A type of AudioProcessor which plays back a graph of other AudioProcessors.
 
@@ -139,18 +137,13 @@ public:
     struct JUCE_API  Connection :  public Arc
     {
     public:
-        //==============================================================================
         Connection (uint32 sourceNode, uint32 sourcePort,
                     uint32 destNode, uint32 destPort) noexcept;
 
     private:
-
-        //==============================================================================
         JUCE_LEAK_DETECTOR (Connection)
-
     };
 
-    //==============================================================================
     /** Deletes all nodes and connections from this graph.
         Any processor objects in the graph will be deleted.
     */
@@ -190,7 +183,6 @@ public:
     */
     bool removeNode (uint32 nodeId);
 
-    //==============================================================================
     /** Returns the number of connections in the graph. */
     int getNumConnections() const                                       { return connections.size(); }
 
@@ -252,7 +244,6 @@ public:
     */
     bool removeIllegalConnections();
 
-    //==============================================================================
     /** A special number that represents the midi channel of a node.
 
         This is used as a channel index value if you want to refer to the midi input
@@ -260,8 +251,6 @@ public:
     */
     static const int midiChannelIndex;
 
-
-    //==============================================================================
     /** A special type of Processor that can live inside an ProcessorGraph
         in order to use the audio that comes into and out of the graph itself.
 
@@ -351,7 +340,6 @@ public:
         void setParentGraph (GraphProcessor*);
 
     private:
-
         const IODeviceType type;
         GraphProcessor* graph;
 
@@ -360,17 +348,13 @@ public:
 
 
 
-    //==============================================================================
     // AudioProcessor methods:
 
     virtual const String getName() const;
-
     virtual void prepareToPlay (double sampleRate, int estimatedBlockSize);
     virtual void releaseResources();
-
     void processBlock (AudioSampleBuffer&, MidiBuffer&);
     void reset();
-
     virtual const String getInputChannelName (int channelIndex) const;
     virtual const String getOutputChannelName (int channelIndex) const;
     virtual bool isInputChannelStereoPair (int index) const;
@@ -404,14 +388,11 @@ public:
     inline ValueTree getGraphState() const { return graphState.graph; }
 
 protected:
-    
     virtual Node* createNode (uint32 nodeId, Processor* proc) { return new Node (nodeId, proc); }
     virtual void preRenderNodes() { }
     virtual void postRenderNodes() { }
 
 private:
-    //==============================================================================
-
     typedef ArcTable<Connection> LookupTable;
 
     ReferenceCountedArray <Node> nodes;
