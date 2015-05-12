@@ -10,18 +10,20 @@ class JUCE_API  GraphNode   : public ReferenceCountedObject
 public:
 
     /** The ID number assigned to this node.
-        This is assigned by the graph that owns it, and can't be changed.
-    */
+        This is assigned by the graph that owns it, and can't be changed. */
     const uint32 nodeId;
 
     /** The actual processor object that this node represents. */
-    Processor* audioProcessor() const noexcept           { return proc; }
+    Processor* getProcessor() const noexcept           { return proc; }
 
     AudioPluginInstance* getAudioPluginInstance() const;
 
     /** The actual processor object dynamic_cast'd to ProcType */
     template<class ProcType>
-    inline ProcType* processor() const { return dynamic_cast<ProcType*> (proc.get()); }
+    inline ProcType* processor() const
+    {
+        return dynamic_cast<ProcType*> (proc.get());
+    }
 
     /** A set of user-definable properties that are associated with this node.
 

@@ -198,7 +198,7 @@ public:
                      const int midiBufferToUse_,
                      const Array <int> chans [PortType::Unknown])
         : node (node_),
-          processor (node_->audioProcessor()),
+          processor (node_->getProcessor()),
           audioChannelsToUse (audioChannelsToUse_),
           totalChans (jmax (1, totalChans_)),
           numAudioIns (node_->getAudioPluginInstance()->getNumInputChannels()),
@@ -330,7 +330,7 @@ private:
                                     Array<void*>& renderingOps,
                                     const int ourRenderingIndex)
     {
-        Processor* proc (node->audioProcessor());
+        Processor* proc (node->getProcessor());
         Array <int> channelsToUse [PortType::Unknown];
         int maxLatency = getInputLatency (node->nodeId);
 
@@ -570,7 +570,7 @@ private:
 
         } /* foreach port */
 
-        setNodeDelay (node->nodeId, maxLatency + node->audioProcessor()->getLatencySamples());
+        setNodeDelay (node->nodeId, maxLatency + node->getProcessor()->getLatencySamples());
 
         if (proc->getNumOutputChannels() == 0)
             totalLatency = maxLatency;
@@ -645,7 +645,7 @@ private:
             const GraphNode* const node = (const GraphNode*) orderedNodes.getUnchecked (stepIndexToSearchFrom);
 
             {
-                for (uint32 i = 0; i < node->audioProcessor()->getNumPorts(); ++i)
+                for (uint32 i = 0; i < node->getProcessor()->getNumPorts(); ++i)
                     if (i != inputChannelOfIndexToIgnore
                          && graph.getConnectionBetween (sourceNode, outputPortIndex,
                                                         node->nodeId, i) != nullptr)
@@ -730,7 +730,7 @@ GraphNode* GraphProcessor::addNode (Processor* const newProcessor, uint32 nodeId
 
     for (int i = nodes.size(); --i >= 0;)
     {
-        if (nodes.getUnchecked(i)->audioProcessor() == newProcessor)
+        if (nodes.getUnchecked(i)->getProcessor() == newProcessor)
         {
             jassertfalse; // Cannot add the same object to the graph twice!
             return nullptr;
@@ -868,8 +868,8 @@ GraphProcessor::connectChannels (PortType type, uint32 sourceNode, int32 sourceC
     if (! src && ! dst)
         return false;
 
-    uint32 from = src->audioProcessor()->getNthPort (type, sourceChannel, false, false);
-    uint32 to   = dst->audioProcessor()->getNthPort (type, destChannel, true, false);
+    uint32 from = src->getProcessor()->getNthPort (type, sourceChannel, false, false);
+    uint32 to   = dst->getProcessor()->getNthPort (type, destChannel, true, false);
 
     const bool res = addConnection (sourceNode, from, destNode, to);
     return res;
@@ -1083,7 +1083,7 @@ void GraphProcessor::reset()
 {
     const ScopedLock sl (getCallbackLock());
     for (int i = 0; i < nodes.size(); ++i)
-        nodes.getUnchecked(i)->audioProcessor()->reset();
+        nodes.getUnchecked(i)->getProcessor()->reset();
 }
 
 void GraphProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages)

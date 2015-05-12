@@ -35,9 +35,9 @@ public:
             String tip;
 
             if (isInput)
-                tip = node->audioProcessor()->getInputChannelName (index_);
+                tip = node->getProcessor()->getInputChannelName (index_);
             else
-                tip = node->audioProcessor()->getOutputChannelName (index_);
+                tip = node->getProcessor()->getOutputChannelName (index_);
 
             if (tip.isEmpty())
             {
@@ -190,13 +190,13 @@ public:
 
                     if (! useGenericView)
                     {
-                        ui = f->audioProcessor()->createEditorIfNeeded();
+                        ui = f->getProcessor()->createEditorIfNeeded();
                         if (ui == nullptr)
                             useGenericView = true;
                     }
 
                     if (useGenericView)
-                        ui = new GenericAudioProcessorEditor (f->audioProcessor());
+                        ui = new GenericAudioProcessorEditor (f->getProcessor());
 
                     if (ui) delete ui;
                     if (ui != nullptr)
@@ -204,7 +204,7 @@ public:
 //                        PluginWindow::closeCurrentlyOpenWindowsFor (filterID);
 //                        embedded = ui;
 //
-//                        if (AudioPluginInstance* const plugin = dynamic_cast <AudioPluginInstance*> (f->audioProcessor()))
+//                        if (AudioPluginInstance* const plugin = dynamic_cast <AudioPluginInstance*> (f->getProcessor()))
 //                            ui->setName (plugin->getName());
 //
 //                        setSize (ui->getWidth(), ui->getHeight());
@@ -322,9 +322,9 @@ public:
         }
 
         numIns = numOuts = 0;
-        for (uint32 i = 0; i < f->audioProcessor()->getNumPorts(); ++i)
+        for (uint32 i = 0; i < f->getProcessor()->getNumPorts(); ++i)
         {
-            if (f->audioProcessor()->isPortInput (i))
+            if (f->getProcessor()->isPortInput (i))
                 ++numIns;
             else
                 ++numOuts;
@@ -335,14 +335,14 @@ public:
 
         w = jmax (w, (jmax (numIns, numOuts) + 1) * 20);
 
-        const int textWidth = font.getStringWidth (f->audioProcessor()->getName());
+        const int textWidth = font.getStringWidth (f->getProcessor()->getName());
         w = jmax (w, 16 + jmin (textWidth, 300));
         if (textWidth > 300)
             h = 100;
 
         setSize (w, h);
 
-        setName (f->audioProcessor()->getName());
+        setName (f->getProcessor()->getName());
 
         {
             double x, y;
@@ -360,23 +360,23 @@ public:
 
             uint32 i;
 #if 1
-            for (i = 0; i < f->audioProcessor()->getNumPorts(); ++i)
+            for (i = 0; i < f->getProcessor()->getNumPorts(); ++i)
             {
-                const PortType t (f->audioProcessor()->getPortType (i));
-                const bool isInput (f->audioProcessor()->isPortInput (i));
+                const PortType t (f->getProcessor()->getPortType (i));
+                const bool isInput (f->getProcessor()->isPortInput (i));
                 addAndMakeVisible (new PinComponent (graph, filterID, i, isInput, t));
             }
 #else
-            for (i = 0; i < f->audioProcessor()->getNumInputChannels(); ++i)
+            for (i = 0; i < f->getProcessor()->getNumInputChannels(); ++i)
                 addAndMakeVisible (new PinComponent (graph, filterID, i, true));
 
-            if (f->audioProcessor()->acceptsMidi())
+            if (f->getProcessor()->acceptsMidi())
                 addAndMakeVisible (new PinComponent (graph, filterID, GraphController::midiChannelNumber, true));
 
-            for (i = 0; i < f->audioProcessor()->getNumOutputChannels(); ++i)
+            for (i = 0; i < f->getProcessor()->getNumOutputChannels(); ++i)
                 addAndMakeVisible (new PinComponent (graph, filterID, i, false));
 
-            if (f->audioProcessor()->producesMidi())
+            if (f->getProcessor()->producesMidi())
                 addAndMakeVisible (new PinComponent (graph, filterID, GraphController::midiChannelNumber, false));
 #endif
             resized();
@@ -882,14 +882,14 @@ AudioProcessorEditor* GraphEditorBase::createEditorForNode (GraphNodePtr node, b
     
     if (! useGenericEditor)
     {
-        ui = node->audioProcessor()->createEditorIfNeeded();
+        ui = node->getProcessor()->createEditorIfNeeded();
         
         if (ui == nullptr)
             useGenericEditor = true;
     }
     
     if (useGenericEditor)
-        ui = new GenericAudioProcessorEditor (node->audioProcessor());
+        ui = new GenericAudioProcessorEditor (node->getProcessor());
     
     return (nullptr != ui) ? ui.release() : nullptr;
 }

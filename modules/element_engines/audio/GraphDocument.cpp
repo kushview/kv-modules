@@ -116,7 +116,7 @@ void GraphDocument::setLastDocumentOpened (const File& /*file*/)
 //==============================================================================
 static XmlElement* createNodeXml (GraphNode* const node) noexcept
 {
-    AudioPluginInstance* plugin = dynamic_cast <AudioPluginInstance*> (node->audioProcessor());
+    AudioPluginInstance* plugin = dynamic_cast <AudioPluginInstance*> (node->getProcessor());
     if (plugin == nullptr)
     {
         jassertfalse;
@@ -139,7 +139,7 @@ static XmlElement* createNodeXml (GraphNode* const node) noexcept
 
     XmlElement* state = new XmlElement ("state");
     MemoryBlock m;
-    node->audioProcessor()->getStateInformation (m);
+    node->getProcessor()->getStateInformation (m);
     state->addTextElement (m.toBase64Encoding());
     e->addChildElement (state);
 
@@ -174,7 +174,7 @@ void GraphDocument::createNodeFromXml (const XmlElement& xml)
     {
         MemoryBlock m;
         m.fromBase64Encoding (state->getAllSubText());
-        node->audioProcessor()->setStateInformation (m.getData(), (int) m.getSize());
+        node->getProcessor()->setStateInformation (m.getData(), (int) m.getSize());
     }
 
     node->properties.set ("x", xml.getDoubleAttribute ("x"));
