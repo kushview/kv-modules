@@ -30,104 +30,68 @@
  ==============================================================================
 */
 
-#ifndef __JUCETICE_HIGHQUALITYMETER_HEADER__
-#define __JUCETICE_HIGHQUALITYMETER_HEADER__
+#ifndef ELEMENT_HIGH_QUALITY_METER_H
+#define ELEMENT_HIGH_QUALITY_METER_H
 
+#if EL_COMPLETION
+#include "JuceHeader.h"
+#endif
 
 class HighQualityMeter;
 class HighQualityMeterValue;
 
-//==============================================================================
-/**
-    Creates VU meters with scale in decibels
-*/
+/** Creates VU meters with scale in decibels */
 class HighQualityMeterValue : public Component
 {
 public:
-
-    //==============================================================================
-    // Constructor.
     HighQualityMeterValue (HighQualityMeter *pMeter);
-
-    // Default destructor.
     ~HighQualityMeterValue();
 
-    //==============================================================================
-    // Frame value accessors.
+    /** Frame value accessors. */
     void setValue (const float fValue);
 
-    //==============================================================================
-    // Value refreshment.
+    /** Value refreshment. */
     void refresh();
 
-    //==============================================================================
-    // Reset peak holder.
+    /** Reset peak holder. */
     void peakReset();
 
-    //==============================================================================
     /** @internal */
     void paint (Graphics& g);
     /** @internal */
     void resized ();
 
 private:
+    HighQualityMeter *meter;
 
-    // Local instance variables.
-    HighQualityMeter *m_pMeter;
-
-    // Running variables.
-    float m_fValue;
-    int   m_iValueHold;
-    float m_fValueDecay;
-    int   m_iPeak;
-    int   m_iPeakHold;
-    float m_fPeakDecay;
-    int   m_iPeakColor;
+    float value;
+    int   valueHold;
+    float valueDecay;
+    int   peak;
+    int   peakHold;
+    float peakDecay;
+    int   peakColor;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighQualityMeterValue)
 };
 
 
-//==============================================================================
-/**
-    Creates VU meters with scale in decibels
-*/
+/** Creates VU meters with scale in decibels */
 class HighQualityMeter : public Component
 {
 public:
-
-    //==============================================================================
-    // Constructor.
     HighQualityMeter (const int numPorts);
-
-    // Default destructor.
     ~HighQualityMeter();
 
-    //==============================================================================
-    // Port count accessor.
-    int portCount() const;
-
-    //==============================================================================
-    // Value proxy.
-    void setValue (const int iPort, const float fValue);
-
-    //==============================================================================
-    // IEC scale accessors.
-    int iec_scale (const float dB) const;
-    int iec_level (const int index) const;
-
-    //==============================================================================
-    // Slot refreshment.
-    void refresh();
-
-    //==============================================================================
-    // Peak falloff mode setting.
+    /** Returns the number of ports on this meter */
+    int getPortCount() const;
+    void setValue (const int port, const float value);
+    int getIECScale (const float dB) const;
+    int getIECLevel (const int index) const;
     void setPeakFalloff (const int peakFalloff);
     int getPeakFalloff() const;
+    void refresh();
+    void resetPeaks();
 
-    // Reset peak holder.
-    void peakReset();
-
-    //==============================================================================
-    // Level indexes.
     enum {
         ColorOver    = 0,
         Color0dB     = 1,
@@ -140,11 +104,8 @@ public:
         ColorCount   = 7
     };
 
-    // Common resource accessors.
     const Colour& color (const int index) const;
 
-    //==============================================================================
-    // Colors indexes.
     enum ColoursIds
     {
         levelOverColourId    = 0x90900001,
@@ -156,25 +117,20 @@ public:
         foregroundColourId   = 0x90900007
     };
 
-    //==============================================================================
     /** @internal */
     void paint (Graphics& g);
     /** @internal */
     void resized ();
 
 private:
+    int portCount;
+    HighQualityMeterValue** values;
 
-    // Local instance variables.
-    int m_iPortCount;
-    HighQualityMeterValue** m_ppValues;
-
-    float m_fScale;
-
-    int m_levels[LevelCount];
-    Colour m_colors[ColorCount];
-
-    // Peak falloff mode setting (0=no peak falloff).
-    int m_iPeakFalloff;
+    float scale;
+    int levels[LevelCount];
+    Colour colors[ColorCount];
+    int peakFalloff;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighQualityMeter)
 };
 
-#endif  // __JUCETICE_HIGHQUALITYMETER_HEADER__
+#endif  // ELEMENT_HIGH_QUALITY_METER_H
