@@ -37,24 +37,24 @@
 #include "JuceHeader.h"
 #endif
 
-class HighQualityMeter;
-class HighQualityMeterValue;
+class DigitalMeter;
+class DigitalMeterValue;
 
 /** Creates VU meters with scale in decibels */
-class HighQualityMeterValue : public Component
+class DigitalMeterValue : public Component
 {
 public:
-    HighQualityMeterValue (HighQualityMeter *pMeter);
-    ~HighQualityMeterValue();
+    DigitalMeterValue (DigitalMeter *pMeter);
+    ~DigitalMeterValue();
 
     /** Frame value accessors. */
-    void setValue (const float fValue);
+    void setValue (const float newValue);
 
     /** Value refreshment. */
     void refresh();
 
     /** Reset peak holder. */
-    void peakReset();
+    void resetPeak();
 
     /** @internal */
     void paint (Graphics& g);
@@ -62,7 +62,7 @@ public:
     void resized ();
 
 private:
-    HighQualityMeter *meter;
+    DigitalMeter *meter;
 
     float value;
     int   valueHold;
@@ -71,26 +71,29 @@ private:
     int   peakHold;
     float peakDecay;
     int   peakColor;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighQualityMeterValue)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DigitalMeterValue)
 };
 
 
 /** Creates VU meters with scale in decibels */
-class HighQualityMeter : public Component
+class DigitalMeter : public Component
 {
 public:
-    HighQualityMeter (const int numPorts);
-    ~HighQualityMeter();
+    DigitalMeter (const int numPorts, bool horizontal = false);
+    ~DigitalMeter();
 
     /** Returns the number of ports on this meter */
     int getPortCount() const;
     void setValue (const int port, const float value);
     int getIECScale (const float dB) const;
     int getIECLevel (const int index) const;
-    void setPeakFalloff (const int peakFalloff);
+    void setPeakFalloff (const int newPeakFalloff);
     int getPeakFalloff() const;
     void refresh();
     void resetPeaks();
+
+    bool isHorizontal() const { return horizontal; }
+    bool isVertical()   const { return ! horizontal; }
 
     enum {
         ColorOver    = 0,
@@ -124,13 +127,13 @@ public:
 
 private:
     int portCount;
-    HighQualityMeterValue** values;
-
+    DigitalMeterValue** values;
     float scale;
     int levels[LevelCount];
     Colour colors[ColorCount];
     int peakFalloff;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(HighQualityMeter)
+    bool horizontal;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DigitalMeter)
 };
 
 #endif  // ELEMENT_HIGH_QUALITY_METER_H
