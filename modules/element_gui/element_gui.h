@@ -47,7 +47,7 @@ namespace Element {
     
 // misc widgets
 #include "base/DecibelScaleComponent.h"
-#include "base/HighQualityMeter.h"
+#include "base/DigitalMeter.h"
 #include "base/IconButton.h"
 #include "base/SkinDial.h"
 #include "base/TreeviewBase.h"

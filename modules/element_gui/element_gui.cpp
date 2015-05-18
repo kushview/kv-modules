@@ -1,5 +1,5 @@
 /*
-    element_module.cpp - This file is part of Element
+    element_gui.cpp - This file is part of Element
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 #include "AppConfig.h"
 
 #if JUCE_MODULE_AVAILABLE_element_engines
-#include "modules/juce_audio_processors/juce_audio_processors.h"
-#include "../element_engines/element_engines.h"
+ #include "modules/juce_audio_processors/juce_audio_processors.h"
+ #include "../element_engines/element_engines.h"
 #endif
 #include "../element_models/element_models.h"
 #include "element_gui.h"
@@ -30,7 +30,7 @@ namespace Element {
 
 #include "assets/AssetTreeView.cpp"
 #include "base/DecibelScaleComponent.cpp"
-#include "base/HighQualityMeter.cpp"
+#include "base/DigitalMeter.cpp"
 #include "base/Icons.cpp"
 #include "base/LookAndFeel.cpp"
 #include "base/TreeviewBase.cpp"
