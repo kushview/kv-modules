@@ -1,59 +1,41 @@
 /*
- ==============================================================================
+    DigitalMeter.cpp - This file is part of Element
+    Copyright (C) 2015  Kushview, LLC
 
- This file is part of the JUCETICE project - Copyright 2009 by Lucio Asnaghi.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
- JUCETICE is based around the JUCE library - "Jules' Utility Class Extensions"
- Copyright 2007 by Julian Storer.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
- ------------------------------------------------------------------------------
-
- JUCE and JUCETICE can be redistributed and/or modified under the terms of
- the GNU General Public License, as published by the Free Software Foundation;
- either version 2 of the License, or (at your option) any later version.
-
- JUCE and JUCETICE are distributed in the hope that they will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with JUCE and JUCETICE; if not, visit www.gnu.org/licenses or write to
- Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- Boston, MA 02111-1307 USA
-
- ==============================================================================
-
-   @author  Rui Nuno Capela
-   @tweaker Lucio Asnaghi
-
- ==============================================================================
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if EL_COMPLETION
-#include "JuceHeader.h"
-#endif
-
 // Meter level limits (in dB).
-#define HQ_METER_MAXDB        (+4.0f)
-#define HQ_METER_MINDB        (-70.0f)
-
+#define DIGITAL_METER_MAX_DB        (+4.0f)
+#define DIGITAL_METER_MIN_DB        (-70.0f)
 // The decay rates (magic goes here :).
 // - value decay rate (faster)
-#define HQ_METER_DECAY_RATE1    (1.0f - 3E-2f)
+#define DIGITAL_METER_DECAY_RATE1    (1.0f - 3E-2f)
 // - peak decay rate (slower)
-#define HQ_METER_DECAY_RATE2    (1.0f - 3E-6f)
+#define DIGITAL_METER_DECAY_RATE2    (1.0f - 3E-6f)
 // Number of cycles the peak stays on hold before fall-off.
-#define HQ_METER_PEAK_FALLOFF    16
+#define DIGITAL_METER_PEAK_FALLOFF    16
 
 DigitalMeterValue::DigitalMeterValue (DigitalMeter* parent)
   : meter (parent),
     value (0.0f),
     valueHold (0),
-    valueDecay (HQ_METER_DECAY_RATE1),
+    valueDecay (DIGITAL_METER_DECAY_RATE1),
     peak (0),
     peakHold (0),
-    peakDecay (HQ_METER_DECAY_RATE2),
+    peakDecay (DIGITAL_METER_DECAY_RATE2),
     peakColor (DigitalMeter::Color6dB)
 { }
 
@@ -100,20 +82,20 @@ void DigitalMeterValue::paint (Graphics& g)
         g.fillRect (0, 0, w, h);
     }
 
-    float dB = HQ_METER_MINDB;
+    float dB = DIGITAL_METER_MIN_DB;
     if (value > 0.0f)
         dB = 20.0f * log10f (value);
 
-    if (dB < HQ_METER_MINDB)
-        dB = HQ_METER_MINDB;
-    else if (dB > HQ_METER_MAXDB)
-        dB = HQ_METER_MAXDB;
+    if (dB < DIGITAL_METER_MIN_DB)
+        dB = DIGITAL_METER_MIN_DB;
+    else if (dB > DIGITAL_METER_MAX_DB)
+        dB = DIGITAL_METER_MAX_DB;
 
     level = meter->getIECScale (dB);
     if (valueHold < level)
     {
         valueHold = level;
-        valueDecay = HQ_METER_DECAY_RATE1;
+        valueDecay = DIGITAL_METER_DECAY_RATE1;
     }
     else
     {
@@ -172,7 +154,7 @@ void DigitalMeterValue::paint (Graphics& g)
     {
         peak = level;
         peakHold = 0;
-        peakDecay = HQ_METER_DECAY_RATE2;
+        peakDecay = DIGITAL_METER_DECAY_RATE2;
         peakColor = colorLevel;
     }
     else if (++peakHold > meter->getPeakFalloff())
@@ -201,7 +183,7 @@ DigitalMeter::DigitalMeter (const int numPorts, bool _horizontal)
   : portCount (numPorts), // FIXME: Default port count.
     values (0),
     scale (0.0f),
-    peakFalloff (HQ_METER_PEAK_FALLOFF),
+    peakFalloff (DIGITAL_METER_PEAK_FALLOFF),
     horizontal (_horizontal)
 {
     getLookAndFeel().setColour (DigitalMeter::levelOverColourId, Colours::yellow.darker());
@@ -234,8 +216,6 @@ DigitalMeter::DigitalMeter (const int numPorts, bool _horizontal)
     }
 }
 
-
-// Default destructor.
 DigitalMeter::~DigitalMeter()
 {
     for (int port = 0; port < portCount; port++)
@@ -273,8 +253,6 @@ void DigitalMeter::paint (Graphics&)
 */
 }
 
-
-// Child widget accessors.
 int DigitalMeter::getIECScale (const float dB) const
 {
     float defaultScale = 1.0;
@@ -306,16 +284,16 @@ int DigitalMeter::getPortCount () const { return portCount; }
 void DigitalMeter::setPeakFalloff (const int newPeakFalloff) { peakFalloff = newPeakFalloff; }
 int DigitalMeter::getPeakFalloff() const { return peakFalloff; }
 
-void DigitalMeter::resetPeaks ()
+void DigitalMeter::resetPeaks()
 {
     for (int iPort = 0; iPort < portCount; iPort++)
         values[iPort]->resetPeak();
 }
 
-void DigitalMeter::refresh ()
+void DigitalMeter::refresh()
 {
-    for (int iPort = 0; iPort < portCount; iPort++)
-        values[iPort]->refresh();
+    for (int port = 0; port < portCount; ++port)
+        values[port]->refresh();
 }
 
 void DigitalMeter::setValue (const int port, const float value)
@@ -328,5 +306,3 @@ const Colour& DigitalMeter::color (const int index) const
 {
     return index < ColorCount ? colors[index] : Colours::greenyellow;
 }
-
-

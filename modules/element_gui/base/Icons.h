@@ -1,34 +1,28 @@
 /*
-  ==============================================================================
+    Icons.h - This file is part of Element
+    Copyright (C) 2015  Michael Fisher <mfisher31@gmail.com>
 
-   This file is part of the JUCE library.
-   Copyright (c) 2013 - Raw Material Software Ltd.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-   Permission is granted to use this software under the terms of either:
-   a) the GPL v2 (or any later version)
-   b) the Affero GPL v3
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-   Details of these licenses can be found at: www.gnu.org/licenses
-
-   JUCE is distributed in the hope that it will be useful, but WITHOUT ANY
-   WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-   A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-
-   ------------------------------------------------------------------------------
-
-   To release a closed-source product which uses JUCE, commercial licenses are
-   available: visit www.juce.com for more information.
-
-  ==============================================================================
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef __JUCER_ICONS_JUCEHEADER__
-#define __JUCER_ICONS_JUCEHEADER__
-
+#ifndef ELEMENT_ICONS_H
+#define ELEMENT_ICONS_H
 
 struct Icon
 {
-    Icon() : path (nullptr) {}
+    Icon() : path (nullptr) { }
     Icon (const Path& p, const Colour& c)  : path (&p), colour (c) {}
     Icon (const Path* p, const Colour& c)  : path (p),  colour (c) {}
 
@@ -78,4 +72,4 @@ private:
 const Icons& getIcons();
 
 
-#endif   // __JUCER_ICONS_JUCEHEADER__
+#endif   // ELEMENT_ICONS_H

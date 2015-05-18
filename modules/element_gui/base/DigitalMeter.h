@@ -33,10 +33,6 @@
 #ifndef ELEMENT_HIGH_QUALITY_METER_H
 #define ELEMENT_HIGH_QUALITY_METER_H
 
-#if EL_COMPLETION
-#include "JuceHeader.h"
-#endif
-
 class DigitalMeter;
 class DigitalMeterValue;
 
