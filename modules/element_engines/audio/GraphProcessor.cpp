@@ -1180,7 +1180,14 @@ void GraphProcessor::AudioGraphIOProcessor::fillInPluginDescription (PluginDescr
     d.manufacturerName = "Element";
     d.version = "1.0";
     d.isInstrument = false;
-
+    
+    switch (this->type) {
+        case audioInputNode:  d.fileOrIdentifier = "audio.input"; break;
+        case audioOutputNode: d.fileOrIdentifier = "audio.output"; break;
+        case midiInputNode:   d.fileOrIdentifier = "midi.input"; break;
+        case midiOutputNode:  d.fileOrIdentifier = "midi.output"; break;
+    }
+    
     d.numInputChannels = getNumInputChannels();
     if (type == audioOutputNode && graph != nullptr)
         d.numInputChannels = graph->getNumInputChannels();
