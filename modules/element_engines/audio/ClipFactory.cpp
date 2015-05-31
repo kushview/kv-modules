@@ -144,13 +144,13 @@ ClipFactory::~ClipFactory()
 }
 
 
-ClipSource*
-ClipFactory::createSource (const ClipModel& model)
+ClipSource* ClipFactory::createSource (const ClipModel& model)
 {
     ClipType* type = nullptr;
-    for (ClipType* t : impl->types)
-        if (t->canCreateFrom (model))
-            { type = t; break; }
+	for (int i = 0; i < impl->types.size(); ++i)
+		if (ClipType* t = impl->types.getUnchecked(i))
+			if (t->canCreateFrom (model))
+				{ type = t; break; }
 
     ClipSource* source = type != nullptr ? type->createSource (impl->engine, model)
                                          : nullptr;

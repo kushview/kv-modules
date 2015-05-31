@@ -21,6 +21,10 @@
 #ifndef ELEMENT_TIMESCALE_H
 #define ELEMENT_TIMESCALE_H
 
+#if _MSC_VER
+ #pragma warning( disable : 4355 )
+#endif
+
 #define beatToFrame (beat, bpm, rate)
 
 /** Time scaling helper class */

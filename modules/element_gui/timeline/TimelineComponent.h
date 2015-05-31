@@ -291,9 +291,9 @@ protected:
     template<class ClipType>
     inline ClipType* findFreeClip()
     {
-        for (auto* c : freeClips)
+        for (int i = 0; i < freeClips.size(); ++i)
         {
-            if (ClipType* clip = dynamic_cast<ClipType*> (c))
+            if (ClipType* clip = dynamic_cast<ClipType*> (freeClips.getUnchecked(i)))
             {
                 freeClips.removeObject (clip, false);
                 clips.add (clip);

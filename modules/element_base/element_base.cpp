@@ -26,6 +26,7 @@
  #error "Incorrect use of JUCE cpp file"
 #endif
 
+#include <map>
 #include "AppConfig.h"
 #include "element_base.h"
 

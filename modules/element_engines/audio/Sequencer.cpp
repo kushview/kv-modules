@@ -43,17 +43,15 @@ Sequencer::~Sequencer()
     state = ValueTree::invalid;
 }
 
-bool
-Sequencer::tracksArePresent() const
+bool Sequencer::tracksArePresent() const
 {
-    for (SequencerTrack* t : trackRefs)
-        if (t == nullptr)
-            return false;
+	for (int i = 0; i < trackRefs.size(); ++i)
+		if (nullptr == trackRefs.getUnchecked(i))
+			return false;
     return true;
 }
 
-bool
-Sequencer::addTrack (const TrackModel &t)
+bool Sequencer::addTrack (const TrackModel &t)
 {
     NodePtr node = createTrackFor (t);
     return node != nullptr;

@@ -314,6 +314,7 @@ private:
     typedef ArcTable<Connection> LookupTable;
     ReferenceCountedArray<GraphNode> nodes;
     OwnedArray<Connection> connections;
+    uint32 ioNodes [AudioGraphIOProcessor::numDeviceTypes];
 
     struct GraphState {
         ValueTree graph;

@@ -26,11 +26,14 @@
  #pragma warning( disable : 4305 )
  #pragma warning( disable : 4512 )
  #pragma warning( disable : 4996 )
+ #if _MSC_VER >= 1800
+  #include <atomic>
+ #endif
+#else
+ #include <atomic>
 #endif
 
-#include <atomic>
 #include <set>
-
 #include <boost/bind.hpp>
 #include <boost/intrusive/list.hpp>
 #include <boost/intrusive/slist_hook.hpp>
@@ -42,6 +45,10 @@
  #endif
  #ifdef max
   #undef max
+ #endif
+
+ #if _MSC_VER < 1800
+  #define llrint(x) juce::roundDoubleToInt(x)
  #endif
 #endif
 

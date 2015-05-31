@@ -135,8 +135,9 @@ TimelineComponent::recycleClip (TimelineClip* clip)
 void
 TimelineComponent::handleAsyncUpdate()
 {
-    for (TimelineClip* clip : clips)
+    for (int i = 0; i < clips.size(); ++i)
     {
+		TimelineClip* const clip = clips.getUnchecked(i);
         if (clip->isShowing()) {
             updateClip (clip);
 
@@ -326,9 +327,10 @@ double TimelineComponent::getMajorTickSize()
 
 TimelineClip* TimelineComponent::getFirstClipOnTrack (int track) const
 {
-   for (TimelineClip* c : clips) {
-       if (c && c->trackIndex() == track)
-           return c;
+	for (int i = 0; i < clips.size(); ++i) {
+		if (TimelineClip* c = clips.getUnchecked(i))
+	       if (c->trackIndex() == track)
+		       return c;
    }
    return nullptr;
 }

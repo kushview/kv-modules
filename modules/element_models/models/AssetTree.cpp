@@ -336,8 +336,8 @@ AssetTree::addGroup (const String& name)
 void
 AssetTree::addGroups (const StringArray& groups, Array<Item>& result)
 {
-    for (const String& g : groups)
-        result.add (addGroup (g));
+	for (int i = 0; i < groups.size(); ++i)
+        result.add (addGroup (groups [i]));
 }
 
 void

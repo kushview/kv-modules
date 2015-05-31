@@ -21,6 +21,8 @@
 #include "modules/element_gui/element_gui.h"
 #endif
 
+typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
+
     NoteSelection::NoteSelection() { }
     NoteSelection::~NoteSelection() { }
 
@@ -58,6 +60,8 @@
         insertChannel = 1;
         insertLength = 0.49f;
         insertVelocity = 0.8f;
+
+		trackDrag = keyboardDrag = false;
     }
 
     MidiEditorBody::~MidiEditorBody()
@@ -103,14 +107,16 @@
             sequence->removeNote (n->note());
     }
 
-    void
-    MidiEditorBody::clipMoved (TimelineClip* clip, const MouseEvent&, double deltaStart, double deltaEnd)
+    void MidiEditorBody::clipMoved (TimelineClip* clip, const MouseEvent&, double deltaStart, double deltaEnd)
     {
         if (clip->isSelected())
         {
             Range<double> time;
-            for (NoteClipItem* note : selected.getItemArray())
+			
+			const SelectedNotes& items (selected.getItemArray());
+			for (int i = 0; i < items.size(); ++i)
             {
+				NoteClipItem* note = items.getUnchecked(i);
                 if (note == clip)
                     continue;
 
@@ -136,8 +142,10 @@
         if (! clip->isSelected())
             return;
 
-        for (NoteClipItem* note : selected.getItemArray())
-        {
+		const SelectedNotes& notes (selected.getItemArray());
+		for (int i = 0; i < notes.size(); ++i)
+		{
+			NoteClipItem* note = notes.getUnchecked (i);
             if (note == clip) {
                  continue;
             }
@@ -151,8 +159,9 @@
     void
     MidiEditorBody::findLassoItemsInArea (Array <NoteClipItem*>& itemsFound, const Rectangle<int>& area)
     {
-        for (NoteClipItem* note : notes)
+		for (int i = 0; i < notes.size(); ++i)
         {
+			NoteClipItem* note = notes.getUnchecked(i);
             if (area.intersects (note->getBounds())) {
                 itemsFound.add (note);
                 selected.addToSelection (note);
@@ -237,8 +246,9 @@
 
     void MidiEditorBody::onNoteRemoved (const Note& note)
     {
-        for (NoteClipItem* clip : notes)
-        {
+		for (int i = 0; i < notes.size(); ++i)
+		{
+			NoteClipItem* const clip = notes.getUnchecked (i);
             if (clip->note() == note)
             {
                 notes.removeFirstMatchingValue (clip);
@@ -336,7 +346,9 @@
     void
     MidiEditorBody::selectNotesOnKey (int key, bool deselectOthers)
     {
-        for (NoteClipItem* n : notes) {
+        for (int i = 0; i < notes.size(); ++i)
+		{
+			NoteClipItem* const n = notes.getUnchecked (i);
             if (n->keyId() == key && n->channel() == insertChannel)
                 selected.addToSelection (n);
             else if (deselectOthers)
@@ -350,7 +362,9 @@
         if (chan == 0)
         {
             midiChannels.setRange (1, 16, true);
-            for (NoteClipItem* c : notes) {
+            for (int i = 0; i < notes.size(); ++i)
+			{
+				NoteClipItem* const c = notes.getUnchecked (i);
                 c->setVisible (true);
                 updateClip (c);
             }
@@ -360,8 +374,9 @@
         midiChannels.setBit (clampNoMoreThan (chan, 1, 16), true);
         insertChannel = updateInsertChannel ? chan : insertChannel;
 
-        for (NoteClipItem* c : notes)
+        for (int i = 0; i < notes.size(); ++i)
         {
+			NoteClipItem* const c = notes.getUnchecked (i);
             if (c->channel() == chan) {
                 c->setVisible (true);
                 updateClip (c);

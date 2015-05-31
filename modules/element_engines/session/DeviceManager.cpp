@@ -87,8 +87,9 @@ void DeviceManager::createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list
 
 void DeviceManager::getAudioDrivers (StringArray& drivers)
 {
-    for (auto* d : getAvailableDeviceTypes())
-        drivers.add (d->getTypeName());
+	const OwnedArray<AudioIODeviceType>& types (getAvailableDeviceTypes());
+	for (int i = 0; i < types.size(); ++i)
+		drivers.add (types.getUnchecked(i)->getTypeName());
 }
 
 void DeviceManager::selectAudioDriver (const String& name)

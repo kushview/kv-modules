@@ -689,6 +689,9 @@ GraphProcessor::GraphProcessor()
     graphState.graph = ValueTree ("graph");
     graphState.arcs  = ValueTree ("arcs");
     graphState.graph.addChild (graphState.arcs, -1, 0);
+
+    for (int i = 0; i < AudioGraphIOProcessor::numDeviceTypes; ++i)
+        ioNodes[i] = ELEMENT_INVALID_PORT;
 }
 
 GraphProcessor::~GraphProcessor()
@@ -782,7 +785,6 @@ bool GraphProcessor::removeNode (const uint32 nodeId)
     return false;
 }
 
-//==============================================================================
 const GraphProcessor::Connection*
 GraphProcessor::getConnectionBetween (const uint32 sourceNode,
                                       const uint32 sourcePort,
@@ -955,7 +957,6 @@ bool GraphProcessor::removeIllegalConnections()
     return doneAnything;
 }
 
-//==============================================================================
 static void deleteRenderOpArray (Array<void*>& ops)
 {
     for (int i = ops.size(); --i >= 0;)
@@ -1062,6 +1063,16 @@ void GraphProcessor::prepareToPlay (double /*sampleRate*/, int estimatedSamplesP
     currentMidiInputBuffer = nullptr;
     currentMidiOutputBuffer.clear();
     clearRenderingSequence();
+
+    for (int i = 0; i < AudioGraphIOProcessor::numDeviceTypes; ++i) {
+        if (ioNodes[i] != ELEMENT_INVALID_PORT)
+            removeNode (ioNodes[i]);
+        if (GraphNode* n = this->addNode (new AudioGraphIOProcessor ((AudioGraphIOProcessor::IODeviceType) i)))
+            ioNodes[i] = n->nodeId;
+        else
+            ioNodes[i] = ELEMENT_INVALID_PORT;
+    }
+
     buildRenderingSequence();
 }
 
