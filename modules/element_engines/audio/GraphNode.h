@@ -37,12 +37,12 @@ public:
     bool isSubgraph() const noexcept;
 
     void setGain (const float g) {
-        gain.set (g);
+        //gain.set (g);
     }
 
-    float getGain() const { return gain.get(); }
-    float getLastGain() const {return lastGain.get(); }
-    void updateGain() { lastGain.set (gain.get()); }
+    float getGain() const { return 1.0; } //return gain.get(); }
+    float getLastGain() const { return 1.0; } //return lastGain.get(); }
+    void updateGain() { } // lastGain.set (gain.get()); }
 
     ValueTree getMetadata() const { return metadata; }
     void setMetadata (const ValueTree& meta, bool copy = false)

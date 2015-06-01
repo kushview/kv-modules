@@ -73,6 +73,8 @@ void GraphNode::unprepare()
     if (isPrepared)
     {
         isPrepared = false;
+        inRMS.clear(true);
+        outRMS.clear(true);
         proc->releaseResources();
         parent = nullptr;
     }

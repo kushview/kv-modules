@@ -73,7 +73,6 @@ private:
 };
 
 
-//==============================================================================
 class AddChannelOp : public Task
 {
 public:
@@ -94,7 +93,6 @@ private:
 };
 
 
-//==============================================================================
 class ClearMidiBufferOp : public Task
 {
 public:
@@ -325,12 +323,24 @@ private:
         return maxLatency;
     }
 
-    //==============================================================================
     void createRenderingOpsForNode (GraphNode* const node,
                                     Array<void*>& renderingOps,
                                     const int ourRenderingIndex)
     {
         Processor* proc (node->getProcessor());
+
+        // don't add IONodes that cannot process
+        typedef GraphProcessor::AudioGraphIOProcessor IOProc;
+        if (IOProc* ioproc = dynamic_cast<IOProc*> (proc))
+        {
+            const uint32 numOuts = proc->getNumPorts (PortType::Audio, false);
+            if (IOProc::audioInputNode == ioproc->getType() && numOuts <= 0)
+                return;
+            const uint32 numIns = proc->getNumPorts (PortType::Audio, true);
+            if (IOProc::audioOutputNode == ioproc->getType() && numIns <= 0)
+                return;
+        }
+
         Array <int> channelsToUse [PortType::Unknown];
         int maxLatency = getInputLatency (node->nodeId);
 
@@ -724,7 +734,6 @@ GraphNode* GraphProcessor::getNodeForId (const uint32 nodeId) const
 
 GraphNode* GraphProcessor::addNode (Processor* const newProcessor, uint32 nodeId)
 {
-    
     if (newProcessor == nullptr || (void*)newProcessor == (void*)this)
     {
         jassertfalse;
@@ -1056,7 +1065,7 @@ void GraphProcessor::handleAsyncUpdate()
     buildRenderingSequence();
 }
 
-void GraphProcessor::prepareToPlay (double /*sampleRate*/, int estimatedSamplesPerBlock)
+void GraphProcessor::prepareToPlay (double sampleRate, int estimatedSamplesPerBlock)
 {
     currentAudioInputBuffer = nullptr;
     currentAudioOutputBuffer.setSize (jmax (1, getNumOutputChannels()), estimatedSamplesPerBlock);
@@ -1064,14 +1073,8 @@ void GraphProcessor::prepareToPlay (double /*sampleRate*/, int estimatedSamplesP
     currentMidiOutputBuffer.clear();
     clearRenderingSequence();
 
-    for (int i = 0; i < AudioGraphIOProcessor::numDeviceTypes; ++i) {
-        if (ioNodes[i] != ELEMENT_INVALID_PORT)
-            removeNode (ioNodes[i]);
-        if (GraphNode* n = this->addNode (new AudioGraphIOProcessor ((AudioGraphIOProcessor::IODeviceType) i)))
-            ioNodes[i] = n->nodeId;
-        else
-            ioNodes[i] = ELEMENT_INVALID_PORT;
-    }
+    for (int i = 0; i < nodes.size(); ++i)
+        nodes.getUnchecked(i)->prepare(sampleRate, estimatedSamplesPerBlock, this);
 
     buildRenderingSequence();
 }
@@ -1226,6 +1229,7 @@ void GraphProcessor::AudioGraphIOProcessor::processBlock (AudioSampleBuffer& buf
     {
         case audioOutputNode:
         {
+
             for (int i = jmin (graph->currentAudioOutputBuffer.getNumChannels(),
                                buffer.getNumChannels()); --i >= 0;)
             {
@@ -1237,6 +1241,7 @@ void GraphProcessor::AudioGraphIOProcessor::processBlock (AudioSampleBuffer& buf
 
         case audioInputNode:
         {
+
             for (int i = jmin (graph->currentAudioInputBuffer->getNumChannels(),
                                buffer.getNumChannels()); --i >= 0;)
             {
