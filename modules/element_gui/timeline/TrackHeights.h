@@ -43,8 +43,8 @@ public:
     add (int h = Normal)
     {
         mHeights.push_back (h);
-        enablement.setBit (size() - 1);
-        return size() - 1;
+        enablement.setBit (static_cast<int> (size()) - 1);
+        return static_cast<int> (size()) - 1;
     }
 
     inline int
@@ -68,7 +68,7 @@ public:
         return (size_t)track_index < size() ? mHeights.at (track_index) : -1;
     }
 
-    size_t  size()   const { return mHeights.size(); }
+    int     size()   const { return static_cast<int> (mHeights.size()); }
     bool    empty()  const { return mHeights.size() == 0; }
 
     int spacing() const { return mSpacing; }
@@ -195,7 +195,7 @@ public:
 
     inline void setEnablement (const BigInteger& e)
     {
-        enablement.setRange (0, mHeights.size(), false);
+        enablement.setRange (0, this->size(), false);
         enablement |= e;
     }
 
