@@ -57,8 +57,7 @@ GraphController::getNodeForId (const uint32 uid) const noexcept
     return processor.getNodeForId (uid);
 }
 
-uint32
-GraphController::addFilter (const PluginDescription* desc, double x, double y)
+uint32 GraphController::addFilter (const PluginDescription* desc, double x, double y)
 {
     uint32 nodeId = GraphController::invalidNodeId;
 
