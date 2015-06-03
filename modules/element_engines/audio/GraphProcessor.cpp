@@ -1195,7 +1195,7 @@ void GraphProcessor::AudioGraphIOProcessor::fillInPluginDescription (PluginDescr
     d.version = "1.0";
     d.isInstrument = false;
     
-    switch (this->type) {
+    switch (static_cast<int> (this->type)) {
         case audioInputNode:  d.fileOrIdentifier = "audio.input"; break;
         case audioOutputNode: d.fileOrIdentifier = "audio.output"; break;
         case midiInputNode:   d.fileOrIdentifier = "midi.input"; break;

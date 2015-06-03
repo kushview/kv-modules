@@ -85,8 +85,7 @@ public:
     }
 
 private:
-
-    enum class State
+    enum State
     {
         ReadWrite,
         ReadLock,
