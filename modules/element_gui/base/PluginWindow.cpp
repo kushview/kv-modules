@@ -72,10 +72,10 @@ PluginWindow::PluginWindow (Component* const ui, GraphNode* node)
     setContentOwned (ui, true);
 #endif
     setUsingNativeTitleBar (true);
-    setTopLeftPosition (owner->properties.getWithDefault ("uiLastX", Random::getSystemRandom().nextInt (500)),
-                        owner->properties.getWithDefault ("uiLastY", Random::getSystemRandom().nextInt (500)));
+    setTopLeftPosition (owner->properties.getWithDefault ("windowLastX", Random::getSystemRandom().nextInt (500)),
+                        owner->properties.getWithDefault ("windowLastY", Random::getSystemRandom().nextInt (500)));
     setVisible (true);
-    setResizable(true, false);
+    setResizable (false, false);
     activePluginWindows.add (this);
 }
 
@@ -147,8 +147,8 @@ PluginWindow::~PluginWindow()
 
 void PluginWindow::moved()
 {
-    owner->properties.set ("uiLastX", getX());
-    owner->properties.set ("uiLastY", getY());
+    owner->properties.set ("windowLastX", getX());
+    owner->properties.set ("windowLastY", getY());
 }
 
 void PluginWindow::closeButtonPressed()
