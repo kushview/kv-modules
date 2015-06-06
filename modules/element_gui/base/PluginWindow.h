@@ -6,8 +6,10 @@ class PluginWindow  : public DocumentWindow
 {
 public:
     static PluginWindow* getWindowFor (GraphNode* node);
+    static PluginWindow* createWindowFor (GraphNode* node);
     static PluginWindow* createWindowFor (GraphNode* node, Component* editor);
     
+    static void closeCurrentlyOpenWindowsFor (GraphNode* const node);
     static void closeCurrentlyOpenWindowsFor (const uint32 nodeId);
     static void closeAllCurrentlyOpenWindows();
 

@@ -71,12 +71,18 @@ PluginWindow::PluginWindow (Component* const ui, GraphNode* node)
 #else
     setContentOwned (ui, true);
 #endif
-    
+    setUsingNativeTitleBar (true);
     setTopLeftPosition (owner->properties.getWithDefault ("uiLastX", Random::getSystemRandom().nextInt (500)),
                         owner->properties.getWithDefault ("uiLastY", Random::getSystemRandom().nextInt (500)));
     setVisible (true);
     setResizable(true, false);
     activePluginWindows.add (this);
+}
+
+void PluginWindow::closeCurrentlyOpenWindowsFor (GraphNode* const node)
+{
+    if (node)
+        closeCurrentlyOpenWindowsFor (node->nodeId);
 }
 
 void PluginWindow::closeCurrentlyOpenWindowsFor (const uint32 nodeId)
@@ -118,6 +124,14 @@ PluginWindow* PluginWindow::getWindowFor (GraphNode* node)
             return activePluginWindows.getUnchecked(i);
 
     return nullptr;
+}
+
+PluginWindow* PluginWindow::createWindowFor (GraphNode* node)
+{
+    AudioPluginInstance* plug (node->getAudioPluginInstance());
+    if (! plug->hasEditor())
+        return nullptr;
+    return new PluginWindow (plug->createEditorIfNeeded(), node);
 }
 
 PluginWindow* PluginWindow::createWindowFor (GraphNode* node, Component* ed)
