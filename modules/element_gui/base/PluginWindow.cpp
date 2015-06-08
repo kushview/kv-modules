@@ -71,7 +71,7 @@ PluginWindow::PluginWindow (Component* const ui, GraphNode* node)
 #else
     setContentOwned (ui, true);
 #endif
-    setUsingNativeTitleBar (true);
+    setUsingNativeTitleBar (false);
     setTopLeftPosition (owner->properties.getWithDefault ("windowLastX", Random::getSystemRandom().nextInt (500)),
                         owner->properties.getWithDefault ("windowLastY", Random::getSystemRandom().nextInt (500)));
     setVisible (true);
@@ -89,7 +89,7 @@ void PluginWindow::closeCurrentlyOpenWindowsFor (const uint32 nodeId)
 {
     for (int i = activePluginWindows.size(); --i >= 0;)
         if (activePluginWindows.getUnchecked(i)->owner->nodeId == nodeId)
-            delete activePluginWindows.getUnchecked(i);
+            { delete activePluginWindows.getUnchecked(i); break; }
 }
 
 void PluginWindow::closeAllCurrentlyOpenWindows()
@@ -141,8 +141,8 @@ PluginWindow* PluginWindow::createWindowFor (GraphNode* node, Component* ed)
 
 PluginWindow::~PluginWindow()
 {
-    activePluginWindows.removeFirstMatchingValue (this);
     clearContentComponent();
+    activePluginWindows.removeFirstMatchingValue (this);
 }
 
 void PluginWindow::moved()
