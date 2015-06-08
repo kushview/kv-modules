@@ -31,6 +31,16 @@ void GraphNode::setOutputRMS (int chan, float val)
     }
 }
 
+uint32 GraphNode::getMidiInputPort() const
+{
+    return proc->getNthPort (PortType::Atom, 0, true, false);
+}
+
+uint32 GraphNode::getMidiOutputPort() const
+{
+    return proc->getNthPort (PortType::Atom, 0, false, false);
+}
+
 bool GraphNode::isSubgraph() const noexcept
 {
     return (dynamic_cast<GraphProcessor*> (proc.get()) != nullptr);

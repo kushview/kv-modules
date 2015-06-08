@@ -18,6 +18,9 @@ public:
 
     AudioPluginInstance* getAudioPluginInstance() const;
 
+    uint32 getMidiInputPort() const;
+    uint32 getMidiOutputPort() const;
+    
     /** The actual processor object dynamic_cast'd to ProcType */
     template<class ProcType>
     inline ProcType* processor() const
