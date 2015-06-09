@@ -75,8 +75,15 @@ PluginWindow::PluginWindow (Component* const ui, GraphNode* node)
     setTopLeftPosition (owner->properties.getWithDefault ("windowLastX", Random::getSystemRandom().nextInt (500)),
                         owner->properties.getWithDefault ("windowLastY", Random::getSystemRandom().nextInt (500)));
     setVisible (true);
+    owner->properties.set ("windowVisible", true);
     setResizable (false, false);
     activePluginWindows.add (this);
+}
+
+PluginWindow::~PluginWindow()
+{
+    clearContentComponent();
+    activePluginWindows.removeFirstMatchingValue (this);
 }
 
 void PluginWindow::closeCurrentlyOpenWindowsFor (GraphNode* const node)
@@ -139,11 +146,7 @@ PluginWindow* PluginWindow::createWindowFor (GraphNode* node, Component* ed)
     return new PluginWindow (ed, node);
 }
 
-PluginWindow::~PluginWindow()
-{
-    clearContentComponent();
-    activePluginWindows.removeFirstMatchingValue (this);
-}
+
 
 void PluginWindow::moved()
 {
@@ -153,5 +156,8 @@ void PluginWindow::moved()
 
 void PluginWindow::closeButtonPressed()
 {
+    if (owner) {
+        owner->properties.set ("windowVisible", false);
+    }
     delete this;
 }
