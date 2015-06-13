@@ -66,18 +66,15 @@ PluginWindow::PluginWindow (Component* const ui, GraphNode* node)
                       DocumentWindow::minimiseButton | DocumentWindow::closeButton),
       owner (node)
 {
-#if 0
-    setContentOwned (new PluginWindowContent (ui), true);
-#else
-    setContentOwned (ui, true);
-#endif
     setUsingNativeTitleBar (false);
     setTopLeftPosition (owner->properties.getWithDefault ("windowLastX", Random::getSystemRandom().nextInt (500)),
                         owner->properties.getWithDefault ("windowLastY", Random::getSystemRandom().nextInt (500)));
-    setVisible (true);
+    
     owner->properties.set ("windowVisible", true);
     setResizable (false, false);
+    setContentOwned (ui, true);
     activePluginWindows.add (this);
+    setVisible (true);
 }
 
 PluginWindow::~PluginWindow()
@@ -145,8 +142,6 @@ PluginWindow* PluginWindow::createWindowFor (GraphNode* node, Component* ed)
 {
     return new PluginWindow (ed, node);
 }
-
-
 
 void PluginWindow::moved()
 {
