@@ -5,6 +5,12 @@
 class PluginWindow  : public DocumentWindow
 {
 public:
+    struct Settings
+    {
+        Colour backgroundColor;
+        int titleBarHeight;
+    };
+    
     static PluginWindow* getWindowFor (GraphNode* node);
     static PluginWindow* createWindowFor (GraphNode* node);
     static PluginWindow* createWindowFor (GraphNode* node, Component* editor);

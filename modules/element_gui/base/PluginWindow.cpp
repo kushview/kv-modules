@@ -63,18 +63,16 @@ private:
 
 PluginWindow::PluginWindow (Component* const ui, GraphNode* node)
     : DocumentWindow (ui->getName(), Colours::lightgrey,
-                      DocumentWindow::minimiseButton | DocumentWindow::closeButton),
+                      DocumentWindow::minimiseButton | DocumentWindow::closeButton, true),
       owner (node)
 {
-    setUsingNativeTitleBar (false);
+    setSize (400, 300);
+    setContentOwned (ui, true);
     setTopLeftPosition (owner->properties.getWithDefault ("windowLastX", Random::getSystemRandom().nextInt (500)),
                         owner->properties.getWithDefault ("windowLastY", Random::getSystemRandom().nextInt (500)));
-    
     owner->properties.set ("windowVisible", true);
-    setResizable (false, false);
-    setContentOwned (ui, true);
-    activePluginWindows.add (this);
     setVisible (true);
+    activePluginWindows.add (this);
 }
 
 PluginWindow::~PluginWindow()
@@ -135,7 +133,9 @@ PluginWindow* PluginWindow::createWindowFor (GraphNode* node)
     AudioPluginInstance* plug (node->getAudioPluginInstance());
     if (! plug->hasEditor())
         return nullptr;
-    return new PluginWindow (plug->createEditorIfNeeded(), node);
+    
+    AudioProcessorEditor* editor = plug->createEditorIfNeeded();
+    return (editor != nullptr) ? new PluginWindow (editor, node) : nullptr;
 }
 
 PluginWindow* PluginWindow::createWindowFor (GraphNode* node, Component* ed)
