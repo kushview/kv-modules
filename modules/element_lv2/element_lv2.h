@@ -30,13 +30,10 @@
 #endif
 
 #if ELEMENT_LV2_PLUGIN_HOST
+ #include <lilv/lilv.h>
+ #include <suil/suil.h>
+#endif
 
-#include "../element_engines/element_engines.h"
-#include "modules/juce_audio_formats/juce_audio_formats.h"
-#include "modules/juce_audio_processors/juce_audio_processors.h"
-
-#include <lilv/lilv.h>
-#include <suil/suil.h>
 #include <lv2/lv2plug.in/ns/lv2core/lv2.h>
 #include <lv2/lv2plug.in/ns/extensions/ui/ui.h>
 #include <lv2/lv2plug.in/ns/ext/atom/atom.h>
@@ -48,23 +45,27 @@
 #include <lv2/lv2plug.in/ns/ext/uri-map/uri-map.h>
 #include <lv2/lv2plug.in/ns/ext/worker/worker.h>
 
+#include "../element_engines/element_engines.h"
+#include "modules/juce_audio_formats/juce_audio_formats.h"
+#include "modules/juce_audio_processors/juce_audio_processors.h"
+
 namespace Element {
-#include "common/URIs.h"
-#include "common/PortBuffer.h"
-#include "common/PortWriter.h"
+ #include "common/URIs.h"
+ #include "common/PortBuffer.h"
+ #include "common/PortWriter.h"
+ #include "features/LV2Features.h"
+ #include "features/LV2Log.h"
+ #include "features/LV2Worker.h"
+ #include "features/SymbolMap.h"
 
-#include "features/LV2Features.h"
-#include "features/LV2Log.h"
-#include "features/LV2Worker.h"
-#include "features/SymbolMap.h"
-
-#include "host/LV2World.h"
-#include "host/LV2Module.h"
-#include "host/LV2Parameter.h"
-#include "host/LV2PluginFormat.h"
-#include "host/LV2PluginModel.h"
-//#include "host/PortProcessor.h"
+#if ELEMENT_LV2_PLUGIN_HOST
+ #include "host/LV2World.h"
+ #include "host/LV2Module.h"
+ #include "host/LV2Parameter.h"
+ #include "host/LV2PluginFormat.h"
+ #include "host/LV2PluginModel.h"
+ //#include "host/PortProcessor.h"
+#endif
 }
 
-#endif // ELEMENT_LV2_PLUGIN_HOST
 #endif // ELEMENT_LV2_H_INCLUDED

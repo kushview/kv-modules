@@ -47,13 +47,12 @@ public:
         return static_cast<int> (size()) - 1;
     }
 
-    inline int
-    set (int t, int h = Normal)
+    inline int set (int t, int h = Normal)
     {
         if (h < 0)
             h = -1;
 
-        while (size() < (size_t)t + 1)
+        while (size() < t + 1)
             add();
 
         mHeights[t] = h;
@@ -62,10 +61,9 @@ public:
         return h;
     }
 
-    inline int
-    get (int track_index) const
+    inline int get (int track_index) const
     {
-        return (size_t)track_index < size() ? mHeights.at (track_index) : -1;
+        return track_index < size() ? mHeights.at (track_index) : -1;
     }
 
     int     size()   const { return static_cast<int> (mHeights.size()); }

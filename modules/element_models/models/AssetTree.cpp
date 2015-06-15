@@ -82,8 +82,7 @@ AssetTree::Item::addFile (const File& file, int insertIndex, const bool shouldCo
     return true;
 }
 
-File
-AssetTree::Item::determineGroupFolder() const
+File AssetTree::Item::determineGroupFolder() const
 {
     jassert (isGroup());
     File f;
@@ -116,14 +115,12 @@ AssetTree::Item::determineGroupFolder() const
 }
 
 
-AssetTree::Item
-AssetTree::Item::getParent() const
+AssetTree::Item AssetTree::Item::getParent() const
 {
     return Item (tree, data.getParent());
 }
 
-void
-AssetTree::Item::addFileUnchecked (const File& file, int insertIndex, const bool shouldCompile)
+void AssetTree::Item::addFileUnchecked (const File& file, int insertIndex, const bool shouldCompile)
 {
     Item item (tree, ValueTree (Slugs::file));
     item.setMissingProperties();
@@ -136,8 +133,7 @@ AssetTree::Item::addFileUnchecked (const File& file, int insertIndex, const bool
     }
 }
 
-AssetTree::Item
-AssetTree::Item::addNewSubGroup (const String& name, int insertIndex)
+AssetTree::Item AssetTree::Item::addNewSubGroup (const String& name, int insertIndex)
 {
     String newID (Utility::createGUID (getId() + name + String (getNumChildren())));
     
@@ -152,8 +148,7 @@ AssetTree::Item::addNewSubGroup (const String& name, int insertIndex)
     return group;
 }
 
-bool
-AssetTree::Item::canContain (const Item& child) const
+bool AssetTree::Item::canContain (const Item& child) const
 {
     if (isFile())
         return false;
@@ -165,8 +160,7 @@ AssetTree::Item::canContain (const Item& child) const
     return false;
 }
 
-AssetTree::Item
-AssetTree::Item::createGroup (AssetTree& tree, const String& name, const String& uid)
+AssetTree::Item AssetTree::Item::createGroup (AssetTree& tree, const String& name, const String& uid)
 {
     Item group (tree, ValueTree (Slugs::group));
     group.setId (uid);
@@ -175,8 +169,7 @@ AssetTree::Item::createGroup (AssetTree& tree, const String& name, const String&
     return group;
 }
 
-String
-AssetTree::Item::getFilePath() const
+String AssetTree::Item::getFilePath() const
 {
     if (isFile())
         return data.getProperty(Slugs::path).toString();
@@ -184,8 +177,7 @@ AssetTree::Item::getFilePath() const
     return String::empty;
 }
 
-File
-AssetTree::Item::getFile() const
+File AssetTree::Item::getFile() const
 {
     if (isFile())
         return tree.resolveFilename (data.getProperty(Slugs::path).toString());
@@ -193,8 +185,7 @@ AssetTree::Item::getFile() const
     return File::nonexistent;
 }
 
-AssetTree::Item
-AssetTree::Item::findItemForFile (const File& file) const
+AssetTree::Item AssetTree::Item::findItemForFile (const File& file) const
 {
     if (getFile() == file)
         return *this;
@@ -213,8 +204,7 @@ AssetTree::Item::findItemForFile (const File& file) const
 }
 
 
-AssetTree::Item
-AssetTree::Item::findItemForId (const String &targetId) const
+AssetTree::Item AssetTree::Item::findItemForId (const String &targetId) const
 {
     
     if (data [Slugs::id] == targetId) {
@@ -234,8 +224,7 @@ AssetTree::Item::findItemForId (const String &targetId) const
     return AssetTree::Item (tree, ValueTree::invalid);
 }
 
-void
-AssetTree::Item::sortAlphabetically (bool keepGroupsAtStart)
+void AssetTree::Item::sortAlphabetically (bool keepGroupsAtStart)
 {
     if (keepGroupsAtStart)
     {
@@ -263,8 +252,7 @@ void AssetTree::Item::setFile (const RelativePath& file)
     data.setProperty (Slugs::name, file.getFileName(), nullptr);
 }
 
-void
-AssetTree::Item::setMissingProperties()
+void AssetTree::Item::setMissingProperties()
 {
     if (isFile() && ! data.hasProperty (Slugs::id))
     {
@@ -294,9 +282,9 @@ rootValueType (rootValType)
 }
 
 AssetTree::AssetTree (const String& rootName, const String& rootValType, UndoManager* u)
-: undo (u),
-assets (rootValType),
-rootValueType (rootValType)
+    : undo (u),
+      assets (rootValType),
+      rootValueType (rootValType)
 {
     assets.setProperty (Slugs::name, rootName, nullptr);
     root().setId (Utility::createGUID (rootName + rootValType));
@@ -304,24 +292,22 @@ rootValueType (rootValType)
 }
 
 AssetTree::AssetTree (const AssetTree& other)
-: undo (other.undo),
-assets (other.assets)
+    : undo (other.undo),
+      assets (other.assets)
 {
     assets.addListener(this);
 }
 
 AssetTree::~AssetTree() { assets.removeListener (this); }
 
-void
-AssetTree::addChildInternal (ValueTree& parent, ValueTree& child)
+void AssetTree::addChildInternal (ValueTree& parent, ValueTree& child)
 {
     parent.addChild (child, -1, undo);
 }
 
 
 
-AssetTree::Item
-AssetTree::addGroup (const String& name)
+AssetTree::Item AssetTree::addGroup (const String& name)
 {
     Item item (createItem ("group"));
     item.getNameValue() = name;
@@ -333,29 +319,25 @@ AssetTree::addGroup (const String& name)
     return item;
 }
 
-void
-AssetTree::addGroups (const StringArray& groups, Array<Item>& result)
+void AssetTree::addGroups (const StringArray& groups, Array<Item>& result)
 {
 	for (int i = 0; i < groups.size(); ++i)
         result.add (addGroup (groups [i]));
 }
 
-void
-AssetTree::clear()
+void AssetTree::clear()
 {
     assets.removeAllChildren (undo);
 }
 
 
-AssetTree::Item
-AssetTree::createItem (const Identifier& type)
+AssetTree::Item AssetTree::createItem (const Identifier& type)
 {
     ValueTree newData (type);
     return Item (*this, newData);
 }
 
-AssetTree::Item
-AssetTree::findGroup (const String& name, bool recursive, bool createIt)
+AssetTree::Item AssetTree::findGroup (const String& name, bool recursive, bool createIt)
 {
     if (! recursive)
     {
@@ -379,8 +361,7 @@ AssetTree::findGroup (const String& name, bool recursive, bool createIt)
 }
 
 
-String
-AssetTree::getRelativePathForFile (const File& file) const
+String AssetTree::getRelativePathForFile (const File& file) const
 {
     String filename (file.getFullPathName());
     
@@ -404,39 +385,33 @@ AssetTree::getRelativePathForFile (const File& file) const
     return filename;
 }
 
-bool
-AssetTree::hasParentValueTree() const
+bool AssetTree::hasParentValueTree() const
 {
     return assets.getParent().isValid();
 }
 
-String
-AssetTree::name() const
+String AssetTree::name() const
 {
     jassertfalse;
     return this->getName();
 }
 
-String
-AssetTree::getName() const
+String AssetTree::getName() const
 {
     return assets.getProperty ("name", "Asset Tree");
 }
 
-Value
-AssetTree::nameValue()
+Value AssetTree::nameValue()
 {
     return assets.getPropertyAsValue ("name", nullptr);
 }
 
-const File&
-AssetTree::getFile() const
+const File& AssetTree::getFile() const
 {
     return manifestFile;
 }
 
-UndoManager*
-AssetTree::getUndoManager()
+UndoManager* AssetTree::getUndoManager()
 {
     return undo;
 }
@@ -448,8 +423,7 @@ File AssetTree::getRootDir() const
     return manifestFile;
 }
 
-File
-AssetTree::resolveFilename (const String& filename)
+File AssetTree::resolveFilename (const String& filename)
 {
     if (filename.isEmpty())
         return File::nonexistent;
@@ -457,47 +431,39 @@ AssetTree::resolveFilename (const String& filename)
     return getFile().getSiblingFile (FileHelpers::currentOSStylePath (filename));
 }
 
-AssetTree::Item
-AssetTree::root() const
+AssetTree::Item AssetTree::root() const
 {
     return Item (*const_cast<AssetTree*> (this), this->assets);
 }
 
-const Identifier&
-AssetTree::rootType() const
+const Identifier& AssetTree::rootType() const
 {
     return rootValueType;
 }
 
-void
-AssetTree::setFile (const File& file)
+void AssetTree::setFile (const File& file)
 {
     manifestFile = file;
 }
 
-void
-AssetTree::setUndoManager (UndoManager* u)
+void AssetTree::setUndoManager (UndoManager* u)
 {
     undo = u;
-    
 }
 
-void
-AssetTree::setAssetsNode (const ValueTree& data)
+void AssetTree::setAssetsNode (const ValueTree& data)
 {
     if (data == assets)
         return;
     assets = data;
 }
 
-void
-AssetTree::testPrint() const
+void AssetTree::testPrint() const
 {
     std::clog << assets.toXmlString() << std::endl;
 }
 
-void
-AssetTree::valueTreeChildAdded (ValueTree& parent, ValueTree& child)
+void AssetTree::valueTreeChildAdded (ValueTree& parent, ValueTree& child)
 {
     if (parent != assets)
         return;
@@ -506,8 +472,7 @@ AssetTree::valueTreeChildAdded (ValueTree& parent, ValueTree& child)
     assetAdded (item);
 }
 
-void
-AssetTree::valueTreeChildRemoved (ValueTree& parent, ValueTree& child)
+void AssetTree::valueTreeChildRemoved (ValueTree& parent, ValueTree& child, int /*indexOfRemoved*/)
 {
     if (parent != assets)
         return;
@@ -516,7 +481,7 @@ AssetTree::valueTreeChildRemoved (ValueTree& parent, ValueTree& child)
     assetRemoved (item);
 }
 
-void AssetTree::valueTreeChildOrderChanged (ValueTree& /* parent */) { }
+void AssetTree::valueTreeChildOrderChanged (ValueTree& /*parent*/, int /*oldIndex*/, int /*newIndex*/) { }
 void AssetTree::valueTreeParentChanged (ValueTree& /* child */) { }
 void AssetTree::valueTreePropertyChanged (ValueTree& /* tree */, const Identifier& /* property */) { }
 

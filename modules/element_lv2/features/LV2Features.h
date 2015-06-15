@@ -17,15 +17,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef LVTK_JUCE_LV2FEATURES_H
-#define LVTK_JUCE_LV2FEATURES_H
-
+#ifndef EL_JUCE_LV2_FEATURES_H
+#define EL_JUCE_LV2_FEATURES_H
 
 /** A simple interface for implenting LV2 Features */
 class LV2Feature
 {
 public:
-
     LV2Feature() { }
     virtual ~LV2Feature() { }
     
@@ -43,7 +41,6 @@ public:
 class LV2FeatureArray
 {
 public:
-
     LV2FeatureArray() : needsBuilt (true) { }
     ~LV2FeatureArray() { }
 
@@ -136,4 +133,4 @@ private:
 
 };
 
-#endif /* LVTK_JUCE_LV2FEATURES_H */
+#endif /* EL_JUCE_LV2_FEATURES_H */

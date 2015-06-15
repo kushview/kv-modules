@@ -21,6 +21,7 @@
 #define ELEMENT_GUI_H_INCLUDED
 
 #include "modules/juce_gui_basics/juce_gui_basics.h"
+#include "../element_models/element_models.h"
 
 namespace Element {
 

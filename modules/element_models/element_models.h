@@ -20,9 +20,10 @@
 #ifndef ELEMENT_MODELS_H_INCLUDED
 #define ELEMENT_MODELS_H_INCLUDED
 
-#include "../element_base/element_base.h"
+
 #include "modules/juce_audio_basics/juce_audio_basics.h"
 #include "modules/juce_data_structures/juce_data_structures.h"
+#include "../element_base/element_base.h"
 
 namespace Element {
 

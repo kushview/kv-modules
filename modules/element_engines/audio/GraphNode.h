@@ -39,7 +39,7 @@ public:
     /** Returns true if the process is a graph */
     bool isSubgraph() const noexcept;
 
-    void setGain (const float g) {
+    void setGain (const float) {
         //gain.set (g);
     }
 

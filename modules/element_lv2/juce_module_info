@@ -13,7 +13,7 @@
   "compile":        [ { "file": "element_lv2.cpp", "target": "! xcode" },
                       { "file": "element_lv2.mm",  "target": "xcode" } ],
 
-  "browse":         [ ],
+  "browse":         [ "common/**", "features/**", "host/**" ],
 
   "OSXFrameworks":  "",
   "iOSFrameworks":  "",

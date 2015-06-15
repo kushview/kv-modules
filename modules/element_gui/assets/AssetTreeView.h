@@ -89,7 +89,6 @@ public:
 class GroupTreeViewItem   : public AssetTreeViewItem
 {
 public:
-
     GroupTreeViewItem (const AssetItem& item);
     virtual ~GroupTreeViewItem();
 
