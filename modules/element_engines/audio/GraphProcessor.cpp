@@ -870,8 +870,7 @@ bool GraphProcessor::addConnection (const uint32 sourceNode, const uint32 source
     return true;
 }
 
-bool
-GraphProcessor::connectChannels (PortType type, uint32 sourceNode, int32 sourceChannel,
+bool GraphProcessor::connectChannels (PortType type, uint32 sourceNode, int32 sourceChannel,
                                  uint32 destNode, int32 destChannel)
 {
     GraphNode* src = getNodeForId (sourceNode);
@@ -1055,6 +1054,22 @@ void GraphProcessor::buildRenderingSequence()
 
     // delete the old ones..
     deleteRenderOpArray (newRenderingOps);
+}
+
+void GraphProcessor::getOrderedNodes (ReferenceCountedArray<GraphNode>& orderedNodes)
+{
+    const LookupTable table (connections);
+    for (int i = 0; i < nodes.size(); ++i)
+    {
+        GraphNode* const node = nodes.getUnchecked(i);
+        
+        int j = 0;
+        for (; j < orderedNodes.size(); ++j)
+            if (table.isAnInputTo (node->nodeId, ((GraphNode*) orderedNodes.getUnchecked(j))->nodeId))
+                break;
+        
+        orderedNodes.insert (j, node);
+    }
 }
 
 void GraphProcessor::handleAsyncUpdate()

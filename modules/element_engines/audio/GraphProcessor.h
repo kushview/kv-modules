@@ -101,6 +101,9 @@ public:
     */
     bool removeNode (uint32 nodeId);
 
+    /** Builds an array of ordered nodes */
+    void getOrderedNodes (ReferenceCountedArray<GraphNode>& res);
+    
     /** Returns the number of connections in the graph. */
     int getNumConnections() const                                       { return connections.size(); }
 
