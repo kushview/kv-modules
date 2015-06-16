@@ -935,7 +935,7 @@ bool GraphProcessor::disconnectNode (const uint32 nodeId)
 bool GraphProcessor::isConnectionLegal (const Connection* const c) const
 {
     jassert (c != nullptr);
-#if 1
+
     const GraphNode* const source = getNodeForId (c->sourceNode);
     const GraphNode* const dest   = getNodeForId (c->destNode);
 
@@ -945,9 +945,6 @@ bool GraphProcessor::isConnectionLegal (const Connection* const c) const
                  dest->proc->getPortType (c->destPort))
             && c->sourcePort < source->proc->getNumPorts()
             && c->destPort < dest->proc->getNumPorts();
-#else
-    return false;
-#endif
 }
 
 bool GraphProcessor::removeIllegalConnections()
