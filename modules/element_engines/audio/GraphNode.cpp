@@ -9,12 +9,52 @@ GraphNode::GraphNode (const uint32 nodeId_, Processor* const processor_) noexcep
     jassert (proc != nullptr);
 }
 
+void GraphNode::connectAudioTo (const GraphNode* other)
+{
+    jassert (getParentGraph());
+    jassert (getParentGraph() == other->getParentGraph());
+
+    GraphProcessor& graph (*getParentGraph());
+    AudioPluginInstance* const src = getAudioPluginInstance();
+    AudioPluginInstance* const dst = other->getAudioPluginInstance();
+    DBG("Try connecting: " << src->getName() << " to " << dst->getName());
+
+    const int totalChans = jmin (getNumAudioOutputs(), other->getNumAudioInputs());
+    bool failed = false;
+    for (int chan = 0; chan < totalChans; ++chan)
+    {
+        failed |= graph.addConnection (
+            this->nodeId, Processor::getPortForAudioChannel(src, chan, false),
+            other->nodeId, Processor::getPortForAudioChannel(dst, chan, true)
+        );
+    }
+
+    if (failed)
+    {
+        DBG("  failed " << src->getName() << " to " << dst->getName());
+    }
+}
+
 bool GraphNode::isMidiIONode() const
 {
     typedef GraphProcessor::AudioGraphIOProcessor IOP;
     if (IOP* iop = dynamic_cast<IOP*> (proc.get()))
         return iop->getType() == IOP::midiInputNode || iop->getType() == IOP::midiOutputNode;
     return false;
+}
+
+int GraphNode::getNumAudioInputs() const
+{
+    if (AudioPluginInstance* inst = getAudioPluginInstance())
+        return inst->getNumInputChannels();
+    return 0;
+}
+
+int GraphNode::getNumAudioOutputs() const
+{
+    if (AudioPluginInstance* inst = getAudioPluginInstance())
+        return inst->getNumOutputChannels();
+    return 0;
 }
 
 void GraphNode::setInputRMS (int chan, float val)
@@ -29,6 +69,19 @@ void GraphNode::setOutputRMS (int chan, float val)
     if (chan < outRMS.size()) {
         outRMS.getUnchecked(chan)->set(val);
     }
+}
+
+bool GraphNode::isSuspended() const
+{
+    if (AudioPluginInstance* inst = getAudioPluginInstance())
+        inst->isSuspended();
+    return true;
+}
+
+void GraphNode::suspendProcessing (const bool shouldBeSuspended)
+{
+    if (AudioPluginInstance* inst = getAudioPluginInstance())
+        inst->suspendProcessing(shouldBeSuspended);
 }
 
 uint32 GraphNode::getMidiInputPort() const

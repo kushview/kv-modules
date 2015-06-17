@@ -5,28 +5,12 @@
 
     To create a node, call ProcessorGraph::addNode().
 */
-class JUCE_API  GraphNode   : public ReferenceCountedObject
+class JUCE_API  GraphNode : public ReferenceCountedObject
 {
 public:
-
     /** The ID number assigned to this node.
         This is assigned by the graph that owns it, and can't be changed. */
     const uint32 nodeId;
-
-    /** The actual processor object that this node represents. */
-    Processor* getProcessor() const noexcept           { return proc; }
-
-    AudioPluginInstance* getAudioPluginInstance() const;
-
-    uint32 getMidiInputPort() const;
-    uint32 getMidiOutputPort() const;
-    
-    /** The actual processor object dynamic_cast'd to ProcType */
-    template<class ProcType>
-    inline ProcType* processor() const
-    {
-        return dynamic_cast<ProcType*> (proc.get());
-    }
 
     /** A set of user-definable properties that are associated with this node.
 
@@ -36,8 +20,26 @@ public:
     */
     NamedValueSet properties;
 
+    /** Returns the actual processor object that this node represents. */
+    Processor* getProcessor() const noexcept { return proc; }
+
+    AudioPluginInstance* getAudioPluginInstance() const;
+
+    int getNumAudioInputs() const;
+    int getNumAudioOutputs() const;
+    uint32 getMidiInputPort() const;
+    uint32 getMidiOutputPort() const;
+    
+    /** The actual processor object dynamic_cast'd to ProcType */
+    template<class ProcType>
+    inline ProcType* processor() const { return dynamic_cast<ProcType*> (proc.get()); }
+
     /** Returns true if the process is a graph */
     bool isSubgraph() const noexcept;
+
+    /** Returns true if the processor is suspended */
+    bool isSuspended() const;
+    void suspendProcessing (const bool);
 
     void setGain (const float) {
         //gain.set (g);
@@ -63,6 +65,8 @@ public:
     float getInputRMS(int chan) const { return (chan < inRMS.size()) ? inRMS.getUnchecked(chan)->get() : 0.0f; }
     void setOutputRMS (int chan, float val);
     float getOutpputRMS(int chan) const { return (chan < outRMS.size()) ? outRMS.getUnchecked(chan)->get() : 0.0f; }
+
+    void connectAudioTo (const GraphNode* other);
 
 private:
     friend class GraphProcessor;
