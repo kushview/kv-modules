@@ -14,6 +14,7 @@ public:
     static PluginWindow* getWindowFor (GraphNode* node);
     static PluginWindow* createWindowFor (GraphNode* node);
     static PluginWindow* createWindowFor (GraphNode* node, Component* editor);
+    static PluginWindow* getOrCreateWindowFor (GraphNode* node);
     
     static void closeCurrentlyOpenWindowsFor (GraphNode* const node);
     static void closeCurrentlyOpenWindowsFor (const uint32 nodeId);

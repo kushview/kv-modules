@@ -196,7 +196,7 @@ public:
                      const int midiBufferToUse_,
                      const Array <int> chans [PortType::Unknown])
         : node (node_),
-          processor (node_->getProcessor()),
+          processor (node_->getAudioPluginInstance()),
           audioChannelsToUse (audioChannelsToUse_),
           totalChans (jmax (1, totalChans_)),
           numAudioIns (node_->getAudioPluginInstance()->getNumInputChannels()),
@@ -221,8 +221,16 @@ public:
         AudioSampleBuffer buffer (channels, totalChans, numSamples);
         for (int i = numAudioIns; --i >= 0;)
             node->setInputRMS (i, buffer.getRMSLevel (i, 0, numSamples));
-                                   
-        processor->processBlock (buffer, *sharedMidiBuffers.getUnchecked (midiBufferToUse));
+        
+        if (! processor->isSuspended())
+        {
+            processor->processBlock (buffer, *sharedMidiBuffers.getUnchecked (midiBufferToUse));
+        }
+        else
+        {
+            processor->processBlockBypassed (buffer, *sharedMidiBuffers.getUnchecked(midiBufferToUse));
+        }
+        
         if (node->getGain() != node->getLastGain()) {
             buffer.applyGainRamp (0, numSamples, node->getLastGain(), node->getGain());
             node->updateGain();

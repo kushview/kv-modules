@@ -107,6 +107,13 @@ void PluginWindow::closeAllCurrentlyOpenWindows()
     }
 }
 
+PluginWindow* PluginWindow::getOrCreateWindowFor (GraphNode* node)
+{
+    if (PluginWindow* win = getWindowFor (node))
+        return win;
+    return createWindowFor (node);
+}
+
 Toolbar* PluginWindow::getToolbar() const
 {
     if (PluginWindowContent* pwc = dynamic_cast<PluginWindowContent*> (getContentComponent()))
