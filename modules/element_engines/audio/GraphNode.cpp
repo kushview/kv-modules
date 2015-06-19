@@ -9,6 +9,12 @@ GraphNode::GraphNode (const uint32 nodeId_, Processor* const processor_) noexcep
     jassert (proc != nullptr);
 }
 
+void GraphNode::getPluginDescription (PluginDescription& desc)
+{
+    if (AudioPluginInstance* i = getAudioPluginInstance())
+        i->fillInPluginDescription (desc);
+}
+
 void GraphNode::connectAudioTo (const GraphNode* other)
 {
     jassert (getParentGraph());

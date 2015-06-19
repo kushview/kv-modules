@@ -30,6 +30,8 @@ public:
     uint32 getMidiInputPort() const;
     uint32 getMidiOutputPort() const;
     
+    void getPluginDescription (PluginDescription& desc);
+    
     /** The actual processor object dynamic_cast'd to ProcType */
     template<class ProcType>
     inline ProcType* processor() const { return dynamic_cast<ProcType*> (proc.get()); }
