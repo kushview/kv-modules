@@ -42,7 +42,7 @@ LV2Worker::LV2Worker (WorkThread& thread, uint32 bufsize,
     : WorkerBase (thread, bufsize)
 {
     setInterface (handle, iface);
-    
+
     uri = LV2_WORKER__schedule;
     feat.URI  = uri.toRawUTF8();
     data.handle = this;

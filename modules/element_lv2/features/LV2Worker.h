@@ -17,14 +17,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef LVTK_JUCE_LV2WORKER_H
-#define LVTK_JUCE_LV2WORKER_H
+#ifndef EL_LV2_WORKER_H
+#define EL_LV2_WORKER_H
 
 class LV2Worker :  public LV2Feature,
                    public WorkerBase
 {
 public:
-    
     LV2Worker (WorkThread& thread, uint32 bufsize,
                LV2_Handle handle = nullptr,
                LV2_Worker_Interface* iface = nullptr);
@@ -51,4 +50,4 @@ private:
 };
 
 
-#endif /* LVTK_JUCE_LV2WORKER_H */
+#endif /* EL_LV2_WORKER_H */

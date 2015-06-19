@@ -30,20 +30,20 @@
 #include "AppConfig.h"
 #include "element_lv2.h"
 
-#if ELEMENT_LV2_PLUGIN_HOST
+
 
 namespace Element {
-    #include "common/PortBuffer.cpp"
-    #include "common/PortWriter.cpp"
+#include "common/PortBuffer.cpp"
+#include "common/PortWriter.cpp"
+#include "features/LV2Log.cpp"
+#include "features/LV2Worker.cpp"
 
-    #include "features/LV2Log.cpp"
-    #include "features/LV2Worker.cpp"
-
-    #include "host/LV2Module.cpp"
-    #include "host/LV2PluginFormat.cpp"
-    #include "host/LV2PluginModel.cpp"
-    #include "host/LV2World.cpp"
-    //#include "host/PortProcessor.cpp"
+#if ELEMENT_LV2_PLUGIN_HOST
+ #include "host/LV2Module.cpp"
+ #include "host/LV2PluginFormat.cpp"
+ #include "host/LV2PluginModel.cpp"
+ #include "host/LV2World.cpp"
+#endif
 }
 
-#endif // ELEMENT_LV2_PLUGIN_HOST
+
