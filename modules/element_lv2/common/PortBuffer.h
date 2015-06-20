@@ -8,7 +8,6 @@
 class PortBuffer
 {
 public:
-    
     const URIs* uris;
     
     PortBuffer (const URIs* ids, uint32 bufferType = 0, uint32 bufferSize = 0);
@@ -30,7 +29,7 @@ public:
     inline bool isEvent()    const { return type == uris->event_Event; }
 	inline bool isSequence() const { return type == uris->atom_Sequence; }
     
-    void reset();
+    void reset (const bool forOutput = false);
     
 private:
     uint32 type, capacity;

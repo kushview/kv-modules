@@ -101,8 +101,7 @@ PortBuffer::clear()
     }
 }
 
-void
-PortBuffer::reset()
+void PortBuffer::reset (const bool forOutput)
 {
     if (isAudio() || isControl())
     {
@@ -111,7 +110,7 @@ PortBuffer::reset()
     else if (isSequence())
     {
 		LV2_Atom_Sequence* seq = (LV2_Atom_Sequence*) buffer.atom;
-		buffer.atom->size = sizeof (LV2_Atom_Sequence_Body);
+        buffer.atom->size = !forOutput ? sizeof (LV2_Atom_Sequence_Body) : capacity - sizeof (LV2_Atom_Sequence_Body);
         buffer.atom->type = type;
 		seq->body.unit    = 0;
 		seq->body.pad     = 0;

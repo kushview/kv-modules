@@ -79,7 +79,6 @@ public:
                     buffers.set (p, buf);
                     assert (buf->getPortData() != nullptr);
                     module->connectPort (p, buf->getPortData());
-                    
                 }
                 else if (PortType::Control == type)
                 {

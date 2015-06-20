@@ -28,8 +28,7 @@ RingBuffer::~RingBuffer()
     block.free();
 }
 
-void
-RingBuffer::setCapacity (int32 newCapacity)
+void RingBuffer::setCapacity (int32 newCapacity)
 {
     newCapacity = nextPowerOfTwo (newCapacity);
     
