@@ -51,13 +51,16 @@ Semaphore::tryWait()
     return semaphore_timedwait(semaphore, zero) == KERN_SUCCESS;
 }
 
-#elif defined(_WIN32)
+#elif defined(_WIN32) || defined(_WIN64)
 
-inline Semaphore::Semaphore() { }
+inline Semaphore::Semaphore()
+{
+    init (0);
+}
 
 inline bool Semaphore::init(unsigned initial)
 {
-    semaphore = CreateSemaphore(NULL, initial, LONG_MAX, NULL);
+    semaphore = CreateSemaphore (NULL, initial, LONG_MAX, NULL);
     return (semaphore) ? false : true;
 }
 

@@ -42,8 +42,7 @@ WorkThread::~WorkThread()
     requests = nullptr;
 }
 
-WorkerBase*
-WorkThread::getWorker (uint32 workerId) const
+WorkerBase* WorkThread::getWorker (uint32 workerId) const
 {
     if (workerId == 0)
         return nullptr;
@@ -56,16 +55,14 @@ WorkThread::getWorker (uint32 workerId) const
 }
 
 
-void
-WorkThread::registerWorker (WorkerBase* worker)
+void WorkThread::registerWorker (WorkerBase* worker)
 {
     worker->workId = ++nextWorkId;
     ELEMENT_WORKER_LOG (getThreadName() + " Registering worker: id = " + String (worker->workId));
     workers.addIfNotAlreadyThere (worker);
 }
 
-void
-WorkThread::removeWorker (WorkerBase* worker)
+void WorkThread::removeWorker (WorkerBase* worker)
 {
     ELEMENT_WORKER_LOG (getThreadName() + " Removing worker: id = " + String (worker->workId));
     workers.removeFirstMatchingValue (worker);
@@ -73,8 +70,7 @@ WorkThread::removeWorker (WorkerBase* worker)
 }
 
 
-void
-WorkThread::run()
+void WorkThread::run()
 {
     HeapBlock<uint8> buffer;
     int32 bufferSize = 0;
@@ -133,6 +129,8 @@ WorkThread::run()
             break;
     }
     
+    ELEMENT_WORKER_LOG (getThreadName() + ": thread exited.");
+
     buffer.free();
 }
 

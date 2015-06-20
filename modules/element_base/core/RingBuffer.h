@@ -1,6 +1,6 @@
 /*
     This file is part of the element modules for the JUCE Library
-    Copyright (c) 2013 - Michael Fisher <mfisher31@gmail.com>.
+    Copyright (c) 2015 - Michael Fisher <mfisher31@gmail.com>.
 
     Permission to use, copy, modify, and/or distribute this software for any purpose with
     or without fee is hereby granted, provided that the above copyright notice and this
@@ -64,6 +64,10 @@ public:
         return read (&dest, sizeof (T));
     }
     
+    inline void advanceReadPointer (const uint32) {
+        jassertfalse;
+    }
+
     inline uint32
     write (const void* src, uint32 bytes)
     {
