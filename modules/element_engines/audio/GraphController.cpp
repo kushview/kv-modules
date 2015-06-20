@@ -91,8 +91,7 @@ uint32 GraphController::addFilter (const PluginDescription* desc, double x, doub
     return nodeId;
 }
 
-void
-GraphController::removeFilter (const uint32 uid)
+void GraphController::removeFilter (const uint32 uid)
 {
     if (processor.removeNode (uid))
         changed();
