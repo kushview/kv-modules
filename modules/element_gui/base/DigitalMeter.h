@@ -52,12 +52,13 @@ public:
     /** Reset peak holder. */
     void resetPeak();
 
+    virtual void paint (Graphics& g);
+    
     /** @internal */
-    void paint (Graphics& g);
-    /** @internal */
-    void resized ();
+    void resized();
 
 private:
+    friend class DigitalMeter;
     DigitalMeter *meter;
 
     float value;
@@ -115,13 +116,18 @@ public:
         backgroundColourId   = 0x90900006,
         foregroundColourId   = 0x90900007
     };
-
+    
     /** @internal */
     void paint (Graphics& g);
     /** @internal */
     void resized ();
+    
+protected:
+    virtual DigitalMeterValue* createDigitalMeterValue();
 
 private:
+    friend class DigitalMeterValue;
+    
     int portCount;
     DigitalMeterValue** values;
     float scale;

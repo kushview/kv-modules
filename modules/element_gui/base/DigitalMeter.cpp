@@ -181,7 +181,7 @@ void DigitalMeterValue::resized()
 
 DigitalMeter::DigitalMeter (const int numPorts, bool _horizontal)
   : portCount (numPorts), // FIXME: Default port count.
-    values (0),
+    values (nullptr),
     scale (0.0f),
     peakFalloff (DIGITAL_METER_PEAK_FALLOFF),
     horizontal (_horizontal)
@@ -204,16 +204,6 @@ DigitalMeter::DigitalMeter (const int numPorts, bool _horizontal)
     colors[Color10dB] = findColour (level10dBColourId);
     colors[ColorBack] = findColour (backgroundColourId);
     colors[ColorFore] = findColour (foregroundColourId);
-
-    if (portCount > 0)
-    {
-        values = new DigitalMeterValue* [portCount];
-        for (int port = 0; port < portCount; port++)
-        {
-            values[port] = new DigitalMeterValue (this);
-            addAndMakeVisible (values[port]);
-        }
-    }
 }
 
 DigitalMeter::~DigitalMeter()
@@ -225,6 +215,19 @@ DigitalMeter::~DigitalMeter()
 
 void DigitalMeter::resized()
 {
+    if (values == nullptr)
+    {
+        if (portCount > 0)
+        {
+            values = new DigitalMeterValue* [portCount];
+            for (int port = 0; port < portCount; port++)
+            {
+                values[port] = createDigitalMeterValue();
+                addAndMakeVisible (values[port]);
+            }
+        }
+    }
+    
     const int length = horizontal ? getWidth() : getHeight();
     scale = 0.85f * (float) length;
 
@@ -233,8 +236,8 @@ void DigitalMeter::resized()
     levels[Color6dB]  = getIECScale (-6.0f);
     levels[Color10dB] = getIECScale (-10.0f);
 
-    const int size = (horizontal ? getWidth() : getHeight()) / portCount;
-
+    const int size = (horizontal ? getHeight() : getWidth()) / portCount;
+    
     for (int port = 0; port < portCount; ++port)
     {
         if (horizontal)
@@ -251,6 +254,11 @@ void DigitalMeter::paint (Graphics&)
                  Colours::black.withAlpha(0.2f),
                  Colours::white.withAlpha(0.2f));
 */
+}
+
+DigitalMeterValue* DigitalMeter::createDigitalMeterValue()
+{
+    return new DigitalMeterValue (this);
 }
 
 int DigitalMeter::getIECScale (const float dB) const
