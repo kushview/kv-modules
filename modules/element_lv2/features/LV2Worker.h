@@ -40,13 +40,11 @@ public:
     void processResponse (uint32 size, const void* data);
     
 private:
-    
     String uri;
     LV2_Worker_Interface* worker;
     LV2_Handle plugin;
     LV2_Worker_Schedule data;
     LV2_Feature feat;
-    
 };
 
 

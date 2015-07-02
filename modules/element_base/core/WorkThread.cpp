@@ -135,8 +135,7 @@ void WorkThread::run()
 }
 
 
-bool
-WorkThread::scheduleWork (WorkerBase* worker, uint32 size, const void* data)
+bool WorkThread::scheduleWork (WorkerBase* worker, uint32 size, const void* data)
 {
     jassert (size > 0 && worker && worker->workId != 0);
     if (! requests->canWrite (requiredSpace (size)))
@@ -155,14 +154,12 @@ WorkThread::scheduleWork (WorkerBase* worker, uint32 size, const void* data)
     return true;
 }
 
-bool
-WorkThread::validateMessage (RingBuffer& ring)
+bool WorkThread::validateMessage (RingBuffer& ring)
 {
     uint32 size = 0;
     ring.peak (&size, sizeof (size));
     return ring.canRead (requiredSpace (size));
 }
-
 
 WorkerBase::WorkerBase (WorkThread& thread, uint32 bufsize)
     : owner (thread)
@@ -183,14 +180,12 @@ WorkerBase::~WorkerBase()
     response.free();
 }
 
-bool
-WorkerBase::scheduleWork (uint32 size, const void* data)
+bool WorkerBase::scheduleWork (uint32 size, const void* data)
 {
     return owner.scheduleWork (this, size, data);
 }
 
-bool
-WorkerBase::respondToWork (uint32 size, const void* data)
+bool WorkerBase::respondToWork (uint32 size, const void* data)
 {
     if (! responses->canWrite (sizeof (size) + size))
         return false;
@@ -204,8 +199,7 @@ WorkerBase::respondToWork (uint32 size, const void* data)
     return true;
 }
 
-void
-WorkerBase::processWorkResponses()
+void WorkerBase::processWorkResponses()
 {
     uint32 remaining = responses->getReadSpace();
     uint32 size      = 0;
@@ -223,8 +217,7 @@ WorkerBase::processWorkResponses()
     }
 }
 
-bool
-WorkerBase::validateMessage (RingBuffer& ring)
+bool WorkerBase::validateMessage (RingBuffer& ring)
 {
     // the worker only validates message size
     uint32 size = 0;
@@ -232,8 +225,7 @@ WorkerBase::validateMessage (RingBuffer& ring)
     return ring.canRead (size + sizeof(size));
 }
 
-void
-WorkerBase::setSize (uint32 newSize)
+void WorkerBase::setSize (uint32 newSize)
 {
     responses = new RingBuffer (newSize);
     response.realloc (newSize);
