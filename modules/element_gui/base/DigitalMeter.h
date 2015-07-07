@@ -40,11 +40,11 @@ class DigitalMeterValue;
 class DigitalMeterValue : public Component
 {
 public:
-    DigitalMeterValue (DigitalMeter *pMeter);
+    DigitalMeterValue(DigitalMeter *pMeter);
     ~DigitalMeterValue();
 
     /** Frame value accessors. */
-    void setValue (const float newValue);
+    void setValue(const float newValue);
 
     /** Value refreshment. */
     void refresh();
@@ -52,10 +52,18 @@ public:
     /** Reset peak holder. */
     void resetPeak();
 
-    virtual void paint (Graphics& g);
-    
+    virtual void paint(Graphics& g);
+
     /** @internal */
     void resized();
+
+protected:
+    int getIECScale (const float dB) const;
+    int getIECLevel (const int index) const;
+    float getValue() const { return value; }
+    int getValueHold() const { return valueHold; }
+    float getValueDecay() const { return valueDecay; }
+    int getPeak() const { return peak; }
 
 private:
     friend class DigitalMeter;

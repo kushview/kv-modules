@@ -57,6 +57,10 @@ void DigitalMeterValue::refresh()
         repaint();
 }
 
+
+int DigitalMeterValue::getIECScale(const float dB)  const { return meter->getIECScale(dB); }
+int DigitalMeterValue::getIECLevel(const int index) const { return meter->getIECLevel(index); }
+
 void DigitalMeterValue::paint (Graphics& g)
 {
     const bool vertical = meter->isVertical();

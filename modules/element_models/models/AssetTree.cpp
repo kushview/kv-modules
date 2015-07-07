@@ -314,8 +314,6 @@ AssetTree::Item AssetTree::addGroup (const String& name)
     item.setId (Utility::createAlphaNumericUID ());
     addChildInternal (assets, item.data);
     
-    std::clog << item.data.toXmlString() << std::endl;
-    
     return item;
 }
 
