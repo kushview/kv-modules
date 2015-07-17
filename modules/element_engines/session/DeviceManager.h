@@ -23,19 +23,16 @@
 class DeviceManager :  public AudioDeviceManager
 {
 public:
-
     typedef AudioDeviceManager::AudioDeviceSetup AudioSettings;
 
     DeviceManager();
     ~DeviceManager();
 
-    void createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list);
+    virtual void createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list);
 
     void getAudioDrivers (StringArray& drivers);
     void selectAudioDriver (const String& name);
-
     void attach (EnginePtr engine);
-
 private:
 
     friend class World;
