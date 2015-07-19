@@ -1,11 +1,10 @@
 /*
-  skindial.hpp - __CLASS__ Definition
+  SkinDial.h
 
   Copyright (C) 2014  Kushview, LLC.  All rights reserved.
   Michael Fisher <mfisher@bketech.com>
 
- */
-/** @skindial.hpp */
+*/
 
 #ifndef ELEMENT_SKINDIAL_H
 #define ELEMENT_SKINDIAL_H
@@ -14,16 +13,26 @@
    {
    public:
 
-      SkinDial()
-        : Slider(), nframes (0), frame (0), pixel (0)
+       explicit SkinDial (const String& name = String::empty)
+        : Slider(),
+          nframes (0),
+          frame (0),
+          pixel (0),
+          scale(1)
       {
          img = Image::null;
          setTextBoxStyle (Slider::NoTextBox, false, 0, 0);
          setSliderStyle (Slider::Rotary);
       }
 
-      inline void
-      setImage (const Image& source)
+      inline bool hitTest (int x, int y) override
+       {
+           x *= scale;
+           y *= scale;
+           return img.getPixelAt(x, y).getAlpha() == 0xFF;
+       }
+       
+      inline void setImage (const Image& source)
       {
          img = source;
 
@@ -39,13 +48,21 @@
               nframes = 1;
           }
           
+          jassert (nframes >= 1);
          const int size = frameSize();
          setSize (size, size);
 
       }
 
-      inline void
-      paint (Graphics& g)
+       inline void setScale (const int newScale)
+       {
+           if (newScale < 1)
+               scale = 1;
+           else
+               scale = newScale;
+       }
+       
+      inline void paint (Graphics& g)
       {
          if (img == Image::null)
          {
@@ -59,20 +76,22 @@
          const int size (frameSize());
 
          if (isImageVertical())
-            g.drawImage (img, 0, 0, size, size, 0, pixel, size, size, false);
+            g.drawImage (img, 0, 0, size / scale, size / scale,
+                         0, pixel, size, size, false);
          else
-            g.drawImage (img, 0, 0, size, size, pixel, 0, size, size, false);
+            g.drawImage (img, 0, 0, size / scale, size / scale,
+                         pixel, 0, size, size, false);
       }
 
    private:
       Image img;
-      int nframes, frame, pixel;
+      int nframes, frame, pixel, scale;
 
       inline void updateFramePixel()
       {
          const double ratio = valueToProportionOfLength (getValue());
-         frame = juce::roundDoubleToInt (nframes * ratio);
-         pixel = isImageVertical() ? frame * img.getWidth() : frame * img.getHeight();
+         frame = juce::roundDoubleToInt ((double)(nframes - 1) * ratio);
+         pixel = frame * frameSize();
       }
 
       inline bool isImageVertical() const
