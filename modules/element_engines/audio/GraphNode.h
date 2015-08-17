@@ -57,6 +57,7 @@ public:
         metadata = (copy) ? meta.createCopy() : meta;
     }
 
+    bool isAudioIONode() const;
     bool isMidiIONode() const;
 
     /* returns the parent graph. If one has not been set, then
