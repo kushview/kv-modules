@@ -187,9 +187,8 @@ public:
     void setAssetsNode (const ValueTree& data);
 
 protected:
-
-    virtual void assetAdded (const AssetTree::Item& item) { }
-    virtual void assetRemoved (const AssetTree::Item& item) { }
+    virtual void assetAdded (const AssetTree::Item&) { }
+    virtual void assetRemoved (const AssetTree::Item&) { }
 
 private:
 
@@ -207,8 +206,8 @@ private:
     friend class ValueTree;
     void valueTreePropertyChanged (ValueTree& tree, const Identifier& property);
     void valueTreeChildAdded (ValueTree& parent, ValueTree& child);
-    void valueTreeChildRemoved (ValueTree& parent, ValueTree& child);
-    void valueTreeChildOrderChanged (ValueTree& parent);
+    void valueTreeChildRemoved (ValueTree& parent, ValueTree& child, int indexOfRemoved);
+    void valueTreeChildOrderChanged (ValueTree& parent, int newIndex, int oldIndex);
     void valueTreeParentChanged (ValueTree& child);
 
 };

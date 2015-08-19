@@ -1,0 +1,22 @@
+{
+  "id":             "element_lv2",
+  "name":           "Element LV2 Support",
+  "version":        "0.0.1",
+  "description":    "Element support for hosting and writing LV2 plugins",
+  "website":        "http://github.org/kushview/element",
+  "license":        "GPL",
+
+  "dependencies":   [ { "id": "element_base", "version": "0.0.1" } ],
+
+  "include":        "element_lv2.h",
+
+  "compile":        [ { "file": "element_lv2.cpp", "target": "! xcode" },
+                      { "file": "element_lv2.mm",  "target": "xcode" } ],
+
+  "browse":         [ "common/**", "features/**", "host/**" ],
+
+  "OSXFrameworks":  "",
+  "iOSFrameworks":  "",
+  "LinuxLibs":      "",
+  "mingwLibs":      ""
+}

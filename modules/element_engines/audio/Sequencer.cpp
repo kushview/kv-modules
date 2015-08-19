@@ -11,7 +11,7 @@
 
 static Sequencer::NodePtr
 trackNode (const TrackModel& t) {
-    return dynamic_cast<GraphProcessor::Node*> (
+    return dynamic_cast<GraphNode*> (
         t.state().getProperty ("node", var::null).getObject());
 }
 
@@ -43,17 +43,15 @@ Sequencer::~Sequencer()
     state = ValueTree::invalid;
 }
 
-bool
-Sequencer::tracksArePresent() const
+bool Sequencer::tracksArePresent() const
 {
-    for (SequencerTrack* t : trackRefs)
-        if (t == nullptr)
-            return false;
+	for (int i = 0; i < trackRefs.size(); ++i)
+		if (nullptr == trackRefs.getUnchecked(i))
+			return false;
     return true;
 }
 
-bool
-Sequencer::addTrack (const TrackModel &t)
+bool Sequencer::addTrack (const TrackModel &t)
 {
     NodePtr node = createTrackFor (t);
     return node != nullptr;
@@ -128,7 +126,7 @@ Sequencer::NodePtr
 Sequencer::getNodeFor (const ValueTree& state)
 {
     NodePtr invalid = nullptr;
-    NodePtr ptr = dynamic_cast<GraphProcessor::Node*> (state.getProperty ("node", var::null).getObject());
+    NodePtr ptr = dynamic_cast<GraphNode*> (state.getProperty ("node", var::null).getObject());
 
     if (! ptr)
         return invalid;

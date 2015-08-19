@@ -42,7 +42,7 @@ MidiSequencePlayer::~MidiSequencePlayer ()
     shuttle      = nullptr;
 }
 
-void MidiSequencePlayer::prepareToPlay (double sampleRate, int /* blockSize */)
+void MidiSequencePlayer::prepareToPlay (double /*sampleRate*/, int /* blockSize */)
 {
 	noteOffs.clear();
 }
@@ -63,7 +63,7 @@ MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequenc
     {
         const EventHolder* const ev = seq.getEventPointer (i);
         const double tick = ev->message.getTimeStamp();
-        const int32 frameInSeq = ts.frameFromTick (tick);
+        const int32 frameInSeq = ts.frameFromTick (static_cast<unsigned long> (tick));
         const int32 timeStamp = frameInSeq - startInSequence;
 
         if (timeStamp >= numSamples)
@@ -76,7 +76,7 @@ MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequenc
             const double ots = ev->noteOffObject->message.getTimeStamp() / (double) Shuttle::PPQ;
             if (ots >= (double) getBeatLength())
             {
-                ts.frameFromTick (ots * (double) Shuttle::PPQ);
+                ts.frameFromTick (static_cast<unsigned long> (ots * (double) Shuttle::PPQ));
             }
         }
 
@@ -95,6 +95,6 @@ MidiSequencePlayer::getLoopRepeatIndex() const
 double
 MidiSequencePlayer::getLoopBeatPosition() const
 {
-    return shuttle->getPositionBeats() - (getLoopRepeatIndex() * getBeatLength());
+    return shuttle->getPositionBeats() - static_cast<double> (getLoopRepeatIndex() * getBeatLength());
 }
 

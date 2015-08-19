@@ -26,18 +26,26 @@
  #error "Incorrect use of JUCE cpp file"
 #endif
 
+#include <map>
 #include "AppConfig.h"
 #include "element_base.h"
 
 /* OSC support */
-#include "osc/oscpack.cpp"
+#if ELEMENT_OSC
+ #include "osc/oscpack.cpp"
+#endif
+
+#if JUCE_WINDOWS
+ #include <windows.h>
+#endif
 
 namespace Element {
-
 #include "core/Arc.cpp"
+#include "core/RingBuffer.cpp"
+#include "core/Semaphore.cpp"
+#include "core/WorkThread.cpp"
+#include "core/WorldBase.cpp"
 #include "time/TimeScale.cpp"
 #include "util/FileHelpers.cpp"
 #include "util/UUID.cpp"
-#include "core/WorldBase.cpp"
-    
 }

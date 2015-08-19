@@ -19,7 +19,7 @@
 
 
 
-static XmlElement* createNodeXml (GraphProcessor::Node* const node) noexcept;
+static XmlElement* createNodeXml (GraphNode* const node) noexcept;
 
 GraphDocument::GraphDocument (GraphController& g, PluginManager& p)
     : FileBasedDocument (graphSuffix, graphWildcard,
@@ -65,15 +65,10 @@ void GraphDocument::restoreFromXml (const XmlElement& xml)
 
     forEachXmlChildElementWithTagName (xml, e, "arc")
     {
-        std::clog << "connecting " <<
-        graph.addConnection ((uint32)e->getIntAttribute ("source-block"),
+        graph.addConnection ((uint32) e->getIntAttribute ("source-block"),
                              e->getIntAttribute ("source-port"),
-                             (uint32)e->getIntAttribute ("dest-block"),
-                             e->getIntAttribute ("dest-port")) << std::endl;
-        std::clog << e->getIntAttribute ("source-block") << " "
-                  << e->getIntAttribute ("source-port") << " "
-                  << e->getIntAttribute ("dest-block") << " "
-                  << e->getIntAttribute ("dest-port") << std::endl;
+                             (uint32) e->getIntAttribute ("dest-block"),
+                             e->getIntAttribute ("dest-port"));
     }
 
     graph.removeIllegalConnections();
@@ -119,9 +114,9 @@ void GraphDocument::setLastDocumentOpened (const File& /*file*/)
 
 
 //==============================================================================
-static XmlElement* createNodeXml (GraphProcessor::Node* const node) noexcept
+static XmlElement* createNodeXml (GraphNode* const node) noexcept
 {
-    AudioPluginInstance* plugin = dynamic_cast <AudioPluginInstance*> (node->audioProcessor());
+    AudioPluginInstance* plugin = dynamic_cast <AudioPluginInstance*> (node->getProcessor());
     if (plugin == nullptr)
     {
         jassertfalse;
@@ -144,7 +139,7 @@ static XmlElement* createNodeXml (GraphProcessor::Node* const node) noexcept
 
     XmlElement* state = new XmlElement ("state");
     MemoryBlock m;
-    node->audioProcessor()->getStateInformation (m);
+    node->getProcessor()->getStateInformation (m);
     state->addTextElement (m.toBase64Encoding());
     e->addChildElement (state);
 
@@ -153,15 +148,13 @@ static XmlElement* createNodeXml (GraphProcessor::Node* const node) noexcept
 
 void GraphDocument::createNodeFromXml (const XmlElement& xml)
 {
-    std::clog << "GraphDocument::createNodeFromXml\n";
     PluginDescription pd;
-
     forEachXmlChildElement (xml, e)
     {
         if (pd.loadFromXml (*e))
             break;
     }
-#if 0
+#if 1
     String errorMessage;
     Processor* instance = plugins.createPlugin (pd, errorMessage);
 #else
@@ -169,20 +162,19 @@ void GraphDocument::createNodeFromXml (const XmlElement& xml)
 #endif
     if (instance == nullptr)
     {
-        // xxx handle ins + outs
     }
 
     if (instance == nullptr)
         return;
 
-    GraphProcessor::Node::Ptr node (
+    GraphNodePtr node (
                 graph.getGraph().addNode (instance, xml.getIntAttribute ("uid")));
 
     if (const XmlElement* const state = xml.getChildByName ("state"))
     {
         MemoryBlock m;
         m.fromBase64Encoding (state->getAllSubText());
-        node->audioProcessor()->setStateInformation (m.getData(), (int) m.getSize());
+        node->getProcessor()->setStateInformation (m.getData(), (int) m.getSize());
     }
 
     node->properties.set ("x", xml.getDoubleAttribute ("x"));

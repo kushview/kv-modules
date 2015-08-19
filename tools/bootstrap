@@ -1,8 +1,0 @@
-#!/bin/bash
-
-mkdir -p build/tools
-if [ -f "build/tools/bootstrap" ]; then exit 0; fi
-
-bash tools/patch-namespace juce element
-touch build/tools/bootstrap
-exit 0

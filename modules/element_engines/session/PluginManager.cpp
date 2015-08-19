@@ -19,136 +19,114 @@
 
 #include "./PluginWrapper.h"
 
-#if JUCE_MODULE_AVAILABLE_lvtk_plugins
-using namespace lvtk;
-#endif
+class PluginManager::Private
+{
+public:
+    Private()
+        : sampleRate (44100.0f),
+          blockSize (512)
+    {  }
 
-    class PluginManager::Private
-    {
-    public:
+    ~Private() {  }
 
-        Private()
-            : sampleRate (44100.0f),
-              blockSize (1024)
-        {  }
+    KnownPluginList allPlugins;
+    AudioPluginFormatManager formats;
 
-        ~Private() {  }
-
-        KnownPluginList allPlugins;
-        AudioPluginFormatManager formats;
-        
-       #if JUCE_MODULE_AVAILABLE_lvtk_plugins
-        OptionalPtr<LV2World> lv2;
-        OptionalPtr<SymbolMap> symbols;
-       #endif
-
-        double sampleRate;
-        int    blockSize;
-    };
-
-    PluginManager::PluginManager()
-    {
-        priv = new Private();
-      #if JUCE_MODULE_AVAILABLE_lvtk_plugins
-        priv->symbols.setOwned (new SymbolMap ());
-        priv->lv2.setOwned (new LV2World());
-      #endif
-    }
-
-   #if JUCE_MODULE_AVAILABLE_lvtk_plugins
-    PluginManager::PluginManager (LV2World& lv2)
-    {
-        priv = new Private();
-        priv->lv2.setNonOwned (&lv2);
-    }
+   #if ELEMENT_LV2_PLUGIN_HOST
+    OptionalPtr<LV2World> lv2;
+    OptionalPtr<SymbolMap> symbols;
    #endif
 
-    PluginManager::~PluginManager()
-    {
-        priv = nullptr;
-    }
+    double sampleRate;
+    int    blockSize;
+};
 
-    void PluginManager::addDefaultFormats()
-    {
-        formats().addDefaultFormats();
-       #if JUCE_MODULE_AVAILABLE_lvtk_plugins
-        addFormat (new LV2PluginFormat (*priv->lv2));
-       #endif
-    }
+PluginManager::PluginManager()
+{
+    priv = new Private();
+   #if ELEMENT_LV2_PLUGIN_HOST
+    priv->symbols.setOwned (new SymbolMap ());
+    priv->lv2.setOwned (new LV2World());
+   #endif
+}
 
-    void
-    PluginManager::addFormat (AudioPluginFormat* fmt)
-    {
-        formats().addFormat (fmt);
-    }
+PluginManager::~PluginManager()
+{
+    priv = nullptr;
+}
 
-    Processor*
-    PluginManager::createPlugin (const PluginDescription &desc, String &errorMsg)
+void PluginManager::addDefaultFormats()
+{
+    formats().addDefaultFormats();
+   #if ELEMENT_LV2_PLUGIN_HOST
+    addFormat (new LV2PluginFormat (*priv->lv2));
+   #endif
+}
+
+void PluginManager::addFormat (AudioPluginFormat* fmt)
+{
+    formats().addFormat (fmt);
+}
+
+Processor* PluginManager::createPlugin (const PluginDescription &desc, String &errorMsg)
+{
+    if (AudioPluginInstance* instance = formats().createPluginInstance (desc, priv->sampleRate, priv->blockSize, errorMsg))
     {
-        if (AudioPluginInstance* instance = formats().createPluginInstance (desc, priv->sampleRate, priv->blockSize, errorMsg))
+        if (Processor* plugin = dynamic_cast<Processor*> (instance))
         {
-            if (Processor* plugin = dynamic_cast<Processor*> (instance))
-            {
-                return plugin;
-            }
-            else
-            {
-                return new PluginWrapper (instance);
-            }
+            return plugin;
         }
-
-        return nullptr;
-    }
-
-    AudioPluginFormat*
-    PluginManager::format (const String& name)
-    {
-        for (int i = 0; i < formats().getNumFormats(); ++i)
+        else
         {
-            AudioPluginFormat* fmt = priv->formats.getFormat (i);
-            if (fmt && fmt->getName() == name)
-                return fmt;
+            return new PluginWrapper (instance);
         }
-
-        return nullptr;
     }
 
-    AudioPluginFormatManager&
-    PluginManager::formats()
+    return nullptr;
+}
+
+AudioPluginFormat* PluginManager::format (const String& name)
+{
+    for (int i = 0; i < formats().getNumFormats(); ++i)
     {
-        return priv->formats;
+        AudioPluginFormat* fmt = priv->formats.getFormat (i);
+        if (fmt && fmt->getName() == name)
+            return fmt;
     }
 
+    return nullptr;
+}
 
-    KnownPluginList&
-    PluginManager::availablePlugins()
-    {
-        return priv->allPlugins;
-    }
+AudioPluginFormatManager& PluginManager::formats()
+{
+    return priv->formats;
+}
 
-    void
-    PluginManager::saveUserPlugins (ApplicationProperties& settings)
-    {
-        ScopedXml elm (priv->allPlugins.createXml());
-        settings.getUserSettings()->setValue ("plugin-list", elm.get());
-    }
 
-    void
-    PluginManager::setPlayConfig (double sampleRate, int blockSize)
-    {
-        priv->sampleRate = sampleRate;
-        priv->blockSize  = blockSize;
-    }
+KnownPluginList& PluginManager::availablePlugins()
+{
+    return priv->allPlugins;
+}
 
-    void
-    PluginManager::restoreUserPlugins (ApplicationProperties& settings)
-    {
-        if (ScopedXml xml = settings.getUserSettings()->getXmlValue ("plugin-list"))
-            restoreUserPlugins (*xml);
-    }
+void PluginManager::saveUserPlugins (ApplicationProperties& settings)
+{
+    ScopedXml elm (priv->allPlugins.createXml());
+    settings.getUserSettings()->setValue ("plugin-list", elm.get());
+}
 
-    void
-    PluginManager::restoreUserPlugins (const XmlElement& xml)
-    {
-        priv->allPlugins.recreateFromXml (xml);
-    }
+void PluginManager::setPlayConfig (double sampleRate, int blockSize)
+{
+    priv->sampleRate = sampleRate;
+    priv->blockSize  = blockSize;
+}
+
+void PluginManager::restoreUserPlugins (ApplicationProperties& settings)
+{
+    if (ScopedXml xml = settings.getUserSettings()->getXmlValue ("plugin-list"))
+        restoreUserPlugins (*xml);
+}
+
+void PluginManager::restoreUserPlugins (const XmlElement& xml)
+{
+    priv->allPlugins.recreateFromXml (xml);
+}

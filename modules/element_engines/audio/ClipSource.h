@@ -14,20 +14,17 @@ class ClipFactory;
 class ClipData
 {
 public:
-
     ClipData() { }
     virtual ~ClipData() { }
 
-    virtual void prepare (double rate, int32 blockSize) { }
+    virtual void prepare (double /*rate*/, int32 /*blockSize*/) { }
     virtual void unprepare () { }
 
     MidiMessageSequence midi;
 
 private:
-
     friend class ClipFactory;
     int64 hash;
-
 };
 
 class ClipSource :  public LinkedList<ClipSource>::Link,
@@ -35,7 +32,6 @@ class ClipSource :  public LinkedList<ClipSource>::Link,
                     public ValueListener
 {
 public:
-
     typedef AudioPlayHead::CurrentPositionInfo Position;
 
     ClipSource();
@@ -80,7 +76,6 @@ public:
     void valueChanged (Value &value);
 
 protected:
-
     inline double getParentRate() const
     {
         return (double) parentRate.getValue();
@@ -95,8 +90,7 @@ protected:
     }
 
     inline void setTimeSeconds (const double in, const double len) {
-        setTimeFrames (std::floor (in * getParentRate()),
-                       llrint (len * getParentRate()));
+        setTimeFrames ((int64) std::floor (in * getParentRate()), llrint (len * getParentRate()));
     }
 
     inline void setTimeFrames (int64 in, int64 len)
@@ -108,7 +102,6 @@ protected:
     inline const ClipData* getClipData() const { return data.get(); }
 
 private:
-
     friend class ClipFactory;
     friend class Sequencer;
     friend class SequencerTrack;

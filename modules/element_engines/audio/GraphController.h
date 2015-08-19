@@ -31,25 +31,21 @@ class GraphController;
 class PluginManager;
 
 
-//==============================================================================
 /**
     A collection of filters and some connections between them.
-*/
+ */
 class GraphController :  public Controller,
                          public ChangeBroadcaster
 {
 public:
-
     static const uint32 invalidNodeId = (uint32)-1;
 
-    typedef GraphProcessor::Node::Ptr NodePtr;
+    typedef GraphNodePtr NodePtr;
 
-    //==============================================================================
     GraphController (GraphProcessor&, PluginManager&);
     ~GraphController();
 
-    //==============================================================================
-    GraphProcessor& getGraph() noexcept         { return processor; }
+    GraphProcessor& getGraph() noexcept { return processor; }
     GraphProcessor& graph() { return getGraph(); }
 
     PluginManager& plugins() { return pluginManager; }
@@ -69,7 +65,6 @@ public:
     void setNodePosition (const int nodeId, double x, double y);
     void getNodePosition (const int nodeId, double& x, double& y) const;
 
-    //==============================================================================
     int getNumConnections() const noexcept;
     const GraphProcessor::Connection* getConnection (const int index) const noexcept;
 
@@ -97,7 +92,6 @@ public:
 
 
 private:
-
     PluginManager& pluginManager;
     GraphProcessor& processor;
 
@@ -105,7 +99,7 @@ private:
 
     uint32 lastUID;
     uint32 getNextUID() noexcept;
-    inline void changed() { changedSignal(); /* emit signal */ }
+    inline void changed() { sendChangeMessage(); }
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphController)
 };

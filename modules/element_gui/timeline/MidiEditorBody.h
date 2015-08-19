@@ -77,8 +77,9 @@
         template<class NoteSink>
         inline void foreachNote (NoteSink sink)
         {
-            for (auto* note : notes)
-                if (note) sink (note);
+			for (int i = 0; i < notes.size(); ++i)
+				if (NoteClipItem* note = notes.getUnchecked(i))
+					sink (note);
         }
 
         /** Add a note to the editor. */
@@ -123,8 +124,8 @@
         LassoComponent<NoteClipItem*> lasso;
         NoteSelection selected;
 
-        bool trackDrag = false;
-        bool keyboardDrag = false;
+        bool trackDrag;
+        bool keyboardDrag;
         int trackDeltaY, dragTrack;
 
         Array<NoteClipItem*> notes;

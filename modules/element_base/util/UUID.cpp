@@ -20,10 +20,7 @@
 
 namespace Utility {
 
-
-    //==============================================================================
-    String
-    createAlphaNumericUID()
+    String createAlphaNumericUID()
     {
         String uid;
         const char chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -40,14 +37,12 @@ namespace Utility {
         return uid;
     }
 
-    String
-    hexString8Digits (int value)
+    String hexString8Digits (int value)
     {
         return String::toHexString (value).paddedLeft ('0', 8);
     }
 
-    String
-    createGUID (const String& seed)
+    String createGUID (const String& seed)
     {
         const String hex (MD5 ((seed + "_guidsalt").toUTF8()).toHexString().toUpperCase());
 
@@ -58,5 +53,4 @@ namespace Utility {
              + "-" + hex.substring (20, 32)
              + "}";
     }
-
 }

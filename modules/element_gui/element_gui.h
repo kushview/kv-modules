@@ -20,15 +20,8 @@
 #ifndef ELEMENT_GUI_H_INCLUDED
 #define ELEMENT_GUI_H_INCLUDED
 
-#include "../element_models/element_models.h"
-
-#if JUCE_MODULE_AVAILABLE_element_engines
- #include "../element_engines/element_engines.h"
- #include "modules/juce_audio_processors/juce_audio_processors.h"
-#endif
-
 #include "modules/juce_gui_basics/juce_gui_basics.h"
-
+#include "../element_models/element_models.h"
 
 namespace Element {
 
@@ -55,7 +48,7 @@ namespace Element {
     
 // misc widgets
 #include "base/DecibelScaleComponent.h"
-#include "base/HighQualityMeter.h"
+#include "base/DigitalMeter.h"
 #include "base/IconButton.h"
 #include "base/SkinDial.h"
 #include "base/TreeviewBase.h"

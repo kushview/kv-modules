@@ -54,16 +54,21 @@ SequencerTrack::prepareToPlay (double sampleRate, int blockSize)
     setPlayConfigDetails (getNumInputChannels(), getNumOutputChannels(),
                           sampleRate, blockSize);
 
-    for (ClipSource* clip : bin) {
+	ClipSource* clip = bin.first();
+    while (clip) {
         clip->prepareToPlay (blockSize, sampleRate);
+		clip = clip->next();
     }
 }
 
 void
 SequencerTrack::releaseResources()
 {
-    for (ClipSource* clip : bin) {
+	ClipSource* clip = bin.first();
+    while (clip)
+	{
         clip->releaseResources();
+		clip = clip->next();
     }
 }
 

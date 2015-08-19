@@ -15,10 +15,9 @@
   along with this software.  If not, see <http://www.gnu.org/licenses/>.
 
 */
-/** @file uris.hpp */
 
-#ifndef ELEMENT_URIS_H
-#define ELEMENT_URIS_H
+#ifndef ELEMENT_URIS_H_OLD
+#define ELEMENT_URIS_H_OLD
 
 #if 0
 #include <string>

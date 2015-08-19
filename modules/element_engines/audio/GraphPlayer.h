@@ -22,18 +22,13 @@
 
 class GraphProcessor;
 
-class JUCE_API  GraphPlayer    : public AudioIODeviceCallback,
-                                 public MidiInputCallback
+class  GraphPlayer : public AudioIODeviceCallback,
+                     public MidiInputCallback
 {
 public:
-
-    //==============================================================================
     GraphPlayer();
-
-    /** Destructor. */
     virtual ~GraphPlayer();
 
-    //==============================================================================
     /** Sets the processor that should be played.
 
         The processor that is passed in will not be deleted or owned by this object.
@@ -51,7 +46,6 @@ public:
     */
     MidiMessageCollector& midiCollector() { return messageCollector; }
 
-    //==============================================================================
     /** @internal */
     void audioDeviceIOCallback (const float** inputChannelData,
                                 int totalNumInputChannels,

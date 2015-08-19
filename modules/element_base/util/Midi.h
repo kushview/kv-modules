@@ -86,12 +86,11 @@ namespace Midi {
         return noteToText (127 - note, zeroOctave);
     }
 
-    inline void
-    split (uint16 src, MidiByte* dst)
+    inline void split (uint16 src, MidiByte* dst)
     {
         // XXX:  This isn't correct
-        dst [0] = src / 128;
-        dst [1] = src % 128;
+        dst [0] = static_cast<MidiByte> (src / 128);
+        dst [1] = static_cast<MidiByte> (src % 128);
     }
 
     inline bool
@@ -128,20 +127,10 @@ namespace Midi {
         /** Update the bank from a MIDI bank message. Does nothing if @c msg
             isn't MIDI cc 0 or cc 32 */
         inline void
-        update (const MidiByte* msg)
+        update (const MidiByte*)
         {
-            switch ((int32) lv2_midi_message_type (msg))
-            {
-            case LV2_MIDI_CTL_MSB_BANK:
-                msb = msg [2];
-                break;
-            case LV2_MIDI_CTL_LSB_BANK:
-                lsb = msg [2];
-                break;
-            default:
-                    return;
-                break;
-            }
+            /* needs implemented */
+            jassertfalse;
         }
     };
 

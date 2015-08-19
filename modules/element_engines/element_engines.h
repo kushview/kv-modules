@@ -20,33 +20,26 @@
 #ifndef ELEMENT_ENGINES_H_INCLUDED
 #define ELEMENT_ENGINES_H_INCLUDED
 
-#include "../element_models/element_models.h"
 #include "modules/juce_gui_extra/juce_gui_extra.h"
 #include "modules/juce_audio_devices/juce_audio_devices.h"
 #include "modules/juce_audio_processors/juce_audio_processors.h"
-
-#ifdef JUCE_MODULE_AVAILABLE_lvtk_plugins
- #include "modules/lvtk_plugins/lvtk_plugins.h"
-#else
- #include "modules/lvtk_core/lvtk_core.h"
-#endif
-
-#include <boost/intrusive_ptr.hpp>
-
+#include "../element_models/element_models.h"
 
 namespace Element {
-    
-#include "audio/PortType.h"
+
+class GraphProcessor;
+//#include "audio/PortType.h"
 #include "audio/Processor.h"
     
-#include "audio/Buffer.h"
-#include "audio/AtomBuffer.h"
-#include "audio/BufferFactory.h"
+//#include "audio/Buffer.h"
+//#include "audio/AtomBuffer.h"
+//#include "audio/BufferFactory.h"
 #include "audio/ClipFactory.h"
 #include "audio/ClipSource.h"
 #include "audio/DataType.h"
 #include "audio/Engine.h"
-    
+
+#include "audio/GraphNode.h"
 #include "audio/GraphProcessor.h"
 #include "audio/GraphController.h"
 #include "audio/GraphDocument.h"
@@ -64,8 +57,8 @@ namespace Element {
 #include "session/AppController.h"
 #include "session/DeviceManager.h"
 #include "session/PluginManager.h"
+#include "session/PluginWrapper.h"
 #include "session/SessionBase.h"
-    
 }
 
 #endif   // ELEMENT_MODELS_H_INCLUDED

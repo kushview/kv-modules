@@ -20,19 +20,16 @@
 #ifndef ELEMENT_NODE_MODEL_H
 #define ELEMENT_NODE_MODEL_H
 
+class NodeModel : public ObjectModel
+{
+public:
 
+    NodeModel (const ValueTree& data)
+        : ObjectModel (data) { }
 
-    class NodeModel : public ObjectModel
-    {
-    public:
+    NodeModel (const Identifier& nodeType)
+        : ObjectModel (nodeType) { }
 
-        NodeModel (const ValueTree& data)
-            : ObjectModel (data) { }
-
-        NodeModel (const Identifier& nodeType)
-            : ObjectModel (nodeType) { }
-
-    };
-
+};
 
 #endif // ELEMENT_NODE_MODEL_H

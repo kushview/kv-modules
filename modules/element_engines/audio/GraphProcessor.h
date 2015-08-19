@@ -22,8 +22,6 @@
 #ifndef ELEMENT_GRAPH_PROCESSOR_H
 #define ELEMENT_GRAPH_PROCESSOR_H
 
-
-//==============================================================================
 /**
     A type of AudioProcessor which plays back a graph of other AudioProcessors.
 
@@ -41,8 +39,7 @@ class JUCE_API  GraphProcessor :  public Processor,
                                   public AsyncUpdater
 {
 public:
-
-    //==============================================================================
+    
     /** Creates an empty graph. */
     GraphProcessor();
 
@@ -51,78 +48,20 @@ public:
     */
     ~GraphProcessor();
 
-    //==============================================================================
-    /** Represents one of the nodes, or processors, in an AudioProcessorGraph.
-
-        To create a node, call ProcessorGraph::addNode().
-    */
-    class JUCE_API  Node   : public ReferenceCountedObject
-    {
-    public:
-        //==============================================================================
-        /** The ID number assigned to this node.
-            This is assigned by the graph that owns it, and can't be changed.
-        */
-        const uint32 nodeId;
-
-        /** The actual processor object that this node represents. */
-        Processor* audioProcessor() const noexcept           { return proc; }
-
-        /** The actual processor object dynamic_cast'd to ProcType */
-        template<class ProcType>
-        inline ProcType* processor() const { return dynamic_cast<ProcType*> (proc.get()); }
-
-        /** A set of user-definable properties that are associated with this node.
-
-            This can be used to attach values to the node for whatever purpose seems
-            useful. For example, you might store an x and y position if your application
-            is displaying the nodes on-screen.
-        */
-        NamedValueSet properties;
-
-        /** Returns true if the process is a graph */
-        bool isSubgraph() const noexcept;
-
-        //==============================================================================
-        /** A convenient typedef for referring to a pointer to a node object. */
-        typedef ReferenceCountedObjectPtr <Node> Ptr;
-
-    private:
-        //==============================================================================
-        friend class GraphProcessor;
-
-        const ScopedPointer<Processor> proc;
-        bool isPrepared;
-
-        Node (uint32 nodeId, Processor*) noexcept;
-
-        void setParentGraph (GraphProcessor*) const;
-        void prepare (double sampleRate, int blockSize, GraphProcessor*);
-        void unprepare();
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (Node)
-    };
-
-    //==============================================================================
-    /** Represents a connection between two channels of two nodes in an AudioProcessorGraph.
+   /** Represents a connection between two channels of two nodes in an AudioProcessorGraph.
 
         To create a connection, use AudioProcessorGraph::addConnection().
     */
     struct JUCE_API  Connection :  public Arc
     {
     public:
-        //==============================================================================
         Connection (uint32 sourceNode, uint32 sourcePort,
                     uint32 destNode, uint32 destPort) noexcept;
 
     private:
-
-        //==============================================================================
         JUCE_LEAK_DETECTOR (Connection)
-
     };
 
-    //==============================================================================
     /** Deletes all nodes and connections from this graph.
         Any processor objects in the graph will be deleted.
     */
@@ -135,13 +74,13 @@ public:
         This will return nullptr if the index is out of range.
         @see getNodeForId
     */
-    Node* getNode (const int index) const                           { return nodes [index]; }
+    GraphNode* getNode (const int index) const                           { return nodes [index]; }
 
     /** Searches the graph for a node with the given ID number and returns it.
         If no such node was found, this returns nullptr.
         @see getNode
     */
-    Node* getNodeForId (const uint32 nodeId) const;
+    GraphNode* getNodeForId (const uint32 nodeId) const;
 
     /** Adds a node to the graph.
 
@@ -154,7 +93,7 @@ public:
 
         If this succeeds, it returns a pointer to the newly-created node.
     */
-    Node* addNode (Processor* newProcessor, uint32 nodeId = 0);
+    GraphNode* addNode (Processor* newProcessor, uint32 nodeId = 0);
 
     /** Deletes a node within the graph which has the specified ID.
 
@@ -162,7 +101,9 @@ public:
     */
     bool removeNode (uint32 nodeId);
 
-    //==============================================================================
+    /** Builds an array of ordered nodes */
+    void getOrderedNodes (ReferenceCountedArray<GraphNode>& res);
+    
     /** Returns the number of connections in the graph. */
     int getNumConnections() const                                       { return connections.size(); }
 
@@ -224,7 +165,6 @@ public:
     */
     bool removeIllegalConnections();
 
-    //==============================================================================
     /** A special number that represents the midi channel of a node.
 
         This is used as a channel index value if you want to refer to the midi input
@@ -232,8 +172,6 @@ public:
     */
     static const int midiChannelIndex;
 
-
-    //==============================================================================
     /** A special type of Processor that can live inside an ProcessorGraph
         in order to use the audio that comes into and out of the graph itself.
 
@@ -323,7 +261,6 @@ public:
         void setParentGraph (GraphProcessor*);
 
     private:
-
         const IODeviceType type;
         GraphProcessor* graph;
 
@@ -332,17 +269,13 @@ public:
 
 
 
-    //==============================================================================
     // AudioProcessor methods:
 
     virtual const String getName() const;
-
     virtual void prepareToPlay (double sampleRate, int estimatedBlockSize);
     virtual void releaseResources();
-
     void processBlock (AudioSampleBuffer&, MidiBuffer&);
     void reset();
-
     virtual const String getInputChannelName (int channelIndex) const;
     virtual const String getOutputChannelName (int channelIndex) const;
     virtual bool isInputChannelStereoPair (int index) const;
@@ -376,17 +309,15 @@ public:
     inline ValueTree getGraphState() const { return graphState.graph; }
 
 protected:
-
+    virtual GraphNode* createNode (uint32 nodeId, Processor* proc) { return new GraphNode (nodeId, proc); }
     virtual void preRenderNodes() { }
     virtual void postRenderNodes() { }
 
 private:
-    //==============================================================================
-
     typedef ArcTable<Connection> LookupTable;
-
-    ReferenceCountedArray <Node> nodes;
-    OwnedArray <Connection> connections;
+    ReferenceCountedArray<GraphNode> nodes;
+    OwnedArray<Connection> connections;
+    uint32 ioNodes [AudioGraphIOProcessor::numDeviceTypes];
 
     struct GraphState {
         ValueTree graph;

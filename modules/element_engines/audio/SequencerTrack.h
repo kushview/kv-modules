@@ -41,10 +41,10 @@ public:
     void processBlock (AudioSampleBuffer &buffer, MidiBuffer &midi);
     void processBlockBypassed (AudioSampleBuffer&, MidiBuffer&);
 
-    virtual const String getInputChannelName (int channelIndex) const { return String::empty; }
-    virtual const String getOutputChannelName (int channelIndex) const { return String::empty; }
-    virtual bool isInputChannelStereoPair (int index) const { return false; }
-    virtual bool isOutputChannelStereoPair (int index) const { return false; }
+    virtual const String getInputChannelName (int /*channelIndex*/) const { return String::empty; }
+    virtual const String getOutputChannelName (int /*channelIndex*/) const { return String::empty; }
+    virtual bool isInputChannelStereoPair (int /*index*/) const { return false; }
+    virtual bool isOutputChannelStereoPair (int /*index*/) const { return false; }
     virtual void numChannelsChanged() { }
 
     virtual bool silenceInProducesSilenceOut() const { return false; }
@@ -57,23 +57,23 @@ public:
     virtual bool hasEditor() const { return false; }
 
     virtual int getNumParameters() { return 0; }
-    const String getParameterName (int index) { return String::empty; }
-    float getParameter (int index) { return 0.0f; }
-    const String getParameterText (int index) { return String::empty; }
-    virtual String getParameterName (int parameterIndex, int maximumStringLength) { return String::empty; }
-    virtual String getParameterText (int parameterIndex, int maximumStringLength) { return String::empty; }
+    const String getParameterName (int /*index*/) { return String::empty; }
+    float getParameter (int /*index*/) { return 0.0f; }
+    const String getParameterText (int /*index*/) { return String::empty; }
+    virtual String getParameterName (int /*parameterIndex*/, int /*maximumStringLength*/) { return String::empty; }
+    virtual String getParameterText (int /*parameterIndex*/, int /*maximumStringLength*/) { return String::empty; }
     virtual void setParameter (int, float) { }
 
     virtual int getNumPrograms() { return 0; }
     virtual int getCurrentProgram() { return 0; }
-    virtual void setCurrentProgram (int index) { }
-    virtual const String getProgramName (int index) { return String::empty; }
-    virtual void changeProgramName (int index, const String& newName) { }
+    virtual void setCurrentProgram (int /*index*/) { }
+    virtual const String getProgramName (int /*index*/) { return String::empty; }
+    virtual void changeProgramName (int /*index*/, const String& /*newName*/) { }
 
-    virtual void getStateInformation (MemoryBlock& destData) { }
-    virtual void setStateInformation (const void* data, int sizeInBytes) { }
+    virtual void getStateInformation (MemoryBlock& /*destData*/) { }
+    virtual void setStateInformation (const void* /*data*/, int /*sizeInBytes*/) { }
 
-    virtual void fillInPluginDescription (PluginDescription &description) const { }
+    virtual void fillInPluginDescription (PluginDescription& /*description*/) const { }
 
     inline ClipSource* firstClip()  const { return bin.first(); }
     inline ClipSource* lastClip()   const { return bin.last(); }

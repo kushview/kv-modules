@@ -20,44 +20,69 @@
 #ifndef ELEMENT_BASE_H_INCLUDED
 #define ELEMENT_BASE_H_INCLUDED
 
-#include "modules/lvtk_core/lvtk_core.h"
 #include "modules/juce_cryptography/juce_cryptography.h"
 
-#include <atomic>
-#include <set>
+#if _MSC_VER
+ #pragma warning( disable : 4305 )
+ #pragma warning( disable : 4512 )
+ #pragma warning( disable : 4996 )
+ #if _MSC_VER >= 1800
+  #include <atomic>
+ #endif
+#else
+ #include <atomic>
+#endif
 
+#include <set>
 #include <boost/bind.hpp>
 #include <boost/intrusive/list.hpp>
 #include <boost/intrusive/slist_hook.hpp>
 #include <boost/signals2/signal.hpp>
 
+#if _MSC_VER
+ #ifdef min
+  #undef min
+ #endif
+ #ifdef max
+  #undef max
+ #endif
+
+ #if _MSC_VER < 1800
+  #define llrint(x) juce::roundDoubleToInt(x)
+ #endif
+#endif
 
 /** Config: ELEMENT_OSC
-    Set this to enable OSC handling/networking (default is enabled)
+    Set this to enable OSC handling/networking (default is disabled)
  */
 #ifndef ELEMENT_OSC
- #define ELEMENT_OSC 1
+ #define ELEMENT_OSC 0
 #endif
 
 /* OSC Support */
-#include "osc/oscpack.h"
+#if ELEMENT_OSC
+ #include "osc/oscpack.h"
+#endif
 
 namespace Element {
-using namespace LVTK_JUCE_NAMESPACE;
-
+using namespace juce;
 #include "core/Arc.h"
 #include "core/Atomic.h"
 #include "core/Controller.h"
 #include "core/Intrusive.h"
 #include "core/LinkedList.h"
+#include "core/Module.h"
 #include "core/Monitor.h"
+#include "core/Parameter.h"
 #include "core/Pointer.h"
+#include "core/PortType.h"
+#include "core/RingBuffer.h"
+#include "core/Semaphore.h"
 #include "core/Signals.h"
 #include "core/Slugs.h"
 #include "core/Types.h"
-#include "core/URIs.h"
-#include "core/Module.h"
 #include "core/WorldBase.h"
+#include "core/WorkThread.h"
 
 #include "time/DelayLockedLoop.h"
 #include "time/Tempo.h"

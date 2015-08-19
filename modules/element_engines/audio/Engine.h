@@ -20,14 +20,14 @@
 #ifndef ELEMENT_ENGINE_BASE_H
 #define ELEMENT_ENGINE_BASE_H
 
-
-class Engine
+class Engine : public ReferenceCountedObject
 {
 public:
-    
     virtual ~Engine() { }
     virtual AudioIODeviceCallback& callback() = 0;
-    
+    virtual MidiInputCallback& getMidiInputCallback() = 0;
 };
+
+typedef ReferenceCountedObjectPtr<Engine> EnginePtr;
 
 #endif // ELEMENT_ENGINE_BASE_H

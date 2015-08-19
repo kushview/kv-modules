@@ -34,7 +34,7 @@
         DockItem* createItem (const String& id, const String& name, Dock::Placement placement);
         DockItem* getItem    (const String& id);
 
-        void paint (Graphics& g) { }
+        void paint (Graphics&) { }
 
         void resized();
 
@@ -101,7 +101,7 @@
         void append (DockItem* const item);
         void detachItem (DockItem* item);
 
-        void paint(Graphics& g) { }
+        void paint(Graphics&) { }
         void resized();
     private:
 
@@ -173,13 +173,13 @@
 
         }
 
-        virtual void itemDragEnter (const SourceDetails& source)
+        virtual void itemDragEnter (const SourceDetails&)
         {
             overlay.toFront (false);
             overlay.setVisible (true);
         }
 
-        virtual void itemDragExit (const SourceDetails& source)
+        virtual void itemDragExit (const SourceDetails&)
         {
             overlay.setVisible (false);
         }
@@ -250,22 +250,22 @@
                 for (int i = 0 ; i < getHeight() / (pad + size); ++i)
                 {
                     y = i * (pad + size);
-                    g.fillEllipse (x, y + 3, size, size);
-                    g.fillEllipse (x + 2, y + 3, size, size);
+                    g.fillEllipse ((float)x, (float)y + 3.0f, (float)size, (float)size);
+                    g.fillEllipse ((float)x + 2.0f, (float)y + 3.0f, (float)size, (float)size);
                 }
             }
             
-            void mouseDown (const MouseEvent& ev)
+            void mouseDown (const MouseEvent&)
             {
                 parent.setAlpha(0.9);
                 startDragging("dock-item" ,&parent, Image::null, true);
             }
             
-            void mouseDrag (const MouseEvent& ev)
+            void mouseDrag (const MouseEvent&)
             {
             }
             
-            void mouseUp (const MouseEvent& ev)
+            void mouseUp (const MouseEvent&)
             {
                 parent.setAlpha (1);
             }

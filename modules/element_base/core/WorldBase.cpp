@@ -41,8 +41,7 @@ world_load_module (const File& file)
     return nullptr;
 }
 
-static Module*
-world_load_module (const char* name)
+static Module* world_load_module (const char* name)
 {
     FileSearchPath emodPath (getenv ("ELEMENT_MODULE_PATH"));
 
@@ -64,6 +63,8 @@ world_load_module (const char* name)
     return nullptr;
 }
 
+typedef std::map<const String, Module*> ModuleMap;
+
 class WorldBase::Private
 {
 public:
@@ -73,24 +74,22 @@ public:
         // kill all loaded modules
         OwnedArray<DynamicLibrary> libs;
 
-        for (auto& mod : mods)
+		ModuleMap::iterator it = mods.begin();
+        while (it != mods.end())
         {
-            libs.add ((DynamicLibrary*) mod.second->library);
-            delete mod.second;
+            libs.add ((DynamicLibrary*) it->second->library);
+            delete it->second;
         }
 
         mods.clear();
 
-        for (DynamicLibrary* l : libs)
-            l->close();
+		for (int i = 0; i < libs.size(); ++i)
+			libs.getUnchecked(i)->close();
         libs.clear (true);
     }
 
-    Shared<Engine> engine;
+	
     std::map<const String, Module*> mods;
-
-private:
-
 };
 
 
@@ -104,8 +103,7 @@ WorldBase::~WorldBase()
     priv = nullptr;
 }
 
-int
-WorldBase::executeModule (const char* name)
+int WorldBase::executeModule (const char* name)
 {
     typedef std::map<const String, Module*> MAP;
     MAP::iterator mit = priv->mods.find (name);
@@ -117,10 +115,10 @@ WorldBase::executeModule (const char* name)
     return -1;
 }
 
-bool
-WorldBase::loadModule (const char* name)
+bool WorldBase::loadModule (const char* name)
 {
-    if (contains (priv->mods, name))
+    ModuleMap::iterator it = priv->mods.find(name);
+    if (it == priv->mods.end())
         return true;
 
     if (Module* mod = world_load_module (name))
@@ -131,17 +129,4 @@ WorldBase::loadModule (const char* name)
     }
 
     return false;
-}
-
-Shared<Engine>
-WorldBase::engine()
-{
-    return priv->engine;
-}
-
-void
-WorldBase::setEngine (Shared<Engine> e)
-{
-    Shared<Engine> oe (priv->engine);
-    priv->engine = e;
 }

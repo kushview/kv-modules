@@ -86,6 +86,11 @@ protected:
         if (objectData.isValid())
             objectData.setProperty (prop, objectData.getProperty (prop, defaultValue).toString(), nullptr);
     }
+
+    inline void stabilizeProperty (const Identifier& prop, const var& defaultValue) {
+        if (objectData.isValid())
+            objectData.setProperty (prop, objectData.getProperty (prop, defaultValue), nullptr);
+    }
 };
 
 

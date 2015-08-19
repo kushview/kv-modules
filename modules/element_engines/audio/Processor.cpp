@@ -17,7 +17,90 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if 1
+uint32 Processor::getPortForAudioChannel (AudioProcessor* proc, int chan, bool isInput)
+{
+    return (isInput) ? static_cast<uint32> (chan)
+                     : static_cast<uint32> (proc->getNumInputChannels() + chan);
+}
+
+uint32 Processor::getNumPorts (AudioProcessor* proc)
+{
+    return proc->getNumInputChannels() + proc->getNumOutputChannels() +
+        proc->getNumParameters() + (proc->acceptsMidi() ? 1 : 0) + (proc->producesMidi() ? 1 : 0);
+}
+
+uint32 Processor::getNumPorts (AudioProcessor* proc, PortType type, bool isInput)
+{
+    uint32 count = 0;
+    for (uint32 port = 0; port < getNumPorts(proc); ++port)
+        if (isInput == isPortInput (proc, port) && type == getPortType (proc, port))
+            ++count;
+    return count;
+}
+
+PortType Processor::getPortType (AudioProcessor* proc, uint32 port)
+{
+    const bool haveControls = proc->getNumParameters() > 0;
+    const bool haveAudio = (proc->getNumInputChannels() + proc->getNumOutputChannels()) > 0;
+    
+    if (haveAudio && port < (proc->getNumInputChannels() + proc->getNumOutputChannels()))
+        return PortType::Audio;
+    
+    if (haveControls && port >= (proc->getNumInputChannels() + proc->getNumOutputChannels()) &&
+        port < (proc->getNumInputChannels() + proc->getNumOutputChannels() + proc->getNumParameters()))
+        return PortType::Control;
+    
+    if (port >= (proc->getNumInputChannels() + proc->getNumOutputChannels() + proc->getNumParameters()))
+    {
+        return PortType::Atom;
+    }
+    
+    assert (false);
+    return PortType::Unknown;
+}
+
+bool Processor::isPortInput (AudioProcessor* proc, uint32 port)
+{
+    if (port >= getNumPorts (proc))
+        jassertfalse;
+    
+    const int audioIns = proc->getNumInputChannels();
+    const int totalAudio = audioIns + proc->getNumOutputChannels();
+    const int totalMidi  = (int)proc->acceptsMidi() + (int)proc->producesMidi();
+    const int numControl = proc->getNumParameters();
+    
+    switch (getPortType(proc, port).id())
+    {
+        case PortType::Audio:
+            return (audioIns > 0 && port < audioIns);
+            break;
+        case PortType::Atom:
+        {
+            if (totalMidi == 1 && proc->acceptsMidi())
+                return true;
+            if (totalMidi == 2 && (getNumPorts(proc) - port) == 2)
+                return true;
+            return false;
+            break;
+        }
+        case PortType::Control:
+            return (numControl > 0 && (port >= totalAudio && port < totalAudio + numControl));
+            break;
+        case PortType::Unknown:
+        default:
+            break;
+    }
+    
+    assert (false);
+    return false;
+}
+
+bool Processor::writeToPort (AudioProcessor*, uint32 port, uint32 size, uint32 protocol, void const* data)
+{
+    jassertfalse;
+    return true;
+}
+
 int Processor::getChannelPort (uint32 port)
 {
     jassert (port < (uint32) getNumPorts());
@@ -45,17 +128,12 @@ int Processor::getChannelPort (uint32 port)
 
 uint32 Processor::getNumPorts()
 {
-    return getNumInputChannels() + getNumOutputChannels() +
-    getNumParameters() + (acceptsMidi() ? 1 : 0) + (producesMidi() ? 1 : 0);
+    return getNumPorts (this);
 }
 
 uint32 Processor::getNumPorts (PortType type, bool isInput)
 {
-    uint32 count = 0;
-    for (uint32 port = 0; port < getNumPorts(); ++port)
-        if (isInput == isPortInput (port) && type == getPortType (port))
-            ++count;
-    return count;
+    return getNumPorts (this, type, isInput);
 }
 
 uint32 Processor::getNthPort (PortType type, int index, bool isInput, bool oneBased)
@@ -76,64 +154,17 @@ uint32 Processor::getNthPort (PortType type, int index, bool isInput, bool oneBa
     }
     
     jassertfalse;
-    return LV2UI_INVALID_PORT_INDEX;
+    return ELEMENT_INVALID_PORT;
 }
 
 bool Processor::isPortInput (uint32 port)
 {
-    if (port >= getNumPorts())
-        jassertfalse;
-    
-    const int audioIns = getNumInputChannels();
-    const int totalAudio = audioIns + getNumOutputChannels();
-    const int totalMidi  = (int)acceptsMidi() + (int)producesMidi();
-    const int numControl = getNumParameters();
-    
-    switch (getPortType(port).id())
-    {
-        case PortType::Audio:
-            return (audioIns > 0 && port < audioIns);
-            break;
-        case PortType::Atom:
-        {
-            if (totalMidi == 1 && acceptsMidi())
-                return true;
-            if (totalMidi == 2 && (getNumPorts() - port) == 2)
-                return true;
-            return false;
-            break;
-        }
-        case PortType::Control:
-            return (numControl > 0 && (port >= totalAudio && port < totalAudio + numControl));
-            break;
-        case PortType::Unknown:
-        default:
-            break;
-    }
-    
-    assert (false);
-    return false;
+    return isPortInput (this, port);
 }
 
 PortType Processor::getPortType (uint32 port)
 {
-    const bool haveControls = getNumParameters() > 0;
-    const bool haveAudio = (getNumInputChannels() + getNumOutputChannels()) > 0;
-    
-    if (haveAudio && port < (getNumInputChannels() + getNumOutputChannels()))
-        return PortType::Audio;
-    
-    if (haveControls && port >= (getNumInputChannels() + getNumOutputChannels()) &&
-        port < (getNumInputChannels() + getNumOutputChannels() + getNumParameters()))
-        return PortType::Control;
-    
-    if (port >= (getNumInputChannels() + getNumOutputChannels() + getNumParameters()))
-    {
-        return PortType::Atom;
-    }
-    
-    assert (false);
-    return PortType::Unknown;
+    return getPortType (this, port);
 }
 
 bool Processor::writeControlValue (uint32 port, float value)
@@ -143,6 +174,5 @@ bool Processor::writeControlValue (uint32 port, float value)
 
 bool Processor::writeToPort (uint32 port, uint32 size, uint32 protocol, void const* data)
 {
-    return false;
+    return writeToPort (this, port, size, protocol, data);
 }
-#endif

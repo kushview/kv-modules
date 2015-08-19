@@ -20,18 +20,10 @@
 #ifndef ELEMENT_PLUGIN_MANAGER_H
 #define ELEMENT_PLUGIN_MANAGER_H
 
-class Settings;
-
 class PluginManager
 {
 public:
-
     PluginManager();
-
-   #if JUCE_MODULE_AVAILABLE_lvtk_plugins
-    PluginManager (lvtk::LV2World&);
-   #endif
-
     ~PluginManager();
 
     void addDefaultFormats();

@@ -1,6 +1,6 @@
 /*
     Atomic.h - This file is part of Element
-    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
+    Copyright (C) 2015  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,12 +20,13 @@
 #ifndef ELEMENT_ATOMIC_H
 #define ELEMENT_ATOMIC_H
 
+#if ! _MSC_VER
 template<typename ValueType>
 class AtomicValue
 {
 public:
     explicit AtomicValue (ValueType initial = ValueType())
-        : state (State::ReadWrite)
+        : state (ReadWrite)
     {
         values[0] = values[1] = initial;
         readValue = &values [0];
@@ -36,22 +37,22 @@ public:
     inline bool
     set (ValueType newValue)
     {
-        State expected = State::ReadWrite;
-        if (state.compare_exchange_strong (expected, State::ReadLock))
+        State expected = ReadWrite;
+        if (state.compare_exchange_strong (expected, ReadLock))
         {
             values[1]  = newValue;
             readValue  = &values[1];
-            state      = State::WriteRead;
+            state      = WriteRead;
             return true;
         }
 
-        expected = State::WriteRead;
+        expected = WriteRead;
 
-        if (state.compare_exchange_strong (expected, State::LockRead))
+        if (state.compare_exchange_strong (expected, LockRead))
         {
             values[0] = newValue;
             readValue = &values[0];
-            state     = State::ReadWrite;
+            state     = ReadWrite;
             return true;
         }
 
@@ -84,8 +85,7 @@ public:
     }
 
 private:
-
-    enum class State
+    enum State
     {
         ReadWrite,
         ReadLock,
@@ -104,7 +104,11 @@ class AtomicLock
 public:
 
     AtomicLock()
+#if _MSC_VER
+		: a_mutex(),
+#else
         : a_mutex (ATOMIC_FLAG_INIT),
+#endif
           a_locks (0)
     { }
 
@@ -143,10 +147,132 @@ public:
     inline bool isBusy() const {  return a_locks.get() > 0; }
 
 private:
-
     std::atomic_flag    a_mutex;
     AtomicValue<int>    a_locks;
-
 };
+
+#else //MSVC
+
+template<typename ValueType>
+class AtomicValue
+{
+public:
+    explicit AtomicValue (ValueType initial = ValueType())
+        : state (ReadWrite)
+    {
+        values[0] = values[1] = initial;
+        readValue.set(&values [0]);
+    }
+
+	inline ValueType get() const { return *readValue.get(); }
+
+    inline bool set (ValueType newValue)
+    {
+        State expected = ReadWrite;
+		if (expected == state.compareAndSetValue (expected, ReadLock))
+        {
+            values[1]  = newValue;
+            readValue.set(&values[1]);
+            state      = WriteRead;
+            return true;
+        }
+
+        expected = WriteRead;
+
+		if (expected == state.compareAndSetValue (expected, LockRead))
+        {
+            values[0] = newValue;
+            readValue.set(&values[0]);
+            state     = ReadWrite;
+            return true;
+        }
+
+        return false;
+    }
+
+    inline ValueType
+    exchange (ValueType newValue)
+    {
+        ValueType existingValue = get();
+
+        while (! this->set (newValue))
+            ; // spin a little
+
+        return existingValue;
+    }
+
+    inline void
+    exchange (ValueType nextValue, ValueType& previousValue)
+    {
+        previousValue = exchange (nextValue);
+    }
+
+    inline void
+    exchangeAndDelete (ValueType nextValue)
+    {
+        ValueType ptr = exchange (nextValue);
+        if (ptr != nullptr)
+            delete ptr;
+    }
+
+private:
+
+    enum State
+    {
+        ReadWrite,
+        ReadLock,
+        WriteRead,
+        LockRead
+    };
+
+    Atomic<State>         state;
+    Atomic<ValueType*>    readValue;
+    ValueType             values[2];
+};
+
+#if 1
+class AtomicLock
+{
+public:
+    AtomicLock() { }
+
+    inline bool acquire()
+    {
+		return a_mutex.set(1);
+    }
+
+    inline void release()
+    {
+       while (! a_mutex.set(0))
+			;
+    }
+
+    inline void lock()
+    {
+        a_locks.set (a_locks.get() + 1);
+        if (a_locks.get() == 1)
+            while (! acquire())
+                ; // spin
+    }
+
+    inline void unlock()
+    {
+        a_locks.set (a_locks.get() - 1);
+        if (a_locks.get() < 1)
+        {
+            a_locks.set(0);
+            release();
+        }
+    }
+
+    inline bool isBusy() const {  return a_locks.get() > 0; }
+
+private:
+    AtomicValue<int>    a_mutex;
+    AtomicValue<int>    a_locks;
+};
+
+#endif
+#endif
 
 #endif // ELEMENT_ATOMIC_H

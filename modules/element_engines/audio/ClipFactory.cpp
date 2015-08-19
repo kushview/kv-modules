@@ -36,10 +36,10 @@ public:
 
     ~DummyClip() { }
 
-    void openClip (int blockSize, double sampleRate) { Logger::writeToLog ("DummyClip::open()"); }
+    void openClip (int, double) { Logger::writeToLog ("DummyClip::open()"); }
     void closeClip() { Logger::writeToLog ("DummyClip::close()"); }
 
-    void renderClip (const Position& pos, AudioSourceChannelInfo& chans)
+    void renderClip (const Position& pos, AudioSourceChannelInfo&)
     {
         std::clog << "render: " << pos.timeInSeconds << std::endl;
     }
@@ -48,10 +48,10 @@ public:
         std::clog << "Dummy Clip Seek: " << frame << std::endl;
     }
 
-    void prepareToPlay (int block, double rate) { blockSize = block; }
+    void prepareToPlay (int block, double) { blockSize = block; }
     void releaseResources() { }
 
-    void getNextAudioBlock (const AudioSourceChannelInfo &buffer)
+    void getNextAudioBlock (const AudioSourceChannelInfo &)
     {
         std::clog << "clip pos: " << getNextReadPosition() << "-" << getNextReadPosition() + blockSize << " len: " << frameLength() << std::endl;
     }
@@ -59,7 +59,6 @@ public:
     class Type :  public ClipType
     {
     public:
-
         Type() { }
         ~Type() { }
 
@@ -69,12 +68,10 @@ public:
         }
 
         bool canCreateFrom (const ClipModel& model) { return model.getProperty("type", String::empty) == String("dummy"); }
-        bool canCreateFrom (const File &file) { return false; }
+        bool canCreateFrom (const File&) { return false; }
         ClipSource* createSource (Engine&, const File&) { return new DummyClip(); }
         ClipSource* createSource (Engine&, const ClipModel&) { return new DummyClip(); }
-
     };
-
 };
 
 
@@ -147,13 +144,13 @@ ClipFactory::~ClipFactory()
 }
 
 
-ClipSource*
-ClipFactory::createSource (const ClipModel& model)
+ClipSource* ClipFactory::createSource (const ClipModel& model)
 {
     ClipType* type = nullptr;
-    for (ClipType* t : impl->types)
-        if (t->canCreateFrom (model))
-            { type = t; break; }
+	for (int i = 0; i < impl->types.size(); ++i)
+		if (ClipType* t = impl->types.getUnchecked(i))
+			if (t->canCreateFrom (model))
+				{ type = t; break; }
 
     ClipSource* source = type != nullptr ? type->createSource (impl->engine, model)
                                          : nullptr;

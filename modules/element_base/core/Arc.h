@@ -63,7 +63,7 @@ public:
     {
         for (int i = 0; i < arcs.size(); ++i)
         {
-            const Arc* const c = arcs.getUnchecked(i);
+            const ArcType* const c = arcs.getUnchecked(i);
             
             int index;
             Entry* entry = findEntry (c->destNode, index);

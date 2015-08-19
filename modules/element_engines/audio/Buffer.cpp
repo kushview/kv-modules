@@ -17,6 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if ELEMENT_BUFFER_FACTORY
 
 Buffer::Buffer (DataType dataType_, uint32 subType_)
     : factory (nullptr),
@@ -56,3 +57,4 @@ void intrusive_ptr_release (Buffer* b)
             b->recycle();
 }
 
+#endif

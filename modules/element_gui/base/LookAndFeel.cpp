@@ -34,13 +34,13 @@ Style::Style()
     setColour (ComboBox::buttonColourId, textButtonColour);
     setColour (ScrollBar::thumbColourId, Colour::greyLevel (0.8f).contrasting().withAlpha (0.13f));
 
-    setColour (HighQualityMeter::levelOverColourId, Colours::yellow.darker());
-    setColour (HighQualityMeter::level0dBColourId, Colours::yellowgreen);
-    setColour (HighQualityMeter::level3dBColourId, Colours::lightgreen);
-    setColour (HighQualityMeter::level6dBColourId, Colours::green);
-    setColour (HighQualityMeter::level10dBColourId, Colours::darkgreen.darker());
-    setColour (HighQualityMeter::backgroundColourId, Colours::transparentBlack);
-    setColour (HighQualityMeter::foregroundColourId, Colours::transparentWhite);
+    setColour (DigitalMeter::levelOverColourId, Colours::yellow.darker());
+    setColour (DigitalMeter::level0dBColourId, Colours::yellowgreen);
+    setColour (DigitalMeter::level3dBColourId, Colours::lightgreen);
+    setColour (DigitalMeter::level6dBColourId, Colours::green);
+    setColour (DigitalMeter::level10dBColourId, Colours::darkgreen.darker());
+    setColour (DigitalMeter::backgroundColourId, Colours::transparentBlack);
+    setColour (DigitalMeter::foregroundColourId, Colours::transparentWhite);
 }
 
 Style::~Style() {}

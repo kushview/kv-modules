@@ -23,12 +23,11 @@
 class GraphModel :  public BlockModel
 {
 public:
-    GraphModel() : BlockModel ("graph") { }
+    GraphModel() : BlockModel (Slugs::graph) { }
     ~GraphModel() { }
 
-    inline int32 countBlocks() const {
-        return countChildrenOfType (Slugs::block);
-    }
+    void addPlugin () { }
+    void addSubGraph (const GraphModel& graph);
 };
 
 

@@ -34,7 +34,7 @@ TimelineClip::TimelineClip (TimelineComponent& timeline)
 TimelineClip::~TimelineClip() { }
 
 bool
-TimelineClip::hitTest (int x, int y)
+TimelineClip::hitTest (int /*x*/, int /*y*/)
 {
     return true;
 }
@@ -138,7 +138,7 @@ TimelineClip::mouseDrag (const MouseEvent& ev)
 }
 
 void
-TimelineClip::mouseUp (const MouseEvent &ev)
+TimelineClip::mouseUp (const MouseEvent& /*ev*/)
 {
     isResizing = false;
     trimming = false;

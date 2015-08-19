@@ -29,6 +29,7 @@ class GraphController;
 class FilterComponent;
 class ConnectorComponent;
 class PinComponent;
+class PluginWindow;
 
 /** A panel that displays and edits a GraphProcessor. */
 class GraphEditorBase   : public Component,
@@ -61,7 +62,7 @@ public:
     void dragConnector (const MouseEvent& e);
     void endDraggingConnector (const MouseEvent& e);
 
-    virtual bool isInterestedInDragSource (const SourceDetails& dragSourceDetails) { return true; }
+    virtual bool isInterestedInDragSource (const SourceDetails& /*details*/) { return true; }
     //virtual void itemDragEnter (const SourceDetails& dragSourceDetails);
     //virtual void itemDragMove (const SourceDetails& dragSourceDetails);
     //virtual void itemDragExit (const SourceDetails& dragSourceDetails);
@@ -74,10 +75,16 @@ public:
 
 protected:
     GraphController& graph;
-
+    virtual Component* wrapAudioProcessorEditor (AudioProcessorEditor* ed, GraphNodePtr editorNode);
+    
 private:
+    friend class FilterComponent;
     ScopedPointer<ConnectorComponent> draggingConnector;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphEditorBase)
+    Component* createContainerForNode (GraphNodePtr node, bool useGenericEditor);
+    AudioProcessorEditor* createEditorForNode (GraphNodePtr node, bool useGenericEditor);
+    PluginWindow* getOrCreateWindowForNode (GraphNodePtr f, bool useGeneric);
+    
 };
 
 #endif   // ELEMENT_GUI_GRAPH_EDITOR_H
