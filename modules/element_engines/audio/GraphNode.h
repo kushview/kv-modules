@@ -43,13 +43,21 @@ public:
     bool isSuspended() const;
     void suspendProcessing (const bool);
 
-    void setGain (const float) {
-        //gain.set (g);
-    }
+    void setInputGain(const float f);
 
-    float getGain() const { return 1.0; } //return gain.get(); }
-    float getLastGain() const { return 1.0; } //return lastGain.get(); }
-    void updateGain() { } // lastGain.set (gain.get()); }
+    void setGain(const float f);
+
+    inline float getInputGain() const { return inputGain.get(); }
+    inline float getGain() const { return gain.get(); }
+    inline float getLastGain() const { return lastGain.get(); }
+    inline float getLastInputGain() const { return lastInputGain.get(); }
+    inline void updateGain() 
+    {
+        if (lastGain.get() != gain.get())
+            lastGain = gain;
+        if (lastInputGain.get() != inputGain.get())
+            lastInputGain = inputGain;
+    }
 
     ValueTree getMetadata() const { return metadata; }
     void setMetadata (const ValueTree& meta, bool copy = false)
@@ -82,7 +90,7 @@ private:
     void prepare (double sampleRate, int blockSize, GraphProcessor*);
     void unprepare();
 
-    AtomicValue<float> gain, lastGain;
+    Atomic<float> gain, lastGain, inputGain, lastInputGain;
     OwnedArray<AtomicValue<float> > inRMS, outRMS;
 
     ValueTree metadata;

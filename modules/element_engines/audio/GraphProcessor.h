@@ -1,5 +1,5 @@
 /*
-    graph-processor.hpp - This file is part of Element
+    GraphProcessor.h - This file is part of Element
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     Adapted from the original JUCE AudioProcessorGraph

@@ -6,7 +6,16 @@ GraphNode::GraphNode (const uint32 nodeId_, Processor* const processor_) noexcep
 {
     parent = nullptr;
     gain.set(1.0f); lastGain.set(1.0f);
+    inputGain.set(1.0f); lastInputGain.set(1.0f);
     jassert (proc != nullptr);
+}
+
+void GraphNode::setInputGain(const float f) {
+    inputGain.set(f);
+}
+
+void GraphNode::setGain(const float f) {
+    gain.set(f);
 }
 
 void GraphNode::getPluginDescription (PluginDescription& desc)

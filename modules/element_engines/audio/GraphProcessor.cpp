@@ -222,6 +222,12 @@ public:
         for (int i = numAudioIns; --i >= 0;)
             node->setInputRMS (i, buffer.getRMSLevel (i, 0, numSamples));
         
+        if (node->getInputGain() != node->getLastInputGain()) {
+            buffer.applyGainRamp (0, numSamples, node->getLastInputGain(), node->getInputGain());
+        } else {
+            buffer.applyGain(0, numSamples, node->getInputGain());
+        }
+
         if (! processor->isSuspended())
         {
             processor->processBlock (buffer, *sharedMidiBuffers.getUnchecked (midiBufferToUse));
@@ -231,12 +237,17 @@ public:
             processor->processBlockBypassed (buffer, *sharedMidiBuffers.getUnchecked(midiBufferToUse));
         }
         
+        const float ig = node->getInputGain();
+        const float og = node->getGain();
+
         if (node->getGain() != node->getLastGain()) {
             buffer.applyGainRamp (0, numSamples, node->getLastGain(), node->getGain());
-            node->updateGain();
+        } else {
+            buffer.applyGain(0, numSamples, node->getGain());
         }
-//        DBG ("num outs: " << numAudioOuts);
-//        DBG ("test: " << buffer.getRMSLevel (0, 0, numSamples));
+
+        node->updateGain();
+
         for (int i = 0; i < numAudioOuts; ++i)
             node->setOutputRMS (i, buffer.getRMSLevel (i, 0, numSamples));
     }
