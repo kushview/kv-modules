@@ -237,9 +237,6 @@ public:
             processor->processBlockBypassed (buffer, *sharedMidiBuffers.getUnchecked(midiBufferToUse));
         }
         
-        const float ig = node->getInputGain();
-        const float og = node->getGain();
-
         if (node->getGain() != node->getLastGain()) {
             buffer.applyGainRamp (0, numSamples, node->getLastGain(), node->getGain());
         } else {
