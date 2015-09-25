@@ -107,7 +107,7 @@ public:
         MidiMessage non (MidiMessage::noteOn (model.channel(),
                                               model.keyId(),
                                               (float) model.velocity()));
-        MidiMessage noff (MidiMessage::noteOff (model.channel(), model.keyId(), 0));
+        MidiMessage noff (MidiMessage::noteOff (model.channel(), model.keyId(), 0.0f));
         non.setTimeStamp (model.tickStart());
         noff.setTimeStamp (model.tickEnd());
         return std::make_pair (non, noff);
