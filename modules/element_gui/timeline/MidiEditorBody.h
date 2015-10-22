@@ -142,9 +142,9 @@
 
         friend class ValueTree;
         void valueTreeChildAdded (ValueTree& parent, ValueTree& child);
-        void valueTreeChildRemoved (ValueTree& parent, ValueTree& child);
+        void valueTreeChildRemoved (ValueTree& parent, ValueTree& child, int);
         virtual void valueTreePropertyChanged (ValueTree& tree, const Identifier& property);
-        virtual void valueTreeChildOrderChanged (ValueTree& parent);
+        virtual void valueTreeChildOrderChanged (ValueTree& parent, int, int);
         virtual void valueTreeParentChanged (ValueTree& child);
 
     };

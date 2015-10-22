@@ -275,8 +275,7 @@ Sequencer::valueTreeChildAdded (ValueTree& parent, ValueTree& child)
     }
 }
 
-void
-Sequencer::valueTreeChildRemoved (ValueTree& parent, ValueTree& child)
+void Sequencer::valueTreeChildRemoved (ValueTree& parent, ValueTree& child, int)
 {
     if (parent != state && parent.getParent() != state)
         return;
@@ -308,14 +307,12 @@ Sequencer::valueTreeChildRemoved (ValueTree& parent, ValueTree& child)
 #endif
 }
 
-void
-Sequencer::valueTreeChildOrderChanged (ValueTree& parent)
+void Sequencer::valueTreeChildOrderChanged (ValueTree& parent, int, int)
 {
 
 }
 
-void
-Sequencer::valueTreeParentChanged (ValueTree& tree)
+void Sequencer::valueTreeParentChanged (ValueTree& tree)
 {
 
 }

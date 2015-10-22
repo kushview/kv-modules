@@ -13,7 +13,7 @@
   "compile":        [ { "file": "element_gui.cpp", "target": "! xcode" },
                       { "file": "element_gui.mm",  "target": "xcode" } ],
 
-  "browse":         [ "base/*", "docking/*", "embed/*", "style/*" ],
+  "browse":         [ "base/*", "docking/*", "embed/*", "style/*", "timeline/*" ],
 
   "OSXFrameworks":  "",
   "iOSFrameworks":  "",

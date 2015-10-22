@@ -451,7 +451,7 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
         }
     }
 
-    void MidiEditorBody::valueTreeChildRemoved (ValueTree& parent, ValueTree& child)
+    void MidiEditorBody::valueTreeChildRemoved (ValueTree& parent, ValueTree& child, int)
     {
         if (parent == sequence->node() && child.hasType (Slugs::note)) {
             Note note (child);
@@ -460,5 +460,5 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
     }
 
     void MidiEditorBody::valueTreePropertyChanged (ValueTree& tree, const Identifier& property) {}
-    void MidiEditorBody::valueTreeChildOrderChanged (ValueTree& parent) {}
+    void MidiEditorBody::valueTreeChildOrderChanged (ValueTree& parent, int, int) {}
     void MidiEditorBody::valueTreeParentChanged (ValueTree& child) {}
