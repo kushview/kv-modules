@@ -29,13 +29,12 @@ class SymbolMap;
 class LV2PluginFormat :   public AudioPluginFormat
 {
 public:
-    
     /** Create a self-contained LV2PluginFormat (owns all data) */
     LV2PluginFormat();
-    
+
     /** Create an LV2PluginFormat using an external LV2World object */
     LV2PluginFormat (LV2World& lv2);
-    
+
     ~LV2PluginFormat();
 
     String getName() const { return "LV2"; }
@@ -48,14 +47,12 @@ public:
     FileSearchPath getDefaultLocationsToSearch();
     bool canScanForPlugins() const { return true; }
     virtual bool pluginNeedsRescanning (const PluginDescription&) { return false; }
-    
+
     SymbolMap& getSymbolMap();
 
 private:
-
     class Internal;
     ScopedPointer<Internal> priv;
-
 };
 
 

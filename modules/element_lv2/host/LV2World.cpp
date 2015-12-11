@@ -17,6 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#ifndef ELEMENT_LV2_NUM_WORKERS
+ #define ELEMENT_LV2_NUM_WORKERS 1
+#endif
+
 LV2World::LV2World()
 {
     world = lilv_world_new();
@@ -34,7 +38,7 @@ LV2World::LV2World()
     work_interface  = lilv_new_uri (world, LV2_WORKER__interface);
     
     currentThread = 0;
-    numThreads    = 2;
+    numThreads    = ELEMENT_LV2_NUM_WORKERS;
 }
 
 LV2World::~LV2World()
@@ -55,24 +59,21 @@ LV2World::~LV2World()
     world = nullptr;
 }
 
-LV2Module*
-LV2World::createModule (const String& uri)
+LV2Module* LV2World::createModule (const String& uri)
 {
     if (const LilvPlugin* plugin = getPlugin (uri))
         return new LV2Module (*this, plugin);
     return nullptr;
 }
 
-LV2PluginModel*
-LV2World::createPluginModel (const String& uri)
+LV2PluginModel* LV2World::createPluginModel (const String& uri)
 {
     if (const LilvPlugin* plugin = getPlugin (uri))
         return new LV2PluginModel (*this, plugin);
     return nullptr;
 }
 
-void
-LV2World::fillPluginDescription (const String& uri, PluginDescription& desc) const
+void LV2World::fillPluginDescription (const String& uri, PluginDescription& desc) const
 {
     if (const LilvPlugin* plugin = getPlugin (uri))
     {
@@ -93,8 +94,7 @@ LV2World::fillPluginDescription (const String& uri, PluginDescription& desc) con
     }
 }
 
-const LilvPlugin*
-LV2World::getPlugin (const String& uri) const
+const LilvPlugin* LV2World::getPlugin (const String& uri) const
 {
     LilvNode* p (lilv_new_uri (world, uri.toUTF8()));
     const LilvPlugin* plugin = lilv_plugins_get_by_uri (getAllPlugins(), p);
@@ -103,14 +103,12 @@ LV2World::getPlugin (const String& uri) const
     return plugin;
 }
 
-const LilvPlugins*
-LV2World::getAllPlugins() const
+const LilvPlugins* LV2World::getAllPlugins() const
 {
     return lilv_world_get_all_plugins (world);
 }
 
-WorkThread&
-LV2World::getWorkThread()
+WorkThread& LV2World::getWorkThread()
 {
     if (threads.size() <= currentThread) {
         threads.add (new WorkThread ("LV2 Worker " + String(currentThread + 1), 2048));
@@ -124,8 +122,7 @@ LV2World::getWorkThread()
     return *threads.getUnchecked (threadIndex);
 }
 
-bool
-LV2World::isFeatureSupported (const String& featureURI)
+bool LV2World::isFeatureSupported (const String& featureURI)
 {
    if (features.contains (featureURI))
       return true;
@@ -136,22 +133,19 @@ LV2World::isFeatureSupported (const String& featureURI)
    return false;
 }
 
-bool
-LV2World::isPluginAvailable (const String& uri)
+bool LV2World::isPluginAvailable (const String& uri)
 {
     return (getPlugin (uri) != nullptr);
 }
 
-bool
-LV2World::isPluginSupported (const String& uri)
+bool LV2World::isPluginSupported (const String& uri)
 {
     if (const LilvPlugin * plugin = getPlugin (uri))
         return isPluginSupported (plugin);
     return false;
 }
 
-bool
-LV2World::isPluginSupported (const LilvPlugin* plugin)
+bool LV2World::isPluginSupported (const LilvPlugin* plugin)
 {
     // Required features support
     LilvNodes* nodes = lilv_plugin_get_required_features (plugin);
@@ -162,15 +156,15 @@ LV2World::isPluginSupported (const LilvPlugin* plugin)
             return false; // Feature not supported
         }
     }
+
     lilv_nodes_free (nodes); nodes = nullptr;
-    
     
     // Check this plugin's port types are supported
     const uint32 numPorts = lilv_plugin_get_num_ports (plugin);
     for (uint32 i = 0; i < numPorts; ++i)
     {
         // const LilvPort* port (lilv_plugin_get_port_by_index (plugin, i));
-        // nothing here yet (or ever)
+        // nothing here yet
     }
     
     return true;

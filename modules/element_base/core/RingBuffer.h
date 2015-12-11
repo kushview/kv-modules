@@ -21,7 +21,6 @@ class RingBuffer
 {
 
 public:
-    
     RingBuffer (int32 capacity);
     ~RingBuffer();
 
@@ -107,7 +106,6 @@ private:
     AbstractFifo fifo;
     HeapBlock<uint8> block;
     uint8* buffer;
-    
 };
 
 #endif /* ELEMENT_JUCE_RINGBUFFER_H */

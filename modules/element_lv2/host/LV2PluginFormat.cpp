@@ -339,8 +339,7 @@ public:
         return 0.0f;
     }
 
-    const String
-    getParameterText (int index)
+    const String getParameterText (int index)
     {
         if (! isPositiveAndBelow (index, params.size()))
             return String (getParameter (index));
@@ -350,8 +349,7 @@ public:
     }
     
     
-    void
-    setParameter (int index, float newValue)
+    void setParameter (int index, float newValue)
     {
         if (isPositiveAndBelow (index, params.size()))
         {
@@ -371,8 +369,7 @@ public:
     }
     
 
-    float
-    getParameterDefaultValue (int index)
+    float getParameterDefaultValue (int index)
     {
         if (LV2Parameter* const param = params [index])
         {
