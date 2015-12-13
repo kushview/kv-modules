@@ -25,11 +25,19 @@
 
 namespace Element {
 
+class Screen;
+class ScreenManager;
+class ScreenDisplay;
+
 // look and feel
 #include "base/Icons.h"
 #include "base/Stock.h"
 #include "base/LookAndFeel.h"
-    
+
+#include "screens/ScreenDisplay.h"
+#include "screens/Screen.h"
+#include "screens/ScreenManager.h"
+
 // timelines
 #if JUCE_MODULE_AVAILABLE_element_engines
  #include "timeline/TrackHeights.h"
@@ -43,9 +51,9 @@ namespace Element {
 
  // misc audio/video engine stuff
  #include "base/PluginWindow.h"
-    
+
 #endif
-    
+
 // misc widgets
 #include "base/DecibelScaleComponent.h"
 #include "base/DigitalMeter.h"
@@ -61,7 +69,7 @@ namespace Element {
 
 // embedding
 #include "embed/NativeComponent.h"
-    
+
 }
 
 #endif   // ELEMENT_MODELS_H_INCLUDED

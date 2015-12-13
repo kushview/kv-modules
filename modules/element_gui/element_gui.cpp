@@ -41,6 +41,11 @@ namespace Element {
 
 #include "embed/NativeComponent.cpp"
 
+#include "screens/Screen.cpp"
+#include "screens/ScreenDisplay.cpp"
+#include "screens/ScreenManager.cpp"
+
+
 #if JUCE_MODULE_AVAILABLE_element_engines
  #include "base/GraphEditorBase.cpp"
  #include "base/PluginWindow.cpp"
