@@ -17,28 +17,27 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-namespace LV2Callbacks
-{
-    inline unsigned
-    uiSupported (const char* hostType, const char* uiType)
+#if COMPLETION
+ #include "KSP1.h"
+#endif
+
+namespace LV2Callbacks {
+    inline unsigned uiSupported (const char* hostType, const char* uiType)
     {
         String host (hostType);
         String ui (uiType);
         
         if (host == LV2_UI__X11UI && ui == LV2_UI__X11UI)
             return 2;
-        //else if (ui == LV2_UI__JuceUI)
-           // return 1;
+        else if (ui == LV2_UI__JuceUI)
+            return 1;
         
         return suil_ui_supported (hostType, uiType);
     }
 }
 
-class LV2Module::Private
-{
-
+class LV2Module::Private {
 public:
-
     Private (LV2Module& module)
         : owner (module) { }
     
@@ -49,6 +48,7 @@ public:
                                  const LilvNode* widgetType,
                                  const LV2_Feature* const * features)
     {
+        suil = owner.getWorld().getSuilHost();
         const LilvNode* uri = lilv_ui_get_uri (ui);
         const LilvPlugin* plugin = owner.getPlugin();
         
@@ -59,7 +59,7 @@ public:
                   lilv_node_as_uri (widgetType),
                   lilv_uri_to_path (lilv_node_as_uri (lilv_ui_get_bundle_uri (ui))),
                   lilv_uri_to_path (lilv_node_as_uri (lilv_ui_get_binary_uri (ui))),
-                  features );
+                  features);
         
         if (instance != nullptr)
         {
@@ -73,10 +73,8 @@ public:
     HeapBlock<float> mins, maxes, defaults, values;
     
 private:
-    
     LV2Module& owner;
     SuilHost* suil;
-
 };
 
 LV2Module::LV2Module (LV2World& world_, const LilvPlugin* plugin_)
@@ -98,8 +96,7 @@ LV2Module::~LV2Module()
     worker = nullptr;
 }
 
-void
-LV2Module::activatePorts()
+void LV2Module::activatePorts()
 {
    jassert (instance != nullptr);
    for (int32 p = 0; p < numPorts; ++p)
@@ -128,8 +125,7 @@ LV2Module::activatePorts()
    }
 }
 
-void
-LV2Module::init()
+void LV2Module::init()
 {
     // create and set default port values
     priv->mins.allocate (numPorts, true);
@@ -148,8 +144,7 @@ LV2Module::init()
     }
 }
 
-Result
-LV2Module::instantiate (double samplerate)
+Result LV2Module::instantiate (double samplerate)
 {
     freeInstance();
     currentSampleRate = samplerate;
@@ -195,8 +190,7 @@ LV2Module::instantiate (double samplerate)
     return Result::ok();
 }
 
-void
-LV2Module::activate()
+void LV2Module::activate()
 {
    if (instance && ! active)
    {
@@ -206,8 +200,7 @@ LV2Module::activate()
    }
 }
 
-void
-LV2Module::cleanup()
+void LV2Module::cleanup()
 {
    if (instance != nullptr)
    {
@@ -215,8 +208,7 @@ LV2Module::cleanup()
    }
 }
 
-void
-LV2Module::deactivate()
+void LV2Module::deactivate()
 {
    if (instance != nullptr && active)
    {
@@ -225,14 +217,12 @@ LV2Module::deactivate()
    }
 }
 
-bool
-LV2Module::isActive() const
+bool LV2Module::isActive() const
 {
    return instance && active;
 }
 
-void
-LV2Module::freeInstance()
+void LV2Module::freeInstance()
 {
     if (instance != nullptr)
     {
@@ -243,8 +233,7 @@ LV2Module::freeInstance()
     }
 }
 
-void
-LV2Module::setSampleRate (double newSampleRate)
+void LV2Module::setSampleRate (double newSampleRate)
 {
     if (newSampleRate == currentSampleRate)
         return;
@@ -264,9 +253,7 @@ LV2Module::setSampleRate (double newSampleRate)
     }
 }
 
-
-Result
-LV2Module::allocateEventBuffers()
+Result LV2Module::allocateEventBuffers()
 {
    for (int i = 0; i < numPorts; ++i)
    { }
@@ -274,20 +261,17 @@ LV2Module::allocateEventBuffers()
    return Result::ok();
 }
 
-void
-LV2Module::connectChannel (const PortType type, const int32 channel, void* data, const bool isInput)
+void LV2Module::connectChannel (const PortType type, const int32 channel, void* data, const bool isInput)
 {
     connectPort (priv->channels.getPort (type, channel, isInput), data);
 }
 
-void
-LV2Module::connectPort (uint32 port, void* data)
+void LV2Module::connectPort (uint32 port, void* data)
 {
     lilv_instance_connect_port (instance, port, data);
 }
 
-String
-LV2Module::getAuthorName() const
+String LV2Module::getAuthorName() const
 {
    if (LilvNode* node = lilv_plugin_get_author_name (plugin))
    {
@@ -298,14 +282,12 @@ LV2Module::getAuthorName() const
    return String::empty;
 }
 
-const ChannelConfig&
-LV2Module::getChannelConfig() const
+const ChannelConfig& LV2Module::getChannelConfig() const
 {
     return priv->channels;
 }
 
-String
-LV2Module::getClassLabel() const
+String LV2Module::getClassLabel() const
 {
    if (const LilvPluginClass* klass = lilv_plugin_get_class (plugin))
        if (const LilvNode* node = lilv_plugin_class_get_label (klass))
@@ -313,20 +295,17 @@ LV2Module::getClassLabel() const
    return String::empty;
 }
 
-const void*
-LV2Module::getExtensionData (const String& uri) const
+const void* LV2Module::getExtensionData (const String& uri) const
 {
     return instance ? lilv_instance_get_extension_data (instance, uri.toUTF8()) : nullptr;
 }
 
-LV2_Handle
-LV2Module::getHandle()
+LV2_Handle LV2Module::getHandle()
 {
     return instance ? lilv_instance_get_handle (instance) : nullptr;
 }
 
-String
-LV2Module::getName() const
+String LV2Module::getName() const
 {
    if (LilvNode* node = lilv_plugin_get_name (plugin))
    {
@@ -340,8 +319,7 @@ LV2Module::getName() const
 
 uint32 LV2Module::getNumPorts() const { return numPorts; }
 
-uint32
-LV2Module::getNumPorts (PortType type, bool isInput) const
+uint32 LV2Module::getNumPorts (PortType type, bool isInput) const
 {
    if (type == PortType::Unknown)
        return 0;
@@ -358,14 +336,12 @@ LV2Module::getNumPorts (PortType type, bool isInput) const
    return lilv_plugin_get_num_ports_of_class (plugin, kind, flow, nullptr);
 }
 
-const LilvPort*
-LV2Module::getPort (uint32 port) const
+const LilvPort* LV2Module::getPort (uint32 port) const
 {
     return lilv_plugin_get_port_by_index (plugin, port);
 }
 
-uint32
-LV2Module::getMidiPort() const
+uint32 LV2Module::getMidiPort() const
 {
    for (uint32 i = 0; i < getNumPorts(); ++i)
    {
@@ -381,8 +357,7 @@ LV2Module::getMidiPort() const
 
 const LilvPlugin* LV2Module::getPlugin() const { return plugin; }
 
-uint32
-LV2Module::getNotifyPort() const
+uint32 LV2Module::getNotifyPort() const
 {
     for (uint32 i = 0; i < numPorts; ++i)
     {
@@ -398,8 +373,7 @@ LV2Module::getNotifyPort() const
     return LV2UI_INVALID_PORT_INDEX;
 }
 
-const String
-LV2Module::getPortName (uint32 index) const
+const String LV2Module::getPortName (uint32 index) const
 {
     if (const LilvPort* port = getPort (index))
     {
@@ -412,8 +386,7 @@ LV2Module::getPortName (uint32 index) const
     return String::empty;
 }
 
-void
-LV2Module::getPortRange (uint32 port, float& min, float& max, float& def) const
+void LV2Module::getPortRange (uint32 port, float& min, float& max, float& def) const
 {
     if (port >= numPorts)
         return;
@@ -423,8 +396,7 @@ LV2Module::getPortRange (uint32 port, float& min, float& max, float& def) const
     def = priv->defaults [port];
 }
 
-PortType
-LV2Module::getPortType (uint32 i) const
+PortType LV2Module::getPortType (uint32 i) const
 {
    const LilvPort* port (lilv_plugin_get_port_by_index (plugin, i));
 
@@ -442,29 +414,75 @@ LV2Module::getPortType (uint32 i) const
    return PortType::Unknown;
 }
 
-
-String
-LV2Module::getURI() const
+String LV2Module::getURI() const
 {
    return lilv_node_as_string (lilv_plugin_get_uri (plugin));
 }
 
 bool LV2Module::isLoaded() const { return instance != nullptr; }
 
-bool
-LV2Module::isPortInput (uint32 index) const
+bool LV2Module::hasEditor() const
+{
+    bool hasJuceUI = false;
+
+    if (LilvUIs* uis = lilv_plugin_get_uis (plugin))
+    {
+        LILV_FOREACH(uis, iter, uis)
+        {
+            const LilvUI* ui = lilv_uis_get (uis, iter);
+            const unsigned quality = lilv_ui_is_supported (ui, &LV2Callbacks::uiSupported, world.ui_JuceUI, nullptr);
+
+            if (quality == 1)
+            {
+                const String uri = lilv_node_as_string (lilv_ui_get_uri (ui));
+                DBG (uri << " quality: " << (int) quality);
+                hasJuceUI = true;
+            }
+        }
+
+        lilv_uis_free (uis);
+    }
+
+    return hasJuceUI;
+}
+
+SuilInstance* LV2Module::createEditor()
+{
+    SuilInstance* instance = nullptr;
+    if (LilvUIs* uis = lilv_plugin_get_uis (plugin))
+    {
+        LILV_FOREACH(uis, iter, uis)
+        {
+            const LilvUI* ui = lilv_uis_get (uis, iter);
+            const unsigned quality = lilv_ui_is_supported (ui, &LV2Callbacks::uiSupported, world.ui_JuceUI, nullptr);
+
+            if (quality == 1)
+            {
+                world.getFeatureArray().getFeatures();
+                instance = priv->instantiateUI (ui,
+                    world.ui_JuceUI, world.ui_JuceUI,
+                    world.getFeatureArray().getFeatures());
+                break;
+            }
+        }
+
+        lilv_uis_free (uis);
+    }
+
+    return instance;
+}
+
+bool LV2Module::isPortInput (uint32 index) const
 {
    return lilv_port_is_a (plugin, getPort (index), world.lv2_InputPort);
 }
 
-bool
-LV2Module::isPortOutput (uint32 index) const
+bool LV2Module::isPortOutput (uint32 index) const
 {
    return lilv_port_is_a (plugin, getPort (index), world.lv2_OutputPort);
 }
 
-void
-LV2Module::run (uint32 nframes)
+void LV2Module::run (uint32 nframes)
 {
     if (worker)
         worker->processWorkResponses();
@@ -475,8 +493,7 @@ LV2Module::run (uint32 nframes)
         worker->endRun();
 }
 
-void
-LV2Module::setControlValue (uint32 port, float value)
+void LV2Module::setControlValue (uint32 port, float value)
 {    
     if (port >= numPorts)
         return;

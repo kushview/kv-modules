@@ -79,11 +79,13 @@ public:
     /** Get the URI for this plugin */
     String getURI() const;
 
-    /** Returns true if the Plugin has one or more UIs
-        @note Currently LV2 UIs aren't supported and this always
-        will return false */
-    inline bool hasEditor() const { return false; /* XXX */ }
+    LV2World& getWorld() { return world; }
+
+    /** Returns true if the Plugin has one or more UIs */
+    inline bool hasEditor() const;
     
+    SuilInstance* createEditor();
+
     /** Returns true if the port is an Input */
     bool isPortInput (uint32 port) const;
     
@@ -145,7 +147,6 @@ public:
     void connectChannel (const PortType type, const int32 channel, void* data, const bool isInput);
     
 private:
-
     LilvInstance* instance;
     const LilvPlugin* plugin;
     LV2World&    world;
@@ -167,7 +168,6 @@ private:
     
     /** @internal */
     bool isLoaded() const;
-
 };
 
 #endif /* LVTK_JUCE_LV2MODULE_H */

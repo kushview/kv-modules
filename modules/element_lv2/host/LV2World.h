@@ -20,6 +20,8 @@
 #ifndef LVTK_JUCE_LV2WORLD_H
 #define LVTK_JUCE_LV2WORLD_H
 
+#define LV2_UI__JuceUI LV2_UI_PREFIX "JuceUI"
+
 class  LV2Module;
 class  LV2PluginModel;
 
@@ -28,7 +30,6 @@ class  LV2PluginModel;
 class LV2World
 {
 public:
-
     LV2World();
     ~LV2World();
 
@@ -42,6 +43,8 @@ public:
     const LilvNode*   midi_MidiEvent;
     const LilvNode*   work_schedule;
     const LilvNode*   work_interface;
+    const LilvNode*   ui_X11UI;
+    const LilvNode*   ui_JuceUI;
     
     /** Create an LV2Module for a uri string */
     LV2Module* createModule (const String& uri);
@@ -89,15 +92,16 @@ public:
     /** Returns the total number of available worker threads */
     inline int32 getNumWorkThreads() const { return numThreads; }
     
-private:
+    inline SuilHost* getSuilHost() { return suil; }
 
+private:
     LilvWorld* world;
+    SuilHost* suil;
     LV2FeatureArray features;
    
     // a simple rotating thread pool
     int32 currentThread, numThreads;
     OwnedArray<WorkThread> threads;
-   
 };
 
 #endif /* LVTK_JUCE_LV2WORLD_H */

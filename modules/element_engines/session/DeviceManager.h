@@ -28,7 +28,7 @@ public:
     DeviceManager();
     ~DeviceManager();
 
-    virtual void createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list);
+    virtual void createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list) override;
 
     void getAudioDrivers (StringArray& drivers);
     void selectAudioDriver (const String& name);
@@ -39,7 +39,6 @@ private:
 
     class Private;
     Scoped<Private> impl;
-
 };
 
 #endif // ELEMENT_DEVICE_MANAGER_H

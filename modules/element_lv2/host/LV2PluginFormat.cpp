@@ -17,6 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if COMPLETION
+#include "KSP1.h"
+#endif
+
 // Change this to enable logging of various LV2 activities
 #ifndef LV2_LOGGING
  #define LV2_LOGGING 0
@@ -30,7 +34,6 @@
 
 static ScopedPointer<URIs> uris;
 
-//==============================================================================
 class LV2PluginInstance     : public Processor
 {
 public:
@@ -112,7 +115,6 @@ public:
                     module->connectPort (p, buffers.getUnchecked(p)->getPortData());
                 }
             }
-            
         }
 
         const ChannelConfig& channels (module->getChannelConfig());
@@ -214,7 +216,6 @@ public:
         tempBuffer.setSize (1, 1);
     }
 
-
     void processBlock (AudioSampleBuffer& audio, MidiBuffer& midi)
     {
         const int32 numSamples = audio.getNumSamples();
@@ -289,13 +290,11 @@ public:
         }
     }
 
-    //==============================================================================
-    bool hasEditor() const { return false; }
-    AudioProcessorEditor* createEditor() { return nullptr; }
+    bool hasEditor() const { return module->hasEditor(); }
+
+    AudioProcessorEditor* createEditor();
     
-    //==============================================================================
-    const String
-    getInputChannelName (int index) const
+    const String getInputChannelName (int index) const
     {
         const ChannelConfig& chans (module->getChannelConfig());
         if (! isPositiveAndBelow (index, chans.getNumAudioInputs()))
@@ -305,8 +304,7 @@ public:
 
     bool isInputChannelStereoPair (int index) const { return false; }
 
-    const String
-    getOutputChannelName (int index) const
+    const String getOutputChannelName (int index) const
     {
         const ChannelConfig& chans (module->getChannelConfig());
         if (! isPositiveAndBelow (index, chans.getNumAudioOutputs()))
@@ -411,7 +409,6 @@ public:
     }
 
 private:
-
     CriticalSection lock, midiInLock;
     bool wantsMidiMessages, initialised, isPowerOn;
     mutable StringArray programNames;
@@ -428,6 +425,46 @@ private:
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LV2PluginInstance)
 };
+
+class LV2EditorJuce : public AudioProcessorEditor
+{
+public:
+    LV2EditorJuce (LV2PluginInstance* p, SuilInstance* si)
+        : AudioProcessorEditor (p),
+          instance (si),
+          widget (nullptr),
+          plugin (p)
+    {
+        widget = (Component*) suil_instance_get_widget (instance);
+        addAndMakeVisible (widget);
+        setSize (jmax(300, widget->getWidth()),
+                 jmax(200, widget->getHeight()));
+    }
+
+    ~LV2EditorJuce()
+    {
+        plugin->editorBeingDeleted (this);
+        removeChildComponent (widget);
+        if (instance)
+            suil_instance_free (instance);
+    }
+
+    void resized() {
+        widget->setBounds (getLocalBounds());
+    }
+
+    SuilInstance* instance;
+    Component* widget;
+    LV2PluginInstance* plugin;
+};
+
+AudioProcessorEditor* LV2PluginInstance::createEditor()
+{
+    jassert (module->hasEditor());
+    if (SuilInstance* i = module->createEditor())
+        return new LV2EditorJuce (this, i);
+    return nullptr;
+}
 
 
 class LV2PluginFormat::Internal
@@ -491,8 +528,7 @@ LV2PluginFormat::LV2PluginFormat() : priv (new Internal()) { }
 LV2PluginFormat::LV2PluginFormat (LV2World& w) : priv (new Internal (w)) { }
 LV2PluginFormat::~LV2PluginFormat() { priv = nullptr; }
 
-void
-LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& results,
+void LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& results,
                                       const String& fileOrIdentifier)
 {
     if (! fileMightContainThisPluginType (fileOrIdentifier))

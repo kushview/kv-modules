@@ -17,9 +17,62 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#if COMPLETION
+#include "KSP1.h"
+#endif
+
 #ifndef ELEMENT_LV2_NUM_WORKERS
  #define ELEMENT_LV2_NUM_WORKERS 1
 #endif
+
+namespace LV2Callbacks {
+/** Function to write/send a value to a port. */
+void portWrite (
+    SuilController controller,
+    uint32_t       port,
+    uint32_t       size,
+    uint32_t       protocol,
+    void const*    buffer)
+{
+
+    //    ((LV2Module*) controller)->write(port, size, protocol, buffer);
+}
+
+uint32_t portIndex (
+    SuilController controller,
+    const char* port_symbol)
+{
+    return 0;
+}
+
+uint32_t portSubscribe (
+    SuilController            controller,
+    uint32_t                  port_index,
+    uint32_t                  protocol,
+    const LV2_Feature* const* features)
+{
+    return 0;
+}
+
+/** Function to unsubscribe from notifications for a port. */
+uint32_t portUnsubscribe (
+    SuilController            controller,
+    uint32_t                  port_index,
+    uint32_t                  protocol,
+    const LV2_Feature* const* features)
+{
+    return 0;
+}
+
+/** Function called when a control is grabbed or released. */
+void touchFunction (SuilController controller,
+                    uint32_t       port_index,
+                    bool           grabbed)
+{
+
+}
+
+}
 
 LV2World::LV2World()
 {
@@ -36,7 +89,14 @@ LV2World::LV2World()
     midi_MidiEvent  = lilv_new_uri (world, LV2_MIDI__MidiEvent);
     work_schedule   = lilv_new_uri (world, LV2_WORKER__schedule);
     work_interface  = lilv_new_uri (world, LV2_WORKER__interface);
+    ui_X11UI        = lilv_new_uri (world, LV2_UI__X11UI);
+    ui_JuceUI       = lilv_new_uri (world, LV2_UI__JuceUI);
     
+
+    suil = suil_host_new (
+        LV2Callbacks::portWrite, 0, 0, 0
+    );
+
     currentThread = 0;
     numThreads    = ELEMENT_LV2_NUM_WORKERS;
 }
@@ -57,6 +117,8 @@ LV2World::~LV2World()
     
     lilv_world_free (world);
     world = nullptr;
+    suil_host_free (suil);
+    suil = nullptr;
 }
 
 LV2Module* LV2World::createModule (const String& uri)
