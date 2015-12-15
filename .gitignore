@@ -1,7 +1,7 @@
 project/Builds
 project/JuceLibraryCode/ReadMe.txt
 
-dst
+/dist
 libs/vst*
 .waf-*
 .lock*

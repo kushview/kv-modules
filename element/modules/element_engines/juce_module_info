@@ -7,14 +7,16 @@
   "license":        "GPL v3",
 
   "dependencies":   [ { "id": "element_models", "version": "matching" },
-                      { "id": "juce_data_structures", "version": "3.0.0" } ],
+                      { "id": "juce_data_structures", "version": "3.0.0" },
+                      { "id": "juce_audio_processors", "version": "3.0.0" },
+                      { "id": "juce_audio_devices", "version": "3.0.0" } ],
 
   "include":        "element_engines.h",
 
   "compile":        [ { "file": "element_engines.cpp", "target": "! xcode" },
                       { "file": "element_engines.mm",  "target": "xcode" } ],
 
-  "browse":         [ "audio/*", 
+  "browse":         [ "audio/*",
                       "session/*" ],
 
   "OSXFrameworks":  "",

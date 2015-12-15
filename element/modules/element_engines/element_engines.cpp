@@ -17,7 +17,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "AppConfig.h"
+#if ELEMENT_USE_LIBJUCE
+ #include <juce/modules/config.h>
+ #include "element/modules/config.h"
+#else
+ #include "AppConfig.h"
+#endif
+
 #include "element_engines.h"
 
 // This is included here to avoid problems with circular dependencies
@@ -44,10 +50,10 @@ namespace Element {
 #include "audio/Sequencer.cpp"
 #include "audio/SequencerTrack.cpp"
 #include "audio/Shuttle.cpp"
-    
+
 #include "session/AppController.cpp"
 #include "session/DeviceManager.cpp"
 #include "session/PluginManager.cpp"
 #include "session/SessionBase.cpp"
-    
+
 }

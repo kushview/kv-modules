@@ -17,7 +17,12 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "AppConfig.h"
+#if ELEMENT_USE_LIBJUCE
+ #include <juce/modules/config.h>
+ #include "element/modules/config.h"
+#else
+ #include "AppConfig.h"
+#endif
 
 #if JUCE_MODULE_AVAILABLE_element_engines
  #include "modules/juce_audio_processors/juce_audio_processors.h"

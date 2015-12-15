@@ -6,7 +6,8 @@
   "website":        "http://github.org/element-project/element",
   "license":        "GPL v3",
 
-  "dependencies":   [ { "id": "element_base", "version": "matching" } ],
+  "dependencies":   [ { "id": "element_base", "version": "matching" },
+                      { "id": "juce_gui_basics", "versioin": "any" } ],
 
   "include":        "element_gui.h",
 

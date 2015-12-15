@@ -17,7 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if defined (ELEMENT_LV2_H_INCLUDED) && ! JUCE_AMALGAMATED_INCLUDE
+#if defined (ELEMENT_BASE_H_INCLUDED) && ! JUCE_AMALGAMATED_INCLUDE
 /* When you add this cpp file to your project, you mustn't include it in a file where you've
     already included any other headers - just put it inside a file on its own, possibly with your config
     flags preceding it, but don't include anything else. That also includes avoiding any automatic prefix
@@ -26,24 +26,33 @@
  #error "Incorrect use of JUCE cpp file"
 #endif
 
+#include <map>
 
-#include "AppConfig.h"
-#include "element_lv2.h"
+#if ELEMENT_USE_LIBJUCE
+ #include <juce/modules/config.h>
+ #include "element/modules/config.h"
+#else
+ #include "AppConfig.h"
+#endif
 
+#include "element_base.h"
 
+/* OSC support */
+#if ELEMENT_OSC
+ #include "osc/oscpack.cpp"
+#endif
+
+#if JUCE_WINDOWS
+ #include <windows.h>
+#endif
 
 namespace Element {
-#include "common/PortBuffer.cpp"
-#include "common/PortWriter.cpp"
-#include "features/LV2Log.cpp"
-#include "features/LV2Worker.cpp"
-
-#if ELEMENT_LV2_PLUGIN_HOST
- #include "host/LV2Module.cpp"
- #include "host/LV2PluginFormat.cpp"
- #include "host/LV2PluginModel.cpp"
- #include "host/LV2World.cpp"
-#endif
+#include "core/Arc.cpp"
+#include "core/RingBuffer.cpp"
+#include "core/Semaphore.cpp"
+#include "core/WorkThread.cpp"
+#include "core/WorldBase.cpp"
+#include "time/TimeScale.cpp"
+#include "util/FileHelpers.cpp"
+#include "util/UUID.cpp"
 }
-
-
