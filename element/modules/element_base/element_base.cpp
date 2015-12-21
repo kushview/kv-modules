@@ -37,11 +37,6 @@
 
 #include "element_base.h"
 
-/* OSC support */
-#if ELEMENT_OSC
- #include "osc/oscpack.cpp"
-#endif
-
 #if JUCE_WINDOWS
  #include <windows.h>
 #endif

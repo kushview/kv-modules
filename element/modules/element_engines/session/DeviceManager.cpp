@@ -79,11 +79,12 @@ void DeviceManager::createAudioDeviceTypes (OwnedArray <AudioIODeviceType>& list
     addIfNotNull (list, AudioIODeviceType::createAudioIODeviceType_iOSAudio());
     addIfNotNull (list, AudioIODeviceType::createAudioIODeviceType_ALSA());
     // addNotNull (list, AudioIODeviceType::createAudioIODeviceType_JACK());
+#if ELEMENT_USE_JACK
+    addIfNotNull (list, Jack::createAudioIODeviceType (nullptr));
+#endif
     addIfNotNull (list, AudioIODeviceType::createAudioIODeviceType_OpenSLES());
     addIfNotNull (list, AudioIODeviceType::createAudioIODeviceType_Android());
 }
-
-
 
 void DeviceManager::getAudioDrivers (StringArray& drivers)
 {

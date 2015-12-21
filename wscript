@@ -88,10 +88,12 @@ def configure(conf):
     conf.check_juce_cfg()
     conf.check_cfg(package='lilv-0', uselib_store='LILV', args=['--cflags', '--libs'], mandatory=True)
     conf.check_cfg(package='suil-0', uselib_store='SUIL', args=['--cflags', '--libs'], mandatory=True)
+    conf.check_cfg(package='jack', uselib_store='JACK', args=['--cflags', '--libs'], mandatory=True)
 
     # this is just to clear all the defines up to this point
     conf.write_config_header('dummy.h')
 
+    conf.define("ELEMENT_USE_JACK", len(conf.env.LIB_JACK) > 0)
     for mod in library_modules:
         conf.define('JUCE_MODULE_AVAILABLE_%s' % mod, 1)
     conf.write_config_header ('element/modules/config.h', 'ELEMENT_MODULES_CONFIG_H')
@@ -159,7 +161,7 @@ def build_modules(bld):
             elif 'element_' in dep:
                 lib.use.append(module_slug(dep, is_debug))
         if 'engines' in lib.name:
-            lib.use += ['LILV', 'SUIL']
+            lib.use += ['LILV', 'SUIL', 'JACK']
         if 'lv2' in lib.name:
             lib.use += ['LILV', 'SUIL']
 

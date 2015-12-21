@@ -24,7 +24,7 @@
  #include "AppConfig.h"
 #endif
 
-#include "element_engines.h"
+#include "./element_engines.h"
 
 // This is included here to avoid problems with circular dependencies
 #include "../element_lv2/element_lv2.h"
@@ -51,9 +51,12 @@ namespace Element {
 #include "audio/SequencerTrack.cpp"
 #include "audio/Shuttle.cpp"
 
-#include "session/AppController.cpp"
 #include "session/DeviceManager.cpp"
 #include "session/PluginManager.cpp"
 #include "session/SessionBase.cpp"
 
+#if ELEMENT_USE_JACK
+ #include "jack/JackClient.cpp"
+ #include "jack/JackDevice.cpp"
+#endif
 }

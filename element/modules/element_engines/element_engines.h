@@ -25,12 +25,24 @@
 #include "modules/juce_audio_processors/juce_audio_processors.h"
 #include "../element_models/element_models.h"
 
-namespace Element {
+/** Config: ELEMENT_LV2_PLUGIN_HOST
+    Set this to enable Jack Audio Support (default is disabled)
+ */
+#ifndef ELEMENT_USE_JACK
+ #define ELEMENT_USE_JACK 0
+#endif
 
+#if ELEMENT_USE_JACK
+ #include <vector>
+ #include <jack/jack.h>
+#endif
+
+namespace Element {
 class GraphProcessor;
+
 //#include "audio/PortType.h"
 #include "audio/Processor.h"
-    
+
 //#include "audio/Buffer.h"
 //#include "audio/AtomBuffer.h"
 //#include "audio/BufferFactory.h"
@@ -53,12 +65,15 @@ class GraphProcessor;
 #include "audio/Sequencer.h"
 #include "audio/SequencerTrack.h"
 #include "audio/Shuttle.h"
-    
-#include "session/AppController.h"
+
 #include "session/DeviceManager.h"
 #include "session/PluginManager.h"
 #include "session/PluginWrapper.h"
 #include "session/SessionBase.h"
+
+#if ELEMENT_USE_JACK
+  #include "jack/Jack.h"
+#endif
 }
 
 #endif   // ELEMENT_MODELS_H_INCLUDED

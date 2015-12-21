@@ -20,21 +20,17 @@
 #ifndef ELEMENT_MODULE_H
 #define ELEMENT_MODULE_H
 
-#if ELEMENT_MODULE
 namespace Element {
-#endif
 
 typedef void* ModuleHandle;
 typedef void* ModuleLibrary;
-typedef void* WorldData;
+typedef void* ModuleHost;
 
 /** Abstract base class for all Element modules */
 class Module
 {
 public:
-
-    static inline
-    const char* extension()
+    static inline const char* extension()
     {
         #if __APPLE__
          static const char* ext = ".dylib";
@@ -46,26 +42,20 @@ public:
         return ext;
     }
 
-    Module() : library (nullptr) { }
+    Module() { }
     virtual ~Module() { }
 
-    virtual void load (WorldData) = 0;
+    virtual void load (ModuleHost) = 0;
     virtual void unload() { }
-    virtual void run (WorldData) { }
-
-    ModuleLibrary library;
 };
 
-
-#if ELEMENT_MODULE
 }
 
 extern "C" {
 
-    /** Entry point for element modules */
-    Element::Module* element_module_load();
+/** Entry point for element modules */
+Element::Module* element_module_load();
 
 }
-#endif
 
 #endif // ELEMENT_MODULE_H

@@ -20,18 +20,20 @@
 /* Function type for loading an Element module */
 typedef Module* (*ModuleLoadFunc)();
 
-static Module*
-world_load_module (const File& file)
+#if 0
+static Module* world_load_module (const File& file)
 {
     if (! file.existsAsFile())
         return nullptr;
 
     DynamicLibrary* lib = new DynamicLibrary (file.getFullPathName());
+
     if (ModuleLoadFunc load_module = (ModuleLoadFunc) lib->getFunction ("element_module_load"))
     {
-        Module* mod  = load_module();
-        mod->library = lib;
-        return mod;
+        if (Module* mod = load_module())
+        {
+            return mod;
+        }
     }
 
     if (lib) {
@@ -47,8 +49,8 @@ static Module* world_load_module (const char* name)
 
     if (! (emodPath.getNumPaths() > 0))
     {
-        Logger::writeToLog ("[element] setting module path");
-        File p ("/usr/local/lib/element/modules");
+        Logger::writeToLog ("[element] setting module paths");
+        File p = String("/usr/local/lib/element/modules");
         emodPath.add (p);
     }
 
@@ -63,39 +65,87 @@ static Module* world_load_module (const char* name)
     return nullptr;
 }
 
-typedef std::map<const String, Module*> ModuleMap;
+#endif
+
+struct ModuleItem {
+    ModuleItem (DynamicLibrary* l, Module* m)
+        : library(l), module(m) { }
+    ScopedPointer<DynamicLibrary> library;
+    ScopedPointer<Module>         module;
+};
+
+typedef std::map<const String, ModuleItem*> ModuleMap;
 
 class WorldBase::Private
 {
 public:
     Private() { }
-    ~Private()
-    {
-        // kill all loaded modules
-        OwnedArray<DynamicLibrary> libs;
+    ~Private() { }
 
+    void unloadAllModules()
+    {
 		ModuleMap::iterator it = mods.begin();
         while (it != mods.end())
         {
-            libs.add ((DynamicLibrary*) it->second->library);
-            delete it->second;
+            it->second->module->unload();
+            it->second->module = nullptr;
+            it->second->library->close();
+            deleteAndZero (it->second);
+            ++it;
         }
 
         mods.clear();
-
-		for (int i = 0; i < libs.size(); ++i)
-			libs.getUnchecked(i)->close();
-        libs.clear (true);
     }
 
-	
-    std::map<const String, Module*> mods;
+    Module* loadModule (const char* name, const File& file)
+    {
+        if (! file.existsAsFile())
+            return nullptr;
+
+        ScopedPointer<DynamicLibrary> lib = new DynamicLibrary (file.getFullPathName());
+        if (ModuleLoadFunc load_module = (ModuleLoadFunc) lib->getFunction ("element_module_load"))
+        {
+            if (Module* mod = load_module())
+            {
+                mods[name] = new ModuleItem (lib.release(), mod);
+                return mod;
+            }
+        }
+
+        return nullptr;
+    }
+
+    Module* loadModule (const char* name)
+    {
+        FileSearchPath emodPath (getenv ("ELEMENT_MODULE_PATH"));
+
+        if (! (emodPath.getNumPaths() > 0))
+        {
+            Logger::writeToLog ("[element] setting module paths");
+            File p = String("/usr/local/lib/element/modules");
+            emodPath.add (p);
+        }
+
+        Array<File> modules;
+        String module = name;
+        module << Module::extension();
+        emodPath.findChildFiles (modules, File::findFiles, false, module);
+
+        if (modules.size() > 0)
+            return loadModule (name, modules.getFirst());
+
+        return nullptr;
+    }
+
+    ModuleMap mods;
+    ModuleHost host;
 };
 
 
-WorldBase::WorldBase()
+WorldBase::WorldBase (void* host)
 {
     priv = new Private ();
+    priv->host = host;
 }
 
 WorldBase::~WorldBase()
@@ -105,11 +155,10 @@ WorldBase::~WorldBase()
 
 int WorldBase::executeModule (const char* name)
 {
-    typedef std::map<const String, Module*> MAP;
-    MAP::iterator mit = priv->mods.find (name);
+    ModuleMap::iterator mit = priv->mods.find (name);
     if (mit != priv->mods.end())
     {
-        mit->second->run ((WorldData) this);
+        // mit->second->module->run ((WorldData) this);
     }
 
     return -1;
@@ -118,15 +167,19 @@ int WorldBase::executeModule (const char* name)
 bool WorldBase::loadModule (const char* name)
 {
     ModuleMap::iterator it = priv->mods.find(name);
-    if (it == priv->mods.end())
+    if (it != priv->mods.end())
         return true;
 
-    if (Module* mod = world_load_module (name))
+    if (Module* mod = priv->loadModule (name))
     {
         mod->load (this);
-        priv->mods.insert (std::make_pair (name, mod));
         return true;
     }
 
     return false;
+}
+
+void WorldBase::unloadModules()
+{
+    priv->unloadAllModules();
 }

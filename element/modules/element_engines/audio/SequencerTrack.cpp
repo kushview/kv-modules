@@ -17,10 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if JUCE_COMPLETION
-#include "modules/element_engines/element_engines.h"
-#endif
-
 SequencerTrack::SequencerTrack (Sequencer& o, const TrackModel& t)
     : sequencer (o)
 {
@@ -42,44 +38,40 @@ SequencerTrack::~SequencerTrack()
 
 }
 
-ClipSource*
-SequencerTrack::cursorClip() const
+ClipSource* SequencerTrack::cursorClip() const
 {
     return sequencer.trackClip (trackIndex);
 }
 
-void
-SequencerTrack::prepareToPlay (double sampleRate, int blockSize)
+void SequencerTrack::prepareToPlay (double sampleRate, int blockSize)
 {
     setPlayConfigDetails (getNumInputChannels(), getNumOutputChannels(),
                           sampleRate, blockSize);
 
-	ClipSource* clip = bin.first();
-    while (clip) {
-        clip->prepareToPlay (blockSize, sampleRate);
-		clip = clip->next();
-    }
-}
-
-void
-SequencerTrack::releaseResources()
-{
-	ClipSource* clip = bin.first();
+    ClipSource* clip = bin.first();
     while (clip)
-	{
-        clip->releaseResources();
-		clip = clip->next();
+    {
+        clip->prepareToPlay (blockSize, sampleRate);
+        clip = clip->next();
     }
 }
 
-void
-SequencerTrack::processBlock (AudioSampleBuffer &buffer, MidiBuffer &midi)
+void SequencerTrack::releaseResources()
+{
+    ClipSource* clip = bin.first();
+    while (clip)
+    {
+        clip->releaseResources();
+        clip = clip->next();
+    }
+}
+
+void SequencerTrack::processBlock (AudioSampleBuffer &buffer, MidiBuffer &midi)
 {
     if (! sequencer.position().isPlaying)
         return;
 
     buffer.clear();
-
     if (ClipSource* src = cursorClip())
     {
         const int32 clipStart = sequencer.position().timeInSamples - src->frameStart();

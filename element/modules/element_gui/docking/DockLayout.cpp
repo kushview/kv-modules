@@ -45,8 +45,7 @@
         }
     }
 
-    void
-    DockLayout::remove (DockItem* const child)
+    void DockLayout::remove (DockItem* const child)
     {
         bool wasRemoved = true;
 

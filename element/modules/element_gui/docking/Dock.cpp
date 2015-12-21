@@ -19,10 +19,11 @@
             layout.setItemLayout (2, 1, -1.0, 200);
         }
 
-        void
-        resized()
+        void resized()
         {
-            layout.layOutComponents ((Component**) &comps.getReference(0), 3, 0, 0, getWidth(), getHeight(), true, true);
+            const int numComponents = (dock.getBottomArea().isVisible()) ? 3 : 1;
+            layout.layOutComponents ((Component**) &comps.getReference(0), numComponents,
+                                     0, 0, getWidth(), getHeight(), true, true);
         }
 
     private:
@@ -46,6 +47,8 @@
         : leftbar (&areaLayout, 1, true),
           rightbar (&areaLayout, 3, true)
     {
+        maximizedItem = nullptr;
+
         for (int i = 0; i <= Dock::RightArea; ++i)
         {
             areas.add (new DockArea ((Dock::Placement) i));
@@ -73,8 +76,7 @@
         middleLayout = nullptr;
     }
 
-    DockItem*
-    Dock::getItem (const String& id)
+    DockItem* Dock::getItem (const String& id)
     {
         for (int i = items.size(); --i >= 0; --i)
             if (items[i] && items[i]->getComponentID() == id)
@@ -83,23 +85,29 @@
         return nullptr;
     }
 
-    void
-    Dock::resized()
+    void Dock::resized()
     {
-        Component* comps[] = {  &getLeftArea(),
-                                &leftbar,
-                                middleLayout,
-                                &rightbar,
-                                &getRightArea()
-                              };
+        if (maximizedItem)
+        {
+            maximizedItem->getDockArea()->setBounds (getLocalBounds());
+        }
+        else
+        {
+            Component* comps[] = {  &getLeftArea(),
+                                    &leftbar,
+                                    middleLayout,
+                                    &rightbar,
+                                    &getRightArea()
+                                  };
 
-        areaLayout.layOutComponents (
-            comps + 2, 1, 0, 0, getWidth(), getHeight(), false, true
-        );
+            areaLayout.layOutComponents (
+                comps + 2, 1, 0, 0, getWidth(), getHeight(), false, true
+            );
+        }
     }
 
-    DockItem*
-    Dock::createItem (const String& id, const String& name, Dock::Placement placement)
+    DockItem* Dock::createItem (const String& id, const String& name,
+                                Dock::Placement placement)
     {
         for (int i = 0; i < items.size(); ++i)
             if (items[i]->getComponentID() == id)

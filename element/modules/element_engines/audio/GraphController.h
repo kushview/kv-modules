@@ -22,20 +22,17 @@
   ==============================================================================
 */
 
-#ifndef __FILTERGRAPH_JUCEHEADER__
-#define __FILTERGRAPH_JUCEHEADER__
-
+#ifndef ELEMENT_GRAPH_CONTROLLER_H
+#define ELEMENT_GRAPH_CONTROLLER_H
 
 class FilterInGraph;
 class GraphController;
 class PluginManager;
 
-
 /**
     A collection of filters and some connections between them.
  */
-class GraphController :  public Controller,
-                         public ChangeBroadcaster
+class GraphController :  public ChangeBroadcaster
 {
 public:
     static const uint32 invalidNodeId = (uint32)-1;
@@ -84,18 +81,12 @@ public:
 
     void clear();
 
-    Signal& signalChanged() { return changedSignal; }
-
-    /** The special channel index used to refer to a filter's midi channel.
-    */
+    /** The special channel index used to refer to a filter's midi channel. */
     static const int midiChannelNumber;
-
 
 private:
     PluginManager& pluginManager;
     GraphProcessor& processor;
-
-    Signal changedSignal;
 
     uint32 lastUID;
     uint32 getNextUID() noexcept;
@@ -104,5 +95,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (GraphController)
 };
 
-
-#endif   // __FILTERGRAPH_JUCEHEADER__
+#endif   // ELEMENT_GRAPH_CONTROLLER_H

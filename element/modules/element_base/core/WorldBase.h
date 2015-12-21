@@ -25,7 +25,7 @@ class Engine;
 /** A global collection of an appilcation/plugin's data */
 class WorldBase {
 public:
-    WorldBase();
+    explicit WorldBase (void* host = nullptr);
     virtual ~WorldBase();
 
     virtual bool loadModule (const char* moduleName);
@@ -33,6 +33,8 @@ public:
 
     void setAppName (const String& name) { appName = name; }
     virtual const String& getAppName() const { return appName; }
+protected:
+    void unloadModules();
 
 private:
     class Private;

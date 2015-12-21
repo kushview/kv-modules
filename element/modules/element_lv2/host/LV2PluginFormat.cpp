@@ -490,14 +490,12 @@ public:
         world.clear();
     }
     
-    LV2PluginModel*
-    createModel (const String& uri)
+    LV2PluginModel* createModel (const String& uri)
     {
         return world->createPluginModel (uri);
     }
     
-    LV2Module*
-    createModule (const String& uri)
+    LV2Module* createModule (const String& uri)
     {
         return world->createModule (uri);
     }
@@ -506,7 +504,6 @@ public:
     SymbolMap symbols;
     
 private:
-    
     bool useExternalData;
     
     void init()
@@ -521,7 +518,6 @@ private:
         world->addFeature (symbols.createLegacyMapFeature(), false);
         world->addFeature (new LV2Log(), true);
     }
-    
 };
 
 LV2PluginFormat::LV2PluginFormat() : priv (new Internal()) { }
@@ -529,17 +525,12 @@ LV2PluginFormat::LV2PluginFormat (LV2World& w) : priv (new Internal (w)) { }
 LV2PluginFormat::~LV2PluginFormat() { priv = nullptr; }
 
 void LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& results,
-                                      const String& fileOrIdentifier)
+                                           const String& fileOrIdentifier)
 {
     if (! fileMightContainThisPluginType (fileOrIdentifier))
         return;
 
     ScopedPointer<PluginDescription> desc (new PluginDescription());
-    
-#if 0
-    priv->world->fillPluginDescription (fileOrIdentifier, *desc);
-    results.add (desc.release());
-#else
     desc->fileOrIdentifier = fileOrIdentifier;
     desc->pluginFormatName = String ("LV2");
     desc->uid = 0;
@@ -555,14 +546,11 @@ void LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& resul
     }
     catch (...)
     {
-        Logger::writeToLog ("crashed: " + String (desc->name));
-        // crashed while loading...
+        JUCE_LV2_LOG("crashed: " + String(desc->name));
     }
-#endif
 }
 
-AudioPluginInstance*
-LV2PluginFormat::createInstanceFromDescription (const PluginDescription& desc, double sampleRate, int buffersize)
+AudioPluginInstance* LV2PluginFormat::createInstanceFromDescription (const PluginDescription& desc, double sampleRate, int buffersize)
 {
     if (desc.pluginFormatName != String ("LV2"))
         return nullptr;
@@ -586,8 +574,7 @@ LV2PluginFormat::createInstanceFromDescription (const PluginDescription& desc, d
     return nullptr;
 }
 
-bool
-LV2PluginFormat::fileMightContainThisPluginType (const String& fileOrIdentifier)
+bool LV2PluginFormat::fileMightContainThisPluginType (const String& fileOrIdentifier)
 {
     bool maybe = fileOrIdentifier.contains ("http:") ||
                  fileOrIdentifier.contains ("https:") ||
@@ -602,8 +589,7 @@ LV2PluginFormat::fileMightContainThisPluginType (const String& fileOrIdentifier)
     return maybe;
 }
 
-String
-LV2PluginFormat::getNameOfPluginFromIdentifier (const String& fileOrIdentifier)
+String LV2PluginFormat::getNameOfPluginFromIdentifier (const String& fileOrIdentifier)
 {
     if (const LilvPlugin* plugin = priv->world->getPlugin (fileOrIdentifier))
     {
@@ -615,8 +601,7 @@ LV2PluginFormat::getNameOfPluginFromIdentifier (const String& fileOrIdentifier)
     return fileOrIdentifier;
 }
 
-StringArray
-LV2PluginFormat::searchPathsForPlugins (const FileSearchPath&, bool)
+StringArray LV2PluginFormat::searchPathsForPlugins (const FileSearchPath&, bool)
 {
     StringArray list;
     const LilvPlugins* plugins (priv->world->getAllPlugins());
@@ -633,8 +618,7 @@ LV2PluginFormat::searchPathsForPlugins (const FileSearchPath&, bool)
 
 FileSearchPath LV2PluginFormat::getDefaultLocationsToSearch() { return FileSearchPath(); }
 
-bool
-LV2PluginFormat::doesPluginStillExist (const PluginDescription& desc)
+bool LV2PluginFormat::doesPluginStillExist (const PluginDescription& desc)
 {
     StringArray plugins (searchPathsForPlugins (FileSearchPath(), true));
     return plugins.contains (desc.fileOrIdentifier);

@@ -1,19 +1,16 @@
 
-#if ELEMENT_JACK_DEVICE
+#if ELEMENT_COMPLETION
+ #include <juce/juce.h>
+ #include "element/element.h"
+ #include <jack/jack.h>
+#endif
 
-#include <iostream>
-#include <sstream>
-
-#include "element/engine/Jack.h"
-
-static void
-element_jack_log (const char* msg)
+static void element_jack_log (const char* msg)
 {
    std::cerr << "[jack] " << msg << std::endl;
 }
 
-static void
-element_jack_dump_error (const jack_status_t status)
+static void element_jack_dump_error (const jack_status_t status)
 {
    if ((status & JackServerFailed) || (status & JackServerError))
       element_jack_log("Unable to connect to JACK server");
@@ -33,35 +30,28 @@ element_jack_dump_error (const jack_status_t status)
 
 #define returnValueIfNull(ptr, val) if (ptr == 0) return val
 
-namespace Element {
-
 const char* Jack::audioPort = JACK_DEFAULT_AUDIO_TYPE;
 const char* Jack::midiPort  = JACK_DEFAULT_MIDI_TYPE;
 
 struct JackClient::Internal
 {
 public:
-
     Internal() { }
     ~Internal() { }
 
-    static void
-    shutdown(void *arg)
+    static void shutdown(void *arg)
     {
 
     }
 
-    static int
-    process (jack_nframes_t nframes, void* arg)
+    static int process (jack_nframes_t nframes, void* arg)
     {
         JackClient* client = (JackClient*) arg;
         return 0;
     }
 
 private:
-
     friend class JackClient;
-
 };
 
 JackClient::JackClient()
@@ -71,11 +61,10 @@ JackClient::JackClient()
 
 JackClient::~JackClient()
 {
-    close();
+    this->close();
 }
 
-String
-JackClient::open (const String& name, int opts)
+String JackClient::open (const String& name, int opts)
 {
     String error;
 
@@ -91,8 +80,7 @@ JackClient::open (const String& name, int opts)
     return error;
 }
 
-String
-JackClient::close()
+String JackClient::close()
 {
     returnValueIfNull (client, "JACK server not running");
 
@@ -109,35 +97,30 @@ JackClient::close()
     return error;
 }
 
-bool
-JackClient::isOpen() const
+bool JackClient::isOpen() const
 {
     return (client != 0);
 }
 
-int
-JackClient::activate()
+int JackClient::activate()
 {
     returnValueIfNull (client, -1);
     return jack_activate (client);
 }
 
-int
-JackClient::deactivate()
+int JackClient::deactivate()
 {
     returnValueIfNull (client, -1);
     return jack_deactivate (client);
 }
 
-bool
-JackClient::isActive()
+bool JackClient::isActive()
 {
     return (isOpen());
 }
 
-JackPort
-JackClient::registerPort (const String& name, const String& type, int flags,
-                           int bufferSize)
+JackPort JackClient::registerPort (const String& name, const String& type,
+                                   int flags, int bufferSize)
 {
     returnValueIfNull (client, JackPort (*this));
 
@@ -146,39 +129,30 @@ JackClient::registerPort (const String& name, const String& type, int flags,
     if (clientName.length() >= nameSize())
         clientName = clientName.substring (0, nameSize());
 
-    jack_port_t* cport = jack_port_register (client, clientName.toUTF8(), type.toUTF8(),
-                                             flags, bufferSize);
-
+    jack_port_t* const cport = jack_port_register (client, clientName.toUTF8(), type.toUTF8(),
+                                                   flags, bufferSize);
     return JackPort (*this, cport);
 }
 
-String
-JackClient::getName()
+String JackClient::getName()
 {
     returnValueIfNull (client, String::empty);
     return jack_get_client_name (client);
 }
 
-int
-JackClient::nameSize()
+int JackClient::nameSize()
 {
     return jack_client_name_size();
 }
 
-int
-JackClient::sampleRate()
+int JackClient::sampleRate()
 {
     returnValueIfNull (client, 0);
-    return jack_get_sample_rate(client);
+    return jack_get_sample_rate (client);
 }
 
-int
-JackClient::bufferSize()
+int JackClient::bufferSize()
 {
     returnValueIfNull (client, 0);
     return jack_get_buffer_size(client);
 }
-
-} /* namespace element */
-
-#endif

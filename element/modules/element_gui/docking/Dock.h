@@ -39,9 +39,9 @@
         void resized();
 
     private:
-
         void detatchAll (DockItem* item);
 
+        DockItem* maximizedItem;
         OwnedArray<DockArea>      areas;
         OwnedArray<DockItem>      items;
 
@@ -53,8 +53,6 @@
 
         friend class DockItem;
     };
-
-
 
     class DockLayout
     {
@@ -87,9 +85,7 @@
         OwnedArray<StretchableLayoutResizerBar> bars;
         Array<Component*> comps;
         StretchableLayoutManager layout;
-
     };
-
 
     class DockArea : public Component
     {
@@ -142,10 +138,17 @@
 
         void resized()
         {
-            overlay.centreWithSize (getWidth() - 2, getHeight() - 2);
+            if (isMaximized())
+            {
+                content->setBounds (getLocalBounds());
+            }
+            else
+            {
+                overlay.centreWithSize (getWidth() - 2, getHeight() - 2);
 
-            if (content != nullptr)
-                content->setBounds (36, 0, getWidth() - 36, getHeight());
+                if (content != nullptr)
+                    content->setBounds (36, 0, getWidth() - 36, getHeight());
+            }
         }
 
         void mouseDown (const MouseEvent& ev);
@@ -184,6 +187,23 @@
             overlay.setVisible (false);
         }
 
+        bool isMaximized() const {
+            return dock.maximizedItem == this;
+        }
+
+        void setMaximized (const bool shouldBeMaximized)
+        {
+            if (shouldBeMaximized == isMaximized())
+                return;
+
+            if (shouldBeMaximized) {
+                dock.maximizedItem = this;
+            } else {
+                dock.maximizedItem = nullptr;
+            }
+
+            dock.resized();
+        }
 
     public:
         Dock&      dock;

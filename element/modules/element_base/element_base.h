@@ -52,26 +52,12 @@
  #endif
 #endif
 
-/** Config: ELEMENT_OSC
-    Set this to enable OSC handling/networking (default is disabled)
- */
-#ifndef ELEMENT_OSC
- #define ELEMENT_OSC 0
-#endif
-
-/* OSC Support */
-#if ELEMENT_OSC
- #include "osc/oscpack.h"
-#endif
-
 namespace Element {
 using namespace juce;
 #include "core/Arc.h"
 #include "core/Atomic.h"
-#include "core/Controller.h"
 #include "core/Intrusive.h"
 #include "core/LinkedList.h"
-#include "core/Module.h"
 #include "core/Monitor.h"
 #include "core/Parameter.h"
 #include "core/Pointer.h"
@@ -88,7 +74,7 @@ using namespace juce;
 #include "time/Tempo.h"
 #include "time/TimeScale.h"
 #include "time/TimeStamp.h"
-    
+
 #include "util/Utils.h"
 #include "util/Convert.h"
 #include "util/FileHelpers.h"
@@ -97,7 +83,8 @@ using namespace juce;
 #include "util/RangeTypes.h"
 #include "util/RelativePath.h"
 #include "util/UUID.h"
-
 }
+
+#include "core/Module.h"
 
 #endif // ELEMENT_BASE_H_INCLUDED

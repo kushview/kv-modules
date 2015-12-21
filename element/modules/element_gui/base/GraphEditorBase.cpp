@@ -76,6 +76,7 @@ public:
         
         return Colours::black;
     }
+
     void mouseDown (const MouseEvent& e)
     {
         getGraphPanel()->beginConnectorDrag (isInput ? 0 : filterID,
@@ -111,7 +112,6 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PinComponent)
 };
 
-//==============================================================================
 class FilterComponent    : public Component
 {
 public:
@@ -242,8 +242,7 @@ public:
         }
         else if (! e.mouseWasClicked())
         {
-            Signal& emitsig = graph.signalChanged();
-            emitsig();
+            graph.sendChangeMessage();
         }
     }
 
@@ -405,7 +404,6 @@ private:
     FilterComponent& operator= (const FilterComponent&);
 };
 
-//==============================================================================
 class ConnectorComponent   : public Component,
                              public SettableTooltipClient
 {
@@ -648,18 +646,16 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ConnectorComponent)
 };
 
-
-//==============================================================================
 GraphEditorBase::GraphEditorBase (GraphController& graph_)
     :  graph (graph_)
 {
-    graph.signalChanged().connect (
-                boost::bind (&GraphEditorBase::onGraphChanged, this));
+    graph.addChangeListener (this);
     setOpaque (true);
 }
 
 GraphEditorBase::~GraphEditorBase()
 {
+    graph.removeChangeListener (this);
     draggingConnector = nullptr;
     deleteAllChildren();
 }
@@ -690,8 +686,7 @@ void GraphEditorBase::createNewPlugin (const PluginDescription* desc, int x, int
     graph.addFilter (desc, x / (double) getWidth(), y / (double) getHeight());
 }
 
-FilterComponent*
-GraphEditorBase::getComponentForFilter (const uint32 filterID) const
+FilterComponent* GraphEditorBase::getComponentForFilter (const uint32 filterID) const
 {
     for (int i = getNumChildComponents(); --i >= 0;)
     {
@@ -743,8 +738,7 @@ void GraphEditorBase::changeListenerCallback (ChangeBroadcaster*)
     updateComponents();
 }
 
-void
-GraphEditorBase::onGraphChanged()
+void GraphEditorBase::onGraphChanged()
 {
     updateComponents();
 }
