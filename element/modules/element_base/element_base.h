@@ -67,7 +67,6 @@ using namespace juce;
 #include "core/Signals.h"
 #include "core/Slugs.h"
 #include "core/Types.h"
-#include "core/WorldBase.h"
 #include "core/WorkThread.h"
 
 #include "time/DelayLockedLoop.h"
@@ -84,7 +83,5 @@ using namespace juce;
 #include "util/RelativePath.h"
 #include "util/UUID.h"
 }
-
-#include "core/Module.h"
 
 #endif // ELEMENT_BASE_H_INCLUDED

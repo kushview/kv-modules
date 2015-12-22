@@ -46,7 +46,6 @@ namespace Element {
 #include "core/RingBuffer.cpp"
 #include "core/Semaphore.cpp"
 #include "core/WorkThread.cpp"
-#include "core/WorldBase.cpp"
 #include "time/TimeScale.cpp"
 #include "util/FileHelpers.cpp"
 #include "util/UUID.cpp"
