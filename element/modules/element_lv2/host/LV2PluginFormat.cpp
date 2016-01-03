@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if COMPLETION
-#include "KSP1.h"
+#if ELEMENT_COMPLETION
+ #include <juce/juce.h>
+ #include "element/element.h"
 #endif
 
 // Change this to enable logging of various LV2 activities
@@ -37,7 +38,6 @@ static ScopedPointer<URIs> uris;
 class LV2PluginInstance     : public Processor
 {
 public:
-
     LV2PluginInstance (LV2World& world, LV2Module* module_)
         : wantsMidiMessages (false),
           initialised (false),
@@ -203,7 +203,7 @@ public:
         if (initialised)
         {
             module->setSampleRate (sampleRate);
-            tempBuffer.setSize (jmax (1, getNumOutputChannels()), blockSize);
+            tempBuffer.setSize (jmax (1, getTotalNumOutputChannels()), blockSize);
             module->activate();
         }
     }
@@ -222,7 +222,7 @@ public:
 
         if (! initialised)
         {
-            for (int i = 0; i < getNumOutputChannels(); ++i)
+            for (int i = 0; i < getTotalNumOutputChannels(); ++i)
                 audio.clear (i, 0, numSamples);
 
             return;
@@ -258,15 +258,15 @@ public:
             }
         }
         
-        for (int32 i = getNumInputChannels(); --i >= 0;)
+        for (int32 i = getTotalNumInputChannels(); --i >= 0;)
             module->connectPort (chans.getAudioInputPort(i), audio.getWritePointer (i));
 
-        for (int32 i = getNumOutputChannels(); --i >= 0;)
+        for (int32 i = getTotalNumOutputChannels(); --i >= 0;)
             module->connectPort (chans.getAudioOutputPort(i), tempBuffer.getWritePointer (i));
 
         module->run ((uint32) numSamples);
 
-        for (int32 i = getNumOutputChannels(); --i >= 0;)
+        for (int32 i = getTotalNumOutputChannels(); --i >= 0;)
             audio.copyFrom (i, 0, tempBuffer.getWritePointer (i), numSamples);
         
         if (notifyPort != LV2UI_INVALID_PORT_INDEX)

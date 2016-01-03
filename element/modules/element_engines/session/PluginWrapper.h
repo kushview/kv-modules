@@ -20,6 +20,10 @@
 #ifndef ELEMENT_PLUGIN_WRAPPER_H
 #define ELEMENT_PLUGIN_WRAPPER_H
 
+#if ELEMENT_COMPLETION
+ #include <juce/juce.h>
+#endif
+
 /** A simple wrapper processor.  This allows regular juce AudioProcessors
     like AudioUnits/VST etc etc, to be used in a Element::GraphProcessor
     and with the Element::PluginManager
@@ -95,8 +99,13 @@ public:
         d.isInstrument = proc->acceptsMidi();
         d.manufacturerName = "Element Project";
         d.name = proc->getName();
+       #if 0
         d.numInputChannels = getNumInputChannels();
         d.numOutputChannels = getNumOutputChannels();
+       #else
+        d.numInputChannels  = getTotalNumInputChannels();
+        d.numOutputChannels = getTotalNumOutputChannels();
+       #endif
         d.pluginFormatName = "Internal";
         d.version = "0.0.1";
         d.uid = String("internal://pluginWrapper").hashCode();
