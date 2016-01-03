@@ -88,7 +88,7 @@ def configure(conf):
     conf.check_juce_cfg()
     conf.check_cfg(package='lilv-0', uselib_store='LILV', args=['--cflags', '--libs'], mandatory=True)
     conf.check_cfg(package='suil-0', uselib_store='SUIL', args=['--cflags', '--libs'], mandatory=True)
-    conf.check_cfg(package='jack', uselib_store='JACK', args=['--cflags', '--libs'], mandatory=True)
+    conf.check_cfg(package='jack', uselib_store='JACK', args=['--cflags', '--libs'], mandatory=False)
 
     # this is just to clear all the defines up to this point
     conf.write_config_header('dummy.h')
@@ -114,7 +114,7 @@ def configure(conf):
     conf.env.append_unique ('CFLAGS', '-I' + os.getcwd() + '/build')
 
     print
-    juce.display_header ('Element Configuration')
+    juce.display_header ('Element Modules Configuration')
     juce.display_msg (conf, 'Library Version', VERSION)
     juce.display_msg (conf, 'Prefix', conf.env.PREFIX)
     juce.display_msg (conf, 'Build Debuggable Libraries', conf.env.BUILD_DEBUGGABLE)
