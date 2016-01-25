@@ -28,22 +28,22 @@ public:
     AssetTreeViewItem (const AssetItem& item);
     ~AssetTreeViewItem();
 
-    virtual bool mightContainSubItems();
-    virtual String getRenamingName() const;
-    virtual String getDisplayName() const;
-    virtual String getUniqueName() const;
-    virtual void setName (const String& newName);
-    virtual bool isMissing();
-    virtual void showPopupMenu();
-    virtual void handlePopupMenuResult (int);
-    virtual Element::Icon getIcon() const;
+    virtual bool mightContainSubItems() override;
+    virtual String getRenamingName() const override;
+    virtual String getDisplayName() const override;
+    virtual String getUniqueName() const override;
+    virtual void setName (const String& newName) override;
+    virtual bool isMissing() override;
+    virtual void showPopupMenu() override;
+    virtual void handlePopupMenuResult (int) override;
+    virtual Element::Icon getIcon() const override;
 
     //void addSubItem();
     bool isRootAsset() const;
-    void itemOpennessChanged (bool isNowOpen);
+    void itemOpennessChanged (bool isNowOpen) override;
 
     // dragging stuff
-    File getDraggableFile() const
+    File getDraggableFile() const override
     {
         if (item.isFile())
             return item.getFile();
@@ -62,7 +62,7 @@ public:
 
 protected:
 
-    void addSubItems();
+    void addSubItems() override;
     virtual AssetTreeViewItem* createAssetSubItem (const AssetItem&) { return nullptr; }
     virtual void treeChildrenChanged (const ValueTree& parentTree);
     virtual void triggerAsyncAssetRename (const AssetItem& item);

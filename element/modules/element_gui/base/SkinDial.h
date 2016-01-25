@@ -62,7 +62,7 @@
                scale = newScale;
        }
        
-      inline void paint (Graphics& g)
+      inline void paint (Graphics& g) override
       {
          if (img == Image::null)
          {
