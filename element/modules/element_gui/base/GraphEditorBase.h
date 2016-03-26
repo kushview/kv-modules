@@ -37,7 +37,6 @@ class GraphEditorBase   : public Component,
                           public DragAndDropTarget
 {
 public:
-
     GraphEditorBase (GraphController&);
     virtual ~GraphEditorBase();
 

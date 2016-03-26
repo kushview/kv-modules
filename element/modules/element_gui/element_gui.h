@@ -31,15 +31,15 @@ class ScreenDisplay;
 
 // look and feel
 #include "base/Icons.h"
-#include "base/Stock.h"
 #include "base/LookAndFeel.h"
 
 #include "screens/ScreenDisplay.h"
 #include "screens/Screen.h"
 #include "screens/ScreenManager.h"
 
-// timelines
+
 #if JUCE_MODULE_AVAILABLE_element_engines
+ // timelines
  #include "timeline/TrackHeights.h"
  #include "timeline/TimelineComponent.h"
  #include "timeline/TimelineClip.h"
@@ -51,7 +51,6 @@ class ScreenDisplay;
 
  // misc audio/video engine stuff
  #include "base/PluginWindow.h"
-
 #endif
 
 // misc widgets

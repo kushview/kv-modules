@@ -54,7 +54,7 @@ public:
     inline const String getOutputChannelName (int channelIndex) const { return proc->getOutputChannelName (channelIndex); }
     inline bool isInputChannelStereoPair (int index) const { return proc->isInputChannelStereoPair (index); }
     inline bool isOutputChannelStereoPair (int index) const { return proc->isOutputChannelStereoPair (index); }
-    inline bool silenceInProducesSilenceOut() const { return proc->silenceInProducesSilenceOut (); }
+
     inline double getTailLengthSeconds() const { return proc->getTailLengthSeconds(); }
     inline bool acceptsMidi() const { return proc->acceptsMidi(); }
     inline bool producesMidi() const { return proc->producesMidi(); }
