@@ -104,28 +104,21 @@ class AtomicLock
 public:
 
     AtomicLock()
-#if _MSC_VER
-		: a_mutex(),
-#else
-        : a_mutex (ATOMIC_FLAG_INIT),
-#endif
-          a_locks (0)
+        : a_mutex(),
+          a_locks(0)
     { }
 
-    inline bool
-    acquire()
+    inline bool acquire()
     {
         return ! a_mutex.test_and_set (std::memory_order_acquire);
     }
 
-    inline void
-    release()
+    inline void release()
     {
         a_mutex.clear (std::memory_order_release);
     }
 
-    inline void
-    lock()
+    inline void lock()
     {
         a_locks.set (a_locks.get() + 1);
         if (a_locks.get() == 1)
@@ -133,8 +126,7 @@ public:
                 ; // spin
     }
 
-    inline void
-    unlock()
+    inline void unlock()
     {
         a_locks.set (a_locks.get() - 1);
         if (a_locks.get() < 1)
@@ -144,7 +136,7 @@ public:
         }
     }
 
-    inline bool isBusy() const {  return a_locks.get() > 0; }
+    inline bool isBusy() const { return a_locks.get() > 0; }
 
 private:
     std::atomic_flag    a_mutex;
@@ -231,6 +223,7 @@ private:
 };
 
 #if 1
+
 class AtomicLock
 {
 public:

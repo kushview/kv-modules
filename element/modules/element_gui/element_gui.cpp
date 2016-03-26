@@ -1,6 +1,6 @@
 /*
     element_gui.cpp - This file is part of Element
-    Copyright (C) 2015  Kushview, LLC.  All rights reserved.
+    Copyright (C) 2016 Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,27 +33,19 @@
 
 namespace Element {
 
-#include "assets/AssetTreeView.cpp"
 #include "base/DecibelScaleComponent.cpp"
 #include "base/DigitalMeter.cpp"
-#include "base/Icons.cpp"
 #include "base/LookAndFeel.cpp"
-#include "base/TreeviewBase.cpp"
 #include "docking/Dock.cpp"
 #include "docking/DockArea.cpp"
 #include "docking/DockItem.cpp"
 #include "docking/DockLayout.cpp"
-
 #include "embed/NativeComponent.cpp"
-
 #include "screens/Screen.cpp"
 #include "screens/ScreenDisplay.cpp"
 #include "screens/ScreenManager.cpp"
 
-
 #if JUCE_MODULE_AVAILABLE_element_engines
- #include "base/GraphEditorBase.cpp"
- #include "base/PluginWindow.cpp"
  #include "timeline/MidiEditorBody.cpp"
  #include "timeline/TimelineComponent.cpp"
  #include "timeline/TimelineClip.cpp"

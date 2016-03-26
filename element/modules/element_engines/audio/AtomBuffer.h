@@ -22,7 +22,6 @@
 
 class AtomBuffer {
 public:
-
     AtomBuffer (LV2_URID_Map* map, uint32 capacity = 4096);
 
     void addEvent (uint32_t frame, uint32_t subframe, uint32_t size, uint32_t type, const uint8* data);
@@ -41,7 +40,6 @@ public:
     uint32 size() const;
 
 private:
-
     class Data;
     Data* data;
 

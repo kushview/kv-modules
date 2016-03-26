@@ -1,6 +1,6 @@
 /*
-    element_module.h - This file is part of Element
-    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
+    element_gui.h - This file is part of Element
+    Copyright (C) 2016 Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,9 +30,9 @@ class ScreenManager;
 class ScreenDisplay;
 
 // look and feel
-#include "base/Icons.h"
 #include "base/LookAndFeel.h"
 
+// screens
 #include "screens/ScreenDisplay.h"
 #include "screens/Screen.h"
 #include "screens/ScreenManager.h"
@@ -45,23 +45,12 @@ class ScreenDisplay;
  #include "timeline/TimelineClip.h"
  #include "timeline/NoteClipItem.h"
  #include "timeline/MidiEditorBody.h"
-
- // graph stuff
- #include "base/GraphEditorBase.h"
-
- // misc audio/video engine stuff
- #include "base/PluginWindow.h"
 #endif
 
 // misc widgets
 #include "base/DecibelScaleComponent.h"
 #include "base/DigitalMeter.h"
-#include "base/IconButton.h"
 #include "base/SkinDial.h"
-#include "base/TreeviewBase.h"
-
-// assets
-#include "assets/AssetTreeView.h"
 
 // docking
 #include "docking/Dock.h"
