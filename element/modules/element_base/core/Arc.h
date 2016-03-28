@@ -17,19 +17,25 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_ARC_H
-#define ELEMENT_ARC_H
+#ifndef EL_ARC_H
+#define EL_ARC_H
 
 struct JUCE_API Arc
 {
 public:
-    
     Arc (uint32 sourceNode, uint32 sourcePort, uint32 destNode, uint32 destPort) noexcept;
     virtual ~Arc() { }
     
+    /** The source node id */
     uint32 sourceNode;
+    
+    /** The source port id */
     uint32 sourcePort;
+    
+    /** The destination node id */
     uint32 destNode;
+    
+    /** The destination port id */
     uint32 destPort;
     
 private:
@@ -165,4 +171,4 @@ private:
     JUCE_DECLARE_NON_COPYABLE (ArcTable)
 };
 
-#endif // ELEMENT_ARC_H
+#endif // EL_ARC_H
