@@ -24,8 +24,7 @@
 
 const int32 Shuttle::PPQ = 1920;
 
-double
-Shuttle::scaledTick (double sourceTick, const int32 srcPpq)
+double Shuttle::scaledTick (double sourceTick, const int32 srcPpq)
 {
     if (srcPpq == Shuttle::PPQ || srcPpq <= 0)
         return sourceTick;
@@ -94,8 +93,7 @@ bool Shuttle::isLooping()   const { return looping; }
 bool Shuttle::isPlaying()   const { return playing; }
 bool Shuttle::isRecording() const { return recording; }
 
-void
-Shuttle::resetRecording()
+void Shuttle::resetRecording()
 {
     // TODO:
 }
@@ -104,10 +102,8 @@ void Shuttle::setLengthBeats   (const float beats) { setLengthFrames (framesPerB
 void Shuttle::setLengthSeconds (const double seconds) { setLengthFrames (llrint (getSampleRate() * seconds)); }
 void Shuttle::setLengthFrames  (const uint32 df) { duration = df; jassertfalse; }
 
-void
-Shuttle::setTempo (float bpm)
+void Shuttle::setTempo (float bpm)
 {
-
     if (ts.getTempo() != bpm && bpm > 0.0f)
     {
         double oldTime = getPositionBeats();
@@ -123,8 +119,7 @@ Shuttle::setTempo (float bpm)
     }
 }
 
-void
-Shuttle::setSampleRate (double rate)
+void Shuttle::setSampleRate (double rate)
 {
     if (sampleRate == rate)
         return;
@@ -140,12 +135,9 @@ Shuttle::setSampleRate (double rate)
     beatsPerFrame  = 1.0f / framesPerBeat;
 }
 
-void
-Shuttle::advance (int nframes)
+void Shuttle::advance (int nframes)
 {
     framePos += nframes;
-
-    DBG ("shuttle dur: " + String(duration));
     if (duration > 0 && framePos >= duration)
         framePos = framePos - duration;
 }
