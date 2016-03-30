@@ -33,13 +33,13 @@ MidiSequencePlayer::MidiSequencePlayer()
 {
     numBars     = 4;
     frameOffset = 0;
-    shuttle    = nullptr;
+    shuttle.setOwned (new Shuttle());
 }
 
 MidiSequencePlayer::~MidiSequencePlayer ()
 {
     midiSequence = nullptr;
-    shuttle      = nullptr;
+    shuttle.clear();
 }
 
 void MidiSequencePlayer::prepareToPlay (double /*sampleRate*/, int /* blockSize */)
@@ -47,21 +47,27 @@ void MidiSequencePlayer::prepareToPlay (double /*sampleRate*/, int /* blockSize 
 	noteOffs.clear();
 }
 
-void
-MidiSequencePlayer::releaseResources()
+void MidiSequencePlayer::releaseResources()
 { }
 
-void
-MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequence& seq,
-                                    int32 startInSequence, int32 numSamples)
+void MidiSequencePlayer::renderSequence (int numSamples, MidiBuffer& midiMessages)
 {
+    renderSequence (midiMessages, *midiSequence, 0, numSamples);
+}
+
+void MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequence& seq,
+                                         int32 startInSequence, int32 numSamples)
+{
+#if 1
+    Midi::renderSequence (target, seq, shuttle->getTimeScale(), startInSequence, numSamples);
+#else
     const TimeScale& ts (shuttle->getTimeScale());
     const int32 numEvents = seq.getNumEvents();
     const double start = (double) ts.tickFromFrame (frameOffset + startInSequence);
 
     for (int32 i = seq.getNextIndexAtTime (start); i < numEvents;)
     {
-        const EventHolder* const ev = seq.getEventPointer (i);
+        const EventHolder* const ev = seq.getEventPointer(i);
         const double tick = ev->message.getTimeStamp();
         const int32 frameInSeq = ts.frameFromTick (static_cast<unsigned long> (tick));
         const int32 timeStamp = frameInSeq - startInSequence;
@@ -70,8 +76,8 @@ MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequenc
             break;
 
         target.addEvent (ev->message, timeStamp);
-
-        if (ev->message.isNoteOn())
+        
+        /* if (ev->message.isNoteOn())
         {
             const double ots = ev->noteOffObject->message.getTimeStamp() / (double) Shuttle::PPQ;
             if (ots >= (double) getBeatLength())
@@ -79,22 +85,59 @@ MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSequenc
                 ts.frameFromTick (static_cast<unsigned long> (ots * (double) Shuttle::PPQ));
             }
         }
+         */
 
         lastEventTime = tick;
 
         ++i;
     }
+#endif
 }
 
-int32
-MidiSequencePlayer::getLoopRepeatIndex() const
+int32 MidiSequencePlayer::getLoopRepeatIndex() const
 { 
     return static_cast<int> (floor (shuttle->getPositionBeats())) / (double) getBeatLength();
 }
 
-double
-MidiSequencePlayer::getLoopBeatPosition() const
+double MidiSequencePlayer::getLoopBeatPosition() const
 {
     return shuttle->getPositionBeats() - static_cast<double> (getLoopRepeatIndex() * getBeatLength());
 }
 
+namespace Midi {
+    
+
+void renderSequence (MidiBuffer& target, const MidiMessageSequence& seq, const TimeScale& ts,
+                     int32 startFrame, int32 numSamples)
+{
+#if 1
+    const int32 numEvents = seq.getNumEvents();
+    const double start = (double) ts.tickFromFrame (startFrame);
+    for (int32 i = seq.getNextIndexAtTime (start); i < numEvents;)
+    {
+        const auto* const ev = seq.getEventPointer (i);
+        const double tick = ev->message.getTimeStamp();
+        const int32 frameInSeq = ts.frameFromTick (static_cast<unsigned long> (tick));
+        const int32 timeStamp = frameInSeq - startFrame;
+        
+        if (timeStamp >= numSamples)
+            break;
+        
+        target.addEvent (ev->message, timeStamp);
+        
+        /* if (ev->message.isNoteOn())
+         {
+         const double ots = ev->noteOffObject->message.getTimeStamp() / (double) Shuttle::PPQ;
+         if (ots >= (double) getBeatLength())
+         {
+         ts.frameFromTick (static_cast<unsigned long> (ots * (double) Shuttle::PPQ));
+         }
+         }
+         */
+        
+        ++i;
+    }
+#endif
+}
+
+}

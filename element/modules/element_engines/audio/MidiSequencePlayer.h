@@ -30,6 +30,11 @@
 #define ELEMENT_MIDISEQUENCE_PLAYER_H
 
 class Shuttle;
+class TimeScale;
+
+namespace Midi {
+    void renderSequence (MidiBuffer& target, const MidiMessageSequence& seq, const TimeScale& ts, int32 startFrame, int32 numSamples);
+}
 
 /** A single track midi sequencer with record functionality */
 class MidiSequencePlayer
@@ -65,7 +70,7 @@ public:
     /* Get the number of beats per bar (currently hard-coded to four) */
     int32 getBeatsPerBar() const { return 4; }
 
-    inline void setShuttle (Shuttle* s) { shuttle = s; }
+    inline void setShuttle (Shuttle* s) { shuttle.setNonOwned(s); }
     inline Shuttle* getShuttle() const { return shuttle; }
     inline void setFrameOffset (int32 offset) { frameOffset = offset; }
 
@@ -75,11 +80,10 @@ protected:
     MidiMessage allNotesOff;
 
 private:
-    Shuttle* shuttle;
+    OptionalScopedPointer<Shuttle> shuttle;
     int32 frameOffset;
     double lastEventTime;
     int32 numBars;
-
 };
 
 #endif
