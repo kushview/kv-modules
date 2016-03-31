@@ -328,7 +328,7 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
     void
     MidiEditorBody::paintTrackLane (Graphics &g, int track, const Rectangle<int> &area)
     {
-#if 0
+#if 1
         track = (127 - track);
 
         g.resetToDefaultState();

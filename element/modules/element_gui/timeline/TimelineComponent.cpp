@@ -35,8 +35,7 @@ TimelineIndicator::TimelineIndicator()
 
 TimelineIndicator::~TimelineIndicator() { }
 
-void
-TimelineIndicator::setPosition (double time, bool musical)
+void TimelineIndicator::setPosition (double time, bool musical)
 {
     if (musical) {
         const float bpm = (float) timeline()->timeScale().getTempo();
@@ -103,8 +102,7 @@ void TimelineIndicator::setColour (const Colour& newColor)
     this->repaint();
 }
 
-TimelineComponent*
-TimelineIndicator::timeline() const
+TimelineComponent* TimelineIndicator::timeline() const
 {
     if (owner == nullptr)
     {
@@ -124,16 +122,14 @@ TimelineIndicator::getUnits() const
 }
 
 
-void
-TimelineComponent::recycleClip (TimelineClip* clip)
+void TimelineComponent::recycleClip (TimelineClip* clip)
 {
     clips.removeObject (clip, false);
     removeChildComponent (clip);
     freeClips.add (clip);
 }
 
-void
-TimelineComponent::handleAsyncUpdate()
+void TimelineComponent::handleAsyncUpdate()
 {
     for (int i = 0; i < clips.size(); ++i)
     {
@@ -220,6 +216,7 @@ void TimelineComponent::paintOverChildren (Graphics& g)
             g.restoreState();
         }
 
+#if 0
         r.setX (mTrackWidth);
         r.setWidth (getWidth() - mTrackWidth);
         r.setHeight (r.getHeight() + heights.spacing());
@@ -227,13 +224,12 @@ void TimelineComponent::paintOverChildren (Graphics& g)
         g.saveState();
         paintTrackLane (g, track, r);
         g.restoreState();
-
+#endif
         ++track;
     }
 }
 
-void
-TimelineComponent::paint (Graphics& g)
+void TimelineComponent::paint (Graphics& g)
 {
     g.setColour (Colour (0xff454545));
     g.fillAll();
@@ -242,6 +238,30 @@ TimelineComponent::paint (Graphics& g)
     g.setColour (Colours::black.withAlpha (0.5f));
     g.drawVerticalLine (mTrackWidth + 1, 0, getHeight());
 
+    int track = heights.trackAtY (0);
+    Rectangle<int> r;
+    while (true)
+    {
+        if (r.getY() > getHeight() || track >= getNumTracks())
+            break;
+        
+        if (! heights.trackIsVisible (track)) {
+            ++track;
+            continue;
+        }
+        
+        r.setX (mTrackWidth);
+        r.setY (heights.trackY (track));
+        r.setWidth (getWidth() - mTrackWidth);
+        r.setHeight (heights.get (track) + heights.spacing());
+        
+        g.saveState();
+        paintTrackLane (g, track, r);
+        g.restoreState();
+        
+        ++track;
+    }
+    
 #if 0
     int track = heights.trackAtY (0);
     Rectangle<int> r;
