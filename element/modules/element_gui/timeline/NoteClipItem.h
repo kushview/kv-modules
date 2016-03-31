@@ -70,6 +70,7 @@ public:
     inline void
     paint (Graphics &g)
     {
+        DBG("paint: w: " << getWidth() << " h: " << getHeight());
         if (! isSelected())
             g.setColour (fillColor (model.velocity()));
         else
@@ -116,7 +117,6 @@ public:
     const Note& note() const { return model; }
 
 private:
-
     Note model;
     Note::EditDeltas deltas;
 

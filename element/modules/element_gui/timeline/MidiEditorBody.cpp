@@ -80,13 +80,11 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
     }
 
 
-    void
-    MidiEditorBody::addSequence (const MidiMessageSequence& seq)
+    void MidiEditorBody::addSequence (const MidiMessageSequence& seq)
     {
     }
 
-    void
-    MidiEditorBody::clipClicked (TimelineClip* clip, const MouseEvent& clipEvent )
+    void MidiEditorBody::clipClicked (TimelineClip* clip, const MouseEvent& clipEvent )
     {
         if (NoteClipItem* n = dynamic_cast<NoteClipItem*> (clip))
         {
@@ -330,6 +328,7 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
     void
     MidiEditorBody::paintTrackLane (Graphics &g, int track, const Rectangle<int> &area)
     {
+#if 0
         track = (127 - track);
 
         g.resetToDefaultState();
@@ -340,6 +339,7 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
             g.setColour (Colour (0xff888888));
 
         g.fillRect (area);
+#endif
     }
 
 
