@@ -1,6 +1,6 @@
 /*
     ClipModel.h - This file is part of Element
-    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
+    Copyright (C) 2016  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,17 +17,14 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_CLIP_MODEL_H
-#define ELEMENT_CLIP_MODEL_H
+#ifndef EL_CLIP_MODEL_H
+#define EL_CLIP_MODEL_H
 
 class ClipModel :  public ObjectModel
 {
 public:
-    
-    ClipModel (const ValueTree& data) : ObjectModel (data) {}
-    ClipModel (const Identifier& type) : ObjectModel (type) {
-
-    }
+    ClipModel (const ValueTree& data) : ObjectModel (data) { }
+    ClipModel (const Identifier& type) : ObjectModel (type) { }
 
     ClipModel (ValueTree& data, double start, double length, double offset = 0.0f)
         : ObjectModel (data)
@@ -93,7 +90,6 @@ public:
             return f.hashCode();
         }
 
-        jassertfalse;
         return 0;
     }
 
@@ -105,7 +101,6 @@ public:
             return f.hashCode64();
         }
 
-        jassertfalse;
         return 0;
     }
 
@@ -136,4 +131,4 @@ protected:
 };
 
 
-#endif // ELEMENT_CLIP_MODEL_H
+#endif // EL_CLIP_MODEL_H

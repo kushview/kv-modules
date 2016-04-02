@@ -256,16 +256,14 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
         }
     }
 
-    void
-    MidiEditorBody::showAllTracks()
+    void MidiEditorBody::showAllTracks()
     {
         BigInteger keys;
         keys.setRange (0, 128, true);
         setTrackVisibility (keys);
     }
 
-    void
-    MidiEditorBody::hideEmptyKeys()
+    void MidiEditorBody::hideEmptyKeys()
     {
         BigInteger keys;
         keys.setRange (0, 128, false);
@@ -273,8 +271,7 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
         setTrackVisibility (keys);
     }
 
-    void
-    MidiEditorBody::setNoteSequence (const NoteSequence& s)
+    void MidiEditorBody::setNoteSequence (const NoteSequence& s)
     {
         if (sequenceNode == s.node())
                 return;
@@ -295,8 +292,7 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
         repaint();
     }
 
-    void
-    MidiEditorBody::paintTrackHeader (Graphics &g, int track, const Rectangle<int> &area)
+    void MidiEditorBody::paintTrackHeader (Graphics &g, int track, const Rectangle<int> &area)
     {
         g.setColour (Colours::darkgrey);
         g.fillRect (area);
@@ -325,8 +321,7 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
         g.fillRect (r.removeFromRight (area.getWidth() / 2));
     }
 
-    void
-    MidiEditorBody::paintTrackLane (Graphics &g, int track, const Rectangle<int> &area)
+    void MidiEditorBody::paintTrackLane (Graphics &g, int track, const Rectangle<int> &area)
     {
 #if 1
         track = (127 - track);
@@ -343,8 +338,7 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
     }
 
 
-    void
-    MidiEditorBody::selectNotesOnKey (int key, bool deselectOthers)
+    void MidiEditorBody::selectNotesOnKey (int key, bool deselectOthers)
     {
         for (int i = 0; i < notes.size(); ++i)
 		{
@@ -356,8 +350,7 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
         }
     }
 
-    void
-    MidiEditorBody::setVisibleChannel (int chan, bool updateInsertChannel)
+    void MidiEditorBody::setVisibleChannel (int chan, bool updateInsertChannel)
     {
         if (chan == 0)
         {
@@ -389,8 +382,7 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
         repaint();
     }
 
-    void
-    MidiEditorBody::timelineBodyClicked (const MouseEvent& ev, int track)
+    void MidiEditorBody::timelineBodyClicked (const MouseEvent& ev, int track)
     {
         PopupMenu menu;
 
@@ -414,8 +406,7 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
         lasso.beginLasso (ev, this);
     }
 
-    void
-    MidiEditorBody::timelineTrackHeadersClicked (const MouseEvent &ev, int track)
+    void MidiEditorBody::timelineTrackHeadersClicked (const MouseEvent &ev, int track)
     {
         const int keyId = 127 - track;
 
@@ -431,11 +422,9 @@ typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
         }
     }
 
-    void
-    MidiEditorBody::refreshComponentForTrack (const int track) { }
+    void MidiEditorBody::refreshComponentForTrack (const int track) { }
 
-    void
-    MidiEditorBody::unloadNote (NoteClipItem* clip)
+    void MidiEditorBody::unloadNote (NoteClipItem* clip)
     {
         selected.deselect (clip);
         clip->reset();

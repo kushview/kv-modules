@@ -71,13 +71,12 @@ public:
     /** Add a note from a value tree object */
     Note addNote (const ValueTree& tree);
     
-    inline Note
-    addNote (const MidiMessage& on, const MidiMessage& off)
+    inline Note addNote (const MidiMessage& on, const MidiMessage& off)
     {
         Note note (on.getNoteNumber(), on.getTimeStamp(),
                    off.getTimeStamp() - on.getTimeStamp(),
                    on.getChannel(), on.getFloatVelocity());
-        node().addChild (note.node(), -1, nullptr);
+        objectData.addChild (note.node(), -1, nullptr);
         return note;
     }
     
@@ -94,32 +93,31 @@ public:
     
     
     /** Remove a note from the sequence */
-    inline void
-    removeNote (const Note& note)
+    inline void removeNote (const Note& note)
     {
-        if (note.node().isAChildOf (node()))
-            node().removeChild (note.node(), nullptr);
+        if (note.node().isAChildOf (objectData))
+            objectData.removeChild (note.node(), nullptr);
     }
     
     /** Add a value tree listener
-     This is so things that don't know about this specific class
-     can still be listeners of the sequence/notes */
+     
+        This is so things that don't know about this specific class
+        can still be listeners of the sequence/notes 
+     */
     inline void addValueListener (ValueTree::Listener* client) {
-        node().addListener (client);
+        objectData.addListener (client);
     }
     
     /** Remove a value tree listener */
     inline void removeValueListener (ValueTree::Listener* client) {
-        node().removeListener (client);
+        objectData.removeListener (client);
     }
     
-    
     /** Add a note from Midi */
-    inline Note
-    addMidi (const MidiMessage& msg, double len = 1.0f)
+    inline Note addMidi (const MidiMessage& msg, double len = 1.0f)
     {
-        Note n = Note::make (msg, len);
-        node().addChild (n.node(), -1, nullptr);
+        const Note n (Note::make (msg, len));
+        objectData.addChild (n.node(), -1, nullptr);
         return n;
     }
     
@@ -136,22 +134,17 @@ public:
     }
     
     /** This will return Shuttle::PPQ unless specified otherwise
-     by setting the property "ppq" to and integer value
-     
-     The easiest thing to do when working with foreign MIDI sources
-     is to read tick values from the source, scale them with,
-     Shuttle::scaledTick, then add notes to the sequences with new tick
-     values.
+        by setting the property "ppq" to and integer value
+         
+        The easiest thing to do when working with foreign MIDI sources
+        is to read tick values from the source, scale them with,
+        Shuttle::scaledTick, then add notes to the sequences with new tick
+        values.
      */
     int32 ppq() const;
     
-protected:
-    
-    
 private:
-    
     friend class Note;
-    
 };
 
 

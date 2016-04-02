@@ -17,17 +17,15 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_MIDI_DATA_BASE_H
-#define ELEMENT_MIDI_DATA_BASE_H
+#ifndef EL_MIDI_DATA_BASE_H
+#define EL_MIDI_DATA_BASE_H
 
 class Note;
 
 class MidiDataBase :  public ClipData,
                       public AtomicLock
 {
-
 public:
-
     typedef MidiMessageSequence::MidiEventHolder EventHolder;
 
     MidiDataBase();
@@ -51,7 +49,6 @@ public:
     bool removeNote (const Note& note);
 
 private:
-
     int32 lastEventId;
     Array<int32> expiredIds;
     HashMap<int32, EventHolder*> eventMap;
@@ -61,7 +58,6 @@ private:
 
     /** @internal */
     int32 nextId();
-
 };
 
-#endif // ELEMENT_MIDI_DATA_BASE_H
+#endif // EL_MIDI_DATA_BASE_H

@@ -83,6 +83,7 @@ public:
         : engine (e), factory (owner)
     {
         sampleRate.setValue ((double) 48000.f);
+        randomHash.setSeedRandomly();
     }
 
     ~Impl()
@@ -95,10 +96,11 @@ public:
     void attachSourceData (ClipType* type, ClipSource* source)
     {
         const ClipModel model (source->getModel());
-
         jassert (model.isValid());
-        jassert (model.node().hasProperty (Slugs::file));
-        const int64 hash = model.hashCode64();
+        int64 hash = model.hashCode64();
+        if (hash == 0) {
+            hash = randomHash.nextInt64();
+        }
 
         if (data.contains (hash))
         {
@@ -108,7 +110,7 @@ public:
         {
             Shared<ClipData> sdata (cd);
             sdata->hash = hash;
-            sdata->prepare (48000.f, 256);
+            sdata->prepare (41000.0f, 1024);
             while (! source->setData (sdata)) { }
             data.set (hash, sdata);
         }
@@ -125,14 +127,14 @@ public:
     OwnedArray<ClipType>   types;
     HashMap<int64, Shared<ClipData> > data;
     Value sampleRate;
-
+    Random randomHash;
 };
 
 
 ClipFactory::ClipFactory (Engine& e)
 {
     impl = new Impl (*this, e);
-   #if JUCE_DEBUG
+   #ifdef EL_USE_DUMMY_CLIPS
     registerType (new DummyClip::Type());
    #endif
 }

@@ -24,8 +24,7 @@ MidiDataBase::MidiDataBase ()
 
 MidiDataBase::~MidiDataBase () { }
 
-bool
-MidiDataBase::addNote (const Note& note)
+bool MidiDataBase::addNote (const Note& note)
 {
     MidiMessage msgOn, msgOff;
     note.getMidi (msgOn, msgOff);
@@ -116,8 +115,7 @@ bool MidiDataBase::editNote (const Note& note)
     return editResult;
 }
 
-bool
-MidiDataBase::expireNote (const Note& note)
+bool MidiDataBase::expireNote (const Note& note)
 {
     const int32 evid = note.eventId();
     bool res = true;
@@ -137,8 +135,7 @@ MidiDataBase::expireNote (const Note& note)
     return res;
 }
 
-int32
-MidiDataBase::nextId()
+int32 MidiDataBase::nextId()
 {
     if (expiredIds.size() > 0)
     {
@@ -151,8 +148,7 @@ MidiDataBase::nextId()
 }
 
 
-bool
-MidiDataBase::removeNote (const Note& note)
+bool MidiDataBase::removeNote (const Note& note)
 {
     const int32 evid = note.eventId();
     if (EventHolder* ev = eventMap [evid])

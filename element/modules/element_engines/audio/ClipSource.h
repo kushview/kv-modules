@@ -1,7 +1,7 @@
 /*
     ClipSource.h - This file is part of Element
 
-    Copyright (C) 2013 BKE, LLC  All rights reserved.
+    Copyright (C) 2016 Kushview, LLC  All rights reserved.
       * Michael Fisher <mfisher@bketech.com>
 */
 
@@ -75,6 +75,8 @@ public:
 
     void valueChanged (Value &value);
 
+    inline const ClipData* getClipData() const { return data.get(); }
+    
 protected:
     inline double getParentRate() const
     {
@@ -98,8 +100,6 @@ protected:
         frames.setStart  (in);
         frames.setLength (len);
     }
-
-    inline const ClipData* getClipData() const { return data.get(); }
 
 private:
     friend class ClipFactory;
