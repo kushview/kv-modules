@@ -17,10 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if JUCE_COMPLETION
-#include "modules/element_gui/element_gui.h"
-#endif
-
 typedef SelectedItemSet<NoteClipItem*>::ItemArray SelectedNotes;
 
     NoteSelection::NoteSelection() { }

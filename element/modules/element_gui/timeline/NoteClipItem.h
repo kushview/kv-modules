@@ -70,7 +70,6 @@ public:
     inline void
     paint (Graphics &g)
     {
-        DBG("paint: w: " << getWidth() << " h: " << getHeight());
         if (! isSelected())
             g.setColour (fillColor (model.velocity()));
         else
