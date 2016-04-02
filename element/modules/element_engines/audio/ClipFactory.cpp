@@ -139,12 +139,10 @@ ClipFactory::ClipFactory (Engine& e)
    #endif
 }
 
-
 ClipFactory::~ClipFactory()
 {
     impl = nullptr;
 }
-
 
 ClipSource* ClipFactory::createSource (const ClipModel& model)
 {
@@ -158,6 +156,7 @@ ClipSource* ClipFactory::createSource (const ClipModel& model)
                                          : nullptr;
     if (source)
     {
+        impl->sources.addIfNotAlreadyThere (source);
         source->parentRate.referTo (impl->sampleRate);
         source->setModel (model);
         impl->attachSourceData (type, source);
@@ -166,8 +165,7 @@ ClipSource* ClipFactory::createSource (const ClipModel& model)
     return source;
 }
 
-void
-ClipFactory::setSampleRate (const double rate)
+void ClipFactory::setSampleRate (const double rate)
 {
     impl->sampleRate = rate;
 }
