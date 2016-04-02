@@ -14,7 +14,7 @@
    public:
 
        explicit SkinDial (const String& name = String::empty)
-        : Slider(),
+        : Slider (name),
           nframes (0),
           frame (0),
           pixel (0),
