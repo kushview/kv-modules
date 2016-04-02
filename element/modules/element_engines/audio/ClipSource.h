@@ -1,8 +1,20 @@
 /*
     ClipSource.h - This file is part of Element
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
-    Copyright (C) 2016 Kushview, LLC  All rights reserved.
-      * Michael Fisher <mfisher@bketech.com>
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
 #ifndef ELEMENT_CLIP_SOURCE_H
@@ -22,8 +34,12 @@ public:
 
     MidiMessageSequence midi;
 
+protected:
+    virtual void clipModelChanged (const ClipModel& model) { }
+    
 private:
     friend class ClipFactory;
+    friend class ClipSource;
     int64 hash;
 };
 
@@ -140,7 +156,6 @@ private:
     /** Set the clip model, ClipFactory will use this when creating new sources
         and restoring recycled clips */
     void setModel (const ClipModel& model);
-
 };
 
 class ClipBin :  public LinkedList<ClipSource>

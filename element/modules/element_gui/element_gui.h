@@ -23,6 +23,15 @@
 #include "modules/juce_gui_basics/juce_gui_basics.h"
 #include "../element_models/element_models.h"
 
+/** Config: ELEMENT_DOCKING_WINDOWS
+    Experimental: Set this to enable Docking windows support. Docking windows
+    support is a major work in progress. The final design and API is subject to
+    change until deemed stable. (default is disabled)
+ */
+#ifndef ELEMENT_DOCKING_WINDOWS
+ #define ELEMENT_DOCKING_WINDOWS 0
+#endif
+
 namespace Element {
 
 class Screen;
@@ -53,7 +62,9 @@ class ScreenDisplay;
 #include "base/SkinDial.h"
 
 // docking
-#include "docking/Dock.h"
+#if ELEMENT_DOCKING_WINDOWS
+ #include "docking/Dock.h"
+#endif
 
 // embedding
 #include "embed/NativeComponent.h"

@@ -18,18 +18,15 @@
 */
 
 
-
 ObjectModel::ObjectModel (const ValueTree& data) : objectData (data) { }
-ObjectModel::ObjectModel (const Identifier& slugId) : objectData (slugId) { }
+ObjectModel::ObjectModel (const Identifier& type) : objectData (type) { }
 
-bool
-ObjectModel::canAcceptData (const ValueTree& data)
+bool ObjectModel::canAcceptData (const ValueTree& data)
 {
     return objectData.hasType (data.getType());
 }
 
-int32
-ObjectModel::countChildrenOfType (const Identifier& slug) const
+int32 ObjectModel::countChildrenOfType (const Identifier& slug) const
 {
     int32 cnt = 0;
 
@@ -40,14 +37,12 @@ ObjectModel::countChildrenOfType (const Identifier& slug) const
     return cnt;
 }
 
-Value
-ObjectModel::getPropertyAsValue (const Identifier& property)
+Value ObjectModel::getPropertyAsValue (const Identifier& property)
 {
     return objectData.getPropertyAsValue (property, nullptr);
 }
 
-ValueTree
-ObjectModel::setData (const ValueTree& data)
+ValueTree ObjectModel::setData (const ValueTree& data)
 {
     if (! canAcceptData (data))
         return data;
@@ -56,10 +51,7 @@ ObjectModel::setData (const ValueTree& data)
     return objectData;
 }
 
-void
-ObjectModel::setNodeData (const ValueTree& data)
+void ObjectModel::setNodeData (const ValueTree& data)
 {
     objectData = data;
 }
-
-

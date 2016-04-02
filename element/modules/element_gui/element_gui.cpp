@@ -36,10 +36,14 @@ namespace Element {
 #include "base/DecibelScaleComponent.cpp"
 #include "base/DigitalMeter.cpp"
 #include "base/LookAndFeel.cpp"
-#include "docking/Dock.cpp"
-#include "docking/DockArea.cpp"
-#include "docking/DockItem.cpp"
-#include "docking/DockLayout.cpp"
+    
+#if ELEMENT_DOCKING_WINDOWS
+ #include "docking/Dock.cpp"
+ #include "docking/DockArea.cpp"
+ #include "docking/DockItem.cpp"
+ #include "docking/DockLayout.cpp"
+#endif
+    
 #include "embed/NativeComponent.cpp"
 #include "screens/Screen.cpp"
 #include "screens/ScreenDisplay.cpp"

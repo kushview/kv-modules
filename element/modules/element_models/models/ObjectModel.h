@@ -54,6 +54,7 @@ public:
     */
     ValueTree setData (const ValueTree& data);
 
+    /** Returns the number of children the underlying ValueTree has */
     int32 getNumChildren() const { return objectData.getNumChildren(); }
 
     /** Count the number of children with a type */
