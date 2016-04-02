@@ -74,14 +74,14 @@ bool GraphNode::isMidiIONode() const
 int GraphNode::getNumAudioInputs() const
 {
     if (AudioPluginInstance* inst = getAudioPluginInstance())
-        return inst->getNumInputChannels();
+        return inst->getTotalNumInputChannels();
     return 0;
 }
 
 int GraphNode::getNumAudioOutputs() const
 {
     if (AudioPluginInstance* inst = getAudioPluginInstance())
-        return inst->getNumOutputChannels();
+        return inst->getTotalNumOutputChannels();
     return 0;
 }
 
@@ -133,14 +133,14 @@ void GraphNode::prepare (const double sampleRate, const int blockSize,
     if (! isPrepared)
     {
         AudioPluginInstance* instance = getAudioPluginInstance();
-        instance->setPlayConfigDetails (instance->getNumInputChannels(),
-                                        instance->getNumOutputChannels(),
+        instance->setPlayConfigDetails (instance->getTotalNumInputChannels(),
+                                        instance->getTotalNumOutputChannels(),
                                         sampleRate, blockSize);
         setParentGraph (graph);
         instance->prepareToPlay (sampleRate, blockSize);
 
         inRMS.clearQuick(true);
-        for (int i = 0; i < instance->getNumInputChannels(); ++i)
+        for (int i = 0; i < instance->getTotalNumInputChannels(); ++i)
         {
             AtomicValue<float>* avf = new AtomicValue<float>();
             avf->set(0);
@@ -148,7 +148,7 @@ void GraphNode::prepare (const double sampleRate, const int blockSize,
         }
 
         outRMS.clearQuick(true);
-        for (int i = 0; i < instance->getNumOutputChannels(); ++i)
+        for (int i = 0; i < instance->getTotalNumOutputChannels(); ++i)
         {
             AtomicValue<float>* avf = new AtomicValue<float>();
             avf->set(0);

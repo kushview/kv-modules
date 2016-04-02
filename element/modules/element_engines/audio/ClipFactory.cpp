@@ -17,10 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if JUCE_COMPLETION
-#include "modules/element_engines/element_engines.h"
-#endif
-
 // a dummy clip that can be used for testing purposes
 class DummyClip :  public ClipSource
 {
@@ -67,13 +63,16 @@ public:
             return new ClipData();
         }
 
-        bool canCreateFrom (const ClipModel& model) { return model.getProperty("type", String::empty) == String("dummy"); }
+        bool canCreateFrom (const ClipModel& model)
+        {
+            return model.getProperty (Slugs::type, String::empty) == String("dummy");
+        }
+        
         bool canCreateFrom (const File&) { return false; }
         ClipSource* createSource (Engine&, const File&) { return new DummyClip(); }
         ClipSource* createSource (Engine&, const ClipModel&) { return new DummyClip(); }
     };
 };
-
 
 class ClipFactory::Impl
 {

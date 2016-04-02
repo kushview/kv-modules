@@ -199,8 +199,8 @@ public:
           processor (node_->getAudioPluginInstance()),
           audioChannelsToUse (audioChannelsToUse_),
           totalChans (jmax (1, totalChans_)),
-          numAudioIns (node_->getAudioPluginInstance()->getNumInputChannels()),
-          numAudioOuts (node_->getAudioPluginInstance()->getNumOutputChannels()),
+          numAudioIns (node_->getAudioPluginInstance()->getTotalNumInputChannels()),
+          numAudioOuts (node_->getAudioPluginInstance()->getTotalNumOutputChannels()),
           midiBufferToUse (midiBufferToUse_)
     {
         channels.calloc ((size_t) totalChans);
@@ -598,7 +598,7 @@ private:
 
         setNodeDelay (node->nodeId, maxLatency + node->getProcessor()->getLatencySamples());
 
-        if (proc->getNumOutputChannels() == 0)
+        if (proc->getTotalNumOutputChannels() == 0)
             totalLatency = maxLatency;
 
 #if 1
@@ -1096,7 +1096,7 @@ void GraphProcessor::handleAsyncUpdate()
 void GraphProcessor::prepareToPlay (double sampleRate, int estimatedSamplesPerBlock)
 {
     currentAudioInputBuffer = nullptr;
-    currentAudioOutputBuffer.setSize (jmax (1, getNumOutputChannels()), estimatedSamplesPerBlock);
+    currentAudioOutputBuffer.setSize (jmax (1, getTotalNumOutputChannels()), estimatedSamplesPerBlock);
     currentMidiInputBuffer = nullptr;
     currentMidiOutputBuffer.clear();
     clearRenderingSequence();
@@ -1185,8 +1185,8 @@ void GraphProcessor::fillInPluginDescription (PluginDescription& d) const
     d.manufacturerName = "Kushview, LLC";
     d.version = "1.0";
     d.isInstrument = acceptsMidi();
-    d.numInputChannels = getNumInputChannels();
-    d.numOutputChannels = getNumOutputChannels();
+    d.numInputChannels = getTotalNumInputChannels();
+    d.numOutputChannels = getTotalNumOutputChannels();
 }
 
 GraphProcessor::AudioGraphIOProcessor::AudioGraphIOProcessor (const IODeviceType type_)
@@ -1230,13 +1230,13 @@ void GraphProcessor::AudioGraphIOProcessor::fillInPluginDescription (PluginDescr
         case midiOutputNode:  d.fileOrIdentifier = "midi.output"; break;
     }
     
-    d.numInputChannels = getNumInputChannels();
+    d.numInputChannels = getTotalNumInputChannels();
     if (type == audioOutputNode && graph != nullptr)
-        d.numInputChannels = graph->getNumInputChannels();
+        d.numInputChannels = graph->getTotalNumInputChannels();
 
-    d.numOutputChannels = getNumOutputChannels();
+    d.numOutputChannels = getTotalNumOutputChannels();
     if (type == audioInputNode && graph != nullptr)
-        d.numOutputChannels = graph->getNumOutputChannels();
+        d.numOutputChannels = graph->getTotalNumOutputChannels();
 }
 
 void GraphProcessor::AudioGraphIOProcessor::prepareToPlay (double, int)
@@ -1374,8 +1374,8 @@ void GraphProcessor::AudioGraphIOProcessor::setParentGraph (GraphProcessor* cons
     graph = newGraph;
     if (graph != nullptr)
     {
-        setPlayConfigDetails (type == audioOutputNode ? graph->getNumOutputChannels() : 0,
-                              type == audioInputNode ? graph->getNumInputChannels() : 0,
+        setPlayConfigDetails (type == audioOutputNode ? graph->getTotalNumOutputChannels() : 0,
+                              type == audioInputNode ? graph->getTotalNumInputChannels() : 0,
                               graph->getSampleRate(), graph->getBlockSize());
         updateHostDisplay();
     }

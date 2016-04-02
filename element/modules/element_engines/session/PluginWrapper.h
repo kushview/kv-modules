@@ -49,11 +49,26 @@ public:
     inline void prepareToPlay (double rate, int block) { proc->prepareToPlay (rate, block); }
     inline void releaseResources() { proc->releaseResources(); }
     inline void processBlock (AudioSampleBuffer& buffer, MidiBuffer& midiMessages) { proc->processBlock (buffer, midiMessages); }
+    
     inline void processBlockBypassed (AudioSampleBuffer& buffer, MidiBuffer& midiMessages) { proc->processBlockBypassed (buffer, midiMessages); }
-    inline const String getInputChannelName (int channelIndex) const { return proc->getInputChannelName(channelIndex); }
-    inline const String getOutputChannelName (int channelIndex) const { return proc->getOutputChannelName (channelIndex); }
-    inline bool isInputChannelStereoPair (int index) const { return proc->isInputChannelStereoPair (index); }
-    inline bool isOutputChannelStereoPair (int index) const { return proc->isOutputChannelStereoPair (index); }
+    
+#if 0
+    inline const String getInputChannelName (int channelIndex) const {
+        return proc->busArrangement.inputBuses[channelIndex].name;
+    }
+
+    inline const String getOutputChannelName (int channelIndex) const {
+        return proc->busArrangement.outputBuses[channelIndex].name;
+    }
+    
+    inline bool isInputChannelStereoPair (int index) const {
+        return proc->isInputChannelStereoPair (index);
+    }
+    
+    inline bool isOutputChannelStereoPair (int index) const {
+        return proc->isOutputChannelStereoPair (index);
+    }
+#endif
 
     inline double getTailLengthSeconds() const { return proc->getTailLengthSeconds(); }
     inline bool acceptsMidi() const { return proc->acceptsMidi(); }

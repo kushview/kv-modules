@@ -45,7 +45,7 @@ ClipSource* SequencerTrack::cursorClip() const
 
 void SequencerTrack::prepareToPlay (double sampleRate, int blockSize)
 {
-    setPlayConfigDetails (getNumInputChannels(), getNumOutputChannels(),
+    setPlayConfigDetails (getTotalNumInputChannels(), getTotalNumOutputChannels(),
                           sampleRate, blockSize);
 
     ClipSource* clip = bin.first();

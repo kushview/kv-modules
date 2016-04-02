@@ -44,8 +44,8 @@
         d.manufacturerName = "Element Project";
         d.version = "1.0";
         d.isInstrument = false;
-        d.numInputChannels  = getNumInputChannels();
-        d.numOutputChannels = getNumOutputChannels();
+        d.numInputChannels  = getTotalNumInputChannels();
+        d.numOutputChannels = getTotalNumOutputChannels();
     }
 
     void GraphPort::prepareToPlay (double, int)
