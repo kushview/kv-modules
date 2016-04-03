@@ -2,7 +2,7 @@
     Semaphore - This file is part of the lvtk_core JUCE module
 
     Copyright 2012 David Robillard <http://drobilla.net>
-    Adapted 2013 Michael Fisher <mfisher@bketech.com>
+    Adapted 2013 Michael Fisher <mfisher@kushview.net>
      * Converted to a C++ class
 
     Permission to use, copy, modify, and/or distribute this software for any

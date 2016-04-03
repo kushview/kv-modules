@@ -2,7 +2,7 @@
   SkinDial.h
 
   Copyright (C) 2014  Kushview, LLC.  All rights reserved.
-  Michael Fisher <mfisher@bketech.com>
+  Michael Fisher <mfisher@kushview.net>
 
 */
 

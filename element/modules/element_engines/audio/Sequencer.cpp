@@ -1,8 +1,8 @@
 /*
     Sequencer.cpp - This file is part of Element
 
-    Copyright (C) 2013 BKE, LLC  All rights reserved.
-      * Michael Fisher <mfisher@bketech.com>
+    Copyright (C) 2013 Kushview, LLC  All rights reserved.
+      * Michael Fisher <mfisher@kushview.net>
 */
 
 #if JUCE_COMPLETION
