@@ -25,7 +25,7 @@
 #include "modules/juce_audio_processors/juce_audio_processors.h"
 #include "../element_models/element_models.h"
 
-/** Config: ELEMENT_LV2_PLUGIN_HOST
+/** Config: ELEMENT_USE_JACK
     Set this to enable Jack Audio Support (default is disabled)
  */
 #ifndef ELEMENT_USE_JACK
@@ -38,42 +38,15 @@
 #endif
 
 namespace Element {
-class GraphProcessor;
 
-//#include "audio/PortType.h"
-#include "audio/Processor.h"
-
-//#include "audio/Buffer.h"
-//#include "audio/AtomBuffer.h"
-//#include "audio/BufferFactory.h"
-#include "audio/ClipFactory.h"
-#include "audio/ClipSource.h"
-#include "audio/DataType.h"
-#include "audio/Engine.h"
-
-#include "audio/GraphNode.h"
-#include "audio/GraphProcessor.h"
-#include "audio/GraphController.h"
-#include "audio/GraphDocument.h"
-#include "audio/GraphPlayer.h"
-#include "audio/GraphPort.h"
-
-#include "audio/MidiDataBase.h"
-#include "audio/MidiSequencePlayer.h"
-
-#include "audio/SequenceCursor.h"
-#include "audio/Sequencer.h"
-#include "audio/SequencerTrack.h"
-#include "audio/Shuttle.h"
-
-#include "session/DeviceManager.h"
-#include "session/PluginManager.h"
-#include "session/PluginWrapper.h"
-#include "session/SessionBase.h"
+#include "common/Processor.h"
+#include "common/MidiSequencePlayer.h"
+#include "common/Shuttle.h"
 
 #if ELEMENT_USE_JACK
-  #include "jack/Jack.h"
+ #include "jack/Jack.h"
 #endif
+
 }
 
 #endif   // ELEMENT_MODELS_H_INCLUDED

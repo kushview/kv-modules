@@ -31,29 +31,9 @@
 
 namespace Element {
 
-//#include "audio/AtomBuffer.cpp"
-//#include "audio/Buffer.cpp"
-//#include "audio/BufferFactory.cpp"
-#include "audio/ClipFactory.cpp"
-#include "audio/ClipSource.cpp"
-#include "audio/EngineBase.cpp"
-#include "audio/GraphController.cpp"
-#include "audio/GraphDocument.cpp"
-#include "audio/GraphNode.cpp"
-#include "audio/GraphPlayer.cpp"
-#include "audio/GraphPort.cpp"
-#include "audio/GraphProcessor.cpp"
-#include "audio/MidiDataBase.cpp"
-#include "audio/MidiSequencePlayer.cpp"
-#include "audio/Processor.cpp"
-#include "audio/SequenceCursor.cpp"
-#include "audio/Sequencer.cpp"
-#include "audio/SequencerTrack.cpp"
-#include "audio/Shuttle.cpp"
-
-#include "session/DeviceManager.cpp"
-#include "session/PluginManager.cpp"
-#include "session/SessionBase.cpp"
+#include "common/MidiSequencePlayer.cpp"
+#include "common/Processor.cpp"
+#include "common/Shuttle.cpp"
 
 #if ELEMENT_USE_JACK
  #include "jack/JackClient.cpp"
