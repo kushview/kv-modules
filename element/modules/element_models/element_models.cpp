@@ -26,15 +26,8 @@
 
 #include "element_models.h"
 
-//namespace juce {
 namespace Element {
 
-#include "models/Asset.cpp"
-#include "models/AssetTree.cpp"
-#include "models/BlockModel.cpp"
-#include "models/Note.cpp"
-#include "models/NoteSequence.cpp"
 #include "models/ObjectModel.cpp"
-#include "models/SequenceModel.cpp"
 
-}//}
+}

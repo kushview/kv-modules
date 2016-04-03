@@ -46,14 +46,11 @@ class ScreenDisplay;
 #include "screens/Screen.h"
 #include "screens/ScreenManager.h"
 
-
 #if JUCE_MODULE_AVAILABLE_element_engines
  // timelines
  #include "timeline/TrackHeights.h"
  #include "timeline/TimelineComponent.h"
  #include "timeline/TimelineClip.h"
- #include "timeline/NoteClipItem.h"
- #include "timeline/MidiEditorBody.h"
 #endif
 
 // misc widgets

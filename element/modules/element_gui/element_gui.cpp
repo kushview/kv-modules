@@ -50,7 +50,6 @@ namespace Element {
 #include "screens/ScreenManager.cpp"
 
 #if JUCE_MODULE_AVAILABLE_element_engines
- #include "timeline/MidiEditorBody.cpp"
  #include "timeline/TimelineComponent.cpp"
  #include "timeline/TimelineClip.cpp"
 #endif
