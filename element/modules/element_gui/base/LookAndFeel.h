@@ -42,6 +42,7 @@ public:
         defaultTabOnColor                = 0xff23252d
     };
     
+    static const Colour elementBlue;
     static const Colour backgroundColor;
     static const Colour textColor;
     static const Colour textActiveColor;

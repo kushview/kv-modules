@@ -19,6 +19,7 @@
 
 
 const Colour LookAndFeel_E1::backgroundColor = Colour (LookAndFeel_E1::defaultBackgroundColor);
+const Colour LookAndFeel_E1::elementBlue     = Colour (0xff4765a0);
 const Colour LookAndFeel_E1::textColor       = Colour (LookAndFeel_E1::defaultTextColor);
 const Colour LookAndFeel_E1::textActiveColor = Colour (LookAndFeel_E1::defaultTextActiveColor);
 const Colour LookAndFeel_E1::textBoldColor   = Colour (LookAndFeel_E1::defaultTextBoldColor);
