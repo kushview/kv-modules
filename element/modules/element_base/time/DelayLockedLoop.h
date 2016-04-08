@@ -31,12 +31,13 @@
 
 class DelayLockedLoop {
 public:
-
     /** Create a new DLL */
     inline DelayLockedLoop()
-        : samplerate (44100.0), periodSize (1024.0),
+        : samplerate (44100.0),
+          periodSize (1024.0),
           e2(0), t0 (0), t1 (0),
-          bandwidth (1.0f), frequency (0),
+          bandwidth (1.0f),
+          frequency (0),
           omega (0), b (0), c (0)
     {
         reset (0.0, 1024.0, 44100.0);
@@ -44,8 +45,7 @@ public:
     }
 
     /** Reset the DLL with a time, period and rate */
-    inline void
-    reset (double now, double period, double rate)
+    inline void reset (double now, double period, double rate)
     {
         samplerate = rate;
         periodSize = period;
@@ -57,8 +57,7 @@ public:
     }
 
     /** Update the DLL with the next timestamp */
-    inline void
-    update (double time)
+    inline void update (double time)
     {
         const double e = time - t1;
 
@@ -68,8 +67,7 @@ public:
     }
 
     /** Set the dll's parameters. Bandwidth / Frequency */
-    inline void
-    setParams (double b, double f)
+    inline void setParams (double b, double f)
     {
         bandwidth = b;
         frequency = f;
@@ -77,14 +75,12 @@ public:
     }
 
     /**  Return the difference in filtered time (t1 - t0) */
-    inline double
-    timeDiff()
+    inline double timeDiff()
     {
         return (t1 - t0);
     }
 
 private:
-
     double samplerate, periodSize;
     double e2, t0, t1;
 
@@ -93,8 +89,7 @@ private:
 
     /** @internal Reset the LPF
         Called when bandwidth and frequency changes */
-    inline void
-    resetLPF()
+    inline void resetLPF()
     {
         omega = 2.0 * M_PI * bandwidth / frequency;
         b = M_SQRT2 * omega;
