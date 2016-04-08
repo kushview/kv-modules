@@ -1,6 +1,6 @@
 #!/usr/bin/evn python
 # encoding: utf-8
-# Copyright (C) 2012 Michael Fisher <mfisher31@gmail.com>
+# Copyright (C) 2012-2016 Michael Fisher <mfisher@kushview.net>
 
 ''' This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public Licence as published by
