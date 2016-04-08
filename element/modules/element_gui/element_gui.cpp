@@ -25,11 +25,11 @@
 #endif
 
 #if JUCE_MODULE_AVAILABLE_element_engines
- #include "modules/juce_audio_processors/juce_audio_processors.h"
- #include "../element_engines/element_engines.h"
+ #include <juce_audio_processors/juce_audio_processors.h>
+ #include <element_engines/element_engines.h>
 #endif
-#include "../element_models/element_models.h"
-#include "element_gui.h"
+#include <element_models/element_models.h>
+#include <element_gui/element_gui.h>
 
 namespace Element {
 

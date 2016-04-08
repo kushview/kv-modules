@@ -17,13 +17,33 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+/*
+  BEGIN_JUCE_MODULE_DECLARATION
+
+  ID:               element_engines
+  vendor:           kushview
+  version:          0.0.1
+  name:             Element Engines
+  description:      Element Engines
+  website:          https://kushview.net
+  license:          GPL
+
+  dependencies:     juce_data_structures, juce_audio_processors, juce_audio_devices
+  OSXFrameworks:
+  iOSFrameworks:
+  linuxLibs:
+  mingwLibs:
+
+  END_JUCE_MODULE_DECLARATION
+ */
+
 #ifndef ELEMENT_ENGINES_H_INCLUDED
 #define ELEMENT_ENGINES_H_INCLUDED
 
-#include "modules/juce_gui_extra/juce_gui_extra.h"
-#include "modules/juce_audio_devices/juce_audio_devices.h"
-#include "modules/juce_audio_processors/juce_audio_processors.h"
-#include "../element_models/element_models.h"
+#include <juce_gui_extra/juce_gui_extra.h>
+#include <juce_audio_devices/juce_audio_devices.h>
+#include <juce_audio_processors/juce_audio_processors.h>
+#include <element_models/element_models.h>
 
 /** Config: ELEMENT_USE_JACK
     Set this to enable Jack Audio Support (default is disabled)

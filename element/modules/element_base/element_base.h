@@ -17,10 +17,29 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+/*
+  BEGIN_JUCE_MODULE_DECLARATION
+
+   ID:               element_base
+   vendor:           kushview
+   version:          0.0.1
+   name:             Element base classes
+   description:      Element base classes
+   website:          https://kushview.net
+   license:          GPL
+
+   dependencies:     juce_core, juce_cryptography
+   OSXFrameworks:
+   iOSFrameworks:
+   linuxLibs:
+   mingwLibs:
+
+  END_JUCE_MODULE_DECLARATION
+ */
 #ifndef ELEMENT_BASE_H_INCLUDED
 #define ELEMENT_BASE_H_INCLUDED
 
-#include "modules/juce_cryptography/juce_cryptography.h"
+#include <juce_cryptography/juce_cryptography.h>
 
 #if _MSC_VER
  #pragma warning( disable : 4305 )

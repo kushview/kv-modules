@@ -17,6 +17,26 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+/*
+  BEGIN_JUCE_MODULE_DECLARATION
+
+  ID:               element_lv2
+  vendor:           kushview
+  version:          0.0.1
+  name:             Element LV2
+  description:      Element support for hosting and writing LV2 plugins
+  website:          https://kushview.net
+  license:          GPL
+
+  dependencies:     element_base
+  OSXFrameworks:
+  iOSFrameworks:
+  linuxLibs:
+  mingwLibs:
+
+  END_JUCE_MODULE_DECLARATION
+ */
+
 #ifndef ELEMENT_LV2_H_INCLUDED
 #define ELEMENT_LV2_H_INCLUDED
 
@@ -46,9 +66,9 @@
 #include <lv2/lv2plug.in/ns/ext/uri-map/uri-map.h>
 #include <lv2/lv2plug.in/ns/ext/worker/worker.h>
 
-#include "../element_engines/element_engines.h"
-#include "modules/juce_audio_formats/juce_audio_formats.h"
-#include "modules/juce_audio_processors/juce_audio_processors.h"
+#include <element_engines/element_engines.h>
+#include <juce_audio_formats/juce_audio_formats.h>
+#include <juce_audio_processors/juce_audio_processors.h>
 
 namespace Element {
  #include "common/URIs.h"
@@ -65,7 +85,6 @@ namespace Element {
  #include "host/LV2Parameter.h"
  #include "host/LV2PluginFormat.h"
  #include "host/LV2PluginModel.h"
- //#include "host/PortProcessor.h"
 #endif
 }
 

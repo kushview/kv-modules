@@ -17,11 +17,31 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+/*
+  BEGIN_JUCE_MODULE_DECLARATION
+
+  ID:               element_gui
+  vendor:           kushview
+  version:          0.0.1
+  name:             Element GUI
+  description:      Element GUI
+  website:          https://kushview.net
+  license:          GPL
+
+  dependencies:     element_base, juce_gui_basics
+  OSXFrameworks:
+  iOSFrameworks:
+  linuxLibs:
+  mingwLibs:
+
+  END_JUCE_MODULE_DECLARATION
+ */
+
 #ifndef ELEMENT_GUI_H_INCLUDED
 #define ELEMENT_GUI_H_INCLUDED
 
-#include "modules/juce_gui_basics/juce_gui_basics.h"
-#include "../element_models/element_models.h"
+#include <juce_gui_basics/juce_gui_basics.h>
+#include <element_models/element_models.h>
 
 /** Config: ELEMENT_DOCKING_WINDOWS
     Experimental: Set this to enable Docking windows support. Docking windows
