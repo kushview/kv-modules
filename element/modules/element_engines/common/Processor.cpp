@@ -1,5 +1,5 @@
 /*
-    Processor.cpp - This file is part of Element
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -42,19 +42,19 @@ PortType Processor::getPortType (AudioProcessor* proc, uint32 port)
 {
     const bool haveControls = proc->getNumParameters() > 0;
     const bool haveAudio = (proc->getTotalNumInputChannels() + proc->getTotalNumOutputChannels()) > 0;
-    
+
     if (haveAudio && port < (proc->getTotalNumInputChannels() + proc->getTotalNumOutputChannels()))
         return PortType::Audio;
-    
+
     if (haveControls && port >= (proc->getTotalNumInputChannels() + proc->getTotalNumOutputChannels()) &&
         port < (proc->getTotalNumInputChannels() + proc->getTotalNumOutputChannels() + proc->getNumParameters()))
         return PortType::Control;
-    
+
     if (port >= (proc->getTotalNumInputChannels() + proc->getTotalNumOutputChannels() + proc->getNumParameters()))
     {
         return PortType::Atom;
     }
-    
+
     assert (false);
     return PortType::Unknown;
 }
@@ -63,12 +63,12 @@ bool Processor::isPortInput (AudioProcessor* proc, uint32 port)
 {
     if (port >= getNumPorts (proc))
         jassertfalse;
-    
+
     const int audioIns = proc->getTotalNumInputChannels();
     const int totalAudio = audioIns + proc->getTotalNumOutputChannels();
     const int totalMidi  = (int)proc->acceptsMidi() + (int)proc->producesMidi();
     const int numControl = proc->getNumParameters();
-    
+
     switch (getPortType(proc, port).id())
     {
         case PortType::Audio:
@@ -90,7 +90,7 @@ bool Processor::isPortInput (AudioProcessor* proc, uint32 port)
         default:
             break;
     }
-    
+
     assert (false);
     return false;
 }
@@ -104,25 +104,25 @@ bool Processor::writeToPort (AudioProcessor*, uint32 port, uint32 size, uint32 p
 int Processor::getChannelPort (uint32 port)
 {
     jassert (port < (uint32) getNumPorts());
-    
+
     int channel = 0;
-    
+
     const bool isInput  = isPortInput (port);
     const PortType type = getPortType (port);
-    
+
     for (uint32 p = 0; p < (uint32)getNumPorts(); ++p)
     {
         const PortType thisPortType = getPortType (p);
         const bool thisPortIsInput = isPortInput (p);
-        
+
         if (type == thisPortType && p == port)
             return channel;
-        
+
         // tally the channel only if type and flow match
         if (type == thisPortType && isInput == thisPortIsInput)
             ++channel;
     }
-    
+
     return -1;
 }
 
@@ -139,10 +139,10 @@ uint32 Processor::getNumPorts (PortType type, bool isInput)
 uint32 Processor::getNthPort (PortType type, int index, bool isInput, bool oneBased)
 {
     int count = oneBased ? 0 : -1;
-    
+
     jassert (getNumPorts() >= 0);
     uint32 nports = (uint32) getNumPorts();
-    
+
     for (uint32 port = 0; port < nports; ++port)
     {
         if (type == getPortType (port) && isInput == isPortInput (port))
@@ -152,7 +152,7 @@ uint32 Processor::getNthPort (PortType type, int index, bool isInput, bool oneBa
             }
         }
     }
-    
+
     jassertfalse;
     return ELEMENT_INVALID_PORT;
 }

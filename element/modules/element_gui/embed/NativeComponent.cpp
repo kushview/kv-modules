@@ -1,5 +1,5 @@
 /*
-    NativeComponent.cpp - This file is part of Element
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -548,7 +548,7 @@ namespace {
       }
 
    };
-    
+
 #endif // JUCE_LINUX
 
 
@@ -689,4 +689,3 @@ namespace {
    }
 
 #endif // if zero
-

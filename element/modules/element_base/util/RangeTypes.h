@@ -1,5 +1,5 @@
 /*
-    RangeTypes.h - This file is part of Element
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -17,27 +17,20 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_RANGE_TYPES_H
-#define ELEMENT_RANGE_TYPES_H
+#ifndef EL_RANGE_TYPES_H
+#define EL_RANGE_TYPES_H
 
-#include <stdint.h>
-
-class FrameSpan :  public Range<int64_t>
+class FrameSpan :  public Range<int64>
 {
-
 public:
-
-    inline FrameSpan (int64_t i, int64_t o) : Range<int64_t> (i, o) { }
+    inline FrameSpan (int64 i, int64 o) : Range<int64> (i, o) { }
     inline ~FrameSpan() { }
-    inline int64_t inPoint()  const { return getStart(); }
-    inline int64_t outPoint() const { return getEnd(); }
-    inline int64_t length() const { return getLength(); }
+    inline int64 inPoint()  const { return getStart(); }
+    inline int64 outPoint() const { return getEnd(); }
+    inline int64 length() const { return getLength(); }
     inline bool isZero() const { return getLength() == 0; }
-    inline void setInPoint (const int64_t in) { setStart (in); }
-    inline void setOutPoint (const int64_t out) { setEnd (out); }
-
-private:
-
+    inline void setInPoint (const int64 in) { setStart (in); }
+    inline void setOutPoint (const int64 out) { setEnd (out); }
 };
 
-#endif // ELEMENT_RANGE_TYPES_H
+#endif // EL_RANGE_TYPES_H

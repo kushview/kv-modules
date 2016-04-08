@@ -1,6 +1,6 @@
 /*
-    This file is part of KSP1
-    Copyright (C) 2014  Kushview, LLC. All rights reserved.
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,8 +15,6 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-    GUI class created by the Introjucer!
 */
 
 #ifndef EL_SCREEN_DISPLAY_H

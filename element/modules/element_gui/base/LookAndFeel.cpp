@@ -1,5 +1,5 @@
 /*
-    LookAndFeel_E1.cpp - This file is part of Element
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -17,7 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
 const Colour LookAndFeel_E1::backgroundColor = Colour (LookAndFeel_E1::defaultBackgroundColor);
 const Colour LookAndFeel_E1::elementBlue     = Colour (0xff4765a0);
 const Colour LookAndFeel_E1::textColor       = Colour (LookAndFeel_E1::defaultTextColor);
@@ -33,14 +32,14 @@ LookAndFeel_E1::LookAndFeel_E1()
     setColour (PopupMenu::headerTextColourId, textColor.brighter(0.2f).withAlpha(0.84f));
     setColour (PopupMenu::highlightedBackgroundColourId, backgroundColor.darker());
     setColour (PopupMenu::highlightedTextColourId, textActiveColor.darker());
-    
+
     // ComboBox Styling
     setColour (ComboBox::backgroundColourId, Colours::black);
     setColour (ComboBox::outlineColourId, Colours::black.brighter(0.2f));
     setColour (ComboBox::buttonColourId, Colours::black.brighter(0.2f));
     setColour (ComboBox::textColourId, Colour((uint32)defaultTextActiveColor));
     setColour (ComboBox::arrowColourId, Colour((uint32)defaultTextColor));
-    
+
     // Meter Styling
     typedef Element::DigitalMeter Meter;
     setColour (Meter::levelOverColourId, Colours::red);
@@ -49,38 +48,38 @@ LookAndFeel_E1::LookAndFeel_E1()
     setColour (Meter::level6dBColourId, Colours::yellow);
     setColour (Meter::level10dBColourId, Colours::green);
     setColour (Meter::backgroundColourId, Colours::black);
-    
+
     // ListBox Styling
     setColour (ListBox::backgroundColourId, Colour (0x00000000));
     setColour (ListBox::textColourId, LookAndFeel_E1::textColor);
-    
+
     setColour (TextEditor::backgroundColourId, LookAndFeel_E1::backgroundColor);
     setColour (TextEditor::highlightColourId, LookAndFeel_E1::backgroundColor.brighter());
     setColour (TextEditor::highlightColourId, highlightBackgroundColor);
     setColour (TextEditor::highlightedTextColourId, LookAndFeel_E1::textColor.contrasting());
     setColour (TextEditor::textColourId, LookAndFeel_E1::textColor);
-    
+
     // Toolbar Styling
     setColour (Toolbar::backgroundColourId, LookAndFeel_E1::backgroundColor.brighter (0.05f));
     setColour (Toolbar::buttonMouseDownBackgroundColourId, LookAndFeel_E1::backgroundColor.brighter (0.1f));
     setColour (Toolbar::buttonMouseOverBackgroundColourId, LookAndFeel_E1::backgroundColor.darker (0.046f));
-    
+
     // alert window
     setColour (AlertWindow::backgroundColourId,  LookAndFeel_E1::backgroundColor);
     setColour (AlertWindow::textColourId, LookAndFeel_E1::textColor);
-    
+
     // Label
     setColour(Label::textColourId, LookAndFeel_E1::textColor);
-    
+
     // search path component
     setColour (FileSearchPathListComponent::backgroundColourId, LookAndFeel_E1::backgroundColor);
-    
+
     // Tree View
     setColour (TreeView::backgroundColourId, Colour (0x00000000));
     setColour (TreeView::linesColourId, LookAndFeel_E1::textColor);
     setColour (TreeView::dragAndDropIndicatorColourId, Colours::orange.darker());
     setColour (TreeView::selectedItemBackgroundColourId, highlightBackgroundColor);
-    
+
     // Digital meter styling
     setColour (DigitalMeter::levelOverColourId, Colours::yellow.darker());
     setColour (DigitalMeter::level0dBColourId, Colours::yellowgreen);
@@ -90,7 +89,7 @@ LookAndFeel_E1::LookAndFeel_E1()
     setColour (DigitalMeter::backgroundColourId, Colours::transparentBlack);
     setColour (DigitalMeter::foregroundColourId, Colours::transparentWhite);
 
-    
+
     setColour (mainBackgroundColourId, Colour (0xff333333));
     setColour (treeviewHighlightColourId, Colour (0xffeeeeee));
 
@@ -416,7 +415,7 @@ void LookAndFeel_E1::drawMenuBarItem (Graphics& g, int width, int height, int it
          g.setOpacity(0.20f);
          g.fillRect(r1); */
     }
-    
+
     g.setOpacity (0.90);
     g.setColour (LookAndFeel_E1::textBoldColor);
     g.drawText (itemText, 0, 0, width, height, Justification::centred);
@@ -428,7 +427,7 @@ void LookAndFeel_E1::getIdealPopupMenuItemSize (const String &text, bool isSepar
     LookAndFeel_V3::getIdealPopupMenuItemSize (text, isSeparator, standardMenuItemHeight, idealWidth, idealHeight);
     if (isSeparator)
         return;
-    
+
     idealHeight = 20;
 }
 

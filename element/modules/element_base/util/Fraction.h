@@ -1,5 +1,5 @@
 /*
-    fraction.hpp - This file is part of Element
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -16,41 +16,37 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-/** @headerfile util/fraction.hpp */
 
-#ifndef ELEMENT_FRACTION_H
-#define ELEMENT_FRACTION_H
+#ifndef EL_FRACTION_H
+#define EL_FRACTION_H
 
+struct FractionalGain
+{
+    inline FractionalGain (int n, int d)
+        : num(n), den(d), vden(d) { set (1.0f); }
 
-    struct FractionalGain
+    int   num;
+    int   den;
+    float ratio;
+
+    inline void
+    set (float r)
     {
-        inline FractionalGain (int n, int d)
-            : num(n), den(d), vden(d) { set (1.0f); }
+        ratio = r;
 
-        int   num;
-        int   den;
-        float ratio;
-
-        inline void
-        set (float r)
+        den = vden;
+        while (r != int (r) && den < 20)
         {
-            ratio = r;
-
-            den = vden;
-            while (r != int (r) && den < 20)
-            {
-                den += 2;
-                r *= 4.0f;
-            }
-
-            num = int (r);
+            den += 2;
+            r *= 4.0f;
         }
 
-    private:
+        num = int (r);
+    }
 
-        int vden;
-    };
+private:
 
+    int vden;
+};
 
-
-#endif  /* ELEMENT_FRACTION_H */
+#endif  /* EL_FRACTION_H */

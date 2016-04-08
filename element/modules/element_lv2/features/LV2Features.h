@@ -1,6 +1,6 @@
 /*
-    This file is part of the lvtk_plugins JUCE module
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,12 +26,12 @@ class LV2Feature
 public:
     LV2Feature() { }
     virtual ~LV2Feature() { }
-    
+
     /** Get the LV2_Feature c-type.
-        The returned object should be owned by the subclass.  It is the 
+        The returned object should be owned by the subclass.  It is the
         subclass' responsibility to free any associated feature data. */
     virtual const LV2_Feature* getFeature() const = 0;
-    
+
     /** Get the features URI as a string */
     virtual const String& getURI() const = 0;
 };
@@ -74,7 +74,7 @@ public:
                 return features.getUnchecked(i);
         return nullptr;
     }
-    
+
     template<class FeatureType>
     inline FeatureType* getFeature() const
     {
@@ -83,7 +83,7 @@ public:
                 return f;
         return nullptr;
     }
-    
+
     /** Get a C-Style array of feautres */
     inline LV2_Feature* const*
     getFeatures() const
@@ -99,7 +99,7 @@ public:
         if (nullTerminated)
             feats.add (nullptr);
     }
-    
+
     inline int size() const { return features.size(); }
     inline LV2_Feature* begin() const { return (LV2_Feature*) array [0]; }
     inline LV2_Feature* end()   const { return (LV2_Feature*) array [features.size() - 1]; }
@@ -113,21 +113,21 @@ public:
             else
                 Logger::writeToLog ("feature: NULL termination");
     }
-    
+
 private:
-    
+
     OwnedArray<LV2Feature>  features;
     HeapBlock<LV2_Feature*> array;
     bool needsBuilt;
-    
+
     inline void buildArray()
     {
         needsBuilt = false;
-        
+
         array.calloc (features.size() + 1);
         for (int i = 0; i < features.size(); ++i)
             array[i] = const_cast<LV2_Feature*> (features[i]->getFeature());
-                    
+
         array [features.size()] = nullptr;
     }
 

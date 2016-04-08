@@ -1,6 +1,6 @@
 /*
-    This file is part of the lvtk_plugins JUCE module
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,13 +17,11 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef LVTK_JUCE_LV2FORMAT_H
-#define LVTK_JUCE_LV2FORMAT_H
-
+#ifndef EL_LV2FORMAT_H
+#define EL_LV2FORMAT_H
 
 class LV2World;
 class SymbolMap;
-
 
 /** Implements a plugin format manager for LV2 plugins in Juce Apps. */
 class LV2PluginFormat :   public AudioPluginFormat
@@ -56,4 +54,4 @@ private:
 };
 
 
-#endif   // LVTK_JUCE_LV2FORMAT_H
+#endif   // EL_LV2FORMAT_H

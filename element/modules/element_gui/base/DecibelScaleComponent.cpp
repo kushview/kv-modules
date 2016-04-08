@@ -1,37 +1,22 @@
 /*
- ==============================================================================
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
- This file is part of the JUCETICE project - Copyright 2009 by Lucio Asnaghi.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
- JUCETICE is based around the JUCE library - "Jules' Utility Class Extensions"
- Copyright 2007 by Julian Storer.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
- ------------------------------------------------------------------------------
-
- JUCE and JUCETICE can be redistributed and/or modified under the terms of
- the GNU General Public License, as published by the Free Software Foundation;
- either version 2 of the License, or (at your option) any later version.
-
- JUCE and JUCETICE are distributed in the hope that they will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
-
- You should have received a copy of the GNU General Public License
- along with JUCE and JUCETICE; if not, visit www.gnu.org/licenses or write to
- Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- Boston, MA 02111-1307 USA
-
- ==============================================================================
-
-   @author  Rui Nuno Capela
-   @tweaker Lucio Asnaghi
-
- ==============================================================================
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
-//==============================================================================
 /*
 // Meter level limits (in dB).
 #define HQ_METER_MAXDB        (+3.0f)
@@ -134,5 +119,3 @@ int DecibelScaleComponent::iecLevel (const int index) const
 {
     return levels [index];
 }
-
-

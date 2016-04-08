@@ -1,8 +1,6 @@
 /*
-    Utility.h - This file is part of Element
-
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
-      * Adapted from Introjucer Utilities - http://juce.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,15 +17,15 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_UTILITY_H
-#define ELEMENT_UTILITY_H
+#ifndef EL_UUID_H
+#define EL_UUID_H
 
 namespace Utility {
 
-    String hexString8Digits (int value);
-    String createAlphaNumericUID();
-    String createGUID (const String& seed); // Turns a seed into a windows GUID
+String hexString8Digits (int value);
+String createAlphaNumericUID();
+String createGUID (const String& seed); // Turns a seed into a windows GUID
 
 }
 
-#endif // ELEMENT_UTILITY_H
+#endif // EL_UUID_H

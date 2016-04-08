@@ -1,6 +1,6 @@
 /*
-    LookAndFeel_E1.cpp - This file is part of Element
-    Copyright (C) 2016  Kushview, LLC.  All rights reserved.
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ enum ColourIds
 class JUCE_API  LookAndFeel_E1   : public LookAndFeel_V3
 {
 public:
-    
+
     enum DefaultColorCodes
     {
         defaultBackgroundColor           = 0xff16191A,
@@ -41,14 +41,14 @@ public:
         defaultTabColor                  = 0xff1a1a1a,
         defaultTabOnColor                = 0xff23252d
     };
-    
+
     static const Colour elementBlue;
     static const Colour backgroundColor;
     static const Colour textColor;
     static const Colour textActiveColor;
     static const Colour textBoldColor;
     static const Colour highlightBackgroundColor;
-    
+
 
     LookAndFeel_E1();
     virtual ~LookAndFeel_E1();
@@ -75,7 +75,7 @@ public:
     virtual void getIdealPopupMenuItemSize (const String &text, bool isSeparator, int standardMenuItemHeight,
                                             int& idealWidth, int& idealHeight) override;
 
-    
+
     virtual int getTabButtonOverlap (int tabDepth) override;
     virtual int getTabButtonSpaceAroundImage() override;
     virtual void drawTabButton (TabBarButton&, Graphics&, bool isMouseOver, bool isMouseDown) override;
@@ -93,8 +93,8 @@ public:
 
     static void createTabTextLayout (const TabBarButton& button, float length, float depth, Colour colour, TextLayout&);
 
-    
-    
+
+
 private:
     Image backgroundTexture;
     Colour backgroundTextureBaseColour;

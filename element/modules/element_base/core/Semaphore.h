@@ -18,8 +18,8 @@
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifndef ELEMENT_JUCE_SEMAPHORE_H
-#define ELEMENT_JUCE_SEMAPHORE_H
+#ifndef EL_SEMAPHORE_H
+#define EL_SEMAPHORE_H
 
 #ifdef __APPLE__
  #include <mach/mach.h>
@@ -79,4 +79,4 @@ private:
 
 };
 
-#endif  /* ELEMENT_JUCE_SEMAPHORE_H */
+#endif  /* EL_SEMAPHORE_H */

@@ -1,6 +1,6 @@
 /*
-    This file is part of the lvtk_plugins JUCE module
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef LVTK_JUCE_LV2WORLD_H
-#define LVTK_JUCE_LV2WORLD_H
+#ifndef EL_LV2WORLD_H
+#define EL_LV2WORLD_H
 
 #define LV2_UI__JuceUI LV2_UI_PREFIX "JuceUI"
 
@@ -45,63 +45,63 @@ public:
     const LilvNode*   work_interface;
     const LilvNode*   ui_X11UI;
     const LilvNode*   ui_JuceUI;
-    
+
     /** Create an LV2Module for a uri string */
     LV2Module* createModule (const String& uri);
 
     /** Create a plugin model for a uri string */
     LV2PluginModel* createPluginModel (const String& uri);
-    
+
     /** Fill a PluginDescription for a plugin uri */
     void fillPluginDescription (const String& uri, PluginDescription& desc) const;
-    
+
     /** Get an LilvPlugin for a uri string */
     const LilvPlugin* getPlugin (const String& uri) const;
-    
+
     /** Get all Available Plugins */
     const LilvPlugins* getAllPlugins() const;
 
     /** Returns true if a feature is supported */
     bool isFeatureSupported (const String& featureURI);
-    
+
     /** Returns true if the plugin uri is availble */
     bool isPluginAvailable (const String& uri);
-    
+
     /** Returns true if the plugin is supported on this system */
     bool isPluginSupported (const String& uri);
     bool isPluginSupported (const LilvPlugin* plugin);
-    
+
     /** Return the underlying LilvWorld* pointer */
     inline LilvWorld* getWorld() const { return world; }
 
     /** Add a supported feature */
     inline void addFeature (LV2Feature* feat, bool rebuild = true) { features.add (feat, rebuild); }
-    
+
     /** Get supported features */
     inline LV2FeatureArray& getFeatureArray() { return features; }
-    
+
     /** Get supported features as a juce array.
         This can be used when instantiating plugins and uis. Don't
         forget to terminate the array with nullptr before passing
         to a plugin instance */
     inline void getFeatures (Array<const LV2_Feature*>& feats) const { features.getFeatures (feats); }
-    
+
     /** Get a worker thread */
     inline WorkThread& getWorkThread();
-    
+
     /** Returns the total number of available worker threads */
     inline int32 getNumWorkThreads() const { return numThreads; }
-    
+
     inline SuilHost* getSuilHost() { return suil; }
 
 private:
     LilvWorld* world;
     SuilHost* suil;
     LV2FeatureArray features;
-   
+
     // a simple rotating thread pool
     int32 currentThread, numThreads;
     OwnedArray<WorkThread> threads;
 };
 
-#endif /* LVTK_JUCE_LV2WORLD_H */
+#endif /* EL_LV2WORLD_H */

@@ -1,5 +1,5 @@
 /*
-    Shuttle.h - This file is part of Element
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_SHUTTLE_H
-#define ELEMENT_SHUTTLE_H
+#ifndef EL_SHUTTLE_H
+#define EL_SHUTTLE_H
 
 /** A mini-transport for use in a processable that can loop */
 class Shuttle :  public AudioPlayHead
@@ -89,4 +89,4 @@ private:
 
 };
 
-#endif // ELEMENT_SHUTTLE_H
+#endif /* EL_SHUTTLE_H */

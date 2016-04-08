@@ -1,6 +1,6 @@
 /*
-    This file is part of the lvtk_plugins JUCE module
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,18 +27,18 @@ public:
     LV2Worker (WorkThread& thread, uint32 bufsize,
                LV2_Handle handle = nullptr,
                LV2_Worker_Interface* iface = nullptr);
-    
+
     ~LV2Worker();
-    
+
     void setInterface (LV2_Handle handle, LV2_Worker_Interface* iface);
-    
+
     const String& getURI() const;
     const LV2_Feature* getFeature() const;
-    
+
     void endRun();
     void processRequest (uint32 size, const void* data);
     void processResponse (uint32 size, const void* data);
-    
+
 private:
     String uri;
     LV2_Worker_Interface* worker;

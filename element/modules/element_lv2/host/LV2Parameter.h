@@ -1,6 +1,6 @@
 /*
-    This file is part of the lvtk_plugins JUCE module
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ public:
         setName (lilv_node_as_string (n));
         setSymbol (lilv_node_as_string (s));
         lilv_node_free (n);
-        
+
         LilvScalePoints* points = lilv_port_get_scale_points (plugin, port);
         LILV_FOREACH (scale_points, iter, points)
         {
@@ -41,17 +41,16 @@ public:
         }
         lilv_scale_points_free (points);
     }
-    
+
     int getNumSteps() const { return scaleVals.size(); }
     uint32 getPortIndex() const { return portIndex; }
     void setPortIndex (uint32 index) { portIndex = index; }
-    
+
 private:
-    
+
     uint32 portIndex;
     const LilvPlugin* plugin;
     const LilvPort*   port;
     Array<float>      scaleVals;
     StringArray       scaleNames;
 };
-

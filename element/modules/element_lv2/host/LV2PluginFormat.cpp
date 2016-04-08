@@ -1,6 +1,6 @@
 /*
-    This file is part of the lvtk_plugins JUCE module
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,11 +16,6 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-
-#if ELEMENT_COMPLETION
- #include <juce/juce.h>
- #include "element/element.h"
-#endif
 
 // Change this to enable logging of various LV2 activities
 #ifndef LV2_LOGGING
@@ -48,16 +43,16 @@ public:
         LV2_URID_Map* map = nullptr;
         if (LV2Feature* feat = world.getFeatureArray().getFeature (LV2_URID__map))
             map = (LV2_URID_Map*) feat->getFeature()->data;
-        
+
         assert (map != nullptr);
         assert (module != nullptr);
 
         if (uris == nullptr)
             uris = new URIs (map);
-                             
+
         atomSequence = map->map (map->handle, LV2_ATOM__Sequence);
         midiEvent    = map->map (map->handle, LV2_MIDI__MidiEvent);
-        
+
         numPorts   = module->getNumPorts();
         midiPort   = module->getMidiPort();
         notifyPort = module->getNotifyPort();
@@ -65,7 +60,7 @@ public:
         buffers.ensureStorageAllocated (numPorts);
         while (buffers.size() < numPorts)
             buffers.add (nullptr);
-        
+
         // TODO: channel/param mapping should all go in LV2Module
         const LilvPlugin* plugin (module->getPlugin());
         for (uint32 p = 0; p < numPorts; ++p)
@@ -73,7 +68,7 @@ public:
             const LilvPort* port (module->getPort (p));
             const bool input = module->isPortInput (p);
             const PortType type = module->getPortType (p);
-            
+
             if (input)
             {
                 if (PortType::Atom == type)
@@ -87,7 +82,7 @@ public:
                 {
                     LV2Parameter* param = new LV2Parameter (plugin, port);
                     params.add (param);
-                    
+
                     float min = 0.0f, max = 1.0f, def = 0.0f;
                     module->getPortRange (p, min, max, def);
                     param->setMinMaxValue (min, max, def);
@@ -107,7 +102,7 @@ public:
                 }
                 else if (PortType::Control == type)
                 {
-                
+
                 }
                 else if (PortType::Event == type)
                 {
@@ -140,7 +135,7 @@ public:
         Logger::writeToLog ("Write: time: " + String(ev.time.decimal) + String(" frames: ") + String(ev.time.frames));
         return true;
     }
-    
+
     //=========================================================================
     void fillInPluginDescription (PluginDescription& desc) const
     {
@@ -232,24 +227,24 @@ public:
         {
             AudioPlayHead::CurrentPositionInfo position;
             playHead->getCurrentPosition (position);
-            
+
             if (position.isLooping)
             { }
             else
             { }
         }
-        
+
         const ChannelConfig& chans (module->getChannelConfig());
-        
+
         for (PortBuffer* buf : buffers) {
             if (buf)
                 buf->clear();
         }
-        
+
         if (wantsMidiMessages)
         {
             PortBuffer* const buf = buffers.getUnchecked (midiPort);
-            
+
             MidiBuffer::Iterator iter (midi);
             const uint8* d = nullptr;  int s = 0, f = 0;
 
@@ -257,7 +252,7 @@ public:
                 buf->addEvent (f, (uint32)s, midiEvent, d);
             }
         }
-        
+
         for (int32 i = getTotalNumInputChannels(); --i >= 0;)
             module->connectPort (chans.getAudioInputPort(i), audio.getWritePointer (i));
 
@@ -268,12 +263,12 @@ public:
 
         for (int32 i = getTotalNumOutputChannels(); --i >= 0;)
             audio.copyFrom (i, 0, tempBuffer.getWritePointer (i), numSamples);
-        
+
         if (notifyPort != LV2UI_INVALID_PORT_INDEX)
         {
             PortBuffer* const buf = buffers.getUnchecked (notifyPort);
             jassert (buf != nullptr);
-            
+
             midi.clear();
             LV2_ATOM_SEQUENCE_FOREACH ((LV2_Atom_Sequence*) buf->getPortData(), ev)
             {
@@ -293,7 +288,7 @@ public:
     bool hasEditor() const { return module->hasEditor(); }
 
     AudioProcessorEditor* createEditor();
-    
+
     const String getInputChannelName (int index) const
     {
         const ChannelConfig& chans (module->getChannelConfig());
@@ -309,13 +304,13 @@ public:
         const ChannelConfig& chans (module->getChannelConfig());
         if (! isPositiveAndBelow (index, chans.getNumAudioOutputs()))
             return String ("Audio Out ") + String (index + 1);
-        
+
         return module->getPortName (chans.getAudioPort (index, false));
     }
 
     bool isOutputChannelStereoPair (int index) const { return false; }
 
-    
+
     //==============================================================================
     int getNumParameters() { return params.size(); }
 
@@ -327,7 +322,7 @@ public:
         return String::empty;
     }
 
-    
+
     float
     getParameter (int index)
     {
@@ -341,12 +336,12 @@ public:
     {
         if (! isPositiveAndBelow (index, params.size()))
             return String (getParameter (index));
-        
+
         LV2Parameter* const param = params.getUnchecked (index);
         return String (static_cast<float> (param->getValue()));
     }
-    
-    
+
+
     void setParameter (int index, float newValue)
     {
         if (isPositiveAndBelow (index, params.size()))
@@ -365,7 +360,7 @@ public:
             return params.getUnchecked(index)->getNumSteps();
         return AudioProcessor::getParameterNumSteps (index);
     }
-    
+
 
     float getParameterDefaultValue (int index)
     {
@@ -375,7 +370,7 @@ public:
             module->getPortRange (param->getPortIndex(), min, max, def);
             return def;
         }
-        
+
         return AudioProcessor::getParameterDefaultValue (index);
     }
 
@@ -422,7 +417,7 @@ private:
     uint32 midiPort;
     uint32 notifyPort;
     uint32 atomSequence, midiEvent;
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LV2PluginInstance)
 };
 
@@ -477,7 +472,7 @@ public:
         world.setOwned (new LV2World ());
         init();
     }
-    
+
     Internal (LV2World& w)
     {
         useExternalData = true;
@@ -489,12 +484,12 @@ public:
     {
         world.clear();
     }
-    
+
     LV2PluginModel* createModel (const String& uri)
     {
         return world->createPluginModel (uri);
     }
-    
+
     LV2Module* createModule (const String& uri)
     {
         return world->createModule (uri);
@@ -502,17 +497,17 @@ public:
 
     OptionalScopedPointer<LV2World> world;
     SymbolMap symbols;
-    
+
 private:
     bool useExternalData;
-    
+
     void init()
     {
         createProvidedFeatures();
     }
-    
+
     void createProvidedFeatures()
-    {        
+    {
         world->addFeature (symbols.createMapFeature(), false);
         world->addFeature (symbols.createUnmapFeature(), false);
         world->addFeature (symbols.createLegacyMapFeature(), false);
@@ -597,7 +592,7 @@ String LV2PluginFormat::getNameOfPluginFromIdentifier (const String& fileOrIdent
         const String name = CharPointer_UTF8 (lilv_node_as_string (node));
         lilv_node_free (node);
     }
-    
+
     return fileOrIdentifier;
 }
 

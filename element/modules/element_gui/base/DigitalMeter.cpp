@@ -1,6 +1,6 @@
 /*
-    DigitalMeter.cpp - This file is part of Element
-    Copyright (C) 2015  Kushview, LLC
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -231,7 +231,7 @@ void DigitalMeter::resized()
             }
         }
     }
-    
+
     const int length = horizontal ? getWidth() : getHeight();
     scale = 0.85f * (float) length;
 
@@ -241,7 +241,7 @@ void DigitalMeter::resized()
     levels[Color10dB] = getIECScale (-10.0f);
 
     const int size = (horizontal ? getHeight() : getWidth()) / portCount;
-    
+
     for (int port = 0; port < portCount; ++port)
     {
         if (horizontal)

@@ -1,6 +1,6 @@
 /*
-    This file is part of the lvtk_plugins JUCE module
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,7 +24,7 @@ namespace LV2Callbacks {
         // TODO: Lock
         return std::vfprintf (stderr, fmt, ap);
     }
-    
+
     int printf (LV2_Log_Handle handle, LV2_URID type, const char* fmt, ...)
     {
         va_list args;
@@ -47,5 +47,5 @@ LV2Log::LV2Log()
 
 LV2Log::~LV2Log()
 {
-    
+
 }

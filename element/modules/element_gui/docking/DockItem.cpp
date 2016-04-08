@@ -17,9 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
 DockItem::DockItem (Dock& parent, const String& id, const String& name)
-    : Component (name), dock (parent), 
+    : Component (name), dock (parent),
       layout (*this, false), dragging (false), grip (*this)
 {
     setComponentID (id);

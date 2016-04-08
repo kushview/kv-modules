@@ -1,6 +1,6 @@
 /*
-    This file is part of the lvtk_plugins JUCE module
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,12 +25,12 @@ namespace LV2Callbacks
     {
         String host (hostType);
         String ui (uiType);
-        
+
         if (host == LV2_UI__X11UI && ui == LV2_UI__X11UI)
             return 2;
         else if (ui == LV2_UI__JuceUI)
             return 1;
-        
+
         return suil_ui_supported (hostType, uiType);
     }
 #endif
@@ -43,9 +43,9 @@ public:
 
     Private (LV2PluginModel& module)
         : owner (module) { }
-    
+
     ~Private() { }
-    
+
     SuilInstance* instantiateUI (const LilvUI* ui,
                                  const LilvNode* containerType,
                                  const LilvNode* widgetType,
@@ -53,7 +53,7 @@ public:
     {
         const LilvNode* uri = lilv_ui_get_uri (ui);
         const LilvPlugin* plugin = owner.getPlugin();
-        
+
         SuilInstance* instance = suil_instance_new (suil, &owner,
                   lilv_node_as_uri (containerType),
                   lilv_node_as_uri (lilv_plugin_get_uri (plugin)),
@@ -62,20 +62,20 @@ public:
                   lilv_uri_to_path (lilv_node_as_uri (lilv_ui_get_bundle_uri (ui))),
                   lilv_uri_to_path (lilv_node_as_uri (lilv_ui_get_binary_uri (ui))),
                   features );
-        
+
         if (instance != nullptr)
         {
             // do something here?
         }
-        
+
         return instance;
     }
-    
+
     ChannelConfig channels;
     HeapBlock<float> mins, maxes, defaults, values;
-    
+
 private:
-    
+
     LV2PluginModel& owner;
     SuilHost* suil;
 
@@ -183,7 +183,7 @@ LV2PluginModel::getNotifyPort() const
             return i;
         }
     }
-    
+
     return LV2UI_INVALID_PORT_INDEX;
 }
 
@@ -197,7 +197,7 @@ LV2PluginModel::getPortName (uint32 index) const
         lilv_node_free (node);
         return name;
     }
-    
+
     return String::empty;
 }
 

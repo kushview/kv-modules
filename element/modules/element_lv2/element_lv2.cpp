@@ -1,5 +1,5 @@
 /*
-    element_module.cpp - This file is part of Element
+    element_lv2.cpp - This file is part of Element
     Copyright (C) 2014-2016  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify

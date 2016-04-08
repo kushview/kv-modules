@@ -1,5 +1,5 @@
 /*
-    Arc.h - This file is part of Element
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -25,19 +25,19 @@ struct JUCE_API Arc
 public:
     Arc (uint32 sourceNode, uint32 sourcePort, uint32 destNode, uint32 destPort) noexcept;
     virtual ~Arc() { }
-    
+
     /** The source node id */
     uint32 sourceNode;
-    
+
     /** The source port id */
     uint32 sourcePort;
-    
+
     /** The destination node id */
     uint32 destNode;
-    
+
     /** The destination port id */
     uint32 destPort;
-    
+
 private:
     JUCE_LEAK_DETECTOR (Arc)
 };
@@ -55,7 +55,7 @@ struct ArcSorter
         if (first->sourcePort > second->sourcePort)    return 1;
         if (first->destPort   < second->destPort)      return -1;
         if (first->destPort   > second->destPort)      return 1;
-        
+
         return 0;
     }
 };
@@ -70,53 +70,53 @@ public:
         for (int i = 0; i < arcs.size(); ++i)
         {
             const ArcType* const c = arcs.getUnchecked(i);
-            
+
             int index;
             Entry* entry = findEntry (c->destNode, index);
-            
+
             if (entry == nullptr)
             {
                 entry = new Entry (c->destNode);
                 entries.insert (index, entry);
             }
-            
+
             entry->srcNodes.add (c->sourceNode);
         }
     }
-    
+
     bool isAnInputTo (const uint32 possibleInputId,
                       const uint32 possibleDestinationId) const noexcept
     {
         return isAnInputToRecursive (possibleInputId, possibleDestinationId, entries.size());
     }
-    
+
 private:
     //==============================================================================
     struct Entry
     {
         explicit Entry (const uint32 destNode_) noexcept : destNode (destNode_) {}
-        
+
         const uint32 destNode;
         SortedSet<uint32> srcNodes;
-        
+
         JUCE_DECLARE_NON_COPYABLE (Entry)
     };
-    
+
     OwnedArray<Entry> entries;
-    
+
     bool isAnInputToRecursive (const uint32 possibleInputId,
                                const uint32 possibleDestinationId,
                                int recursionCheck) const noexcept
     {
         int index;
-        
+
         if (const Entry* const entry = findEntry (possibleDestinationId, index))
         {
             const SortedSet<uint32>& srcNodes = entry->srcNodes;
-            
+
             if (srcNodes.contains (possibleInputId))
                 return true;
-            
+
             if (--recursionCheck >= 0)
             {
                 for (int i = 0; i < srcNodes.size(); ++i)
@@ -124,17 +124,17 @@ private:
                         return true;
             }
         }
-        
+
         return false;
     }
-    
+
     Entry* findEntry (const uint32 destNode, int& insertIndex) const noexcept
     {
         Entry* result = nullptr;
-        
+
         int start = 0;
         int end = entries.size();
-        
+
         for (;;)
         {
             if (start >= end)
@@ -149,12 +149,12 @@ private:
             else
             {
                 const int halfway = (start + end) / 2;
-                
+
                 if (halfway == start)
                 {
                     if (destNode >= entries.getUnchecked (halfway)->destNode)
                         ++start;
-                    
+
                     break;
                 }
                 else if (destNode >= entries.getUnchecked (halfway)->destNode)
@@ -163,11 +163,11 @@ private:
                     end = halfway;
             }
         }
-        
+
         insertIndex = start;
         return result;
     }
-    
+
     JUCE_DECLARE_NON_COPYABLE (ArcTable)
 };
 

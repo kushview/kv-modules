@@ -1,8 +1,6 @@
 /*
-    RelativePath.h - This file is part of Element
-
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
-      * Adapted from Introjucer - http://juce.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_RELATIVE_PATH_H
-#define ELEMENT_RELATIVE_PATH_H
+#ifndef EL_RELATIVE_PATH_H
+#define EL_RELATIVE_PATH_H
 
 
     /** Manipulates a cross-platform partial file path. (Needed because File is designed
@@ -107,4 +105,4 @@
 
 
 
-#endif /* ELEMENT_RELATIVE_PATH_H */
+#endif /* EL_RELATIVE_PATH_H */

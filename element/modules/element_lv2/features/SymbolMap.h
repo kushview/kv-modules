@@ -1,6 +1,6 @@
 /*
-    This file is part of the lvtk_plugins JUCE module
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,17 +17,15 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef LVTK_JUCE_SYMMAP_H
-#define LVTK_JUCE_SYMMAP_H
+#ifndef EL_SYMBOL_MAP_H
+#define EL_SYMBOL_MAP_H
 
-
-#if LVTK_ENABLE_CXX11
+#if EL_ENABLE_CXX11
 /** A function type for mapping uris */
 typedef std::function<LV2_URID(const char*)> URIMapFunction;
 /** A function type for unmapping urids */
 typedef std::function<const char*(LV2_URID)> URIUnmapFunction;
 #endif
-
 
 /** Maintains a map of Strings/Symbols to integers
     This class also implements LV2 URID Map/Unmap features and is fully
@@ -35,15 +33,14 @@ typedef std::function<const char*(LV2_URID)> URIUnmapFunction;
 class SymbolMap
 {
 public:
-
     /** Create an empty symbol map and initialized LV2 URID features */
     SymbolMap() { }
-    
-    ~SymbolMap() 
-    { 
+
+    ~SymbolMap()
+    {
         clear();
     }
-    
+
     /** Map a symbol/uri to an unsigned integer
         @param key The symbol to map
         @return A mapped URID, a return of 0 indicates failure */
@@ -57,11 +54,11 @@ public:
             unmapped [urid] = std::string (key);
             return urid;
         }
-        
+
         return mapped [key];
     }
-    
-    /** Containment test of a URI 
+
+    /** Containment test of a URI
         @param uri The URI to test
         @return True if found */
     inline bool
@@ -69,8 +66,8 @@ public:
     {
         return mapped.find (uri) != mapped.end();
     }
-    
-    /** Containment test of a URID 
+
+    /** Containment test of a URID
         @param urid The URID to test
         @return True if found */
     inline bool
@@ -78,8 +75,8 @@ public:
     {
         return unmapped.find (urid) != unmapped.end();
     }
-    
-    /** Unmap an already mapped id to its symbol 
+
+    /** Unmap an already mapped id to its symbol
         @param urid The URID to unmap
         @return The previously mapped symbol or 0 if the urid isn't in the cache */
     inline const char*
@@ -90,7 +87,7 @@ public:
 
         return "";
     }
-    
+
     /** Clear the SymbolMap */
     inline void
     clear()
@@ -98,7 +95,7 @@ public:
         mapped.clear();
         unmapped.clear();
     }
-    
+
     /** Create a URID Map LV2Feature. Thie created feature MUST be deleted
         before the SymbolMap is deleted */
     inline LV2Feature*  createMapFeature() { return new MapFeature (this); }
@@ -106,7 +103,7 @@ public:
     /** Create a URID Unmap LV2Feature. Thie created feature MUST be deleted
         before the SymbolMap is deleted */
     inline LV2Feature*  createUnmapFeature() { return new UnmapFeature (this); }
-    
+
     /** Create a (deprecated) URI Map feature. Thie created feature MUST be deleted
         before the SymbolMap is deleted */
     inline LV2Feature*  createLegacyMapFeature() { return new URIMapFeature (this); }
@@ -115,7 +112,7 @@ private:
     typedef std::map<std::string, LV2_URID> Mapped;
     typedef std::map<LV2_URID, std::string> Unmapped;
     Mapped mapped; Unmapped unmapped;
-    
+
     // LV2 URID Host Implementation follows ...
     class MapFeature :  public LV2Feature
     {
@@ -138,12 +135,12 @@ private:
         }
 
         virtual ~MapFeature() { }
-        
+
         const String& getURI() const { return uri; }
         const LV2_Feature* getFeature() const { return &feat; }
-  
+
     private:
-        
+
         String       uri;
         LV2_Feature  feat;
         LV2_URID_Map data;
@@ -174,31 +171,31 @@ private:
         virtual ~UnmapFeature() { }
         const String& getURI() const { return uri; }
         const LV2_Feature* getFeature() const { return &feat; }
-        
+
     private:
-        
+
         String         uri;
         LV2_Feature    feat;
         LV2_URID_Unmap data;
 
         friend class SymbolMap;
     };
-    
+
     /** Implements the deprecated URI_Map feature */
     class URIMapFeature : public LV2Feature
     {
     public:
-        
+
         inline static uint32_t
         uriToId (LV2_URI_Map_Callback_Data handle, const char* a, const char* b)
         {
             SymbolMap* sym = (SymbolMap*) handle;
             if (a != nullptr)
                 { /* do nothing i suppose */ }
-            
+
             return sym->map (b);
         }
-        
+
         URIMapFeature (SymbolMap* parent)
         {
             uri = LV2_URI_MAP_URI;
@@ -207,21 +204,20 @@ private:
             data.uri_to_id     = &URIMapFeature::uriToId;
             feat.data          = &data;
         }
-        
+
         ~URIMapFeature() { }
-        
+
         const String& getURI() const { return uri; }
         const LV2_Feature* getFeature() const { return &feat; }
-        
+
     private:
-        
+
         String         uri;
         LV2_Feature    feat;
         LV2_URI_Map_Feature  data;
-        
+
         friend class SymbolMap;
     };
-    
 };
 
-#endif /* LVTK_JUCE_SYMMAP_H */
+#endif /* EL_SYMBOL_MAP_H */

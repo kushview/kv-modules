@@ -1,6 +1,6 @@
 /*
-    This file is part of the element_lv2 JUCE module
-    Copyright (C) 2015  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ namespace LV2Callbacks
             return LV2_WORKER_ERR_NO_SPACE;
         return LV2_WORKER_SUCCESS;
     }
-    
+
     static LV2_Worker_Status workRespond (LV2_Worker_Respond_Handle handle, uint32_t size, const void* data)
     {
         LV2Worker* worker = reinterpret_cast<LV2Worker*> (handle);

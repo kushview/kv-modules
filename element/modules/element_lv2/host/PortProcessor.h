@@ -1,6 +1,6 @@
 /*
-    ProcessorBase.h - This file is part of Element
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,14 +17,12 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef LVTK_JUCE_PORT_PROCESSOR_H
-#define LVTK_JUCE_PORT_PROCESSOR_H
+#ifndef EL_PORT_PROCESSOR_H
+#define EL_PORT_PROCESSOR_H
 
 class PortProcessor :  public AudioPluginInstance
 {
-
 public:
-
     PortProcessor() { }
     virtual ~PortProcessor() { }
 
@@ -52,10 +50,10 @@ public:
 
     /** Write data to a port */
     virtual bool writeToPort (uint32 port, uint32 size, uint32 protocol, void const* data);
-    
+
     bool writeControlValue (uint32 port, float value);
-    
+
 };
 
 
-#endif // LVTK_JUCE_PORT_PROCESSOR_H
+#endif // EL_PORT_PROCESSOR_H

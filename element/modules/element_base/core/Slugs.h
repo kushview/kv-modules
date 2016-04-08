@@ -1,5 +1,5 @@
 /*
-    Slugs.h - This file is part of Element
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_SLUGS_H
-#define ELEMENT_SLUGS_H
+#ifndef EL_SLUGS_H
+#define EL_SLUGS_H
 
 /** Commonly used Identifiers, these might represent different things depending
     on the context of use */
@@ -64,4 +64,4 @@ namespace Slugs {
     static const Identifier volume   = "volume";
 }
 
-#endif /* ELEMENT_SLUGS_H */
+#endif /* EL_SLUGS_H */

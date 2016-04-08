@@ -1,6 +1,6 @@
 /*
-    This file is part of the lvtk_plugins JUCE module
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -16,10 +16,6 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-
-#if COMPLETION
-#include "KSP1.h"
-#endif
 
 #ifndef ELEMENT_LV2_NUM_WORKERS
  #define ELEMENT_LV2_NUM_WORKERS 1
@@ -78,7 +74,7 @@ LV2World::LV2World()
 {
     world = lilv_world_new();
     lilv_world_load_all (world);
-    
+
     lv2_InputPort   = lilv_new_uri (world, LV2_CORE__InputPort);
     lv2_OutputPort  = lilv_new_uri (world, LV2_CORE__OutputPort);
     lv2_AudioPort   = lilv_new_uri (world, LV2_CORE__AudioPort);
@@ -91,7 +87,7 @@ LV2World::LV2World()
     work_interface  = lilv_new_uri (world, LV2_WORKER__interface);
     ui_X11UI        = lilv_new_uri (world, LV2_UI__X11UI);
     ui_JuceUI       = lilv_new_uri (world, LV2_UI__JuceUI);
-    
+
 
     suil = suil_host_new (
         LV2Callbacks::portWrite, 0, 0, 0
@@ -114,7 +110,7 @@ LV2World::~LV2World()
     _node_free (midi_MidiEvent);
     _node_free (work_schedule);
     _node_free (work_interface);
-    
+
     lilv_world_free (world);
     world = nullptr;
     suil_host_free (suil);
@@ -176,11 +172,11 @@ WorkThread& LV2World::getWorkThread()
         threads.add (new WorkThread ("LV2 Worker " + String(currentThread + 1), 2048));
         threads.getLast()->setPriority (5);
     }
-    
+
     const int32 threadIndex = currentThread;
     if (++currentThread >= numThreads)
         currentThread = 0;
-    
+
     return *threads.getUnchecked (threadIndex);
 }
 
@@ -220,7 +216,7 @@ bool LV2World::isPluginSupported (const LilvPlugin* plugin)
     }
 
     lilv_nodes_free (nodes); nodes = nullptr;
-    
+
     // Check this plugin's port types are supported
     const uint32 numPorts = lilv_plugin_get_num_ports (plugin);
     for (uint32 i = 0; i < numPorts; ++i)
@@ -228,6 +224,6 @@ bool LV2World::isPluginSupported (const LilvPlugin* plugin)
         // const LilvPort* port (lilv_plugin_get_port_by_index (plugin, i));
         // nothing here yet
     }
-    
+
     return true;
 }

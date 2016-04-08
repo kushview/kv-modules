@@ -1,5 +1,5 @@
 /*
-    Types.h - This file is part of Element
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -17,12 +17,12 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_TYPES_H
-#define ELEMENT_TYPES_H
+#ifndef EL_TYPES_H
+#define EL_TYPES_H
 
 typedef float  Sample;
 typedef uint32 SampleCount;
 typedef uint32 FrameTime;
 typedef uint16 Channel;
 
-#endif // ELEMENT_TYPES_H
+#endif // EL_TYPES_H

@@ -1,13 +1,24 @@
 /*
-  SkinDial.h
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
-  Copyright (C) 2014  Kushview, LLC.  All rights reserved.
-  Michael Fisher <mfisher@kushview.net>
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_SKINDIAL_H
-#define ELEMENT_SKINDIAL_H
+#ifndef EL_SKINDIAL_H
+#define EL_SKINDIAL_H
 
    class SkinDial : public Slider
    {
@@ -31,12 +42,12 @@
            y *= scale;
            return img.getPixelAt(x, y).getAlpha() == 0xFF;
        }
-       
+
       inline void setImage (const Image& source)
       {
          img = source;
 
-          if (img != Image::null && 
+          if (img != Image::null &&
               img.getWidth() >= 1 &&
               img.getHeight() >= 1)
           {
@@ -47,7 +58,7 @@
           {
               nframes = 1;
           }
-          
+
           jassert (nframes >= 1);
          const int size = frameSize();
          setSize (size, size);
@@ -61,7 +72,7 @@
            else
                scale = newScale;
        }
-       
+
       inline void paint (Graphics& g) override
       {
          if (img == Image::null)
@@ -106,4 +117,4 @@
 
    };
 
-#endif /* ELEMENT_SKINDIAL_H */
+#endif /* EL_SKINDIAL_H */

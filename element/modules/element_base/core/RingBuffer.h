@@ -1,21 +1,24 @@
 /*
     This file is part of the element modules for the JUCE Library
-    Copyright (c) 2015 - Michael Fisher <mfisher31@gmail.com>.
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
-    Permission to use, copy, modify, and/or distribute this software for any purpose with
-    or without fee is hereby granted, provided that the above copyright notice and this
-    permission notice appear in all copies.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-    THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD
-    TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN
-    NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL
-    DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER
-    IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-    CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
- */
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-#ifndef ELEMENT_JUCE_RINGBUFFER_H
-#define ELEMENT_JUCE_RINGBUFFER_H
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+#ifndef EL_RINGBUFFER_H
+#define EL_RINGBUFFER_H
 
 class RingBuffer
 {
@@ -26,7 +29,7 @@ public:
 
     void setCapacity (int32 newCapacity);
     inline size_t size() const { return (size_t) fifo.getTotalSize(); }
-    
+
     inline bool canRead  (uint32 bytes) const { return bytes <= (uint32) fifo.getNumReady() && bytes != 0; }
     inline uint32 getReadSpace() const { return fifo.getNumReady(); }
 
@@ -38,31 +41,31 @@ public:
     {
         return read (dest, size, false);
     }
-    
+
     inline uint32
     read (void* dest, uint32 size, bool advance = true)
     {
         buffer = block.getData();
         fifo.prepareToRead (size, vec1.index, vec1.size, vec2.index, vec2.size);
-        
+
         if (vec1.size > 0)
             memcpy (dest, buffer + vec1.index, vec1.size);
-        
+
         if (vec2.size > 0)
             memcpy ((uint8*) dest + vec1.size, buffer + vec2.index, vec2.size);
-        
+
         if (advance)
             fifo.finishedRead (vec1.size + vec2.size);
-        
+
         return vec1.size + vec2.size;
     }
-    
+
     template <typename T>
     inline uint32 read (T& dest)
     {
         return read (&dest, sizeof (T));
     }
-    
+
     inline void advanceReadPointer (const uint32) {
         jassertfalse;
     }
@@ -70,7 +73,7 @@ public:
     inline uint32
     write (const void* src, uint32 bytes)
     {
-        buffer = block.getData();  
+        buffer = block.getData();
         fifo.prepareToWrite (bytes, vec1.index, vec1.size, vec2.index, vec2.size);
 
         if (vec1.size > 0)
@@ -93,9 +96,9 @@ public:
         uint32 size;
         void*  buffer;
     };
-    
+
 private:
-    
+
     struct Vec
     {
         int32 size;
@@ -108,4 +111,4 @@ private:
     uint8* buffer;
 };
 
-#endif /* ELEMENT_JUCE_RINGBUFFER_H */
+#endif /* EL_RINGBUFFER_H */

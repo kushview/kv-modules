@@ -1,5 +1,5 @@
 /*
-    MidiSequencePlayer.cpp - This file is part of Element
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -17,16 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if JUCE_COMPLETION
-#include "modules/element_base/element_base.h"
-#include "MidiSequencePlayer.h"
-#include "JuceHeader.h"
-#endif
-
 #define NOTE_CHANNEL       1
 #define NOTE_VELOCITY      0.8f
 #define NOTE_PREFRAMES     0.001
-
 
 MidiSequencePlayer::MidiSequencePlayer()
     : midiSequence (new MidiMessageSequence())
@@ -76,7 +69,7 @@ void MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSe
             break;
 
         target.addEvent (ev->message, timeStamp);
-        
+
         /* if (ev->message.isNoteOn())
         {
             const double ots = ev->noteOffObject->message.getTimeStamp() / (double) Shuttle::PPQ;
@@ -95,7 +88,7 @@ void MidiSequencePlayer::renderSequence (MidiBuffer& target, const MidiMessageSe
 }
 
 int32 MidiSequencePlayer::getLoopRepeatIndex() const
-{ 
+{
     return static_cast<int> (floor (shuttle->getPositionBeats())) / (double) getBeatLength();
 }
 
@@ -105,7 +98,7 @@ double MidiSequencePlayer::getLoopBeatPosition() const
 }
 
 namespace Midi {
-    
+
 
 void renderSequence (MidiBuffer& target, const MidiMessageSequence& seq, const TimeScale& ts,
                      int32 startFrame, int32 numSamples)
@@ -119,12 +112,12 @@ void renderSequence (MidiBuffer& target, const MidiMessageSequence& seq, const T
         const double tick = ev->message.getTimeStamp();
         const int32 frameInSeq = ts.frameFromTick (static_cast<unsigned long> (tick));
         const int32 timeStamp = frameInSeq - startFrame;
-        
+
         if (timeStamp >= numSamples)
             break;
-        
+
         target.addEvent (ev->message, timeStamp);
-        
+
         /* if (ev->message.isNoteOn())
          {
          const double ots = ev->noteOffObject->message.getTimeStamp() / (double) Shuttle::PPQ;
@@ -134,7 +127,7 @@ void renderSequence (MidiBuffer& target, const MidiMessageSequence& seq, const T
          }
          }
          */
-        
+
         ++i;
     }
 #endif

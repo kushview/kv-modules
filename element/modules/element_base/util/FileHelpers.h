@@ -1,8 +1,6 @@
 /*
-    FileHelpers.h - This file is part of Element
-
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
-      * Adapted from Introjucer - http://juce.com
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_FILE_HELPERS_H
-#define ELEMENT_FILE_HELPERS_H
+#ifndef EL_FILE_HELPERS_H
+#define EL_FILE_HELPERS_H
 
 namespace FileHelpers {
 
@@ -82,4 +80,4 @@ private:
 };
 
 
-#endif   // ELEMENT_FILE_HELPERS_H
+#endif   // EL_FILE_HELPERS_H

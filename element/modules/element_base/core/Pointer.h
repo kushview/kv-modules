@@ -1,23 +1,24 @@
 /*
-  pointer.hpp - Different pointer types
-  Copyright (C) 2013  Michael R Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
-  This is free software: you can redistribute it and/or modify it under the
-  terms of the GNU General Public License as published by the Free Software
-  Foundation, either version 3 of the License, or any later version.
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
 
-  It is distributed in the hope that it will be useful, but WITHOUT ANY
-  WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-  A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-  You should have received a copy of the GNU General Public License
-  along with this software.  If not, see <http://www.gnu.org/licenses/>.
-
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
-/** @file pointer.hpp */
 
-#ifndef ELEMENT_POINTER_H
-#define ELEMENT_POINTER_H
+#ifndef EL_POINTER_H
+#define EL_POINTER_H
 
 
 #define ELEMENT_FORCE_BOOST_SHARED_PTR 0
@@ -157,6 +158,4 @@ inline Shared<T> makeShared (A0& a0, A1& a1, A2& a2, A3& a3)
 
 #endif
 
-
-
-#endif /* ELEMENT_POINTER_H */
+#endif /* EL_POINTER_H */

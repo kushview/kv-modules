@@ -34,10 +34,6 @@
 #endif
 
 #include <set>
-#include <boost/bind.hpp>
-#include <boost/intrusive/list.hpp>
-#include <boost/intrusive/slist_hook.hpp>
-#include <boost/signals2/signal.hpp>
 
 #if _MSC_VER
  #ifdef min
@@ -56,7 +52,6 @@ namespace Element {
 using namespace juce;
 #include "core/Arc.h"
 #include "core/Atomic.h"
-#include "core/Intrusive.h"
 #include "core/LinkedList.h"
 #include "core/Monitor.h"
 #include "core/Parameter.h"
@@ -64,7 +59,6 @@ using namespace juce;
 #include "core/PortType.h"
 #include "core/RingBuffer.h"
 #include "core/Semaphore.h"
-#include "core/Signals.h"
 #include "core/Slugs.h"
 #include "core/Types.h"
 #include "core/WorkThread.h"
@@ -75,7 +69,6 @@ using namespace juce;
 #include "time/TimeStamp.h"
 
 #include "util/Utils.h"
-#include "util/Convert.h"
 #include "util/FileHelpers.h"
 #include "util/Fraction.h"
 #include "util/Midi.h"

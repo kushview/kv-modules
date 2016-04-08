@@ -1,6 +1,6 @@
 /*
-    LV2Module.cpp - This file is part of Element
-    Copyright (C) 2013  Michael Fisher <mfisher31@gmail.com>
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,21 +17,17 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if COMPLETION
- #include "KSP1.h"
-#endif
-
 namespace LV2Callbacks {
     inline unsigned uiSupported (const char* hostType, const char* uiType)
     {
         String host (hostType);
         String ui (uiType);
-        
+
         if (host == LV2_UI__X11UI && ui == LV2_UI__X11UI)
             return 2;
         else if (ui == LV2_UI__JuceUI)
             return 1;
-        
+
         return suil_ui_supported (hostType, uiType);
     }
 }
@@ -40,9 +36,9 @@ class LV2Module::Private {
 public:
     Private (LV2Module& module)
         : owner (module) { }
-    
+
     ~Private() { }
-    
+
     SuilInstance* instantiateUI (const LilvUI* ui,
                                  const LilvNode* containerType,
                                  const LilvNode* widgetType,
@@ -51,7 +47,7 @@ public:
         suil = owner.getWorld().getSuilHost();
         const LilvNode* uri = lilv_ui_get_uri (ui);
         const LilvPlugin* plugin = owner.getPlugin();
-        
+
         SuilInstance* instance = suil_instance_new (suil, &owner,
                   lilv_node_as_uri (containerType),
                   lilv_node_as_uri (lilv_plugin_get_uri (plugin)),
@@ -60,18 +56,18 @@ public:
                   lilv_uri_to_path (lilv_node_as_uri (lilv_ui_get_bundle_uri (ui))),
                   lilv_uri_to_path (lilv_node_as_uri (lilv_ui_get_binary_uri (ui))),
                   features);
-        
+
         if (instance != nullptr)
         {
             // do something here?
         }
-        
+
         return instance;
     }
-    
+
     ChannelConfig channels;
     HeapBlock<float> mins, maxes, defaults, values;
-    
+
 private:
     LV2Module& owner;
     SuilHost* suil;
@@ -103,14 +99,14 @@ void LV2Module::activatePorts()
    {
        //const bool isInput  = isPortInput (p);
        const PortType type = getPortType (p);
-       
+
        if (type == PortType::Atom)
        {
-           
+
        }
        else if (type == PortType::Audio)
        {
-           
+
        }
        else if (type == PortType::Control)
        {
@@ -120,7 +116,7 @@ void LV2Module::activatePorts()
        }
        else if (type == PortType::CV)
        {
-           
+
        }
    }
 }
@@ -133,7 +129,7 @@ void LV2Module::init()
     priv->defaults.allocate (numPorts, true);
     priv->values.allocate (numPorts, true);
     lilv_plugin_get_port_ranges_float (plugin, priv->mins, priv->maxes, priv->defaults);
-    
+
     // initialize each port
     for (uint32 p = 0; p < numPorts; ++p)
     {
@@ -148,10 +144,10 @@ Result LV2Module::instantiate (double samplerate)
 {
     freeInstance();
     currentSampleRate = samplerate;
-    
+
     features.clearQuick();
     world.getFeatures (features);
-    
+
     // check for a worker interface
     LilvNodes* nodes = lilv_plugin_get_extension_data (plugin);
     LILV_FOREACH (nodes, iter, nodes)
@@ -163,8 +159,8 @@ Result LV2Module::instantiate (double samplerate)
             features.add (worker->getFeature());
         }
     }
-    lilv_nodes_free (nodes); nodes = nullptr;        
-    
+    lilv_nodes_free (nodes); nodes = nullptr;
+
     features.add (nullptr);
     instance = lilv_plugin_instantiate (plugin, samplerate,
                                         features.getRawDataPointer());
@@ -173,7 +169,7 @@ Result LV2Module::instantiate (double samplerate)
         worker = nullptr;
         return Result::fail ("Could not instantiate plugin.");
     }
-    
+
     if (const void* data = getExtensionData (LV2_WORKER__interface))
     {
         assert (worker != nullptr);
@@ -186,7 +182,7 @@ Result LV2Module::instantiate (double samplerate)
         features.removeFirstMatchingValue (worker->getFeature());
         worker = nullptr;
     }
-    
+
     return Result::ok();
 }
 
@@ -237,17 +233,17 @@ void LV2Module::setSampleRate (double newSampleRate)
 {
     if (newSampleRate == currentSampleRate)
         return;
-    
+
     if (instance != nullptr)
     {
         const bool wasActive = isActive();
         deactivate();
-        
+
         freeInstance();
         instantiate (newSampleRate);
-                
+
         jassert (currentSampleRate == newSampleRate);
-        
+
         if (wasActive)
             activate();
     }
@@ -369,7 +365,7 @@ uint32 LV2Module::getNotifyPort() const
             return i;
         }
     }
-    
+
     return LV2UI_INVALID_PORT_INDEX;
 }
 
@@ -382,7 +378,7 @@ const String LV2Module::getPortName (uint32 index) const
         lilv_node_free (node);
         return name;
     }
-    
+
     return String::empty;
 }
 
@@ -390,7 +386,7 @@ void LV2Module::getPortRange (uint32 port, float& min, float& max, float& def) c
 {
     if (port >= numPorts)
         return;
-    
+
     min = priv->mins [port];
     max = priv->maxes [port];
     def = priv->defaults [port];
@@ -486,17 +482,17 @@ void LV2Module::run (uint32 nframes)
 {
     if (worker)
         worker->processWorkResponses();
-    
+
     lilv_instance_run (instance, nframes);
-    
+
     if (worker)
         worker->endRun();
 }
 
 void LV2Module::setControlValue (uint32 port, float value)
-{    
+{
     if (port >= numPorts)
         return;
-        
+
     priv->values [port] = value;
 }
