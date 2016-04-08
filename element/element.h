@@ -22,6 +22,7 @@
 
 #include <juce/juce.h>
 #include <element/modules/config.h>
+#include <element/modules/version.h>
 
 #if JUCE_MODULE_AVAILABLE_element_base
  #include <element/modules/element_base/element_base.h>
@@ -42,7 +43,5 @@
 #if JUCE_MODULE_AVAILABLE_element_models
  #include <element/modules/element_models/element_models.h>
 #endif
-
-#include <element/modules/version.h>
 
 #endif
