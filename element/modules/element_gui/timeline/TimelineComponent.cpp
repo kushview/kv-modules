@@ -111,8 +111,7 @@ TimelineComponent* TimelineIndicator::timeline() const
     return owner;
 }
 
-double
-TimelineIndicator::getUnits() const
+double TimelineIndicator::getUnits() const
 {
     return timeline()->xToTime (getBoundsInParent().getX());
 }
