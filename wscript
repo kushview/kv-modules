@@ -89,6 +89,8 @@ def configure(conf):
     conf.check_cfg(package='lilv-0', uselib_store='LILV', args=['--cflags', '--libs'], mandatory=True)
     conf.check_cfg(package='suil-0', uselib_store='SUIL', args=['--cflags', '--libs'], mandatory=True)
     conf.check_cfg(package='jack', uselib_store='JACK', args=['--cflags', '--libs'], mandatory=False)
+    conf.check_cfg(package='gl', uselib_store='GL', args=['--cflags', '--libs'], mandatory=False)
+    conf.check_cfg(package='x11', uselib_store='X11', args=['--cflags', '--libs'], mandatory=False)
 
     # this is just to clear all the defines up to this point
     conf.write_config_header('dummy.h')
@@ -154,7 +156,7 @@ def build_modules(bld):
     postfix = '_debug' if is_debug else ''
     libs = juce.build_modular_libs (bld, library_modules, ELEMENT_VERSION, postfix)
     for lib in libs:
-        lib.includes = ['.', './build/element'] + lib.includes
+        lib.includes = ['.', './element/modules', './build/element'] + lib.includes
         for dep in lib.module_info.dependencies():
             if 'juce_' in dep:
                 lib.use.append(dep.upper())
@@ -205,8 +207,8 @@ def build (bld):
     bld.add_group()
     bld.program(
         source   = ['tools/linktest.cpp'],
-        includes = ['.'],
-        use      = ['JUCE_OPENGL', 'LILV', 'SUIL', \
+        includes = ['.', './element/modules'],
+        use      = ['JUCE_OPENGL', 'LILV', 'SUIL', 'GL', 'X11', \
                     'element-base-debug-0', 'element-gui-debug-0', \
                     'element-engines-debug-0', 'element-models-debug-0', \
                     'element-lv2-debug-0'],

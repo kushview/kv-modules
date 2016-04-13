@@ -55,7 +55,7 @@ PortType Processor::getPortType (AudioProcessor* proc, uint32 port)
         return PortType::Atom;
     }
 
-    assert (false);
+    jassert (false);
     return PortType::Unknown;
 }
 
@@ -91,7 +91,7 @@ bool Processor::isPortInput (AudioProcessor* proc, uint32 port)
             break;
     }
 
-    assert (false);
+    jassert (false);
     return false;
 }
 

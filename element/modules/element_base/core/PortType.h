@@ -107,7 +107,7 @@ private:
     static inline const String&
     typeURI (unsigned id)
     {
-        assert (id <= Atom);
+        jassert (id <= Atom);
 
         static const String uris[] = {
             String ("http://lv2plug.in/ns/lv2core#ControlPort"),
@@ -125,7 +125,7 @@ private:
     static inline const String&
     typeName (unsigned id)
     {
-        assert (id <= Atom);
+        jassert (id <= Atom);
         static const String uris[] = {
             String ("Control"),
             String ("Audio"),

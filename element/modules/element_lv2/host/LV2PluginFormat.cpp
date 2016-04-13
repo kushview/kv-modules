@@ -44,8 +44,8 @@ public:
         if (LV2Feature* feat = world.getFeatureArray().getFeature (LV2_URID__map))
             map = (LV2_URID_Map*) feat->getFeature()->data;
 
-        assert (map != nullptr);
-        assert (module != nullptr);
+        jassert (map != nullptr);
+        jassert (module != nullptr);
 
         if (uris == nullptr)
             uris = new URIs (map);
@@ -75,7 +75,7 @@ public:
                 {
                     PortBuffer* buf = new PortBuffer (uris, uris->atom_Sequence, 4096);
                     buffers.set (p, buf);
-                    assert (buf->getPortData() != nullptr);
+                    jassert (buf->getPortData() != nullptr);
                     module->connectPort (p, buf->getPortData());
                 }
                 else if (PortType::Control == type)

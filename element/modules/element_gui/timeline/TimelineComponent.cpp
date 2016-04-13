@@ -409,7 +409,7 @@ void TimelineComponent::sliderValueChanged (Slider* slider) { }
 void
 TimelineComponent::updateClip (TimelineClip* clip)
 {
-    assert (clip);
+    jassert (clip);
 
     ClipRange<double> time;
     clip->getClipRange (time);

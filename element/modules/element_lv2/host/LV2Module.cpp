@@ -172,7 +172,7 @@ Result LV2Module::instantiate (double samplerate)
 
     if (const void* data = getExtensionData (LV2_WORKER__interface))
     {
-        assert (worker != nullptr);
+        jassert (worker != nullptr);
         worker->setSize (2048);
         worker->setInterface (lilv_instance_get_handle (instance),
                               (LV2_Worker_Interface*) data);

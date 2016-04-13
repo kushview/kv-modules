@@ -19,6 +19,7 @@
 
 #if ELEMENT_USE_LIBJUCE
  #include <juce/modules/config.h>
+ #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
  #include "element/modules/config.h"
 #else
  #include "AppConfig.h"
@@ -36,14 +37,14 @@ namespace Element {
 #include "base/DecibelScaleComponent.cpp"
 #include "base/DigitalMeter.cpp"
 #include "base/LookAndFeel.cpp"
-    
+
 #if ELEMENT_DOCKING_WINDOWS
  #include "docking/Dock.cpp"
  #include "docking/DockArea.cpp"
  #include "docking/DockItem.cpp"
  #include "docking/DockLayout.cpp"
 #endif
-    
+
 #include "embed/NativeComponent.cpp"
 #include "screens/Screen.cpp"
 #include "screens/ScreenDisplay.cpp"
