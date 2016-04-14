@@ -26,11 +26,8 @@ ELEMENT_MINOR_VERSION=0
 ELEMENT_MICRO_VERSION=1
 ELEMENT_EXTRA_VERSION=EXTRA_VERSION
 
-# For waf dist
 APPNAME = 'element'
 VERSION = ELEMENT_VERSION
-
-# Waf wants these as well
 top = '.'
 out = 'build'
 
@@ -61,6 +58,7 @@ def configure(conf):
     conf.define ("ELEMENT_EXTRA_VERSION",ELEMENT_EXTRA_VERSION)
     conf.write_config_header ('element/modules/version.h', 'ELEMENT_MODULES_VERSION_H')
 
+    conf.prefer_clang()
     conf.load ('compiler_c compiler_cxx juce')
     conf.check_inline()
 
@@ -88,6 +86,7 @@ def configure(conf):
     conf.check_juce_cfg()
     conf.check_cfg(package='lilv-0', uselib_store='LILV', args=['--cflags', '--libs'], mandatory=True)
     conf.check_cfg(package='suil-0', uselib_store='SUIL', args=['--cflags', '--libs'], mandatory=True)
+    conf.check_cfg(package='alsa', uselib_store='ALSA', args=['--cflags', '--libs'], mandatory=True)
     conf.check_cfg(package='jack', uselib_store='JACK', args=['--cflags', '--libs'], mandatory=False)
     conf.check_cfg(package='gl', uselib_store='GL', args=['--cflags', '--libs'], mandatory=False)
     conf.check_cfg(package='x11', uselib_store='X11', args=['--cflags', '--libs'], mandatory=False)
@@ -208,7 +207,7 @@ def build (bld):
     bld.program(
         source   = ['tools/linktest.cpp'],
         includes = ['.', './element/modules'],
-        use      = ['JUCE_OPENGL', 'LILV', 'SUIL', 'GL', 'X11', \
+        use      = ['JUCE_OPENGL', 'LILV', 'SUIL', 'GL', 'X11', 'ALSA', \
                     'element-base-debug-0', 'element-gui-debug-0', \
                     'element-engines-debug-0', 'element-models-debug-0', \
                     'element-lv2-debug-0'],

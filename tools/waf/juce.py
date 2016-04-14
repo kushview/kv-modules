@@ -27,6 +27,15 @@ def display_msg (conf, msg, status = None, color = None):
     Logs.pprint(color, status)
 
 @conf
+def prefer_clang(self):
+    '''Use clang by default on non-windows'''
+    if is_windows(): return
+    if not 'CC' in os.environ or not 'CXX' in os.environ:
+        if None != self.find_program ('clang', mandatory=False):
+            self.env.CC  = 'clang'
+            self.env.CXX = 'clang++'
+
+@conf
 def check_juce (self):
     '''this just checks that a version of juce exists'''
 
