@@ -217,10 +217,10 @@ class ModuleInfo:
     def linuxLibs (self):
         libs = []
 
-        if None == self.data or not is_linux() or not 'LinuxLibs' in self.data:
+        if None == self.data or not is_linux() or not 'linuxLibs' in self.data:
             return libs
 
-        for lib in self.data ['LinuxLibs'].split():
+        for lib in self.data ['linuxLibs'].split():
             l = '-l%s' % lib
             libs.append (l)
 
