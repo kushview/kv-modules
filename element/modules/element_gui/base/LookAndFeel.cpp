@@ -115,7 +115,7 @@ void LookAndFeel_E1::drawStretchableLayoutResizerBar (Graphics& g, int /*w*/, in
                                              bool isMouseOver, bool isMouseDragging)
 {
     if (isMouseOver || isMouseDragging)
-        g.fillAll (Colours::aquamarine.withAlpha (0.4f));
+        g.fillAll (elementBlue.withAlpha (0.4f));
 }
 
 void LookAndFeel_E1::drawScrollbar (Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height,
