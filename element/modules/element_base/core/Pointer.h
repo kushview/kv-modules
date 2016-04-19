@@ -20,7 +20,6 @@
 #ifndef EL_POINTER_H
 #define EL_POINTER_H
 
-
 #define ELEMENT_FORCE_BOOST_SHARED_PTR 0
 
 #if ! ELEMENT_FORCE_BOOST_SHARED_PTR
@@ -37,6 +36,9 @@
         #include <tr1/memory>
         #define Shared std::tr1::shared_ptr
         #define Weak std::tr1::weak_ptr
+    #elif _MSC_VER >= 1800
+        #define Shared std::shared_ptr
+        #define Weak std::weak_ptr
     #else
         #include <boost/shared_ptr.hpp>
         #include <boost/weak_ptr.hpp>
@@ -65,7 +67,7 @@ template <class T, class U>
 inline Shared<T>
 dynamicPtrCast (const Shared<U>& sp)
 {
-#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
+#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__ || _MSC_VER >= 1800) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
     return std::dynamic_pointer_cast<T> (sp);
 #elif ELEMENT_USE_TR1
     return std::tr1::dynamic_pointer_cast<T> (sp);

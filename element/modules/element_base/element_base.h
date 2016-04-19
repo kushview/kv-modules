@@ -47,6 +47,7 @@
  #pragma warning( disable : 4996 )
  #if _MSC_VER >= 1800
   #include <atomic>
+  #include <memory>
  #endif
 #else
  #include <atomic>
