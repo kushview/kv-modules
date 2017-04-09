@@ -60,6 +60,7 @@ class ScreenDisplay;
 
 // look and feel
 #include "base/LookAndFeel.h"
+#include "base/PatchMatrixComponent.h"
 
 // screens
 #include "screens/ScreenDisplay.h"
