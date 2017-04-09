@@ -33,7 +33,7 @@ class PatchMatrixComponent : public Component
 {
 public:
     PatchMatrixComponent();
-    ~PatchMatrixComponent();
+    virtual ~PatchMatrixComponent();
 
     void setMatrixCellSize (const int thickness);
     void setMatrixCellSize (const int horizontal, const int vertical);
