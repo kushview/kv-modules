@@ -41,6 +41,10 @@
 
 #include <juce_cryptography/juce_cryptography.h>
 
+#if JUCE_MODULE_AVAILABLE_juce_data_structures
+ #include <juce_data_structures/juce_data_structures.h>
+#endif
+
 #if _MSC_VER
  #pragma warning( disable : 4305 )
  #pragma warning( disable : 4512 )
@@ -73,6 +77,7 @@ using namespace juce;
 #include "core/Arc.h"
 #include "core/Atomic.h"
 #include "core/LinkedList.h"
+#include "core/MatrixState.h"
 #include "core/Monitor.h"
 #include "core/Parameter.h"
 #include "core/Pointer.h"
