@@ -26,10 +26,9 @@ enum ColourIds
     treeviewHighlightColourId       = 0x2340002
 };
 
-class JUCE_API  LookAndFeel_E1   : public LookAndFeel_V3
+class JUCE_API LookAndFeel_E1 : public LookAndFeel_V3
 {
 public:
-
     enum DefaultColorCodes
     {
         defaultBackgroundColor           = 0xff16191A,
