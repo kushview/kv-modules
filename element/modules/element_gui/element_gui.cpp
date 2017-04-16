@@ -36,7 +36,7 @@ namespace Element {
 
 #include "base/DecibelScaleComponent.cpp"
 #include "base/DigitalMeter.cpp"
-#include "base/LookAndFeel.cpp"
+#include "base/LookAndFeel_E1.cpp"
 #include "base/PatchMatrixComponent.cpp"
 
 #if ELEMENT_DOCKING_WINDOWS

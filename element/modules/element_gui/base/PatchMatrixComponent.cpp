@@ -143,9 +143,11 @@ void PatchMatrixComponent::paint (Graphics &g)
             g.setOrigin (x, y);
             paintMatrixCell (g, w, h, row, col);
             g.restoreState();
-            ++col;
+            if (++col == getNumColumns())
+                break;
         }
-        ++row;
+        if (++row == getNumRows())
+            break;
     }
 }
 
