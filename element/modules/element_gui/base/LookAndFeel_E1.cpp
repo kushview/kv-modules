@@ -37,11 +37,11 @@ LookAndFeel_E1::LookAndFeel_E1()
     setColour (TextButton::textColourOnId, Colours::white);
     
     // PopupMenu Styling
-    setColour (PopupMenu::backgroundColourId, backgroundColor.darker());
-    setColour (PopupMenu::textColourId, textColor.withAlpha(0.84f));
-    setColour (PopupMenu::headerTextColourId, textColor.brighter(0.2f).withAlpha(0.84f));
-    setColour (PopupMenu::highlightedBackgroundColourId, backgroundColor.darker());
-    setColour (PopupMenu::highlightedTextColourId, textActiveColor.darker());
+    setColour (PopupMenu::backgroundColourId, Colour (0xfff0f0f0));
+    setColour (PopupMenu::textColourId, Colour (0xff1d1d1e));
+    setColour (PopupMenu::headerTextColourId, Colour (0xff1d1d1e));
+    setColour (PopupMenu::highlightedBackgroundColourId, elementBlue);
+    setColour (PopupMenu::highlightedTextColourId, Colour (0xfff0f0f0));
 
     // ComboBox Styling
     setColour (ComboBox::backgroundColourId, Colours::black);
@@ -337,8 +337,7 @@ bool LookAndFeel_E1::areLinesDrawnForTreeView (TreeView&)
     return false;
 }
 
-int
-LookAndFeel_E1::getTreeViewIndentSize (TreeView&)
+int LookAndFeel_E1::getTreeViewIndentSize (TreeView&)
 {
     return 20;
 }
@@ -394,26 +393,37 @@ void LookAndFeel_E1::drawComboBox (Graphics& g, int width, int height, const boo
 }
 
 
-// MARK: Menus
+// MARK: Popup Menu
 
 void LookAndFeel_E1::drawPopupMenuBackground (Graphics& g, int width, int height)
 {
-    g.fillAll (findColour (PopupMenu::backgroundColourId));
-    (void) width; (void) height;
-
-   #if ! JUCE_MAC
-    g.setColour (findColour (PopupMenu::textColourId).withAlpha (0.6f));
-    g.drawRect (0, 0, width, height);
-   #endif
+    const Rectangle<float> r (0.f, 0.f, (float)width, (float)height);
+    g.setColour (findColour (PopupMenu::backgroundColourId));
+    g.fillRoundedRectangle (r, 0.0f);
 }
 
-void LookAndFeel_E1::drawMenuBarBackground (Graphics& g, int width, int height, bool isMouseOverBar, MenuBarComponent& mbc)
+void LookAndFeel_E1::getIdealPopupMenuItemSize (const String &text, bool isSeparator,
+                                                int standardMenuItemHeight, int &idealWidth, int &idealHeight)
+{
+    LookAndFeel_V3::getIdealPopupMenuItemSize (text, isSeparator, standardMenuItemHeight, idealWidth, idealHeight);
+    if (isSeparator) {
+        return;
+    }
+    
+    idealHeight = 20;
+}
+
+// MARK: MenuBar
+
+void LookAndFeel_E1::drawMenuBarBackground (Graphics& g, int width, int height,
+                                            bool isMouseOverBar, MenuBarComponent& mbc)
 {
     LookAndFeel_V3::drawMenuBarBackground (g, width, height, isMouseOverBar, mbc);
 }
 
-void LookAndFeel_E1::drawMenuBarItem (Graphics& g, int width, int height, int itemIndex, const String& itemText,
-                                      bool isMouseOverItem, bool isMenuOpen, bool isMouseOverBar, MenuBarComponent& bar)
+void LookAndFeel_E1::drawMenuBarItem (Graphics& g, int width, int height, int itemIndex,
+                                      const String& itemText, bool isMouseOverItem,
+                                      bool isMenuOpen, bool isMouseOverBar, MenuBarComponent& bar)
 {
     if (isMouseOverItem || isMenuOpen)
     {
@@ -428,15 +438,6 @@ void LookAndFeel_E1::drawMenuBarItem (Graphics& g, int width, int height, int it
     g.drawText (itemText, 0, 0, width, height, Justification::centred);
 }
 
-void LookAndFeel_E1::getIdealPopupMenuItemSize (const String &text, bool isSeparator, int standardMenuItemHeight,
-                                                int &idealWidth, int &idealHeight)
-{
-    LookAndFeel_V3::getIdealPopupMenuItemSize (text, isSeparator, standardMenuItemHeight, idealWidth, idealHeight);
-    if (isSeparator)
-        return;
-
-    idealHeight = 20;
-}
 
 
 void LookAndFeel_E1::drawKeymapChangeButton (Graphics& g, int width, int height,
