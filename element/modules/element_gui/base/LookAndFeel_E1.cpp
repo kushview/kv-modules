@@ -20,8 +20,8 @@
 const Colour LookAndFeel_E1::elementBlue            = Colour (0xff4765a0);
 
 const Colour LookAndFeel_E1::backgroundColor        = Colour (LookAndFeel_E1::defaultBackgroundColor);
-const Colour LookAndFeel_E1::contentBackgroundColor = Colour (0x212125);
-const Colour LookAndFeel_E1::widgetBackgroundColor  = Colour (0x3b3b3b);
+const Colour LookAndFeel_E1::contentBackgroundColor = Colour (0xff212125);
+const Colour LookAndFeel_E1::widgetBackgroundColor  = Colour (0xff3b3b3b);
 
 const Colour LookAndFeel_E1::textColor              = Colour (LookAndFeel_E1::defaultTextColor);
 const Colour LookAndFeel_E1::textActiveColor        = Colour (LookAndFeel_E1::defaultTextActiveColor);
