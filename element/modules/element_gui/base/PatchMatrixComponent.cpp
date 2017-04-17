@@ -1,4 +1,6 @@
 
+#define ELEMENT_DEBUG_QUADS 0
+
 QuadrantLayout::QuadrantLayout()
 {
     deleteQuadrants = true;
@@ -14,10 +16,12 @@ QuadrantLayout::~QuadrantLayout()
 
 void QuadrantLayout::paint (Graphics &g)
 {
-   #if 0
+   #if ELEMENT_DEBUG_QUADS
     /* enable this block if you want to see where the quadrants are being
        drawn at */
-    g.setColour (Colours::azure);
+    g.setColour(Colours::red);
+    g.fillRect (q1area);
+    g.setColour (Colours::orange);
     g.fillRect (q2area);
     g.setColour (Colours::green);
     g.fillRect (q3area);
