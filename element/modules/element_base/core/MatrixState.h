@@ -1,5 +1,24 @@
-#ifndef UH_MATRIX_STATE_H
-#define UH_MATRIX_STATE_H
+/*
+    This file is part of the element modules for the JUCE Library
+    Copyright (C) 2016-2017  Kushview, LLC.  All rights reserved.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+#ifndef EL_MATRIX_STATE_H
+#define EL_MATRIX_STATE_H
 
 class MatrixState
 {
@@ -18,7 +37,7 @@ public:
         toggled.setRange (0, numRows * numColumns, false);
     }
 
-    ~MatrixState() { }
+    virtual ~MatrixState() { }
 
     inline int getIndexForCell (int row, int column) const { return (row * numColumns) + column; }
     inline int getNumRows()    const { return numRows; }
@@ -38,9 +57,12 @@ public:
         const int index = getIndexForCell (row, column);
         toggled.setBit (index, false);
     }
-
-    inline bool isCellToggled (int row, int column) const { return toggled [getIndexForCell (row, column)]; }
-
+    
+    inline bool connected (const int row, const int col) const {
+        return toggled [getIndexForCell (row, col)];
+    }
+    
+    inline bool isCellToggled (int r, int c) const { return connected (r, c); }
     inline bool toggleCell (int row, int column)
     {
         if (row < numRows && column < numColumns)
@@ -74,28 +96,19 @@ public:
     }
    #endif
     
-    inline void resize (int r, int c)
-    {
-        if (r < 1) r = 1;
-        if (c < 1) c = 1;
-        
-        BigInteger bits;
-        bits.setRange (0, r * c, false);
-        
-        // TODO: retain set bits
-        
-        numRows = r; numColumns = c;
-        toggled.swapWith (bits);
-    }
+    /** Resize the matrix to the specified rows and column sizes */
+    void resize (int newNumRows, int newNumColumns);
     
-    inline bool sameSizeAs(const MatrixState& o)
+    /** Returns true if the matrices are the same size */
+    inline bool sameSizeAs (const MatrixState& o)
     {
         return this->numRows == o.numRows &&
-            this->numColumns == o.numColumns;
+               this->numColumns == o.numColumns;
     }
+    
 private:
     BigInteger toggled;
     int numRows, numColumns;
 };
 
-#endif // UH_MATRIX_STATE_H
+#endif  /* EL_MATRIX_STATE_H */
