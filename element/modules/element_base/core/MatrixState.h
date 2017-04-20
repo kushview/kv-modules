@@ -25,35 +25,43 @@ class MatrixState
 public:
     MatrixState()
     {
-        numRows = 1;
-        numColumns = 1;
-        toggled.setRange (0, numRows * numColumns, false);
+        numRows = numColumns = 0;
     }
 
     MatrixState (const int rows, const int cols)
     {
         numRows = rows;
         numColumns = cols;
+        jassert (rows >= 0 && cols >= 0;
         toggled.setRange (0, numRows * numColumns, false);
     }
 
     virtual ~MatrixState() { }
-
+    
+    inline const bool isEmpty() const { return numRows <= 0 && numColumns <= 0; }
+    inline const bool isNotEmpty() const { return !isEmpty(); }
+    inline const bool isValid (int row, int column)
+    {
+        return isPositiveAndBelow (row, numRows) ||
+               isPositiveAndBelow (column, numColumns);
+    }
+    
     inline int getIndexForCell (int row, int column) const { return (row * numColumns) + column; }
     inline int getNumRows()    const { return numRows; }
     inline int getNumColumns() const { return numColumns; }
-
+   
     inline void connect (int row, int column)
     {
-        if (row < numRows && column < numColumns) {
-            const int index = getIndexForCell(row, column);
-            toggled.setBit(index, true);
+        if (isValid (row, column)) {
+            const int index = getIndexForCell (row, column);
+            toggled.setBit (index, true);
         }
     }
 
     inline void disconnect (int row, int column)
     {
-        jassert(row < numRows && column < numColumns);
+        if (! isValid (row, column))
+            return;
         const int index = getIndexForCell (row, column);
         toggled.setBit (index, false);
     }
@@ -65,11 +73,10 @@ public:
     inline bool isCellToggled (int r, int c) const { return connected (r, c); }
     inline bool toggleCell (int row, int column)
     {
-        if (row < numRows && column < numColumns)
+        if (isValid (row, column))
         {
             const int index = getIndexForCell (row, column);
-            const bool toggle = ! toggled[index];
-            toggled.setBit (index, toggle);
+            toggled.setBit (index, ! toggled[index]);
             return true;
         }
 
@@ -100,10 +107,25 @@ public:
     void resize (int newNumRows, int newNumColumns);
     
     /** Returns true if the matrices are the same size */
-    inline bool sameSizeAs (const MatrixState& o)
+    inline bool sameSizeAs (const MatrixState& o) const
     {
         return this->numRows == o.numRows &&
                this->numColumns == o.numColumns;
+    }
+    
+    MatrixState (const MatrixState& o) {
+        this->operator=(o);
+    }
+    
+    MatrixState& operator= (const MatrixState& o) {
+        this->numRows = o.numRows;
+        this->numColumns = o.numColumns;
+        this->toggled = o.toggled;
+        return *this;
+    }
+    
+    const bool operator==(const MatrixState& o) const {
+        return this->sameSizeAs(o) && this->toggled == o.toggled;
     }
     
 private:
