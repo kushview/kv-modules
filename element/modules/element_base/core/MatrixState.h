@@ -32,7 +32,7 @@ public:
     {
         numRows = rows;
         numColumns = cols;
-        jassert (rows >= 0 && cols >= 0;
+        jassert (rows >= 0 && cols >= 0);
         toggled.setRange (0, numRows * numColumns, false);
     }
 

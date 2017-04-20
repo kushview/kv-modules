@@ -104,8 +104,7 @@ public:
 
 private:
     /** @internal */
-    static inline const String&
-    typeURI (unsigned id)
+    static inline const String& typeURI (unsigned id)
     {
         jassert (id <= Atom);
 
@@ -122,8 +121,7 @@ private:
     }
 
     /** @internal */
-    static inline const String&
-    typeName (unsigned id)
+    static inline const String& typeName (unsigned id)
     {
         jassert (id <= Atom);
         static const String uris[] = {
@@ -140,7 +138,7 @@ private:
 };
 
 /** Maps channel numbers to a port indexes for all port types. This is an attempt
- to handle boiler-plate port to channel mapping functions */
+    to handle boiler-plate port to channel mapping functions */
 class ChannelMapping {
 public:
 
@@ -155,22 +153,19 @@ public:
             addPort (types.getUnchecked (port), (uint32) port);
     }
 
-    inline void
-    clear()
+    inline void clear()
     {
         for (int i = 0; i < ports.size(); ++i)
             ports.getUnchecked(i)->clearQuick();
     }
 
     /** Add (append) a port to the map */
-    inline void
-    addPort (PortType type, uint32 index)
+    inline void addPort (PortType type, uint32 index)
     {
         ports.getUnchecked(type)->add (index);
     }
 
-    inline bool
-    containsChannel (const PortType type, const int32 channel) const
+    inline bool containsChannel (const PortType type, const int32 channel) const
     {
         if (type == PortType::Unknown)
             return false;
@@ -222,12 +217,10 @@ private:
 class ChannelConfig
 {
 public:
-
     ChannelConfig()  { }
     ~ChannelConfig() { }
 
-    inline void
-    addPort (const PortType type, const uint32 port, const bool isInput)
+    inline void addPort (const PortType type, const uint32 port, const bool isInput)
     {
         ChannelMapping& mapping = isInput ? inputs : outputs;
         mapping.addPort (type, port);
@@ -254,8 +247,7 @@ public:
     inline uint32 getControlInputPort  (const int32 channel) const { return inputs.getControlPort (channel); }
     inline uint32 getControlOutputPort (const int32 channel) const { return outputs.getControlPort (channel); }
 
-    inline int32
-    getNumChannels (const PortType type, bool isInput) const
+    inline int32 getNumChannels (const PortType type, bool isInput) const
     {
         return isInput ? inputs.getNumChannels (type) : outputs.getNumChannels (type);
     }
@@ -272,9 +264,7 @@ public:
     inline int32 getNumEventOutputs()   const { return outputs.getNumChannels(PortType::Event); }
 
 private:
-
     ChannelMapping inputs, outputs;
-
 };
 
 /** A detailed descption of a port. (not used currently) */
