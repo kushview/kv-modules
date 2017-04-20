@@ -83,13 +83,14 @@ def configure(conf):
     conf.env.BUILD_STATIC       = conf.options.static
     conf.env.INSTALL_HEADERS    = conf.options.install_headers
 
-    conf.check_juce_cfg()
-    conf.check_cfg(package='lilv-0', uselib_store='LILV', args=['--cflags', '--libs'], mandatory=True)
-    conf.check_cfg(package='suil-0', uselib_store='SUIL', args=['--cflags', '--libs'], mandatory=True)
-    conf.check_cfg(package='alsa', uselib_store='ALSA', args=['--cflags', '--libs'], mandatory=True)
-    conf.check_cfg(package='jack', uselib_store='JACK', args=['--cflags', '--libs'], mandatory=False)
-    conf.check_cfg(package='gl', uselib_store='GL', args=['--cflags', '--libs'], mandatory=False)
-    conf.check_cfg(package='x11', uselib_store='X11', args=['--cflags', '--libs'], mandatory=False)
+    if juce.is_linux():
+        conf.check_juce_cfg()
+        conf.check_cfg(package='lilv-0', uselib_store='LILV', args=['--cflags', '--libs'], mandatory=True)
+        conf.check_cfg(package='suil-0', uselib_store='SUIL', args=['--cflags', '--libs'], mandatory=True)
+        conf.check_cfg(package='alsa', uselib_store='ALSA', args=['--cflags', '--libs'], mandatory=True)
+        conf.check_cfg(package='jack', uselib_store='JACK', args=['--cflags', '--libs'], mandatory=False)
+        conf.check_cfg(package='gl', uselib_store='GL', args=['--cflags', '--libs'], mandatory=False)
+        conf.check_cfg(package='x11', uselib_store='X11', args=['--cflags', '--libs'], mandatory=False)
 
     # this is just to clear all the defines up to this point
     conf.write_config_header('dummy.h')
