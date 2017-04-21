@@ -68,16 +68,16 @@ void LV2Worker::setInterface (LV2_Handle handle, LV2_Worker_Interface* iface)
 const String& LV2Worker::getURI() const { return uri; }
 const LV2_Feature* LV2Worker::getFeature() const { return &feat; }
 
-void LV2Worker::processRequest (uint32 size, const void* data)
+void LV2Worker::processRequest (uint32 size, const void* requestData)
 {
     jassert (worker != nullptr && plugin != nullptr);
-    worker->work (plugin, LV2Callbacks::workRespond, this, size, data);
+    worker->work (plugin, LV2Callbacks::workRespond, this, size, requestData);
 }
 
-void LV2Worker::processResponse (uint32 size, const void* data)
+void LV2Worker::processResponse (uint32 size, const void* responseData)
 {
     jassert (worker != nullptr && plugin != nullptr);
-    worker->work_response (plugin, size, data);
+    worker->work_response (plugin, size, responseData);
 }
 
 void LV2Worker::endRun()

@@ -76,7 +76,7 @@ void WorkThread::removeWorker (WorkerBase* worker)
 void WorkThread::run()
 {
     HeapBlock<uint8> buffer;
-    int32 bufferSize = 0;
+    int32 readBufferSize = 0;
 
     while (true)
     {
@@ -105,10 +105,10 @@ void WorkThread::run()
         if (workId == 0)
             continue;
 
-        if (size > static_cast<uint32> (bufferSize))
+        if (size > static_cast<uint32> (readBufferSize))
         {
-            bufferSize = nextPowerOfTwo (size);
-            buffer.realloc (bufferSize);
+			readBufferSize = nextPowerOfTwo (size);
+            buffer.realloc (readBufferSize);
         }
 
         if (requests->read (buffer.getData(), size) < size)

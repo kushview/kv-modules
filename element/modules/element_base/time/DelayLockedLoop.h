@@ -67,10 +67,10 @@ public:
     }
 
     /** Set the dll's parameters. Bandwidth / Frequency */
-    inline void setParams (double b, double f)
+    inline void setParams (double newBandwidth, double newFrequency)
     {
-        bandwidth = b;
-        frequency = f;
+        bandwidth = newBandwidth;
+        frequency = newFrequency;
         resetLPF();
     }
 

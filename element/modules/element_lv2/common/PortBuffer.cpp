@@ -59,7 +59,7 @@ PortBuffer::~PortBuffer()
 }
 
 bool
-PortBuffer::addEvent (int64 frames, uint32 size, uint32 type, const uint8* data)
+PortBuffer::addEvent (int64 frames, uint32 size, uint32 bodyType, const uint8* data)
 {
     if (isSequence())
     {
@@ -71,7 +71,7 @@ PortBuffer::addEvent (int64 frames, uint32 size, uint32 type, const uint8* data)
 
         ev->time.frames = frames;
         ev->body.size   = size;
-        ev->body.type   = type;
+        ev->body.type   = bodyType;
         memcpy (ev + 1, data, size);
 
         buffer.atom->size += sizeof (LV2_Atom_Event) + lv2_atom_pad_size (size);

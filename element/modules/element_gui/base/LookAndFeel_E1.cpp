@@ -19,13 +19,13 @@
 
 const Colour LookAndFeel_E1::elementBlue            = Colour (0xff4765a0);
 
-const Colour LookAndFeel_E1::backgroundColor        = Colour (LookAndFeel_E1::defaultBackgroundColor);
+const Colour LookAndFeel_E1::backgroundColor        = Colour ((uint32) LookAndFeel_E1::defaultBackgroundColor);
 const Colour LookAndFeel_E1::contentBackgroundColor = Colour (0xff212125);
 const Colour LookAndFeel_E1::widgetBackgroundColor  = Colour (0xff3b3b3b);
 
-const Colour LookAndFeel_E1::textColor              = Colour (LookAndFeel_E1::defaultTextColor);
-const Colour LookAndFeel_E1::textActiveColor        = Colour (LookAndFeel_E1::defaultTextActiveColor);
-const Colour LookAndFeel_E1::textBoldColor          = Colour (LookAndFeel_E1::defaultTextBoldColor);
+const Colour LookAndFeel_E1::textColor              = Colour ((uint32) LookAndFeel_E1::defaultTextColor);
+const Colour LookAndFeel_E1::textActiveColor        = Colour ((uint32) LookAndFeel_E1::defaultTextActiveColor);
+const Colour LookAndFeel_E1::textBoldColor          = Colour ((uint32) LookAndFeel_E1::defaultTextBoldColor);
 const Colour LookAndFeel_E1::highlightBackgroundColor = LookAndFeel_E1::textColor.darker(0.6000006).withAlpha(0.6f);
 
 LookAndFeel_E1::LookAndFeel_E1()

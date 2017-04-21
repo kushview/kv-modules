@@ -171,9 +171,9 @@ unsigned long TimeScale::Node::tickSnap (unsigned long tick_, unsigned short p) 
     return tick + ticksnap;
 }
 
-void TimeScale::Cursor::reset (TimeScale::Node *node)
+void TimeScale::Cursor::reset (TimeScale::Node *n)
 {
-    node = (node ? node : ts->nodes().first());
+    node = (n ? n : ts->nodes().first());
 }
 
 TimeScale::Node* TimeScale::Cursor::seekFrame (unsigned long iFrame) const
@@ -490,9 +490,9 @@ unsigned long TimeScale::tickFromFrameRange (unsigned long iFrameStart, unsigned
 }
 
 // Location marker reset method.
-void TimeScale::MarkerCursor::reset (TimeScale::Marker *marker)
+void TimeScale::MarkerCursor::reset (TimeScale::Marker *m)
 {
-    marker = (marker ? marker : ts->markers().first());
+    marker = (m ? m : ts->markers().first());
 }
 
 // Location marker seek methods.

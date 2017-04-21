@@ -159,7 +159,7 @@ public:
         bool beatIsBar (unsigned int iBeat) const { return ((iBeat - beat) % beatsPerBar) == 0; }
 
 		// Frame/bar quantizer.
-        unsigned long frameSnapToBar (unsigned long frame) const { return frameFromBar (barFromFrame (frame)); }
+        unsigned long frameSnapToBar (unsigned long frame_) const { return frameFromBar (barFromFrame (frame_)); }
 
 		// Beat snap filters.
         unsigned long tickSnap (unsigned long tick_, unsigned short p = 1) const;
