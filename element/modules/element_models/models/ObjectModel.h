@@ -29,11 +29,18 @@ public:
     virtual ~ObjectModel() { }
 
     /** Get a property from the underlying ValueTree */
-    inline var getProperty (const Identifier& id, const var& d = var::null) const { return objectData.getProperty (id, d); }
-
+    inline var getProperty (const Identifier& id, const var& d = var::null) const {
+        return objectData.getProperty (id, d);
+    }
+    
     /** Get a property as a juce Value from the ValueTree */
     Value getPropertyAsValue (const Identifier& property);
 
+    ObjectModel& setProperty (const Identifier& property, const var& val) {
+        objectData.setProperty (property, val, nullptr);
+        return *this;
+    }
+    
     /** Get the ValueTree's type */
     inline Identifier getType() const { return objectData.getType(); }
 
