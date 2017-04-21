@@ -149,6 +149,12 @@ void PatchMatrixComponent::mouseDown (const MouseEvent& ev)
     }
 }
 
+void PatchMatrixComponent::mouseMove (const MouseEvent& ev)
+{
+    hoveredRow = getRowForPixel (ev.y);
+    hoveredColumn = getColumnForPixel (ev.x);
+}
+
 void PatchMatrixComponent::paint (Graphics &g)
 {
     const int xs = (offsetX % horizontalThickness);

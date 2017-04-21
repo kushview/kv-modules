@@ -63,11 +63,13 @@ public:
                                   const int row, const int column) = 0;
     virtual void matrixCellClicked (const int row, const int col, const MouseEvent& ev);
 
-
+    
+    bool mouseIsOverCell (const int row, const int col) const       { return row == hoveredRow || col == hoveredColumn; }
+    void mouseMove (const MouseEvent& ev) override;
     void mouseDown (const MouseEvent& ev) override;
     void paint (Graphics &g) override;
 
-    void setThickness (const int thickness) { verticalThickness = horizontalThickness = thickness; repaint(); }
+    void setThickness (const int thickness)         { verticalThickness = horizontalThickness = thickness; repaint(); }
     int getRowThickness() const { return verticalThickness; }
     int getColumnThickness() const { return horizontalThickness; }
     
@@ -78,7 +80,7 @@ public:
 
 private:
     int verticalThickness, horizontalThickness;
-    int offsetX, offsetY;
+    int offsetX, offsetY, hoveredRow, hoveredColumn;
 };
 
 #endif // EL_PATCH_MATRIX_COMPONENT_H
