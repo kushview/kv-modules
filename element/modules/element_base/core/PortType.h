@@ -27,8 +27,8 @@
 /** The type of a port. */
 class PortType {
 public:
-
-    enum ID {
+    enum ID
+    {
         Control = 0,
         Audio   = 1,
         CV      = 2,
@@ -38,25 +38,23 @@ public:
         Unknown = 6
     };
 
-    explicit PortType (const String& uri)
-        : type (Unknown)
-    {
-        if (uri == typeURI (Audio))
-            type = Audio;
-        else if (uri == typeURI (Control))
-            type = Control;
-        else if (uri == typeURI (CV))
-            type = CV;
-        else if (uri == typeURI (Atom))
-            type = Atom;
-    }
-
+    PortType (const Identifier& identifier)
+        : type (typeForString (identifier.toString())) { }
+    
+    PortType (const String& identifier)
+        : type (typeForString (identifier)) { }
+                
     PortType (ID id) : type(id) { }
 
     /** Get a URI string for this port type */
     inline const String& getURI()  const { return typeURI (type); }
+                
     /** Get a human readable name for this port type */
     inline const String& getName() const { return typeName (type); }
+                
+    /** Get a slug version of the port type */
+    inline const String& getSlug() const { return slugName (type); }
+                
     /** Get the port type id. This is useful in switch statements */
     inline ID               id()   const { return type; }
 
@@ -132,6 +130,33 @@ private:
             String ("Unknown")
         };
         return uris [id];
+    }
+
+    /** @internal */
+    static inline const String& slugName (unsigned id)
+    {
+        jassert (id <= Atom);
+        static const String slugs[] = {
+            String ("control"),
+            String ("audio"),
+            String ("cv"),
+            String ("atom"),
+            String ("Unknown")
+        };
+        return slugs [id];
+    }
+    
+    static inline ID typeForString (const String& identifier)
+    {
+        for (int i = 0; i <= Atom; ++i)
+        {
+            if (slugName(i) == identifier || typeURI(i) == identifier ||
+                typeName(i) == identifier)
+            {
+                return static_cast<ID> (i);
+            }
+        }
+        return Unknown;
     }
 
     ID type;
