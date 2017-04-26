@@ -157,6 +157,9 @@ void PatchMatrixComponent::mouseMove (const MouseEvent& ev)
 
 void PatchMatrixComponent::paint (Graphics &g)
 {
+    if (getNumColumns() <= 0 || getNumRows() <= 0)
+        return;
+    
     const int xs = (offsetX % horizontalThickness);
     const int ys = (offsetY % verticalThickness);
     const int cs = getColumnForPixel(0);
