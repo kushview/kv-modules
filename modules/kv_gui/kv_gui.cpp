@@ -32,7 +32,7 @@ namespace Element {
 #include "base/LookAndFeel_E1.cpp"
 #include "base/PatchMatrixComponent.cpp"
 
-#if kv_DOCKING_WINDOWS
+#if ELEMENT_DOCKING_WINDOWS
  #include "docking/Dock.cpp"
  #include "docking/DockArea.cpp"
  #include "docking/DockItem.cpp"
