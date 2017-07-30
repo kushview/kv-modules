@@ -1,6 +1,6 @@
 /*
-    element_gui.h - This file is part of Element
-    Copyright (C) 2016 Kushview, LLC.  All rights reserved.
+    This file is part of the Kushview modules for JUCE
+    Copyright (C) 2016-2017 Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,30 +15,24 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
 
-/*
-  BEGIN_JUCE_MODULE_DECLARATION
+    BEGIN_JUCE_MODULE_DECLARATION
 
-  ID:               kv_gui
-  vendor:           Kushview, LLC
-  version:          0.0.1
-  name:             Element GUI
-  description:      Element GUI
-  website:          https://kushview.net
-  license:          GPL
+    ID:               kv_gui
+    vendor:           Kushview, LLC
+    version:          0.0.1
+    name:             Kushview provided UI components
+    description:      Layouts and common widgets
+    website:          https://kushview.net
+    license:          GPL v2
 
-  dependencies:     kv_core, juce_gui_basics
-  OSXFrameworks:
-  iOSFrameworks:
-  linuxLibs:
-  mingwLibs:
+    dependencies:     kv_core, juce_gui_basics
 
-  END_JUCE_MODULE_DECLARATION
+    END_JUCE_MODULE_DECLARATION
  */
 
-#ifndef ELEMENT_GUI_H_INCLUDED
-#define ELEMENT_GUI_H_INCLUDED
+#pragma once
+#define KV_GUI_H_INCLUDED
 
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <kv_models/kv_models.h>
@@ -88,5 +82,3 @@ class ScreenDisplay;
 #include "embed/NativeComponent.h"
 
 }
-
-#endif   // ELEMENT_MODELS_H_INCLUDED

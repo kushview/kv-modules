@@ -1,5 +1,5 @@
 /*
-    kv_core.h - This file is part of the Kushview Modules for JUCE
+    This file is part of the Kushview Modules for JUCE
     Copyright (C) 2014-2017  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -30,8 +30,9 @@
 
     END_JUCE_MODULE_DECLARATION
  */
-#ifndef ELEMENT_BASE_H_INCLUDED
-#define ELEMENT_BASE_H_INCLUDED
+
+#pragma once
+#define KV_CORE_H_INCLUDED
 
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_cryptography/juce_cryptography.h>
@@ -97,5 +98,3 @@ using namespace juce;
 #include "util/RelativePath.h"
 #include "util/UUID.h"
 }
-
-#endif // ELEMENT_BASE_H_INCLUDED
