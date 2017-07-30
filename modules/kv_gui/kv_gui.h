@@ -37,13 +37,13 @@
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <kv_models/kv_models.h>
 
-/** Config: ELEMENT_DOCKING_WINDOWS
+/** Config: KV_DOCKING_WINDOWS
     Experimental: Set this to enable Docking windows support. Docking windows
     support is a major work in progress. The final design and API is subject to
     change until deemed stable. (default is disabled)
  */
-#ifndef ELEMENT_DOCKING_WINDOWS
- #define ELEMENT_DOCKING_WINDOWS 0
+#ifndef KV_DOCKING_WINDOWS
+ #define KV_DOCKING_WINDOWS 0
 #endif
 
 namespace Element {
@@ -74,7 +74,7 @@ class ScreenDisplay;
 #include "base/SkinDial.h"
 
 // docking
-#if ELEMENT_DOCKING_WINDOWS
+#if KV_DOCKING_WINDOWS
  #include "docking/Dock.h"
 #endif
 

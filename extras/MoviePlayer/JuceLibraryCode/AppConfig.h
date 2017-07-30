@@ -255,8 +255,8 @@
 //==============================================================================
 // kv_gui flags:
 
-#ifndef    ELEMENT_DOCKING_WINDOWS
- //#define ELEMENT_DOCKING_WINDOWS 1
+#ifndef    KV_DOCKING_WINDOWS
+ //#define KV_DOCKING_WINDOWS 1
 #endif
 //==============================================================================
 #ifndef    JUCE_STANDALONE_APPLICATION
