@@ -34,6 +34,7 @@ struct FFmpegDecoder::Pimpl
         // retrieve stream information
         if (avformat_find_stream_info (format, nullptr) < 0)
         {
+            DBG ("[KV] ffmpeg: stream info not found for decoding");
             close();
             return false;
         }
