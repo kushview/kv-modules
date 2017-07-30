@@ -1,5 +1,5 @@
 /*
-    This file is part of the element modules for the JUCE Library
+    element_module.cpp - This file is part of Element
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -17,4 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element_models.cpp"
+#include "kv_models.h"
+
+namespace Element {
+ #include "models/ObjectModel.cpp"
+}

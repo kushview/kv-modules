@@ -1,5 +1,5 @@
 /*
-    element_module.cpp - This file is part of Element
+    This file is part of the element modules for the JUCE Library
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -17,18 +17,4 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if ELEMENT_USE_LIBJUCE
- #include <juce/modules/config.h>
- #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
- #include "element/modules/config.h"
-#else
- #include "AppConfig.h"
-#endif
-
-#include "element_models.h"
-
-namespace Element {
-
-#include "models/ObjectModel.cpp"
-
-}
+#include "kv_lv2.cpp"

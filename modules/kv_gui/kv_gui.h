@@ -20,15 +20,15 @@
 /*
   BEGIN_JUCE_MODULE_DECLARATION
 
-  ID:               element_gui
-  vendor:           kushview
+  ID:               kv_gui
+  vendor:           Kushview, LLC
   version:          0.0.1
   name:             Element GUI
   description:      Element GUI
   website:          https://kushview.net
   license:          GPL
 
-  dependencies:     element_base, juce_gui_basics
+  dependencies:     kv_core, juce_gui_basics
   OSXFrameworks:
   iOSFrameworks:
   linuxLibs:
@@ -41,7 +41,7 @@
 #define ELEMENT_GUI_H_INCLUDED
 
 #include <juce_gui_basics/juce_gui_basics.h>
-#include <element_models/element_models.h>
+#include <kv_models/kv_models.h>
 
 /** Config: ELEMENT_DOCKING_WINDOWS
     Experimental: Set this to enable Docking windows support. Docking windows
@@ -67,7 +67,7 @@ class ScreenDisplay;
 #include "screens/Screen.h"
 #include "screens/ScreenManager.h"
 
-#if JUCE_MODULE_AVAILABLE_element_engines
+#if JUCE_MODULE_AVAILABLE_kv_engines
  // timelines
  #include "timeline/TrackHeights.h"
  #include "timeline/TimelineComponent.h"

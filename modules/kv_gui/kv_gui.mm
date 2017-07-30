@@ -1,5 +1,5 @@
 /*
-    This file is part of the element modules for the JUCE Library
+    This file is part of the Kushview modules for JUCE
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -17,4 +17,4 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include "element_engines.cpp"
+#include "kv_gui.cpp"

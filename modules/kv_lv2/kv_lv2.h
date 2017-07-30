@@ -20,15 +20,15 @@
 /*
   BEGIN_JUCE_MODULE_DECLARATION
 
-  ID:               element_lv2
-  vendor:           kushview
+  ID:               kv_lv2
+  vendor:           Kushview, LLC
   version:          0.0.1
-  name:             Element LV2
-  description:      Element support for hosting and writing LV2 plugins
+  name:             Kushview LV2
+  description:      Adds LV2 Plugin Hosting to JUCE
   website:          https://kushview.net
   license:          GPL
 
-  dependencies:     element_base
+  dependencies:     kv_core
   OSXFrameworks:
   iOSFrameworks:
   linuxLibs:

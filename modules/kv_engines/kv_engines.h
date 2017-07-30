@@ -1,6 +1,6 @@
 /*
-    element_module.h - This file is part of Element
-    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
+    kv_engines.h - This file is part of the Kushview Modules for JUCE
+    Copyright (C) 2014-2017  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,26 +15,20 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
 
-/*
-  BEGIN_JUCE_MODULE_DECLARATION
+    BEGIN_JUCE_MODULE_DECLARATION
 
-  ID:               element_engines
-  vendor:           kushview
-  version:          0.0.1
-  name:             Element Engines
-  description:      Element Engines
-  website:          https://kushview.net
-  license:          GPL
+    ID:               kv_engines
+    vendor:           Kushview, LLC
+    version:          0.0.1
+    name:             Kushview Engines
+    description:      Classes for creating multimedia processing engines
+    website:          https://kushview.net
+    license:          GPL v2
 
-  dependencies:     juce_data_structures, juce_audio_processors, juce_audio_devices
-  OSXFrameworks:
-  iOSFrameworks:
-  linuxLibs:
-  mingwLibs:
+    dependencies:     juce_data_structures, juce_audio_processors, juce_audio_devices
 
-  END_JUCE_MODULE_DECLARATION
+    END_JUCE_MODULE_DECLARATION
  */
 
 #ifndef ELEMENT_ENGINES_H_INCLUDED
@@ -43,7 +37,7 @@
 #include <juce_gui_extra/juce_gui_extra.h>
 #include <juce_audio_devices/juce_audio_devices.h>
 #include <juce_audio_processors/juce_audio_processors.h>
-#include <element_models/element_models.h>
+#include <kv_models/kv_models.h>
 
 /** Config: ELEMENT_USE_JACK
     Set this to enable Jack Audio Support (default is disabled)

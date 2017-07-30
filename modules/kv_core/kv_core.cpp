@@ -36,7 +36,7 @@
  #include "AppConfig.h"
 #endif
 
-#include "element_base.h"
+#include "kv_core.h"
 
 #if JUCE_WINDOWS
  #include <windows.h>

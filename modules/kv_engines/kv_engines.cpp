@@ -17,18 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if ELEMENT_USE_LIBJUCE
- #include <juce/modules/config.h>
- #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
- #include "element/modules/config.h"
-#else
- #include "AppConfig.h"
-#endif
-
-#include "./element_engines.h"
-
-// This is included here to avoid problems with circular dependencies
-#include "../element_lv2/element_lv2.h"
+#include "./kv_engines.h"
 
 namespace Element {
 

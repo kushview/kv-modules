@@ -20,19 +20,15 @@
 /*
   BEGIN_JUCE_MODULE_DECLARATION
 
-  ID:               element_models
-  vendor:           kushview
+  ID:               kv_models
+  vendor:           Kushview, LLC
   version:          0.0.1
   name:             Element Models
   description:      Element support for hosting and writing LV2 plugins
   website:          https://kushview.net
   license:          GPL
 
-  dependencies:     element_base
-  OSXFrameworks:
-  iOSFrameworks:
-  linuxLibs:
-  mingwLibs:
+  dependencies:     kv_core, juce_data_structures
 
   END_JUCE_MODULE_DECLARATION
  */
@@ -42,7 +38,7 @@
 
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_data_structures/juce_data_structures.h>
-#include <element_base/element_base.h>
+#include <kv_core/kv_core.h>
 
 namespace Element {
 

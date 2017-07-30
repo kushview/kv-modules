@@ -1,6 +1,6 @@
 /*
-    element_base.h - This file is part of Element
-    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
+    kv_core.h - This file is part of the Kushview Modules for JUCE
+    Copyright (C) 2014-2017  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -15,30 +15,25 @@
     You should have received a copy of the GNU General Public License
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-*/
 
-/*
-  BEGIN_JUCE_MODULE_DECLARATION
+    BEGIN_JUCE_MODULE_DECLARATION
 
-   ID:               element_base
-   vendor:           kushview
-   version:          0.0.1
-   name:             Element base classes
-   description:      Element base classes
-   website:          https://kushview.net
-   license:          GPL
+    ID:               kv_core
+    vendor:           Kushview, LLC
+    version:          0.0.1
+    name:             Kushview core classes
+    description:      Kushview core classes
+    website:          https://kushview.net
+    license:          GPL
 
-   dependencies:     juce_core, juce_cryptography
-   OSXFrameworks:
-   iOSFrameworks:
-   linuxLibs:
-   mingwLibs:
+    dependencies:     juce_core, juce_cryptography
 
-  END_JUCE_MODULE_DECLARATION
+    END_JUCE_MODULE_DECLARATION
  */
 #ifndef ELEMENT_BASE_H_INCLUDED
 #define ELEMENT_BASE_H_INCLUDED
 
+#include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_cryptography/juce_cryptography.h>
 
 #if JUCE_MODULE_AVAILABLE_juce_data_structures
@@ -74,6 +69,7 @@
 
 namespace Element {
 using namespace juce;
+#include "core/AudioRingBuffer.h"
 #include "core/Arc.h"
 #include "core/Atomic.h"
 #include "core/LinkedList.h"
