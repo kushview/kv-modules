@@ -1,0 +1,2 @@
+VideoSource::VideoSource() { }
+VideoSource::~VideoSource() { }
