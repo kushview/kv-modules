@@ -2,35 +2,31 @@
 #include "MainComponent.h"
 
 using kv::FFmpegDecoder;
+using kv::FFmpegVideoSource;
 
 class TickService : public HighResolutionTimer
 {
 public:
-    TickService (MainContentComponent& u, FFmpegDecoder& d)
-        : ui(u), decoder(d) { }
+    TickService (MainContentComponent& u)
+        : ui(u) { }
     ~TickService() { }
     
     void hiResTimerCallback() override
     {
-        
+        source.tick();
     }
 
-private:
     MainContentComponent& ui;
-    FFmpegDecoder& decoder;
+    FFmpegVideoSource source;
 };
 
 MainContentComponent::MainContentComponent()
 {
-    tick = new TickService (*this, decoder);
-    tick->startTimer (1000);
+    tick = new TickService (*this);
+    tick->startTimer (500);
     
     devices.addAudioCallback (&player);
-    player.setSource (&transport);
-    // video.setVideoReader (nullptr);
-
-    transport.setSource (nullptr);
-    // addAndMakeVisible (video);
+    player.setSource (this);
 
     addAndMakeVisible (openButton);
     openButton.setButtonText ("Open");
@@ -57,7 +53,6 @@ MainContentComponent::~MainContentComponent()
 {
     devices.removeAudioCallback (&player);
     openButton.removeListener (this);
-    // video.setVideoReader (nullptr);
 }
 
 void MainContentComponent::mouseDown (const MouseEvent& ev)
@@ -82,15 +77,14 @@ void MainContentComponent::buttonClicked (Button* button)
 {
     if (button == &openButton)
     {
-        decoder.close();
-        
         bool movieLoaded = false;
         bool cancelled = false;
         
         FileChooser chooser ("Choose a Movie File", File(), "*.mp4");
         if (chooser.browseForFileToOpen())
         {
-            movieLoaded = decoder.openFile (chooser.getResult());
+            tick->source.openFile (chooser.getResult());
+            movieLoaded = true;
         }
         else
         {
@@ -122,10 +116,16 @@ void MainContentComponent::buttonClicked (Button* button)
         dialog.resizable = false;
         dialog.runModal();
     }
-}
-
-void MainContentComponent::run()
-{
+    
+    if (button == &playButton)
+    {
+        
+    }
+    
+    if (button == &stopButton)
+    {
+        
+    }
 }
 
 void MainContentComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)

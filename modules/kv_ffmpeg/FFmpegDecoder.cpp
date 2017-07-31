@@ -12,7 +12,10 @@ struct FFmpegDecoder::Pimpl
           audioStream       (-1),
           videoStream       (-1),
           subtitleStream    (-1)
-    { }
+    {
+        videoFrame = av_frame_alloc();
+        audioFrame = av_frame_alloc();
+    }
     
     ~Pimpl() { }
     
@@ -179,34 +182,33 @@ private:
     /** Decodes an audio packet, returns the number of samples decoded */
     int decodeAudioPacket (AVPacket* packet)
     {
-        int got_frame = 0;
+        int gotFrame = 0;
         int decoded = packet->size;
         int outputNumSamples = 0;
         
         // decode audio frame
         do {
             // call decode until packet is empty
-            int ret = avcodec_decode_audio4 (audio, audioFrame, &got_frame, packet);
+            int ret = avcodec_decode_audio4 (audio, audioFrame, &gotFrame, packet);
             if (ret < 0)
             {
-                DBG ("Error decoding audio frame: (Code " + String (ret) + ")");
+                DBG ("[KV] ffmpeg: error decoding audio frame: (Code " + String (ret) + ")");
                 break;
             }
             
             int64_t framePTS = av_frame_get_best_effort_timestamp (audioFrame);
-            double  framePTSsecs = static_cast<double> (framePTS) / audio->sample_rate;
+            double framePTSsecs = static_cast<double> (audioFrame->best_effort_timestamp) / audio->sample_rate;
             
-            /* Some audio decoders decode only part of the packet, and have to be
-               called again with the remainder of the packet data.
-               Sample: fate-suite/lossless-audio/luckynight-partial.shn
-               Also, some decoders might over-read the packet. */
+            /* Some audio decoders decode only part of the packet and 
+               some decoders might over-read the packet. */
             decoded = jmin (ret, packet->size);
             
             packet->data += decoded;
             packet->size -= decoded;
             
-            if (got_frame && decoded > 0 && audioFrame->extended_data != nullptr)
+            if (gotFrame > 0 && decoded > 0 && audioFrame->extended_data != nullptr)
             {
+               #if 0
                 const int channels   = av_get_channel_layout_nb_channels (audioFrame->channel_layout);
                 const int numSamples = audioFrame->nb_samples;
                 
@@ -224,11 +226,14 @@ private:
                 else
                 {
                     outputNumSamples = numSamples;
+                    AudioBuffer<float> subset ((float* const*) audioFrame->extended_data,
+                                               channels, 0, outputNumSamples);
                     // audioFifo.addToFifo ((const float **)audioFrame->extended_data, numSamples);
                 }
+               #endif
             }
             
-        } while (got_frame && packet->size > 0);
+        } while (gotFrame && packet->size > 0);
         
         return outputNumSamples;
     }
@@ -250,8 +255,7 @@ private:
                 if (pts_sec >= 0.0)
                 {
                     DBG("[KV] ffmpeg: decoded video frame @ " << pts_sec);
-                    // videoFrames[videoFifoWrite].first = pts_sec;
-                    // videoFifoWrite = ++videoFifoWrite % videoFrames.size();
+                    decoder.sink.ffmpegVideoDecoded (videoFrame);
                 }
             }
         }
@@ -260,7 +264,7 @@ private:
     }
 };
 
-FFmpegDecoder::FFmpegDecoder()
+FFmpegDecoder::FFmpegDecoder (Sink& s) : sink(s)
 {
     pimpl = new Pimpl (*this);
 }
@@ -272,10 +276,68 @@ FFmpegDecoder::~FFmpegDecoder()
 
 bool FFmpegDecoder::openFile (const File& file)     { return pimpl->openFile (file); }
 void FFmpegDecoder::close()                         { pimpl->close(); }
+void FFmpegDecoder::read()                          { pimpl->read(); }
 
-FFmpegVideoSource::FFmpegVideoSource() { }
-FFmpegVideoSource::~FFmpegVideoSource() { }
+class FFmpegVideoSource::Pimpl : public FFmpegDecoder::Sink
+{
+public:
+    Pimpl() : FFmpegDecoder::Sink()
+    {
+        decoder = new FFmpegDecoder (*this);
+    }
+    
+    ~Pimpl()
+    {
+        decoder->close();
+        decoder = nullptr;
+    }
+    
+    void ffmpegVideoDecoded (AVFrame* frame) override
+    {
+        DBG ("source decoded video");
+    }
+    
+    void ffmpegAudioDecoded (AVFrame* frame) override
+    {
+        DBG ("source decoded audio");
+    }
+    
+    void read()
+    {
+        decoder->read();
+    }
+    
+    void openFile (const File& file)
+    {
+        decoder->openFile (file);
+    }
+    
+    void close() { decoder->close(); }
+    
+private:
+    ScopedPointer<FFmpegDecoder> decoder;
+    
+    std::vector<std::pair<double, AVFrame*>> videoFrames;
+    std::atomic<int>    videoFifoRead;
+    std::atomic<int>    videoFifoWrite;
+};
+
+FFmpegVideoSource::FFmpegVideoSource()
+{
+    pimpl = new Pimpl();
+}
+
+FFmpegVideoSource::~FFmpegVideoSource()
+{
+    pimpl = nullptr;
+}
+
 void FFmpegVideoSource::tick()
 {
-    
+    pimpl->read();
+}
+
+void FFmpegVideoSource::openFile (const File& file)
+{
+    pimpl->openFile (file);
 }

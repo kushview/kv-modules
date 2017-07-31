@@ -15,7 +15,6 @@ public:
     void resized() override;
     
     void buttonClicked (Button*) override;
-    void run();
     
     void prepareToPlay (int samplesPerBlockExpected, double sampleRate) override;
     void releaseResources() override;
@@ -24,8 +23,6 @@ public:
     AudioDeviceManager& getAudioDeviceManager() { return devices; }
     
 private:
-    kv::FFmpegDecoder decoder;
-
     TextButton openButton, audioButton, playButton, stopButton;
     Slider positionSlider;
     
