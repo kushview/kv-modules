@@ -18,25 +18,27 @@ from subprocess import call
 sys.path.insert(0, "tools/waf")
 import juce
 
-ELEMENT_VERSION  = '0.0.1'
+KV_MODULES_VERSION  = '0.0.1'
 EXTRA_VERSION = ''
-ELEMENT_VERSION=ELEMENT_VERSION+EXTRA_VERSION
+KV_MODULES_VERSION=KV_MODULES_VERSION+EXTRA_VERSION
 ELEMENT_MAJOR_VERSION=0
 ELEMENT_MINOR_VERSION=0
 ELEMENT_MICRO_VERSION=1
 ELEMENT_EXTRA_VERSION=EXTRA_VERSION
 
 APPNAME = 'element'
-VERSION = ELEMENT_VERSION
+VERSION = KV_MODULES_VERSION
 top = '.'
 out = 'build'
 
 library_modules = '''
-    element_base
-    element_engines
-    element_gui
-    element_lv2
-    element_models
+    kv_core
+    kv_engines
+    kv_gui
+    kv_lv2
+    kv_models
+    kv_video
+    kv_ffmpeg
 '''.split()
 
 def options(opts):
@@ -51,7 +53,7 @@ def options(opts):
 
 def configure(conf):
     # Put version defines in a header file
-    conf.define ("ELEMENT_VERSION", VERSION)
+    conf.define ("KV_MODULES_VERSION", VERSION)
     conf.define ("ELEMENT_MAJOR_VERSION",ELEMENT_MAJOR_VERSION)
     conf.define ("ELEMENT_MINOR_VERSION",ELEMENT_MINOR_VERSION)
     conf.define ("ELEMENT_MICRO_VERSION",ELEMENT_MICRO_VERSION)
@@ -154,7 +156,7 @@ def library_slug(mod, debug=False):
 def build_modules(bld):
     is_debug = bld.env.BUILD_DEBUGGABLE
     postfix = '_debug' if is_debug else ''
-    libs = juce.build_modular_libs (bld, library_modules, ELEMENT_VERSION, postfix)
+    libs = juce.build_modular_libs (bld, library_modules, KV_MODULES_VERSION, postfix)
     for lib in libs:
         lib.includes = ['.', './element/modules', './build/element'] + lib.includes
         for dep in lib.module_info.dependencies():
