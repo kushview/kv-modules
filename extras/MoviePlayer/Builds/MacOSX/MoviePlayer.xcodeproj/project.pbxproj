@@ -213,7 +213,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
 				OTHER_LDFLAGS = "-lavcodec -lavformat -lavcodec -lavformat -lavutil -lswscale";
-				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.MoviePlayer;
+				PRODUCT_BUNDLE_IDENTIFIER = net.kushview.MoviePlayer;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Debug; };
 		B335AEFEA605518DB55163C5 = {isa = XCBuildConfiguration; buildSettings = {
@@ -246,7 +246,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
 				OTHER_LDFLAGS = "-lavcodec -lavformat -lavcodec -lavformat -lavutil -lswscale";
-				PRODUCT_BUNDLE_IDENTIFIER = com.yourcompany.MoviePlayer;
+				PRODUCT_BUNDLE_IDENTIFIER = net.kushview.MoviePlayer;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Release; };
 		EB17145488118F1485C1B9AD = {isa = XCBuildConfiguration; buildSettings = {
