@@ -14,10 +14,10 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="avcodec&#10;avformat&#10;">
+    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="avcodec&#10;avformat&#10;avutil&#10;swscale">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="MoviePlayer"
-                       libraryPath="/usr/local/lib" headerPath="/usr/local/include"/>
+                       libraryPath="/opt/ffmpeg/lib" headerPath="/opt/ffmpeg/include"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="MoviePlayer"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

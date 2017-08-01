@@ -190,14 +190,14 @@
 					"JucePlugin_Build_AAX=0",
 					"JucePlugin_Build_Standalone=0", );
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = ("../../JuceLibraryCode", "/opt/kushview/JUCE5/modules", "../../../../modules", "/usr/local/include", "$(inherited)");
+				HEADER_SEARCH_PATHS = ("../../JuceLibraryCode", "/opt/kushview/JUCE5/modules", "../../../../modules", "/opt/ffmpeg/include", "$(inherited)");
 				INFOPLIST_FILE = Info-App.plist;
 				INFOPLIST_PREPROCESS = NO;
 				INSTALL_PATH = "$(HOME)/Applications";
-				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"/usr/local/lib\"");
+				LIBRARY_SEARCH_PATHS = ("$(inherited)", "\"/opt/ffmpeg/lib\"");
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_LDFLAGS = "-lavcodec -lavformat -lavcodec -lavformat -lavutil -lswscale";
+				OTHER_LDFLAGS = "-lavcodec -lavformat -lavutil -lswscale -lavcodec -lavformat -lavutil -lswscale";
 				PRODUCT_BUNDLE_IDENTIFIER = net.kushview.MoviePlayer;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Debug; };
@@ -230,7 +230,7 @@
 				INSTALL_PATH = "$(HOME)/Applications";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				MACOSX_DEPLOYMENT_TARGET_ppc = 10.4;
-				OTHER_LDFLAGS = "-lavcodec -lavformat -lavcodec -lavformat -lavutil -lswscale";
+				OTHER_LDFLAGS = "-lavcodec -lavformat -lavutil -lswscale -lavcodec -lavformat -lavutil -lswscale";
 				PRODUCT_BUNDLE_IDENTIFIER = net.kushview.MoviePlayer;
 				SDKROOT_ppc = macosx10.5;
 				USE_HEADERMAP = NO; }; name = Release; };
