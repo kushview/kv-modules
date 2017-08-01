@@ -11,6 +11,7 @@
   license:       GPL v3
 
   OSXLibs:       avcodec avformat avutil swscale
+ 
   END_JUCE_MODULE_DECLARATION
 */
 
@@ -31,10 +32,10 @@
  extern "C" {
 #endif
 
-#include "./include/libavformat/avformat.h"
-#include "./include/libavutil/imgutils.h"
-#include "./include/libswscale/swscale.h"
-     
+#include "libavformat/avformat.h"
+#include "libavutil/imgutils.h"
+#include "libswscale/swscale.h"
+
 #ifdef __cplusplus
 }
 #endif
