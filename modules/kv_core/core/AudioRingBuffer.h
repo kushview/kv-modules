@@ -41,17 +41,17 @@
 #define FSPRO_AUDIOBASICS_AUDIOBUFFERFIFO_H_INCLUDED
 
 /**
- The AudioBufferFIFO implements an actual sample buffer using JUCEs AbstractFIFO
- class. You can add samples from the various kind of formats, like float pointers
- or AudioBuffers. Then you can read into float arrays, AudioBuffers or even
- AudioSourceChannelInfo to be used directly in AudioSources.
+    The AudioBufferFIFO implements an actual sample buffer using JUCEs AbstractFIFO
+    class. You can add samples from the various kind of formats, like float pointers
+    or AudioBuffers. Then you can read into float arrays, AudioBuffers or even
+    AudioSourceChannelInfo to be used directly in AudioSources.
  */
 template<typename FloatType>
-class AudioBufferFIFO : public juce::AbstractFifo
+class AudioRingBuffer : public juce::AbstractFifo
 {
 public:
-    /*< Creates a FIFO with a buffer of given number of channels and given number of samples */
-    AudioBufferFIFO (int channels, int buffersize) :
+    /** Creates a FIFO with a buffer of given number of channels and given number of samples */
+    AudioRingBuffer (int channels, int buffersize) :
         AbstractFifo (buffersize)
     {
         buffer.setSize (channels, buffersize);
@@ -95,7 +95,6 @@ public:
             for (int channel = 0; channel < buffer.getNumChannels(); ++channel)
                 buffer.copyFrom (channel, start2, samples.getReadPointer (channel, size1), size2);
         finishedWrite (size1 + size2);
-
     }
 
     /*< Read samples from the FIFO into raw float arrays */
@@ -164,11 +163,8 @@ public:
 
 private:
     /*< The actual audio buffer */
-    juce::AudioBuffer<FloatType>    buffer;
+    juce::AudioBuffer<FloatType> buffer;
 };
-
-
-
 
 #endif /* FSPRO_AUDIOBASICS_AUDIOBUFFERFIFO_H_INCLUDED */
 

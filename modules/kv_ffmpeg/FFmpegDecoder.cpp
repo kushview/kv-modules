@@ -1,9 +1,99 @@
 
 #define LOG_FORMAT_INFO 0
 
-struct FFmpegDecoder::Pimpl
+class FFmpegFrameQueue
 {
-    Pimpl (FFmpegDecoder& d)
+public:
+    typedef std::pair<uint64_t, AVFrame*> Frame;
+    typedef std::vector<Frame> FIFO;
+    
+    FFmpegFrameQueue (const int maxFrames)
+        : read(0), write(0), size (maxFrames)
+    {
+        frames.resize (static_cast<size_t> (maxFrames),
+                       std::make_pair (0, nullptr));
+        size = static_cast<int> (frames.size());
+        for (int i = 0; i < size; ++i)
+            frames[i].second = av_frame_alloc();
+
+        reset();
+    }
+    
+    ~FFmpegFrameQueue()
+    {
+        reset();
+        
+        for (auto& frame : frames)
+            av_frame_free (&frame.second);
+        
+        frames.clear();
+    }
+    
+    void reset()
+    {
+        for (auto& f : frames)
+            f.first = 0;
+        read = write = 0;
+    }
+    
+    bool canRead() const        { return getNumReady() > 0; }
+    bool canWrite() const       { return getNumFree() > 0; }
+    int getNumReady() const     { return (size + write - read) % size; }
+    int getNumFree() const      { return size - getNumReady(); }
+    
+    void dump()
+    {
+        DBG("num ready: " << getNumReady());
+        DBG("num avail: " << getNumFree());
+        DBG("-----");
+    }
+    
+    AVFrame* getWriteFrame() const  { return frames[write].second;  }
+    
+    void writeFrame (AVFrame* frame)
+    {
+        frames[write].first = frame->best_effort_timestamp;
+        frames[write].second = frame;
+        write = ++write % size;
+    }
+    
+    AVFrame* readFrame()
+    {
+        AVFrame* frame = frames[read].second;
+        read = (read + 1) % size;
+        return frame;
+    }
+    
+private:
+    FIFO frames;
+    std::atomic<int> read, write, size;
+};
+
+class FFmpegStreamQueue
+{
+public:
+    FFmpegStreamQueue (const int audioSize = 4096,
+                       const int videoSize = 16,
+                       const int subtitleSize = 8)
+        : audio (audioSize), video (videoSize),
+          subtitle (subtitleSize)
+    { }
+    
+    ~FFmpegStreamQueue()
+    {
+        audio.reset();
+        video.reset();
+        subtitle.reset();
+    }
+
+    FFmpegFrameQueue audio;
+    FFmpegFrameQueue video;
+    FFmpegFrameQueue subtitle;
+};
+
+struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
+{
+    Pimpl (FFmpegDecoder& d, FFmpegStreamQueue* q)
         : decoder           (d),
           format            (nullptr),
           audio             (nullptr),
@@ -13,11 +103,30 @@ struct FFmpegDecoder::Pimpl
           videoStream       (-1),
           subtitleStream    (-1)
     {
-        videoFrame = av_frame_alloc();
-        audioFrame = av_frame_alloc();
+        audioFrame = videoFrame = nullptr;
+        
+        if (q == nullptr)
+        {
+            queue.setOwned (new FFmpegStreamQueue());
+        }
+        else
+        {
+            queue.setNonOwned (q);
+        }
     }
     
-    ~Pimpl() { }
+    ~Pimpl()
+    {
+        if (videoFrame)
+            av_frame_free (&videoFrame);
+        if (audioFrame)
+            av_frame_free (&audioFrame);
+    }
+    
+    FFmpegDecoder::Sink& sink()
+    {
+        return decoder.sink != nullptr ? *decoder.sink : *this;
+    }
     
     bool openFile (const File& file)
     {
@@ -90,38 +199,53 @@ struct FFmpegDecoder::Pimpl
             avformat_close_input (&format);
     }
     
-    void read()
+    bool read (AVFrame* dst = nullptr)
     {
         if (nullptr == format)
-            return;
+            return false;
         
-        int error = 0;
-
-        // initialize packet, set data to NULL, let the demuxer fill it
         AVPacket packet;
         packet.data = nullptr;
         packet.size = 0;
         av_init_packet (&packet);
-        error = av_read_frame (format, &packet);
+        
+        int error = av_read_frame (format, &packet);
         
         if (error >= 0)
         {
             if (packet.stream_index == audioStream)
-                decodeAudioPacket (&packet);
+            {
+                decodeAudioPacket (&packet, queue->audio.getWriteFrame());
+                queue->audio.writeFrame (queue->audio.getWriteFrame());
+            }
+            
             else if (packet.stream_index == videoStream)
-                decodeVideoPacket (&packet);
+            {
+                if (decodeVideoPacket (&packet, queue->video.getWriteFrame()) > 0)
+                    queue->video.writeFrame (queue->video.getWriteFrame());
+            }
         }
         
         av_packet_unref (&packet);
+        return error >= 0;
+    }
+    
+    AVStream* getVideoStream() const
+    {
+        return (format && isPositiveAndBelow (videoStream, static_cast<int> (format->nb_streams)))
+            ? format->streams[videoStream] : nullptr;
     }
     
 private:
+    friend class FFmpegDecoder;
     FFmpegDecoder& decoder;
+    
     AVFormatContext* format;
     AVCodecContext* audio, *video, *subtitle;
     int audioStream, videoStream, subtitleStream;
     AVFrame* audioFrame, *videoFrame;
-    double currentPTS;
+    OptionalScopedPointer<FFmpegStreamQueue> queue;
+    
     
     /** Opens a context for reading. Returns the stream index */
     int openCodecContext (AVCodecContext** decoderContext, AVMediaType type, bool refCounted)
@@ -180,93 +304,64 @@ private:
     }
     
     /** Decodes an audio packet, returns the number of samples decoded */
-    int decodeAudioPacket (AVPacket* packet)
+    int decodeAudioPacket (AVPacket* packet, AVFrame* frame)
     {
         int gotFrame = 0;
         int decoded = packet->size;
-        int outputNumSamples = 0;
+        int result = 0;
         
         // decode audio frame
         do {
-            // call decode until packet is empty
-            int ret = avcodec_decode_audio4 (audio, audioFrame, &gotFrame, packet);
-            if (ret < 0)
-            {
-                DBG ("[KV] ffmpeg: error decoding audio frame: (Code " + String (ret) + ")");
-                break;
-            }
+            // call decode until packet is empty, ret is num bytes decoded
+            result = avcodec_decode_audio4 (audio, frame, &gotFrame, packet);
             
-            int64_t framePTS = av_frame_get_best_effort_timestamp (audioFrame);
-            double framePTSsecs = static_cast<double> (audioFrame->best_effort_timestamp) / audio->sample_rate;
-            
-            /* Some audio decoders decode only part of the packet and 
-               some decoders might over-read the packet. */
-            decoded = jmin (ret, packet->size);
-            
+            decoded = jmin (result, packet->size);
             packet->data += decoded;
             packet->size -= decoded;
             
-            if (gotFrame > 0 && decoded > 0 && audioFrame->extended_data != nullptr)
-            {
-               #if 0
-                const int channels   = av_get_channel_layout_nb_channels (audioFrame->channel_layout);
-                const int numSamples = audioFrame->nb_samples;
-                
-                int offset = (currentPTS - framePTSsecs) * audio->sample_rate;
-                if (offset > 100)
-                {
-                    if (offset < numSamples)
-                    {
-                        outputNumSamples = numSamples - offset;
-                        AudioBuffer<float> subset ((float* const*)audioFrame->extended_data,
-                                                   channels, offset, outputNumSamples);
-                        // audioFifo.addToFifo (subset);
-                    }
-                }
-                else
-                {
-                    outputNumSamples = numSamples;
-                    AudioBuffer<float> subset ((float* const*) audioFrame->extended_data,
-                                               channels, 0, outputNumSamples);
-                    // audioFifo.addToFifo ((const float **)audioFrame->extended_data, numSamples);
-                }
-               #endif
-            }
-            
-        } while (gotFrame && packet->size > 0);
+            if (gotFrame > 0 && decoded > 0 && frame->extended_data != nullptr)
+                sink().audioFrameDecoded (format->streams[audioStream], frame);
+
+        } while (gotFrame > 0 && packet->size > 0);
         
-        return outputNumSamples;
+        return result;
     }
     
-    /** Decodes a video packet, returns the presentation time stamp in seconds */
-    double decodeVideoPacket (AVPacket* packet)
+    /** Decodes a video packet, returns the result of avcodec_decode_video2 */
+    int decodeVideoPacket (AVPacket* packet, AVFrame* frame)
     {
-        double pts_sec = 0.0;
-        if (video && packet->size > 0)
+        if (video == nullptr || packet->size <= 0)
+            return 0.0;
+        
+        int gotPicture = 0;
+        int result = avcodec_decode_video2 (video, frame, &gotPicture, packet);
+        
+        if (result > 0)
         {
-            int got_picture = 0;
-            if (avcodec_decode_video2 (video, videoFrame, &got_picture, packet) > 0)
-            {
-                AVRational timeBase = av_make_q (1, AV_TIME_BASE);
-                if (isPositiveAndBelow (videoStream, static_cast<int> (format->nb_streams)))
-                    timeBase = format->streams[videoStream]->time_base;
-                
-                pts_sec = av_q2d (timeBase) * videoFrame->best_effort_timestamp;
-                if (pts_sec >= 0.0)
-                {
-                    DBG("[KV] ffmpeg: decoded video frame @ " << pts_sec);
-                    decoder.sink.ffmpegVideoDecoded (videoFrame);
-                }
-            }
+            // we only really got a frame if the timestamp is valid? -MRF
+            if (frame->best_effort_timestamp >= 0)
+                sink().videoFrameDecoded (format->streams[videoStream], frame);
+            else
+                result = 0;
         }
         
-        return pts_sec;
+        if (result == 0)
+        {
+            // noop, no frame acquired
+        }
+        else
+        {
+            // AVError produced
+        }
+        
+        return result;
     }
 };
 
-FFmpegDecoder::FFmpegDecoder (Sink& s) : sink(s)
+FFmpegDecoder::FFmpegDecoder (Sink* s, FFmpegStreamQueue* q)
+    : sink(s)
 {
-    pimpl = new Pimpl (*this);
+    pimpl = new Pimpl (*this, q);
 }
 
 FFmpegDecoder::~FFmpegDecoder()
@@ -278,48 +373,118 @@ bool FFmpegDecoder::openFile (const File& file)     { return pimpl->openFile (fi
 void FFmpegDecoder::close()                         { pimpl->close(); }
 void FFmpegDecoder::read()                          { pimpl->read(); }
 
-class FFmpegVideoSource::Pimpl : public FFmpegDecoder::Sink
+int FFmpegDecoder::getWidth() const { return 1920; }
+int FFmpegDecoder::getHeight() const { return 1080; }
+
+AVPixelFormat FFmpegDecoder::getPixelFormat() const
+{
+    if (pimpl && pimpl->video)
+        return pimpl->video->pix_fmt;
+    return AV_PIX_FMT_NONE;
+}
+
+class FFmpegVideoSource::Pimpl : public FFmpegDecoder::Sink,
+                                 public Thread
 {
 public:
-    Pimpl() : FFmpegDecoder::Sink()
+    Pimpl()
+        : FFmpegDecoder::Sink(),
+          Thread ("ffmpeg video source"),
+          queue()
     {
-        decoder = new FFmpegDecoder (*this);
+        decoder = new FFmpegDecoder (this, &queue);
+        frameIndex = 0;
+        startThread();
     }
     
     ~Pimpl()
     {
+        stopThread (100);
+        decoder->setSink (nullptr);
         decoder->close();
         decoder = nullptr;
     }
     
-    void ffmpegVideoDecoded (AVFrame* frame) override
+    void run() override
     {
-        DBG ("source decoded video");
+        while (! threadShouldExit())
+        {
+            sem.wait();
+            
+            if (decoder->getPixelFormat() == AV_PIX_FMT_NONE)
+                continue;
+            
+            if (queue.video.getNumFree() > 4 || queue.audio.getNumFree() > 20)
+                decoder->read();
+        }
+        
+        DBG("[KV] ffmpeg: video source thread exited");
     }
     
-    void ffmpegAudioDecoded (AVFrame* frame) override
+    void tick()
     {
-        DBG ("source decoded audio");
-    }
-    
-    void read()
-    {
-        decoder->read();
+        if (queue.video.canRead())
+        {
+            auto* frame = queue.video.readFrame();
+            av_frame_unref (frame);
+        }
+
+        if (queue.audio.canRead())
+        {
+            auto* frame = queue.audio.readFrame();
+            av_frame_unref (frame);
+        }
+        
+        sem.post();
     }
     
     void openFile (const File& file)
     {
         decoder->openFile (file);
+        
+        DBG("setup input: " << decoder->getWidth() << "x" << decoder->getHeight());
+        scale.setupScaler (decoder->getWidth(),
+                           decoder->getHeight(),
+                           decoder->getPixelFormat(),
+                           640, 360, AV_PIX_FMT_BGR0);
+
+        sem.post();
     }
     
-    void close() { decoder->close(); }
+    void close()
+    {
+        decoder->close();
+    }
+    
+    void videoFrameDecoded (const AVStream* stream, AVFrame* frame) override
+    {
+
+    }
+    
+    void audioFrameDecoded (const AVStream* stream, AVFrame* frame) override
+    {
+
+    }
+    
+    void subtitleFrameDecoded (const AVStream* stream, AVFrame*) override { }
+    
+    Element::Semaphore sem;
+    
+    void stop()
+    {
+        if (isThreadRunning())
+        {
+            signalThreadShouldExit();
+            sem.post();
+            stopThread (100);
+        }
+    }
     
 private:
     ScopedPointer<FFmpegDecoder> decoder;
-    
-    std::vector<std::pair<double, AVFrame*>> videoFrames;
-    std::atomic<int>    videoFifoRead;
-    std::atomic<int>    videoFifoWrite;
+    FFmpegStreamQueue queue;
+    FFmpegVideoScaler scale;
+    int frameIndex;
 };
 
 FFmpegVideoSource::FFmpegVideoSource()
@@ -329,12 +494,13 @@ FFmpegVideoSource::FFmpegVideoSource()
 
 FFmpegVideoSource::~FFmpegVideoSource()
 {
+    pimpl->stop();
     pimpl = nullptr;
 }
 
 void FFmpegVideoSource::tick()
 {
-    pimpl->read();
+    pimpl->tick();
 }
 
 void FFmpegVideoSource::openFile (const File& file)

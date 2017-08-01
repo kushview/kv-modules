@@ -4,11 +4,12 @@
 using kv::FFmpegDecoder;
 using kv::FFmpegVideoSource;
 
-class TickService : public HighResolutionTimer
+class TickService : public HighResolutionTimer,
+                    public Thread
 {
 public:
     TickService (MainContentComponent& u)
-        : ui(u) { }
+        : Thread ("tick"), ui (u) { }
     ~TickService() { }
     
     void hiResTimerCallback() override
@@ -16,6 +17,11 @@ public:
         source.tick();
     }
 
+    void run() override
+    {
+        
+    }
+    
     MainContentComponent& ui;
     FFmpegVideoSource source;
 };
@@ -23,7 +29,6 @@ public:
 MainContentComponent::MainContentComponent()
 {
     tick = new TickService (*this);
-    tick->startTimer (500);
     
     devices.addAudioCallback (&player);
     player.setSource (this);
@@ -51,6 +56,8 @@ MainContentComponent::MainContentComponent()
 
 MainContentComponent::~MainContentComponent()
 {
+    tick->stopTimer();
+    tick = nullptr;
     devices.removeAudioCallback (&player);
     openButton.removeListener (this);
 }
@@ -80,10 +87,13 @@ void MainContentComponent::buttonClicked (Button* button)
         bool movieLoaded = false;
         bool cancelled = false;
         
+        
         FileChooser chooser ("Choose a Movie File", File(), "*.mp4");
         if (chooser.browseForFileToOpen())
         {
+            tick->stopTimer();
             tick->source.openFile (chooser.getResult());
+            tick->startTimer (200);
             movieLoaded = true;
         }
         else
