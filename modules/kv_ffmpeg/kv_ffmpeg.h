@@ -31,14 +31,10 @@
  extern "C" {
 #endif
 
-#include <libavformat/avformat.h>
-#include <libavutil/imgutils.h>
-#include <libavutil/samplefmt.h>
-#include <libavutil/timestamp.h>
-#include <libavutil/opt.h>
-#include <libswresample/swresample.h>
-#include <libswscale/swscale.h>
-
+#include "./include/libavformat/avformat.h"
+#include "./include/libavutil/imgutils.h"
+#include "./include/libswscale/swscale.h"
+     
 #ifdef __cplusplus
 }
 #endif

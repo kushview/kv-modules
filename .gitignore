@@ -6,6 +6,13 @@ build/
 *.autosave
 .vscode
 
+# ignore internal libraries (you need to build these yourself!)
+modules/kv_ffmpeg/include/
+modules/kv_ffmpeg/libs/
+
+# Ignore vendor build files and packages
+vendor/build/
+vendor/dist/
 vendor/ffmpeg*/
 vendor/**/*.zip
 vendor/**/*.bz2
