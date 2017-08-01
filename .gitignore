@@ -6,6 +6,11 @@ build/
 *.autosave
 .vscode
 
+vendor/ffmpeg*/
+vendor/**/*.zip
+vendor/**/*.bz2
+vendor/rtmpdump
+
 ._*
 *.mode1v3
 *.pbxuser
