@@ -38,9 +38,6 @@
         <MODULEPATH id="kv_core" path="../../modules"/>
         <MODULEPATH id="kv_ffmpeg" path="../../modules"/>
         <MODULEPATH id="kv_video" path="../../modules"/>
-        <MODULEPATH id="kv_models" path="../../modules"/>
-        <MODULEPATH id="kv_engines" path="../../modules"/>
-        <MODULEPATH id="kv_gui" path="../../modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
@@ -60,10 +57,7 @@
     <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="kv_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="kv_engines" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="kv_ffmpeg" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="kv_gui" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
-    <MODULE id="kv_models" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="kv_video" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_WEB_BROWSER="disabled" JUCE_ENABLE_LIVE_CONSTANT_EDITOR="disabled"

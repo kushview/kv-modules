@@ -29,10 +29,7 @@
 #include <juce_opengl/juce_opengl.h>
 #include <juce_video/juce_video.h>
 #include <kv_core/kv_core.h>
-#include <kv_engines/kv_engines.h>
 #include <kv_ffmpeg/kv_ffmpeg.h>
-#include <kv_gui/kv_gui.h>
-#include <kv_models/kv_models.h>
 #include <kv_video/kv_video.h>
 
 
