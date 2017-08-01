@@ -7,13 +7,12 @@ public:
     typedef std::pair<uint64_t, AVFrame*> Frame;
     typedef std::vector<Frame> FIFO;
     
-    FFmpegFrameQueue (const int maxFrames)
-        : read(0), write(0), size (maxFrames)
+    FFmpegFrameQueue (const int capacity)
+        : fifo (capacity)
     {
-        frames.resize (static_cast<size_t> (maxFrames),
+        frames.resize (static_cast<size_t> (capacity),
                        std::make_pair (0, nullptr));
-        size = static_cast<int> (frames.size());
-        for (int i = 0; i < size; ++i)
+        for (int i = 0; i < capacity; ++i)
             frames[i].second = av_frame_alloc();
 
         reset();
@@ -31,16 +30,18 @@ public:
     
     void reset()
     {
+        fifo.reset();
         for (auto& f : frames)
             f.first = 0;
-        read = write = 0;
     }
     
-    bool canRead() const        { return getNumReady() > 0; }
-    bool canWrite() const       { return getNumFree() > 0; }
-    int getNumReady() const     { return (size + write - read) % size; }
-    int getNumFree() const      { return size - getNumReady(); }
+    int canWrite() const                        { return fifo.getFreeSpace() > 0; }
+    int canRead() const                         { return fifo.getNumReady() > 0; }
+    int getNumReady() const                     { return fifo.getNumReady(); }
+    int getNumFree() const                      { return fifo.getFreeSpace(); }
+    int getTotalSize() const                    { return fifo.getTotalSize(); }
     
+    /** Prints information about the buffer to the console */
     void dump()
     {
         DBG("num ready: " << getNumReady());
@@ -48,25 +49,39 @@ public:
         DBG("-----");
     }
     
-    AVFrame* getWriteFrame() const  { return frames[write].second;  }
-    
-    void writeFrame (AVFrame* frame)
+    /** Returns the current frame for reading */
+    AVFrame* getReadFrame() const
     {
-        frames[write].first = frame->best_effort_timestamp;
-        frames[write].second = frame;
-        write = ++write % size;
+        int i1, b1, i2, b2;
+        fifo.prepareToRead (1, i1, b1, i2, b2);
+        return (i1 >= 0 && b1 > 0) ? frames[i1].second :
+               (i2 >= 0 && b2 > 0) ? frames[i2].second : nullptr;
     }
     
-    AVFrame* readFrame()
+    /** Returns the current frame for writing */
+    AVFrame* getWriteFrame() const
     {
-        AVFrame* frame = frames[read].second;
-        read = (read + 1) % size;
-        return frame;
+        int i1, b1, i2, b2;
+        fifo.prepareToWrite (1, i1, b1, i2, b2);
+        return (i1 >= 0 && b1 > 0) ? frames[i1].second :
+               (i2 >= 0 && b2 > 0) ? frames[i2].second : nullptr;
+    }
+    
+    /** Call this after a write frame is updated and read to be read */
+    void finishedWrite() const
+    {
+        fifo.finishedWrite (1);
+    }
+    
+    /** Call this after reading frame and it isn't needed anymore */
+    void finishedRead() const
+    {
+        fifo.finishedRead (1);
     }
     
 private:
     FIFO frames;
-    std::atomic<int> read, write, size;
+    mutable AbstractFifo fifo;
 };
 
 class FFmpegStreamQueue
@@ -216,13 +231,13 @@ struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
             if (packet.stream_index == audioStream)
             {
                 decodeAudioPacket (&packet, queue->audio.getWriteFrame());
-                queue->audio.writeFrame (queue->audio.getWriteFrame());
+//                queue->audio.writeFrame (queue->audio.getWriteFrame());
             }
             
             else if (packet.stream_index == videoStream)
             {
                 if (decodeVideoPacket (&packet, queue->video.getWriteFrame()) > 0)
-                    queue->video.writeFrame (queue->video.getWriteFrame());
+                    queue->video.finishedWrite();
             }
         }
         
@@ -245,7 +260,6 @@ private:
     int audioStream, videoStream, subtitleStream;
     AVFrame* audioFrame, *videoFrame;
     OptionalScopedPointer<FFmpegStreamQueue> queue;
-    
     
     /** Opens a context for reading. Returns the stream index */
     int openCodecContext (AVCodecContext** decoderContext, AVMediaType type, bool refCounted)
@@ -320,7 +334,10 @@ private:
             packet->size -= decoded;
             
             if (gotFrame > 0 && decoded > 0 && frame->extended_data != nullptr)
+            {
                 sink().audioFrameDecoded (format->streams[audioStream], frame);
+                queue->audio.finishedWrite();
+            }
 
         } while (gotFrame > 0 && packet->size > 0);
         
@@ -425,13 +442,31 @@ public:
     {
         if (queue.video.canRead())
         {
-            auto* frame = queue.video.readFrame();
+            auto* frame = queue.video.getReadFrame();
+#if 0
+            if (frameIndex < 10)
+            {
+                Image image (Image::RGB, 640, 360, true);
+                scale.convertFrameToImage (image, frame);
+                PNGImageFormat png;
+                String name ("/Users/mfisher/Desktop/frames/frame_");
+                name << frameIndex++ << ".png";
+                const File file (name);
+                file.getParentDirectory().createDirectory();
+                
+                FileOutputStream stream (file);
+                png.writeImageToStream (image, stream);
+            }
+#endif
+            
+            queue.video.finishedRead();
             av_frame_unref (frame);
         }
 
         if (queue.audio.canRead())
         {
-            auto* frame = queue.audio.readFrame();
+            auto* frame = queue.audio.getReadFrame();
+            queue.audio.finishedRead();
             av_frame_unref (frame);
         }
         
@@ -454,6 +489,7 @@ public:
     void close()
     {
         decoder->close();
+        scale.reset();
     }
     
     void videoFrameDecoded (const AVStream* stream, AVFrame* frame) override

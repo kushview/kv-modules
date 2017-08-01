@@ -14,15 +14,24 @@ public:
             sws_freeContext (scalerContext);
     }
 
-    /** Setup a scaler to scale video frames and to convert pixel formats */
-    void setupScaler (const int in_width, const int in_height,  const AVPixelFormat in_format,
-                      const int out_width, const int out_height, const AVPixelFormat out_format)
+    /** Frees the scaler and resets linesizes */
+    void reset()
     {
         if (scalerContext)
         {
             sws_freeContext (scalerContext);
             scalerContext = nullptr;
         }
+        
+        for (int i = 0; i < 4; ++i)
+            inLinesizes[i] = outLinesizes[i] = 0;
+    }
+    
+    /** Setup a scaler to scale video frames and to convert pixel formats */
+    void setupScaler (const int in_width, const int in_height,  const AVPixelFormat in_format,
+                      const int out_width, const int out_height, const AVPixelFormat out_format)
+    {
+        reset();
 
         const AVPixFmtDescriptor* in_descriptor = av_pix_fmt_desc_get (in_format);
         if (! in_descriptor)
