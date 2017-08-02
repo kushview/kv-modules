@@ -17,27 +17,27 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-static void element_jack_log (const char* msg)
+static void kv_jack_log (const char* msg)
 {
    std::cerr << "[jack] " << msg << std::endl;
 }
 
-static void element_jack_dump_error (const jack_status_t status)
+static void kv_jack_dump_error (const jack_status_t status)
 {
    if ((status & JackServerFailed) || (status & JackServerError))
-      element_jack_log("Unable to connect to JACK server");
+      kv_jack_log("Unable to connect to JACK server");
    else if (status & JackVersionError)
-      element_jack_log("Client's protocol version does not match");
+      kv_jack_log("Client's protocol version does not match");
    else if (status & JackInvalidOption)
-      element_jack_log("The operation contained an invalid or unsupported option");
+      kv_jack_log("The operation contained an invalid or unsupported option");
    else if (status & JackNameNotUnique)
-      element_jack_log("The desired client name was not unique");
+      kv_jack_log("The desired client name was not unique");
    else if (status & JackNoSuchClient)
-      element_jack_log("Requested client does not exist");
+      kv_jack_log("Requested client does not exist");
    else if (status & JackInitFailure)
-      element_jack_log("Unable to initialize client");
+      kv_jack_log("Unable to initialize client");
    else
-      element_jack_log("Unknown client error");
+      kv_jack_log("Unknown client error");
 }
 
 #define returnValueIfNull(ptr, val) if (ptr == 0) return val
@@ -85,7 +85,7 @@ String JackClient::open (const String& name, int opts)
 
     if (0 == client)
     {
-        element_jack_dump_error (status);
+        kv_jack_dump_error (status);
         error = "Could not open JACK client";
     }
 
