@@ -17,8 +17,9 @@
     <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="MoviePlayer"
-                       libraryPath="" headerPath="../../../../modules/kv_ffmpeg/include"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="MoviePlayer"/>
+                       libraryPath="" headerPath=""/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="MoviePlayer"
+                       headerPath=""/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../../../../../../opt/kushview/JUCE/modules"/>

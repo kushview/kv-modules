@@ -10,6 +10,7 @@
   website:       http://kushview.net
   license:       GPL v3
 
+  searchpaths:   local/include
   OSXLibs:       avcodec avformat avutil swscale
  
   END_JUCE_MODULE_DECLARATION

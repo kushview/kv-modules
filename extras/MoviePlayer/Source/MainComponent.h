@@ -3,7 +3,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 
 class TickService;
-
+class VideoDisplayComponent;
 class MainContentComponent   : public AudioAppComponent,
                                public Button::Listener
 {
@@ -30,7 +30,9 @@ private:
     AudioSourcePlayer player;
     AudioTransportSource transport;
     
+    friend class TickService;
     ScopedPointer<TickService> tick;
+    ScopedPointer<VideoDisplayComponent> display;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };

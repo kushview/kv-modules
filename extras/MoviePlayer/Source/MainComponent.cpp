@@ -4,31 +4,135 @@
 using kv::FFmpegDecoder;
 using kv::FFmpegVideoSource;
 
-class TickService : public HighResolutionTimer,
-                    public Thread
+namespace kv {
+struct Rational
+{
+    explicit Rational (const int n = 1, const int d = 1)
+        : num(n), den(d) { }
+    
+    Rational (const Rational& o) { operator= (o); }
+    Rational& operator= (const Rational& o)
+    {
+        num = o.num;
+        den = o.den;
+        return *this;
+    }
+    
+    /** The numerator */
+    int num;
+    
+    /** The denominator */
+    int den;
+    
+    /** Returns numerator / denominator */
+    double ratio() const { jassert(den > 0); return (double)num / (double)den; }
+};
+}
+
+class VideoDisplayComponent : public Component,
+public Timer
+{
+public:
+    VideoDisplayComponent()
+    {
+        dirty = false;
+        startTimerHz (80);
+    }
+    
+    void paint (Graphics& g) override
+    {
+        if (displayImage.isValid() && ! displayImage.isNull())
+            g.drawImage (displayImage, 0, 0, getWidth(), getHeight(),
+                         0, 0, displayImage.getWidth(), displayImage.getHeight());
+        else
+        {
+            g.fillAll (Colours::black);
+            g.setColour (Colours::greenyellow);
+            g.drawText ("NO VIDEO :(", 0, 0, getWidth(), getHeight(), Justification::centred);
+        }
+    }
+    
+    void timerCallback() override
+    {
+        if (dirty)
+        {
+            dirty = false;
+            repaint();
+        }
+    }
+    
+    void setImage (const Image& image)
+    {
+        // MessageManagerLock lock;
+        displayImage = image;
+        dirty = true;
+    }
+    
+private:
+    Image displayImage;
+    bool dirty;
+};
+
+class TickService : public HighResolutionTimer
 {
 public:
     TickService (MainContentComponent& u)
-        : Thread ("tick"), ui (u) { }
+        : timebase (1, 60),
+          ui (u)
+    { }
+    
     ~TickService() { }
+    
+    void start()
+    {
+        if (isTimerRunning())
+            stopTimer();
+        
+        masterPTS = 0;
+        playing = true;
+        interval = roundDoubleToInt (1000.0 * timebase.ratio());
+        startTimer (interval);
+    }
+    
+    void stop()
+    {
+        playing = false;
+        stopTimer();
+    }
+    
+    bool isPlaying() const { return playing; }
     
     void hiResTimerCallback() override
     {
-        source.tick();
-    }
-
-    void run() override
-    {
-        
+        if (playing)
+        {
+            source.tick();
+            displayImage = source.findImage ((double) masterPTS * 0.001);
+            ui.display->setImage (displayImage);
+            
+            masterPTS += interval;
+            if (masterPTS % 1000 == 0)
+            {
+                DBG("tick seconds: " << (double)masterPTS / 1000.0);
+                
+            }
+        }
     }
     
+    std::atomic<int64> masterPTS;
+    
+    int interval;
+    bool playing;
+    kv::Rational timebase;
     MainContentComponent& ui;
     FFmpegVideoSource source;
+    Image displayImage;
 };
 
 MainContentComponent::MainContentComponent()
 {
     tick = new TickService (*this);
+    addAndMakeVisible (display = new VideoDisplayComponent());
     
     devices.addAudioCallback (&player);
     player.setSource (this);
@@ -43,9 +147,11 @@ MainContentComponent::MainContentComponent()
 
     addAndMakeVisible (playButton);
     playButton.setButtonText ("P");
+    playButton.addListener (this);
     
     addAndMakeVisible(stopButton);
     stopButton.setButtonText ("S");
+    stopButton.addListener (this);
     
     addAndMakeVisible (positionSlider);
     positionSlider.setTextBoxStyle (Slider::NoTextBox, false, 0, 0);
@@ -69,7 +175,7 @@ void MainContentComponent::mouseDown (const MouseEvent& ev)
 
 void MainContentComponent::resized()
 {
-    // video.setBounds (0, 0, getWidth(), getHeight() - 28);
+    display->setBounds (0, 0, getWidth(), getHeight() - 28);
     openButton.setBounds (0, getHeight() - 28, 90, 28);
     audioButton.setBounds (openButton.getRight(), getHeight() - 28,
                            90, 28);
@@ -87,13 +193,12 @@ void MainContentComponent::buttonClicked (Button* button)
         bool movieLoaded = false;
         bool cancelled = false;
         
-        
         FileChooser chooser ("Choose a Movie File", File(), "*.mp4");
         if (chooser.browseForFileToOpen())
         {
-            tick->stopTimer();
+            tick->stop();
+            display->setImage (Image());
             tick->source.openFile (chooser.getResult());
-            tick->startTimer (200);
             movieLoaded = true;
         }
         else
@@ -129,12 +234,12 @@ void MainContentComponent::buttonClicked (Button* button)
     
     if (button == &playButton)
     {
-        
+        tick->start();
     }
     
     if (button == &stopButton)
     {
-        
+        tick->stop();
     }
 }
 

@@ -81,7 +81,11 @@ public:
     }
 
     /*< Push samples from an AudioBuffer into the FIFO */
-    void addToFifo (const juce::AudioBuffer<FloatType>& samples, int numSamples=-1)
+    void addToFifo (const juce::AudioBuffer<FloatType>& samples, int numSamples=-1) {
+        write (samples, numSamples);
+    }
+    
+    void write (const juce::AudioBuffer<FloatType>& samples, int numSamples=-1)
     {
         const int addSamples = numSamples < 0 ? samples.getNumSamples() : numSamples;
         jassert (getFreeSpace() >= addSamples);

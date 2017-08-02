@@ -75,6 +75,7 @@ public:
     void openFile (const File& file);
     
     void tick() override;
+    Image findImage (double pts);
     
 private:
     struct Pimpl;
