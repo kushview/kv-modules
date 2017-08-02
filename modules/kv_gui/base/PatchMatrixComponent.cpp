@@ -1,5 +1,5 @@
 /*
-    This file is part of the element modules for the JUCE Library
+    This file is part of the Kushview Modules for JUCE
     Copyright (C) 2017  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
