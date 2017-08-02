@@ -75,6 +75,8 @@ public:
     void openFile (const File& file);
     
     void tick() override;
+    void process (int64 pts);
+    
     Image findImage (double pts);
     
 private:

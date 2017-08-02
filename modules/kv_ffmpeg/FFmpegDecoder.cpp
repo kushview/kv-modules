@@ -169,15 +169,34 @@ struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
         videoStream = openCodecContext (&video, AVMEDIA_TYPE_VIDEO, true);
         if (isPositiveAndBelow (videoStream, static_cast<int> (format->nb_streams)))
         {
+            const AVStream* stream = getVideoStream();
+            const double duration = static_cast<double> (stream->duration);
+            
+            const AVRational rate = av_stream_get_r_frame_rate (stream);
+            const AVRational codec_tb = av_stream_get_codec_timebase (stream);
+            
             DBG("[KV] ffmpeg: video stream opened: " << videoStream);
+            DBG("[KV] ffmpeg: ticks/frame: " << video->ticks_per_frame);
+            DBG("[KV] ffmpeg: real: " << rate.num << " / " << rate.den);
+            DBG("[KV] ffmpeg: timebase: " << stream->time_base.num << " / " << stream->time_base.den);
+            DBG("[KV] ffmpeg: duration: " << duration * av_q2d (stream->time_base));
             // noop
         }
         
         audioStream = openCodecContext (&audio, AVMEDIA_TYPE_AUDIO, true);
         if (isPositiveAndBelow (audioStream, static_cast<int> (format->nb_streams)))
         {
+            const AVStream* stream = getVideoStream();
+            const double duration = static_cast<double> (stream->duration);
+            const AVRational rate = av_stream_get_r_frame_rate (getAudioStream());
+            const AVRational codec_tb = av_stream_get_codec_timebase (getAudioStream());
+            
             DBG("[KV] ffmpeg: audio stream opened: " << audioStream);
             audio->request_sample_fmt = AV_SAMPLE_FMT_FLTP;
+            DBG("[KV] ffmpeg: ticks/frame: " << audio->ticks_per_frame);
+            DBG("[KV] ffmpeg: real: " << rate.num << " / " << rate.den);
+            DBG("[KV] ffmpeg: timebase: " << codec_tb.num << " / " << codec_tb.den);
+            DBG("[KV] ffmpeg: duration: " << duration * av_q2d (stream->time_base));
         }
         
        #if LOG_FORMAT_INFO
@@ -241,6 +260,12 @@ struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
         
         av_packet_unref (&packet);
         return error >= 0;
+    }
+    
+    AVStream* getAudioStream() const
+    {
+        return (format && isPositiveAndBelow (videoStream, static_cast<int> (format->nb_streams)))
+            ? format->streams[audioStream] : nullptr;
     }
     
     AVStream* getVideoStream() const
@@ -336,7 +361,7 @@ private:
                 sink().audioFrameDecoded (format->streams[audioStream], frame);
                 queue->audio.finishedWrite();
             }
-
+            av_frame_unref(0);
         } while (gotFrame > 0 && packet->size > 0);
         
         return result;
@@ -437,19 +462,22 @@ public:
         DBG("[KV] ffmpeg: video source thread exited");
     }
     
-    void tick()
+    void tick (double pts)
     {
-        if (queue.video.canRead())
+        AVFrame* frame = nullptr;
+        
+        while (queue.video.canRead())
         {
-            auto* frame = queue.video.getReadFrame();
+            frame = queue.video.getReadFrame();
             scale.convertFrameToImage (image, frame);
+            DBG("[KV] ffmpeg: decoded video @ " << frame->pts << " master: " << pts);
             queue.video.finishedRead();
             av_frame_unref (frame);
         }
-
-        if (queue.audio.canRead())
+        
+        while (queue.audio.canRead())
         {
-            auto* frame = queue.audio.getReadFrame();
+            frame = queue.audio.getReadFrame();
             
             const int channels = av_get_channel_layout_nb_channels (frame->channel_layout);
             const int numSamples = frame->nb_samples;
@@ -479,6 +507,11 @@ public:
         }
         
         sem.post();
+    }
+
+    void process (int64 pts)
+    {
+        tick (pts);
     }
     
     void openFile (const File& file)
@@ -551,7 +584,11 @@ FFmpegVideoSource::~FFmpegVideoSource()
 
 void FFmpegVideoSource::tick()
 {
-    pimpl->tick();
+}
+
+void FFmpegVideoSource::process (int64 pts)
+{
+    pimpl->process (pts);
 }
 
 void FFmpegVideoSource::openFile (const File& file)

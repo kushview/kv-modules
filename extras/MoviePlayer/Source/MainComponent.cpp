@@ -106,7 +106,7 @@ public:
     {
         if (playing)
         {
-            source.tick();
+            source.process (masterPTS);
             displayImage = source.findImage ((double) masterPTS * 0.001);
             ui.display->setImage (displayImage);
             
@@ -114,7 +114,6 @@ public:
             if (masterPTS % 1000 == 0)
             {
                 DBG("tick seconds: " << (double)masterPTS / 1000.0);
-                
             }
         }
     }
