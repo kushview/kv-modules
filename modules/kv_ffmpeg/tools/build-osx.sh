@@ -8,7 +8,7 @@ libdir="${moddir}/libs/MacOSX/$ARCH"
 bindir="${moddir}/libs/MacOSX/$ARCH"
 useropts="--disable-gpl --enable-shared --disable-doc"
 
-if [ ! -d "ffmpeg" ]; then
+if [ ! -f "ffmpeg/configure" ]; then
     echo "FFmpeg is not present. Try running: git submodule update --init"
     exit 1
 fi

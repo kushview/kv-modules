@@ -3,7 +3,7 @@
 <JUCERPROJECT id="EHld7W" name="MoviePlayer" displaySplashScreen="0" reportAppUsage="0"
               splashScreenColour="Dark" projectType="guiapp" version="1.0.0"
               bundleIdentifier="net.kushview.MoviePlayer" includeBinaryInAppConfig="1"
-              cppLanguageStandard="11" jucerVersion="5.1.0" companyName="Kushview, LLC"
+              cppLanguageStandard="11" jucerVersion="5.1.1" companyName="Kushview, LLC"
               companyWebsite="https://kushview.net" companyEmail="info@kushview.net">
   <MAINGROUP id="aWwIcW" name="MoviePlayer">
     <GROUP id="{84B55C65-0258-E9D3-F392-9636CD2240DE}" name="Source">

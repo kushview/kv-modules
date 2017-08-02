@@ -36,7 +36,7 @@ public:
     VideoDisplayComponent()
     {
         dirty = false;
-        startTimerHz (80);
+        startTimerHz (15);
     }
     
     void paint (Graphics& g) override
