@@ -20,9 +20,9 @@
 #ifndef EL_POINTER_H
 #define EL_POINTER_H
 
-#define ELEMENT_FORCE_BOOST_SHARED_PTR 0
+#define KV_FORCE_BOOST_SHARED_PTR 0
 
-#if ! ELEMENT_FORCE_BOOST_SHARED_PTR
+#if ! KV_FORCE_BOOST_SHARED_PTR
     #if __cplusplus >= 201103L
         #include <memory>
         template<class T> using Unique = std::unique_ptr<T>;
@@ -32,7 +32,7 @@
         #include <memory>
         #define Shared std::shared_ptr
         #define Weak std::tr1::weak_ptr
-    #elif ELEMENT_USE_TR1
+    #elif KV_USE_TR1
         #include <tr1/memory>
         #define Shared std::tr1::shared_ptr
         #define Weak std::tr1::weak_ptr
@@ -67,9 +67,9 @@ template <class T, class U>
 inline Shared<T>
 dynamicPtrCast (const Shared<U>& sp)
 {
-#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__ || _MSC_VER >= 1800) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
+#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__ || _MSC_VER >= 1800) && ! KV_FORCE_BOOST_SHARED_PTR
     return std::dynamic_pointer_cast<T> (sp);
-#elif ELEMENT_USE_TR1
+#elif KV_USE_TR1
     return std::tr1::dynamic_pointer_cast<T> (sp);
 #else
     return boost::dynamic_pointer_cast<T> (sp);
@@ -81,9 +81,9 @@ template <class T, class U>
 inline Shared<T>
 constPtrCast (const Shared<U>& sp)
 {
-#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
+#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! KV_FORCE_BOOST_SHARED_PTR
     return std::const_pointer_cast<T> (sp);
-#elif ELEMENT_USE_TR1
+#elif KV_USE_TR1
     return std::tr1::const_pointer_cast<T> (sp);
 #else
     return boost::const_pointer_cast<T> (sp);
@@ -94,16 +94,16 @@ template <class T, class U>
 inline Shared<T>
 staticPtrCast (const Shared<U>& sp)
 {
-#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
+#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! KV_FORCE_BOOST_SHARED_PTR
     return std::static_pointer_cast<T> (sp);
-#elif ELEMENT_USE_TR1
+#elif KV_USE_TR1
     return std::tr1::static_pointer_cast<T> (sp);
 #else
     return boost::static_pointer_cast<T> (sp);
 #endif
 }
 
-#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! ELEMENT_FORCE_BOOST_SHARED_PTR
+#if (__cplusplus >= 201103L || __GXX_EXPERIMENTAL_CXX0X__) && ! KV_FORCE_BOOST_SHARED_PTR
 template <class T>
 inline Shared<T> makeShared()
 {

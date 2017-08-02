@@ -19,6 +19,6 @@
 
 #include "kv_models.h"
 
-namespace Element {
+namespace kv {
  #include "models/ObjectModel.cpp"
 }

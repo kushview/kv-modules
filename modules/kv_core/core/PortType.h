@@ -20,8 +20,8 @@
 #ifndef EL_PORT_TYPE_H
 #define EL_PORT_TYPE_H
 
-#ifndef ELEMENT_INVALID_PORT
- #define ELEMENT_INVALID_PORT (uint32)-1
+#ifndef KV_INVALID_PORT
+ #define KV_INVALID_PORT (uint32)-1
 #endif
 
 /** The type of a port. */
@@ -206,7 +206,7 @@ public:
     inline uint32 getPortChecked (const PortType type, const int32 channel) const
     {
         if (! containsChannel (type, channel))
-            return ELEMENT_INVALID_PORT;
+            return KV_INVALID_PORT;
 
         const Array<uint32>* const a (ports.getUnchecked (type));
         return a->getUnchecked (channel);

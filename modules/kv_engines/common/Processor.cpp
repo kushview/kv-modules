@@ -154,7 +154,7 @@ uint32 Processor::getNthPort (PortType type, int index, bool isInput, bool oneBa
     }
 
     jassertfalse;
-    return ELEMENT_INVALID_PORT;
+    return KV_INVALID_PORT;
 }
 
 bool Processor::isPortInput (uint32 port)

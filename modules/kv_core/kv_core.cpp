@@ -1,5 +1,5 @@
 /*
-    element_module.cpp - This file is part of Element
+    KV_module.cpp - This file is part of Element
     Copyright (C) 2014  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
@@ -28,7 +28,7 @@
 
 #include <map>
 
-#if ELEMENT_USE_LIBJUCE
+#if KV_USE_LIBJUCE
  #include <juce/modules/config.h>
  #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
  #include "element/modules/config.h"
@@ -42,7 +42,7 @@
  #include <windows.h>
 #endif
 
-namespace Element {
+namespace kv {
  #include "core/Arc.cpp"
  #include "core/MatrixState.cpp"
  #include "core/RingBuffer.cpp"

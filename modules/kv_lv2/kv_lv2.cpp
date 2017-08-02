@@ -17,7 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#if defined (ELEMENT_LV2_H_INCLUDED) && ! JUCE_AMALGAMATED_INCLUDE
+#if defined (KV_LV2_H_INCLUDED) && ! JUCE_AMALGAMATED_INCLUDE
 /* When you add this cpp file to your project, you mustn't include it in a file where you've
     already included any other headers - just put it inside a file on its own, possibly with your config
     flags preceding it, but don't include anything else. That also includes avoiding any automatic prefix
@@ -26,7 +26,7 @@
  #error "Incorrect use of JUCE cpp file"
 #endif
 
-#if ELEMENT_USE_LIBJUCE
+#if KV_USE_LIBJUCE
  #include <juce/modules/config.h>
  #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
  #include "element/modules/config.h"
@@ -36,13 +36,13 @@
 
 #include "element_lv2.h"
 
-namespace Element {
+namespace kv {
 #include "common/PortBuffer.cpp"
 #include "common/PortWriter.cpp"
 #include "features/LV2Log.cpp"
 #include "features/LV2Worker.cpp"
 
-#if ELEMENT_LV2_PLUGIN_HOST
+#if KV_LV2_PLUGIN_HOST
  #include "host/LV2Module.cpp"
  #include "host/LV2PluginFormat.cpp"
  #include "host/LV2PluginModel.cpp"

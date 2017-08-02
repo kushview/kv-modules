@@ -33,17 +33,17 @@
   END_JUCE_MODULE_DECLARATION
  */
 
-#ifndef ELEMENT_MODELS_H_INCLUDED
-#define ELEMENT_MODELS_H_INCLUDED
+#ifndef KV_MODELS_H_INCLUDED
+#define KV_MODELS_H_INCLUDED
 
 #include <juce_audio_basics/juce_audio_basics.h>
 #include <juce_data_structures/juce_data_structures.h>
 #include <kv_core/kv_core.h>
 
-namespace Element {
+namespace kv {
 
 #include "models/ObjectModel.h"
 
 }
 
-#endif   // ELEMENT_MODELS_H_INCLUDED
+#endif   // KV_MODELS_H_INCLUDED

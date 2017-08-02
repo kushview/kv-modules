@@ -37,19 +37,19 @@
   END_JUCE_MODULE_DECLARATION
  */
 
-#ifndef ELEMENT_LV2_H_INCLUDED
-#define ELEMENT_LV2_H_INCLUDED
+#ifndef KV_LV2_H_INCLUDED
+#define KV_LV2_H_INCLUDED
 
-/** Config: ELEMENT_LV2_PLUGIN_HOST
+/** Config: KV_LV2_PLUGIN_HOST
     Set this to enable LV2 support. This option is available so that
     the LV2 module can be included but disabled on a per-platform
     basis (default is enabled)
  */
-#ifndef ELEMENT_LV2_PLUGIN_HOST
- #define ELEMENT_LV2_PLUGIN_HOST 1
+#ifndef KV_LV2_PLUGIN_HOST
+ #define KV_LV2_PLUGIN_HOST 1
 #endif
 
-#if ELEMENT_LV2_PLUGIN_HOST
+#if KV_LV2_PLUGIN_HOST
  #include <lilv/lilv.h>
  #include <suil/suil.h>
 #endif
@@ -70,7 +70,7 @@
 #include <juce_audio_formats/juce_audio_formats.h>
 #include <juce_audio_processors/juce_audio_processors.h>
 
-namespace Element {
+namespace kv {
  #include "common/URIs.h"
  #include "common/PortBuffer.h"
  #include "common/PortWriter.h"
@@ -79,7 +79,7 @@ namespace Element {
  #include "features/LV2Worker.h"
  #include "features/SymbolMap.h"
 
-#if ELEMENT_LV2_PLUGIN_HOST
+#if KV_LV2_PLUGIN_HOST
  #include "host/LV2World.h"
  #include "host/LV2Module.h"
  #include "host/LV2Parameter.h"
@@ -88,4 +88,4 @@ namespace Element {
 #endif
 }
 
-#endif // ELEMENT_LV2_H_INCLUDED
+#endif // KV_LV2_H_INCLUDED

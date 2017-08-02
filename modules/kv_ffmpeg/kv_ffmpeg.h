@@ -48,7 +48,7 @@
 namespace kv
 {
 using namespace juce;
-using namespace Element;
+using namespace kv;
 void ffmpeg_init (const bool useNetwork = false);
 void ffmpeg_deinit();
 

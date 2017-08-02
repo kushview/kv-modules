@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_DEBUG_QUADS
- #define ELEMENT_DEBUG_QUADS 0
+#ifndef KV_DEBUG_QUADS
+ #define KV_DEBUG_QUADS 0
 #endif
 
 QuadrantLayout::QuadrantLayout()
@@ -36,7 +36,7 @@ QuadrantLayout::~QuadrantLayout()
 
 void QuadrantLayout::paint (Graphics &g)
 {
-   #if ELEMENT_DEBUG_QUADS
+   #if KV_DEBUG_QUADS
     /* enable this block if you want to see where the quadrants are being
        drawn at */
     g.setColour(Colours::red);

@@ -46,7 +46,7 @@
  #define KV_DOCKING_WINDOWS 0
 #endif
 
-namespace Element {
+namespace kv {
 
 class Screen;
 class ScreenManager;

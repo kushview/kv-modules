@@ -63,5 +63,5 @@
   </MODULES>
   <JUCEOPTIONS JUCE_WEB_BROWSER="disabled" JUCE_ENABLE_LIVE_CONSTANT_EDITOR="disabled"
                KV_FFMPEG="enabled" JUCE_USE_CDREADER="disabled" JUCE_USE_CDBURNER="disabled"
-               ELEMENT_LV2_PLUGIN_HOST="disabled" ELEMENT_USE_JACK="disabled"/>
+               KV_LV2_PLUGIN_HOST="disabled" KV_JACK_AUDIO="disabled"/>
 </JUCERPROJECT>

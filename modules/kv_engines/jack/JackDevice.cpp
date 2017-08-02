@@ -43,8 +43,8 @@ void dumpJackErrorMessage (const jack_status_t status)
 #define jack_Log(...) {}
 #endif
 
-#ifndef ELEMENT_JACK_NAME
- #define ELEMENT_JACK_NAME "Element"
+#ifndef KV_JACK_NAME
+ #define KV_JACK_NAME "Element"
 #endif
 
 class JackDevice   : public AudioIODevice
@@ -82,7 +82,7 @@ public:
                  double /* sampleRate */, int /* bufferSizeSamples */)
     {
         jack_Log ("opening client");
-        lastError = client.open (ELEMENT_JACK_NAME, 0);
+        lastError = client.open (KV_JACK_NAME, 0);
         if (lastError.isNotEmpty())
         {
             jack_Log (lastError);

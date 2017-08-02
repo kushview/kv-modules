@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_NATIVE_H
-#define ELEMENT_NATIVE_H
+#ifndef KV_NATIVE_H
+#define KV_NATIVE_H
 
 
 class NativeComponent : public Component
@@ -80,4 +80,4 @@ private:
 
 };
 
-#endif /* ELEMENT_NATIVE_H */
+#endif /* KV_NATIVE_H */

@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_LV2_NUM_WORKERS
- #define ELEMENT_LV2_NUM_WORKERS 1
+#ifndef KV_LV2_NUM_WORKERS
+ #define KV_LV2_NUM_WORKERS 1
 #endif
 
 namespace LV2Callbacks {
@@ -94,7 +94,7 @@ LV2World::LV2World()
     );
 
     currentThread = 0;
-    numThreads    = ELEMENT_LV2_NUM_WORKERS;
+    numThreads    = KV_LV2_NUM_WORKERS;
 }
 
 LV2World::~LV2World()

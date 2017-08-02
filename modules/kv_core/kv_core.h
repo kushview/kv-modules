@@ -68,7 +68,7 @@
  #endif
 #endif
 
-namespace Element {
+namespace kv {
 using namespace juce;
 #include "core/AudioRingBuffer.h"
 #include "core/Arc.h"

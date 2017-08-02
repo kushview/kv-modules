@@ -22,9 +22,9 @@
 #endif
 
 #if JUCE_DEBUG
-#define ELEMENT_WORKER_LOG(x) Logger::writeToLog(x)
+#define KV_WORKER_LOG(x) Logger::writeToLog(x)
 #else
-#define ELEMENT_WORKER_LOG(x)
+#define KV_WORKER_LOG(x)
 #endif
 
 WorkThread::WorkThread (const String& name, uint32 bufsize, int32 priority)
@@ -61,13 +61,13 @@ WorkerBase* WorkThread::getWorker (uint32 workerId) const
 void WorkThread::registerWorker (WorkerBase* worker)
 {
     worker->workId = ++nextWorkId;
-    ELEMENT_WORKER_LOG (getThreadName() + " Registering worker: id = " + String (worker->workId));
+    KV_WORKER_LOG (getThreadName() + " Registering worker: id = " + String (worker->workId));
     workers.addIfNotAlreadyThere (worker);
 }
 
 void WorkThread::removeWorker (WorkerBase* worker)
 {
-    ELEMENT_WORKER_LOG (getThreadName() + " Removing worker: id = " + String (worker->workId));
+    KV_WORKER_LOG (getThreadName() + " Removing worker: id = " + String (worker->workId));
     workers.removeFirstMatchingValue (worker);
     worker->workId = 0;
 }
@@ -91,14 +91,14 @@ void WorkThread::run()
         uint32 size = 0;
         if (requests->read (&size, sizeof (size)) < sizeof (size))
         {
-            ELEMENT_WORKER_LOG ("WorkThread: error reading request: message size");
+            KV_WORKER_LOG ("WorkThread: error reading request: message size");
             continue;
         }
 
         uint32 workId;
         if (requests->read (&workId, sizeof (workId)) < sizeof (workId))
         {
-            ELEMENT_WORKER_LOG ("WorkThread: error reading request: worker id");
+            KV_WORKER_LOG ("WorkThread: error reading request: worker id");
             continue;
         }
 
@@ -113,11 +113,11 @@ void WorkThread::run()
 
         if (requests->read (buffer.getData(), size) < size)
         {
-            ELEMENT_WORKER_LOG (getThreadName() + ": error reading request: message body");
+            KV_WORKER_LOG (getThreadName() + ": error reading request: message body");
             continue;
         }
 
-        ELEMENT_WORKER_LOG (getThreadName() + ": Finding Worker ID " + String (workId));
+        KV_WORKER_LOG (getThreadName() + ": Finding Worker ID " + String (workId));
 
         {
             if (WorkerBase* const worker = getWorker (workId))
@@ -132,7 +132,7 @@ void WorkThread::run()
             break;
     }
 
-    ELEMENT_WORKER_LOG (getThreadName() + ": thread exited.");
+    KV_WORKER_LOG (getThreadName() + ": thread exited.");
 
     buffer.free();
 }

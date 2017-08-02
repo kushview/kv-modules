@@ -31,36 +31,38 @@
     END_JUCE_MODULE_DECLARATION
  */
 
-#ifndef ELEMENT_ENGINES_H_INCLUDED
-#define ELEMENT_ENGINES_H_INCLUDED
+#ifndef KV_ENGINES_H_INCLUDED
+#define KV_ENGINES_H_INCLUDED
 
 #include <juce_gui_extra/juce_gui_extra.h>
 #include <juce_audio_devices/juce_audio_devices.h>
 #include <juce_audio_processors/juce_audio_processors.h>
 #include <kv_models/kv_models.h>
 
-/** Config: ELEMENT_USE_JACK
-    Set this to enable Jack Audio Support (default is disabled)
+/** Config: KV_JACK_AUDIO
+    Set this to enable Jack Audio Support (default is disabled).
+    Note taht you should disable JUCE's jack implementation if you
+    enable this.
  */
-#ifndef ELEMENT_USE_JACK
- #define ELEMENT_USE_JACK 0
+#ifndef KV_JACK_AUDIO
+ #define KV_JACK_AUDIO 0
 #endif
 
-#if ELEMENT_USE_JACK
+#if KV_JACK_AUDIO
  #include <vector>
  #include <jack/jack.h>
 #endif
 
-namespace Element {
+namespace kv {
 
 #include "common/Processor.h"
 #include "common/MidiSequencePlayer.h"
 #include "common/Shuttle.h"
 
-#if ELEMENT_USE_JACK
+#if KV_JACK_AUDIO
  #include "jack/Jack.h"
 #endif
 
 }
 
-#endif   // ELEMENT_MODELS_H_INCLUDED
+#endif   // KV_MODELS_H_INCLUDED

@@ -20,7 +20,7 @@
 #ifndef EL_PORT_WRITER_H
 #define EL_PORT_WRITER_H
 
-#if ELEMENT_USE_CXX11
+#if KV_USE_CXX11
 /** Function type for writing to a port buffer. Params are in order port, size, protocol, buffer
     @note This is compatible with lvtk's port write ui method */
 typedef std::function<void(uint32_t, uint32_t, uint32_t, void const*)> PortWriteFunction;

@@ -17,8 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef ELEMENT_OBJECT_MODEL_H
-#define ELEMENT_OBJECT_MODEL_H
+#ifndef KV_OBJECT_MODEL_H
+#define KV_OBJECT_MODEL_H
 
 /** A thin wrapper around a juce ValueTree */
 class ObjectModel
@@ -102,4 +102,4 @@ protected:
 };
 
 
-#endif  /* ELEMENT_OBJECT_MODEL_H */
+#endif  /* KV_OBJECT_MODEL_H */

@@ -515,7 +515,7 @@ public:
     
     void subtitleFrameDecoded (const AVStream* stream, AVFrame*) override { }
     
-    Element::Semaphore sem;
+    Semaphore sem;
     
     void stop()
     {

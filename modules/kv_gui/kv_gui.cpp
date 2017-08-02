@@ -25,7 +25,7 @@
 #include <kv_models/kv_models.h>
 #include "kv_gui.h"
 
-namespace Element {
+namespace kv {
 
 #include "base/DecibelScaleComponent.cpp"
 #include "base/DigitalMeter.cpp"

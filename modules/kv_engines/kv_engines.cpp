@@ -1,6 +1,6 @@
 /*
-    element_engines.cpp - This file is part of Element
-    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
+    This file is part of the KV Modules for JUCE
+    Copyright (C) 2017  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,13 +19,13 @@
 
 #include "./kv_engines.h"
 
-namespace Element {
+namespace kv {
 
 #include "common/MidiSequencePlayer.cpp"
 #include "common/Processor.cpp"
 #include "common/Shuttle.cpp"
 
-#if ELEMENT_USE_JACK
+#if KV_JACK_AUDIO
  #include "jack/JackClient.cpp"
  #include "jack/JackDevice.cpp"
 #endif
