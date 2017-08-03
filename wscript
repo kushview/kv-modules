@@ -21,12 +21,12 @@ import juce
 KV_MODULES_VERSION  = '0.0.1'
 EXTRA_VERSION = ''
 KV_MODULES_VERSION=KV_MODULES_VERSION+EXTRA_VERSION
-ELEMENT_MAJOR_VERSION=0
-ELEMENT_MINOR_VERSION=0
-ELEMENT_MICRO_VERSION=1
-ELEMENT_EXTRA_VERSION=EXTRA_VERSION
+KV_MAJOR_VERSION=0
+KV_MINOR_VERSION=0
+KV_MICRO_VERSION=1
+KV_EXTRA_VERSION=EXTRA_VERSION
 
-APPNAME = 'element'
+APPNAME = 'kv-modules'
 VERSION = KV_MODULES_VERSION
 top = '.'
 out = 'build'
@@ -54,11 +54,11 @@ def options(opts):
 def configure(conf):
     # Put version defines in a header file
     conf.define ("KV_MODULES_VERSION", VERSION)
-    conf.define ("ELEMENT_MAJOR_VERSION",ELEMENT_MAJOR_VERSION)
-    conf.define ("ELEMENT_MINOR_VERSION",ELEMENT_MINOR_VERSION)
-    conf.define ("ELEMENT_MICRO_VERSION",ELEMENT_MICRO_VERSION)
-    conf.define ("ELEMENT_EXTRA_VERSION",ELEMENT_EXTRA_VERSION)
-    conf.write_config_header ('element/modules/version.h', 'ELEMENT_MODULES_VERSION_H')
+    conf.define ("KV_MAJOR_VERSION",KV_MAJOR_VERSION)
+    conf.define ("KV_MINOR_VERSION",KV_MINOR_VERSION)
+    conf.define ("KV_MICRO_VERSION",KV_MICRO_VERSION)
+    conf.define ("KV_EXTRA_VERSION",KV_EXTRA_VERSION)
+    conf.write_config_header ('element/modules/version.h', 'KV_MODULES_VERSION_H')
 
     conf.prefer_clang()
     conf.load ('compiler_c compiler_cxx juce')
@@ -71,14 +71,14 @@ def configure(conf):
 
     # Setup JUCE
     conf.load ('juce')
-    conf.env.JUCE_MODULE_PATH = 'element/modules' # need an option for this
+    conf.env.JUCE_MODULE_PATH = '/opt/kushview/JUCE/modules'
     conf.check_cxx11()
 
     # Export version to the environment
-    conf.env.ELEMENT_MAJOR_VERSION = ELEMENT_MAJOR_VERSION
-    conf.env.ELEMENT_MINOR_VERSION = ELEMENT_MINOR_VERSION
-    conf.env.ELEMENT_MICRO_VERSION = ELEMENT_MICRO_VERSION
-    conf.env.APPNAME               = APPNAME
+    conf.env.KV_MAJOR_VERSION = KV_MAJOR_VERSION
+    conf.env.KV_MINOR_VERSION = KV_MINOR_VERSION
+    conf.env.KV_MICRO_VERSION = KV_MICRO_VERSION
+    conf.env.APPNAME = APPNAME
 
     # Store options in environment
     conf.env.BUILD_DEBUGGABLE   = conf.options.debug
@@ -97,10 +97,10 @@ def configure(conf):
     # this is just to clear all the defines up to this point
     conf.write_config_header('dummy.h')
 
-    conf.define("ELEMENT_USE_JACK", len(conf.env.LIB_JACK) > 0)
+    conf.define("KV_USE_JACK", len(conf.env.LIB_JACK) > 0)
     for mod in library_modules:
         conf.define('JUCE_MODULE_AVAILABLE_%s' % mod, 1)
-    conf.write_config_header ('element/modules/config.h', 'ELEMENT_MODULES_CONFIG_H')
+    conf.write_config_header ('element/modules/config.h', 'KV_MODULES_CONFIG_H')
 
     if conf.options.debug:
         conf.define ("DEBUG", 1)
@@ -112,13 +112,13 @@ def configure(conf):
         conf.env.append_unique ('CXXFLAGS', ['-Os'])
         conf.env.append_unique ('CFLAGS', ['-Os'])
 
-    conf.define('ELEMENT_USE_LIBJUCE', 1)
+    conf.define('KV_USE_LIBJUCE', 1)
 
     conf.env.append_unique ('CXXFLAGS', '-I' + os.getcwd() + '/build')
     conf.env.append_unique ('CFLAGS', '-I' + os.getcwd() + '/build')
 
     print
-    juce.display_header ('Element Modules Configuration')
+    juce.display_header ('KV Modules Configuration')
     juce.display_msg (conf, 'Library Version', VERSION)
     juce.display_msg (conf, 'Prefix', conf.env.PREFIX)
     juce.display_msg (conf, 'Build Debuggable Libraries', conf.env.BUILD_DEBUGGABLE)
@@ -130,7 +130,7 @@ def configure(conf):
     juce.display_msg (conf, 'LDFLAGS', conf.env.LINKFLAGS)
 
 def get_include_path(bld):
-    return bld.env.INCLUDEDIR + '/element-%s/element' % ELEMENT_MAJOR_VERSION
+    return bld.env.INCLUDEDIR + '/element-%s/element' % KV_MAJOR_VERSION
 
 def install_module_headers (bld, modules):
     for mod in modules:
@@ -145,11 +145,11 @@ def install_misc_header(bld, h, subpath=''):
 def module_slug(mod, debug=False):
     slug = mod.replace('_', '-')
     if debug: slug += '-debug'
-    slug += '-%s' % ELEMENT_MAJOR_VERSION
+    slug += '-%s' % KV_MAJOR_VERSION
     return slug
 
 def library_slug(mod, debug=False):
-    mv = ELEMENT_MAJOR_VERSION
+    mv = KV_MAJOR_VERSION
     slug = mod + '_debug-%s' % mv if debug else mod + '-%s' % mv
     return slug
 
@@ -185,7 +185,7 @@ def build_modules(bld):
             source       = 'module.pc.in',
             target       = slug + '.pc',
             install_path = bld.env.LIBDIR + '/pkgconfig',
-            MAJOR_VERSION= '%s' % ELEMENT_MAJOR_VERSION,
+            MAJOR_VERSION= '%s' % KV_MAJOR_VERSION,
             PREFIX       = bld.env.PREFIX,
             INCLUDEDIR   = bld.env.INCLUDEDIR,
             LIBDIR       = bld.env.LIBDIR,
@@ -204,20 +204,21 @@ def build_modules(bld):
         install_misc_header (bld, 'build/element/modules/version.h', '/modules')
 
 def build (bld):
-    bld.env.INSTALL_HEADERS = bld.options.install_headers
-    build_modules(bld)
-    bld.add_group()
-    bld.program(
-        source   = ['tools/linktest.cpp'],
-        includes = ['.', './element/modules'],
-        use      = ['JUCE_OPENGL', 'LILV', 'SUIL', 'GL', 'X11', 'ALSA', \
-                    'element-base-debug-0', 'element-gui-debug-0', \
-                    'element-engines-debug-0', 'element-models-debug-0', \
-                    'element-lv2-debug-0'],
-        name     = 'linktest',
-        target   = 'linktest',
-        install_path = None
-    )
+    # bld.env.INSTALL_HEADERS = bld.options.install_headers
+    # build_modules(bld)
+    # bld.add_group()
+    # bld.program(
+    #     source   = ['tools/linktest.cpp'],
+    #     includes = ['.', './element/modules'],
+    #     use      = ['JUCE_OPENGL', 'LILV', 'SUIL', 'GL', 'X11', 'ALSA', \
+    #                 'element-base-debug-0', 'element-gui-debug-0', \
+    #                 'element-engines-debug-0', 'element-models-debug-0', \
+    #                 'element-lv2-debug-0'],
+    #     name     = 'linktest',
+    #     target   = 'linktest',
+    #     install_path = None
+    # )
+    return
 
 def dist(ctx):
     z = ctx.options.ziptype
