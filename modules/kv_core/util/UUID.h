@@ -17,15 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_UUID_H
-#define EL_UUID_H
+#pragma once
 
 namespace Utility {
-
-String hexString8Digits (int value);
-String createAlphaNumericUID();
-String createGUID (const String& seed); // Turns a seed into a windows GUID
-
+    String hexString8Digits (int value);
+    String createAlphaNumericUID();
+    String createGUID (const String& seed); // Turns a seed into a windows GUID
 }
-
-#endif // EL_UUID_H

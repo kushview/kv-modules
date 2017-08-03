@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_TEMPO_H
-#define EL_TEMPO_H
+#pragma once
 
 class Tempo
 {
@@ -34,5 +33,3 @@ public:
     }
 
 };
-
-#endif /* EL_TEMPO_H */
