@@ -1,0 +1,66 @@
+#!/usr/bin/env python
+
+import juce
+
+module_source = '''
+    ../../JuceLibraryCode/include_juce_audio_basics.mm
+    ../../JuceLibraryCode/include_juce_audio_devices.mm
+    ../../JuceLibraryCode/include_juce_audio_formats.mm
+    ../../JuceLibraryCode/include_juce_audio_processors.mm
+    ../../JuceLibraryCode/include_juce_audio_utils.mm
+    ../../JuceLibraryCode/include_juce_core.mm
+    ../../JuceLibraryCode/include_juce_cryptography.mm
+    ../../JuceLibraryCode/include_juce_data_structures.mm
+    ../../JuceLibraryCode/include_juce_events.mm
+    ../../JuceLibraryCode/include_juce_graphics.mm
+    ../../JuceLibraryCode/include_juce_gui_basics.mm
+    ../../JuceLibraryCode/include_juce_gui_extra.mm
+    ../../JuceLibraryCode/include_kv_core.mm
+    ../../JuceLibraryCode/include_kv_ffmpeg.mm
+    ../../JuceLibraryCode/include_kv_video.mm
+'''
+
+project_source = '''
+    ../../Source/Main.cpp
+    ../../Source/MainComponent.cpp
+'''
+
+def options(opt):
+    opt.load('compiler_c compiler_cxx juce')
+    return
+
+def configure(conf):
+    conf.load('compiler_c compiler_cxx juce')
+    conf.prefer_clang()
+    conf.check_cxx11()
+
+    print
+    conf.display_header("Project Configuration")
+
+    print
+    conf.display_header("Compiler Configuration")
+    conf.display_message("CFLAGS", conf.env.CFLAGS)
+    conf.display_message("CXXFLAGS", conf.env.CXXFLAGS)
+    conf.display_message("LINKFLAGS", conf.env.LINKFLAGS)
+    return
+
+def build (bld):
+    obj = bld.program (
+        source  = project_source.split() + module_source.split(),
+        includes = [ '/opt/kushview/JUCE/modules',
+                     '../../JuceLibraryCode',
+                     '../../../../modules',
+                     '../../../../modules/kv_ffmpeg/local/include' ]
+    )
+
+    if juce.is_mac():
+        obj.mac_app = True
+        obj.target = 'MoviePlayer'
+        obj.ldflags = ['-L../../../../../modules/kv_ffmpeg/libs/MacOSX/x86_64',
+                         '-lavcodec', '-lavformat', '-lavutil', '-lswscale']
+        obj.use = [ 'ACCELERATE', 'CORE_AUDIO',
+                    'CORE_MIDI', 'AUDIO_TOOLBOX', 'QUARTZ_CORE',
+                    'DISC_RECORDING', 'COCOA', 'CARBON', 'WEB_KIT',
+                    'IO_KIT' ]
+
+    return
