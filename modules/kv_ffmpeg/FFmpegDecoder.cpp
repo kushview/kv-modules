@@ -169,17 +169,17 @@ struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
         videoStream = openCodecContext (&video, AVMEDIA_TYPE_VIDEO, true);
         if (isPositiveAndBelow (videoStream, static_cast<int> (format->nb_streams)))
         {
-            const AVStream* stream = getVideoStream();
+            const AVStream* const stream = getVideoStream();
             const double duration = static_cast<double> (stream->duration);
-            
-            const AVRational rate = av_stream_get_r_frame_rate (stream);
-            const AVRational codec_tb = av_stream_get_codec_timebase (stream);
+            const AVRational frameRate = av_stream_get_r_frame_rate (stream);
+            const AVRational timeBase  = stream->time_base;
             
             DBG("[KV] ffmpeg: video stream opened: " << videoStream);
-            DBG("[KV] ffmpeg: ticks/frame: " << video->ticks_per_frame);
-            DBG("[KV] ffmpeg: real: " << rate.num << " / " << rate.den);
-            DBG("[KV] ffmpeg: timebase: " << stream->time_base.num << " / " << stream->time_base.den);
-            DBG("[KV] ffmpeg: duration: " << duration * av_q2d (stream->time_base));
+            DBG("[KV] ffmpeg:   dimensions: " << video->width << "x" << video->height);
+            DBG("[KV] ffmpeg:   frame rate: " << frameRate.num << " / " << frameRate.den);
+            DBG("[KV] ffmpeg:   time base: " << timeBase.num << " / " << timeBase.den);
+            DBG("[KV] ffmpeg:   duration (seconds): " << duration * av_q2d (stream->time_base));
+            DBG("[KV] ffmpeg:   num frames: " << stream->nb_frames);
             // noop
         }
         
@@ -191,12 +191,12 @@ struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
             const AVRational rate = av_stream_get_r_frame_rate (getAudioStream());
             const AVRational codec_tb = av_stream_get_codec_timebase (getAudioStream());
             
-            DBG("[KV] ffmpeg: audio stream opened: " << audioStream);
+           // DBG("[KV] ffmpeg: audio stream opened: " << audioStream);
             audio->request_sample_fmt = AV_SAMPLE_FMT_FLTP;
-            DBG("[KV] ffmpeg: ticks/frame: " << audio->ticks_per_frame);
-            DBG("[KV] ffmpeg: real: " << rate.num << " / " << rate.den);
-            DBG("[KV] ffmpeg: timebase: " << codec_tb.num << " / " << codec_tb.den);
-            DBG("[KV] ffmpeg: duration: " << duration * av_q2d (stream->time_base));
+//            DBG("[KV] ffmpeg: ticks/frame: " << audio->ticks_per_frame);
+//            DBG("[KV] ffmpeg: real: " << rate.num << " / " << rate.den);
+//            DBG("[KV] ffmpeg: timebase: " << codec_tb.num << " / " << codec_tb.den);
+//            DBG("[KV] ffmpeg: duration: " << duration * av_q2d (stream->time_base));
         }
         
        #if LOG_FORMAT_INFO
@@ -413,14 +413,13 @@ bool FFmpegDecoder::openFile (const File& file)     { return pimpl->openFile (fi
 void FFmpegDecoder::close()                         { pimpl->close(); }
 void FFmpegDecoder::read()                          { pimpl->read(); }
 
-int FFmpegDecoder::getWidth() const { return 1920; }
-int FFmpegDecoder::getHeight() const { return 1080; }
+int FFmpegDecoder::getWidth()   const { return (pimpl && pimpl->video) ? pimpl->video->width : 0; }
+int FFmpegDecoder::getHeight()  const { return (pimpl && pimpl->video) ? pimpl->video->height : 0; }
 
 AVPixelFormat FFmpegDecoder::getPixelFormat() const
 {
-    if (pimpl && pimpl->video)
-        return pimpl->video->pix_fmt;
-    return AV_PIX_FMT_NONE;
+    return (pimpl && pimpl->video) ? pimpl->video->pix_fmt
+                                   : AV_PIX_FMT_NONE;
 }
 
 class FFmpegVideoSource::Pimpl : public FFmpegDecoder::Sink,

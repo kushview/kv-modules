@@ -27,15 +27,6 @@
 #endif
 
 #include <map>
-
-#if KV_USE_LIBJUCE
- #include <juce/modules/config.h>
- #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
- #include "element/modules/config.h"
-#else
- #include "AppConfig.h"
-#endif
-
 #include "kv_core.h"
 
 #if JUCE_WINDOWS
