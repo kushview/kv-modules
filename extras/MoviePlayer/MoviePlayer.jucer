@@ -29,16 +29,14 @@
         <MODULEPATH id="juce_gui_basics" path="../../../../../../../opt/kushview/JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../../../../../../opt/kushview/JUCE/modules"/>
         <MODULEPATH id="juce_cryptography" path="../../../../../../../opt/kushview/JUCE/modules"/>
-        <MODULEPATH id="juce_video" path="../../../../../../../opt/kushview/JUCE/modules"/>
-        <MODULEPATH id="juce_opengl" path="../../../../../../../opt/kushview/JUCE/modules"/>
         <MODULEPATH id="juce_audio_basics" path="../../../../../../../opt/kushview/JUCE/modules"/>
         <MODULEPATH id="juce_audio_devices" path="../../../../../../../opt/kushview/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../../../../../../opt/kushview/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../../../../../../opt/kushview/JUCE/modules"/>
         <MODULEPATH id="juce_audio_utils" path="../../../../../../../opt/kushview/JUCE/modules"/>
         <MODULEPATH id="kv_core" path="../../modules"/>
         <MODULEPATH id="kv_ffmpeg" path="../../modules"/>
         <MODULEPATH id="kv_video" path="../../modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../../../../opt/kushview/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../../../../opt/kushview/JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
   </EXPORTFORMATS>
@@ -55,13 +53,12 @@
     <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_opengl" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
-    <MODULE id="juce_video" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
     <MODULE id="kv_core" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="kv_ffmpeg" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
     <MODULE id="kv_video" showAllCode="1" useLocalCopy="0" useGlobalPath="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_WEB_BROWSER="disabled" JUCE_ENABLE_LIVE_CONSTANT_EDITOR="disabled"
                KV_FFMPEG="enabled" JUCE_USE_CDREADER="disabled" JUCE_USE_CDBURNER="disabled"
-               KV_LV2_PLUGIN_HOST="disabled" KV_JACK_AUDIO="disabled"/>
+               KV_LV2_PLUGIN_HOST="disabled" KV_JACK_AUDIO="disabled" JUCE_PLUGINHOST_VST="disabled"
+               JUCE_PLUGINHOST_VST3="disabled" JUCE_PLUGINHOST_AU="disabled"/>
 </JUCERPROJECT>

@@ -26,8 +26,6 @@
 #include <juce_graphics/juce_graphics.h>
 #include <juce_gui_basics/juce_gui_basics.h>
 #include <juce_gui_extra/juce_gui_extra.h>
-#include <juce_opengl/juce_opengl.h>
-#include <juce_video/juce_video.h>
 #include <kv_core/kv_core.h>
 #include <kv_ffmpeg/kv_ffmpeg.h>
 #include <kv_video/kv_video.h>
