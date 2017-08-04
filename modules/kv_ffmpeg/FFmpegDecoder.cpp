@@ -519,7 +519,6 @@ public:
         
         audioOut.setSize (2, 32 * 1024);
         
-        DBG("setup input: " << decoder->getWidth() << "x" << decoder->getHeight());
         scale.setupScaler (decoder->getWidth(),
                            decoder->getHeight(),
                            decoder->getPixelFormat(),
