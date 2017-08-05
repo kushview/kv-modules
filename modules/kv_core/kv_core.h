@@ -85,6 +85,8 @@ using namespace juce;
 #include "core/Types.h"
 #include "core/WorkThread.h"
 
+#include "math/Rational.h"
+
 #include "time/DelayLockedLoop.h"
 #include "time/Tempo.h"
 #include "time/TimeScale.h"
