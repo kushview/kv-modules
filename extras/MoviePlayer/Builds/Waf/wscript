@@ -2,6 +2,37 @@
 
 import juce
 
+app_info = '''
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist>
+  <dict>
+    <key>CFBundleExecutable</key>
+    <string>MoviePlayer</string>
+    <key>CFBundleIconFile</key>
+    <string></string>
+    <key>CFBundleIdentifier</key>
+    <string>net.kushview.MoviePlayer</string>
+    <key>CFBundleName</key>
+    <string>MoviePlayer</string>
+    <key>CFBundleDisplayName</key>
+    <string>MoviePlayer</string>
+    <key>CFBundlePackageType</key>
+    <string>APPL</string>
+    <key>CFBundleSignature</key>
+    <string>????</string>
+    <key>CFBundleShortVersionString</key>
+    <string>1.0.0</string>
+    <key>CFBundleVersion</key>
+    <string>1.0.0</string>
+    <key>NSHumanReadableCopyright</key>
+    <string>Kushview, LLC</string>
+    <key>NSHighResolutionCapable</key>
+    <true/>
+  </dict>
+</plist>
+'''
+
 module_source = '''
     ../../JuceLibraryCode/include_juce_audio_basics.mm
     ../../JuceLibraryCode/include_juce_audio_devices.mm
@@ -54,6 +85,7 @@ def build (bld):
     )
 
     if juce.is_mac():
+        obj.mac_plist = app_info
         obj.mac_app = True
         obj.target = 'MoviePlayer'
         obj.ldflags = ['-L../../../../../modules/kv_ffmpeg/libs/MacOSX/x86_64',
