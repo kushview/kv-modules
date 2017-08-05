@@ -160,12 +160,12 @@ float TimeScale::Node::tempoEx (unsigned short beatType_) const
     return extempo;
 }
 
-unsigned long TimeScale::Node::tickSnap (unsigned long tick_, unsigned short p) const
+uint64 TimeScale::Node::tickSnap (uint64 tick_, unsigned short p) const
 {
-    unsigned long ticksnap = tick_ - tick;
+    uint64 ticksnap = tick_ - tick;
     if (ts->snapPerBeat() > 0)
     {
-        unsigned long q = ticksPerBeat / ts->snapPerBeat();
+        uint64 q = ticksPerBeat / ts->snapPerBeat();
         ticksnap = q * ((ticksnap + (q >> p)) / q);
 	}
     return tick + ticksnap;
@@ -176,7 +176,7 @@ void TimeScale::Cursor::reset (TimeScale::Node *n)
     node = (n ? n : ts->nodes().first());
 }
 
-TimeScale::Node* TimeScale::Cursor::seekFrame (unsigned long iFrame) const
+TimeScale::Node* TimeScale::Cursor::seekFrame (uint64 iFrame) const
 {
     if (node == 0)
     {
@@ -255,7 +255,7 @@ TimeScale::Node* TimeScale::Cursor::seekBeat (unsigned int sbeat) const
 	return node;
 }
 
-TimeScale::Node* TimeScale::Cursor::seekTick (unsigned long stick) const
+TimeScale::Node* TimeScale::Cursor::seekTick (uint64 stick) const
 {
     if (node == 0)
     {
@@ -308,7 +308,7 @@ TimeScale::Node* TimeScale::Cursor::seekPixel (int px) const
 	return node;
 }
 
-TimeScale::Node* TimeScale::addNode (unsigned long frame_, float tempo_, unsigned short beat_type_,
+TimeScale::Node* TimeScale::addNode (uint64 frame_, float tempo_, unsigned short beat_type_,
                      unsigned short beats_per_bar_, unsigned short beat_divisor_)
 {
     Node *node	= 0;
@@ -470,22 +470,22 @@ TimeScale::indexFromSnap (unsigned short snap_per_beat)
 }
 
 // Tick/Frame range conversion (delta conversion).
-unsigned long TimeScale::frameFromTickRange (unsigned long iTickStart, unsigned long iTickEnd)
+uint64 TimeScale::frameFromTickRange (uint64 iTickStart, uint64 iTickEnd)
 {
     Node *pNode = mCursor.seekTick(iTickStart);
-    unsigned long iFrameStart = (pNode ? pNode->frameFromTick(iTickStart) : 0);
+    uint64 iFrameStart = (pNode ? pNode->frameFromTick(iTickStart) : 0);
     pNode = mCursor.seekTick(iTickEnd);
-    unsigned long iFrameEnd = (pNode ? pNode->frameFromTick(iTickEnd) : 0);
+    uint64 iFrameEnd = (pNode ? pNode->frameFromTick(iTickEnd) : 0);
 	return (iFrameEnd > iFrameStart ? iFrameEnd - iFrameStart : 0);
 }
 
 
-unsigned long TimeScale::tickFromFrameRange (unsigned long iFrameStart, unsigned long iFrameEnd)
+uint64 TimeScale::tickFromFrameRange (uint64 iFrameStart, uint64 iFrameEnd)
 {
     Node *pNode = mCursor.seekFrame(iFrameStart);
-    unsigned long iTickStart = (pNode ? pNode->tickFromFrame(iFrameStart) : 0);
+    uint64 iTickStart = (pNode ? pNode->tickFromFrame(iFrameStart) : 0);
     pNode = mCursor.seekFrame(iFrameEnd);
-    unsigned long iTickEnd = (pNode ? pNode->tickFromFrame(iFrameEnd) : 0);
+    uint64 iTickEnd = (pNode ? pNode->tickFromFrame(iFrameEnd) : 0);
 	return (iTickEnd > iTickStart ? iTickEnd - iTickStart : 0);
 }
 
@@ -496,7 +496,7 @@ void TimeScale::MarkerCursor::reset (TimeScale::Marker *m)
 }
 
 // Location marker seek methods.
-TimeScale::Marker* TimeScale::MarkerCursor::seekFrame (unsigned long iFrame )
+TimeScale::Marker* TimeScale::MarkerCursor::seekFrame (uint64 iFrame )
 {
 	if (marker == 0) {
 		marker = ts->markers().first();
@@ -532,20 +532,20 @@ TimeScale::Marker* TimeScale::MarkerCursor::seekBeat (unsigned int iBeat )
     return seekFrame (ts->frameFromBeat (iBeat));
 }
 
-TimeScale::Marker* TimeScale::MarkerCursor::seekTick (unsigned long iTick)
+TimeScale::Marker* TimeScale::MarkerCursor::seekTick (uint64 iTick)
 {
     return seekFrame (ts->frameFromTick (iTick));
 }
 
 TimeScale::Marker* TimeScale::MarkerCursor::seekPixel (int x)
 {
-    return seekFrame (static_cast<unsigned long> (ts->frameFromPixel (x)));
+    return seekFrame (static_cast<uint64> (ts->frameFromPixel (x)));
 }
 
 
 
 // Location markers list specifics.
-TimeScale::Marker* TimeScale::addMarker (unsigned long target_frame, const std::string& txt,
+TimeScale::Marker* TimeScale::addMarker (uint64 target_frame, const std::string& txt,
                                                    const std::string& rgb )
 {
     Marker *marker	= 0;

@@ -18,8 +18,7 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef EL_TIMESCALE_H
-#define EL_TIMESCALE_H
+#pragma once
 
 #if _MSC_VER
  #pragma warning( disable : 4355 )
@@ -31,7 +30,6 @@
 class TimeScale
 {
 public:
-
     enum DisplayFormat
     {
         Frames = 0,
@@ -94,9 +92,8 @@ public:
     class Node : public LinkedList<Node>::Link
 	{
 	public:
-
 		// Constructor.
-        Node (TimeScale *timescale, unsigned long frame_ = 0, float tempo_ = 120.0f,
+        Node (TimeScale *timescale, uint64 frame_ = 0, float tempo_ = 120.0f,
               unsigned short beattype_ = 2, unsigned short beats_per_bar_ = 4,
               unsigned short beat_divisor_ = 2)
             : frame(frame_), bar(0), beat(0), tick(0), pixel(0),
@@ -118,28 +115,28 @@ public:
         float tempoEx (unsigned short beatType = 2) const;
 
 		// Frame/bar convertors.
-        unsigned short barFromFrame (unsigned long iFrame) const { return bar + (unsigned short) uroundf ((beatRate * (iFrame - frame)) / (ts->frameRate() * beatsPerBar)); }
-        unsigned long frameFromBar (unsigned short iBar)   const { return frame + (unsigned long) uroundf ((ts->frameRate() * beatsPerBar * (iBar - bar)) / beatRate); }
+        unsigned short barFromFrame (uint64 iFrame) const { return bar + (unsigned short) uroundf ((beatRate * (iFrame - frame)) / (ts->frameRate() * beatsPerBar)); }
+        uint64 frameFromBar (unsigned short iBar)   const { return frame + (uint64) uroundf ((ts->frameRate() * beatsPerBar * (iBar - bar)) / beatRate); }
 
 		// Frame/beat convertors.
-        unsigned int beatFromFrame (unsigned long iFrame) const { return beat + (unsigned int) uroundf ((beatRate * (iFrame - frame)) / ts->frameRate()); }
-        unsigned long frameFromBeat (unsigned int iBeat) const { return frame + (unsigned long) uroundf ((ts->frameRate() * (iBeat - beat)) / beatRate); }
+        unsigned int beatFromFrame (uint64 iFrame) const { return beat + (unsigned int) uroundf ((beatRate * (iFrame - frame)) / ts->frameRate()); }
+        uint64 frameFromBeat (unsigned int iBeat) const { return frame + (uint64) uroundf ((ts->frameRate() * (iBeat - beat)) / beatRate); }
 
 		// Frame/tick convertors.
-        unsigned long tickFromFrame (unsigned long iFrame) const { return tick + (unsigned long) uroundf ((tickRate * (iFrame - frame)) / ts->frameRate()); }
-		unsigned long frameFromTick(unsigned long iTick) const { return frame + (unsigned long) uroundf((ts->frameRate() * (iTick - tick)) / tickRate); }
+        uint64 tickFromFrame (uint64 iFrame) const { return tick + (uint64) uroundf ((tickRate * (iFrame - frame)) / ts->frameRate()); }
+		uint64 frameFromTick(uint64 iTick) const { return frame + (uint64) uroundf((ts->frameRate() * (iTick - tick)) / tickRate); }
 
 		// Tick/beat convertors.
-		unsigned int beatFromTick(unsigned long iTick) const { return beat + (unsigned int) ((iTick - tick) / ticksPerBeat); }
-		unsigned long tickFromBeat(unsigned int iBeat) const { return tick + (unsigned long) (ticksPerBeat * (iBeat - beat)); }
+		unsigned int beatFromTick(uint64 iTick) const { return beat + (unsigned int) ((iTick - tick) / ticksPerBeat); }
+		uint64 tickFromBeat(unsigned int iBeat) const { return tick + (uint64) (ticksPerBeat * (iBeat - beat)); }
 
 		// Tick/bar convertors.
-		unsigned short barFromTick(unsigned long iTick) const { return bar + (unsigned short) ((iTick - tick) / (ticksPerBeat * beatsPerBar)); }
-		unsigned long tickFromBar(unsigned short iBar) const { return tick + (unsigned long) (ticksPerBeat * beatsPerBar * (iBar - bar)); }
+		unsigned short barFromTick(uint64 iTick) const { return bar + (unsigned short) ((iTick - tick) / (ticksPerBeat * beatsPerBar)); }
+		uint64 tickFromBar(unsigned short iBar) const { return tick + (uint64) (ticksPerBeat * beatsPerBar * (iBar - bar)); }
 
 		// Tick/pixel convertors.
-		unsigned long tickFromPixel(int x) const { return tick + (unsigned long) uroundf((tickRate * (x - pixel)) / ts->pixelRate()); }
-		int pixelFromTick(unsigned long iTick) const { return pixel + (int) uroundf((ts->pixelRate() * (iTick - tick)) / tickRate); }
+		uint64 tickFromPixel(int x) const { return tick + (uint64) uroundf((tickRate * (x - pixel)) / ts->pixelRate()); }
+		int pixelFromTick(uint64 iTick) const { return pixel + (int) uroundf((ts->pixelRate() * (iTick - tick)) / tickRate); }
 
 		// Beat/pixel convertors.
 		unsigned int beatFromPixel(int x) const { return beat + (unsigned int) uroundf((beatRate * (x - pixel)) / ts->pixelRate()); }
@@ -159,18 +156,18 @@ public:
         bool beatIsBar (unsigned int iBeat) const { return ((iBeat - beat) % beatsPerBar) == 0; }
 
 		// Frame/bar quantizer.
-        unsigned long frameSnapToBar (unsigned long frame_) const { return frameFromBar (barFromFrame (frame_)); }
+        uint64 frameSnapToBar (uint64 frame_) const { return frameFromBar (barFromFrame (frame_)); }
 
 		// Beat snap filters.
-        unsigned long tickSnap (unsigned long tick_, unsigned short p = 1) const;
-		unsigned long frameSnap(unsigned long frame_) const { return frameFromTick(tickSnap(tickFromFrame(frame_))); }
+        uint64 tickSnap (uint64 tick_, unsigned short p = 1) const;
+		uint64 frameSnap(uint64 frame_) const { return frameFromTick(tickSnap(tickFromFrame(frame_))); }
         int pixelSnap (int x) const { return pixelFromTick (tickSnap (tickFromPixel (x))); }
 
 		// Node keys.
-		unsigned long  frame;
+		uint64  frame;
 		unsigned short bar;
 		unsigned int   beat;
-		unsigned long  tick;
+		uint64  tick;
 		int            pixel;
 
 		// Node payload.
@@ -182,7 +179,6 @@ public:
         unsigned short ticksPerBeat;
 
 	protected:
-
 		// Node owner.
 		TimeScale *ts;
 
@@ -199,20 +195,18 @@ public:
 	class Cursor
 	{
 	public:
-
         Cursor (TimeScale *scale) : ts(scale), node(0) { }
         TimeScale *timescale() const { return ts; }
 
         void reset (Node *node = 0);
 
-        Node* seekFrame (unsigned long frame) const;
+        Node* seekFrame (uint64 frame) const;
         Node* seekBar   (unsigned short bar) const;
         Node* seekBeat  (unsigned int beat) const;
-        Node* seekTick  (unsigned long tick) const;
+        Node* seekTick  (uint64 tick) const;
         Node* seekPixel (int x) const;
 
 	protected:
-
 		TimeScale *ts;
         mutable Node *node;
 	};
@@ -220,7 +214,7 @@ public:
     Cursor& cursor() { return mCursor; }
 
 	// Node list specifics.
-    Node *addNode (unsigned long iFrame = 0, float fTempo = 120.0f,
+    Node *addNode (uint64 iFrame = 0, float fTempo = 120.0f,
                    unsigned short iBeatType = 2, unsigned short iBeatsPerBar = 4,
                    unsigned short iBeatDivisor = 2);
 
@@ -235,15 +229,13 @@ public:
     int64_t frameFromPixel (int x) const { return roundf ((mFrameRate * x) / mPixelRate); }
 
 	// Frame/bar general converters.
-    unsigned short
-    barFromFrame (unsigned long frame)
+    unsigned short barFromFrame (uint64 frame)
 	{
         Node *node = mCursor.seekFrame (frame);
         return (node ? node->barFromFrame (frame) : 0);
 	}
 
-    unsigned long
-    frameFromBar (unsigned short bar)
+    uint64 frameFromBar (unsigned short bar)
 	{
         Node *node = mCursor.seekBar (bar);
         return (node ? node->frameFromBar (bar) : 0);
@@ -251,36 +243,33 @@ public:
 
 	// Frame/beat general converters.
     unsigned int
-    beatFromFrame (unsigned long frame)
+    beatFromFrame (uint64 frame)
 	{
         Node *node = mCursor.seekFrame (frame);
         return (node ? node->beatFromFrame (frame) : 0);
 	}
 
-    unsigned long
-    frameFromBeat (unsigned int beat)
+    uint64 frameFromBeat (unsigned int beat)
 	{
         Node *node = mCursor.seekBeat (beat);
         return (node ? node->frameFromBeat (beat) : 0);
 	}
 
 	// Frame/tick general converters.
-    unsigned long
-    tickFromFrame (unsigned long frame) const
+    uint64 tickFromFrame (uint64 frame) const
 	{
         Node *node = mCursor.seekFrame (frame);
         return (node ? node->tickFromFrame (frame) : 0);
 	}
 
-    unsigned long
-    frameFromTick (unsigned long tick) const
+    uint64 frameFromTick (uint64 tick) const
 	{
         Node *node = mCursor.seekTick (tick);
         return (node ? node->frameFromTick (tick) : 0);
 	}
 
 	// Tick/pixel general converters.
-    unsigned long
+    uint64
     tickFromPixel (int x) const
 	{
         Node *node = mCursor.seekPixel (x);
@@ -288,7 +277,7 @@ public:
 	}
 
     int
-    pixelFromTick (unsigned long tick) const
+    pixelFromTick (uint64 tick) const
 	{
         Node *node = mCursor.seekTick (tick);
         return (node ? node->pixelFromTick (tick) : 0);
@@ -318,15 +307,15 @@ public:
 	}
 
 	// Snap functions.
-    unsigned long
-    tickSnap (unsigned long iTick)
+    uint64
+    tickSnap (uint64 iTick)
 	{
         Node *node = mCursor.seekTick(iTick);
         return (node ? node->tickSnap(iTick) : iTick);
 	}
 
-    unsigned long
-    frameSnap (unsigned long frame)
+    uint64
+    frameSnap (uint64 frame)
 	{
         Node *node = mCursor.seekFrame (frame);
         return (node ? node->frameSnap (frame) : frame);
@@ -345,12 +334,12 @@ public:
 
 #if 0
 	// Convert frames to time string and vice-versa.
-    QString textFromFrame (unsigned long iFrame, bool bDelta = false, unsigned long iDelta = 0);
-    unsigned long frameFromText (const QString& sText, bool bDelta = false, unsigned long iFrame = 0);
+    QString textFromFrame (uint64 iFrame, bool bDelta = false, uint64 iDelta = 0);
+    uint64 frameFromText (const QString& sText, bool bDelta = false, uint64 iFrame = 0);
 
 	// Convert ticks to time string and vice-versa.
-    QString textFromTick (unsigned long iTick, bool bDelta = false, unsigned long iDelta = 0);
-    unsigned long tickFromText (const QString& sText, bool bDelta = false, unsigned long iTick = 0);
+    QString textFromTick (uint64 iTick, bool bDelta = false, uint64 iDelta = 0);
+    uint64 tickFromText (const QString& sText, bool bDelta = false, uint64 iTick = 0);
 #endif
 
     /** Set the tempo
@@ -432,8 +421,8 @@ public:
 	}
 
 	// Tick/Frame range conversion (delta conversion).
-    unsigned long frameFromTickRange (unsigned long tickStart, unsigned long tickEnd);
-    unsigned long tickFromFrameRange (unsigned long frameStart, unsigned long frameEnd);
+    uint64 frameFromTickRange (uint64 tickStart, uint64 tickEnd);
+    uint64 tickFromFrameRange (uint64 frameStart, uint64 frameEnd);
 
 #if 1
 	// Location marker declaration.
@@ -442,7 +431,7 @@ public:
 	public:
 
 		// Constructor.
-        Marker (unsigned long iFrame, unsigned short iBar,
+        Marker (uint64 iFrame, unsigned short iBar,
                 const std::string& sText, const std::string& rgbColor = std::string("#545454"))
             : frame (iFrame), bar(iBar), text(sText), color (rgbColor) { }
 
@@ -451,7 +440,7 @@ public:
             bar (marker.bar), text(marker.text), color(marker.color) { }
 
 		// Marker keys.
-		unsigned long  frame;
+		uint64  frame;
 		unsigned short bar;
 
 		// Marker payload.
@@ -475,10 +464,10 @@ public:
         void reset (Marker *marker = 0);
 
 		// Seek methods.
-        Marker *seekFrame (unsigned long iFrame);
+        Marker *seekFrame (uint64 iFrame);
         Marker *seekBar (unsigned short iBar);
         Marker *seekBeat (unsigned int iBeat);
-        Marker *seekTick (unsigned long iTick);
+        Marker *seekTick (uint64 iTick);
         Marker *seekPixel (int x);
 
 		// Notable markers accessors
@@ -496,7 +485,7 @@ public:
     MarkerCursor& markers() { return mMarkerCursor; }
 
 	// Marker list specifics.
-    Marker *addMarker (unsigned long iFrame, const std::string& text,
+    Marker *addMarker (uint64 iFrame, const std::string& text,
                                              const std::string& color = std::string ("#000000"));
     void updateMarker (Marker *marker);
     void removeMarker (Marker *marker);
@@ -540,6 +529,3 @@ private:
 	// Internal node cursor.
     MarkerCursor mMarkerCursor;
 };
-
-
-#endif	/* EL_TIMESCALE_H */
