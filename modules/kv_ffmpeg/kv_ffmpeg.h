@@ -45,10 +45,9 @@
  #pragma clang diagnostic pop
 #endif
 
-namespace kv
-{
+namespace kv {
 using namespace juce;
-using namespace kv;
+
 void ffmpeg_init (const bool useNetwork = false);
 void ffmpeg_deinit();
 
