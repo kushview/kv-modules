@@ -1,21 +1,38 @@
+/*
+    This file is part of the Kushview Modules for JUCE
+    Copyright (C) 2017  Kushview, LLC.  All rights reserved.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
 #include "MainComponent.h"
 
 using kv::FFmpegDecoder;
 using kv::FFmpegVideoSource;
 
-namespace kv {
+#include <chrono>
+#include <thread>
 
-}
-
-class VideoDisplayComponent : public Component,
-public Timer
+class VideoDisplayComponent : public Component, 
+                              public Timer
 {
 public:
     VideoDisplayComponent()
     {
         dirty = false;
-        startTimerHz (15);
+        startTimerHz (60);
     }
     
     void paint (Graphics& g) override
@@ -42,7 +59,6 @@ public:
     
     void setImage (const Image& image)
     {
-        // MessageManagerLock lock;
         displayImage = image;
         dirty = true;
     }
@@ -52,66 +68,112 @@ private:
     bool dirty;
 };
 
-class TickService : public HighResolutionTimer
+class TickService : private Thread
 {
 public:
     TickService (MainContentComponent& u)
-        : timebase (1, 60),
+        : Thread ("timer"),
           ui (u)
     { }
     
-    ~TickService() { }
+    ~TickService()
+    {
+        stop();
+    }
     
+    bool openFile (const File& file)
+    {
+        source.openFile (file);
+        return true;
+    }
+
     void start()
     {
-        if (isTimerRunning())
-            stopTimer();
+        if (isPlaying())
+            stop();
         
-        masterPTS = 0;
+        jassert (playing == false);
+        intervalNanoseconds = static_cast<size_t> (1000000000.0 / 60.0);
         playing = true;
-        interval = roundDoubleToInt (1000.0 * timebase.ratio());
-        startTimer (interval);
+        source.prepareToRender();
+        startThread (9);
     }
     
     void stop()
     {
+        if (isThreadRunning())
+            stopThread (100);
+        
+        source.releaseResources();
         playing = false;
-        stopTimer();
     }
     
     bool isPlaying() const { return playing; }
     
-    void hiResTimerCallback() override
-    {
-        if (playing)
-        {
-            source.process (masterPTS);
-            displayImage = source.findImage ((double) masterPTS * 0.001);
-            ui.display->setImage (displayImage);
-            
-            masterPTS += interval;
-            if (masterPTS % 1000 == 0)
-            {
-                DBG("tick seconds: " << (double)masterPTS / 1000.0);
-            }
-        }
-    }
-    
-    std::atomic<int64> masterPTS;
-    
-    int interval;
+    kv::VideoSource& getVideoSource() { return source; }
+
+private:
+    std::atomic<size_t> intervalNanoseconds;
+
     bool playing;
-    kv::Rational timebase;
     MainContentComponent& ui;
     FFmpegVideoSource source;
     Image displayImage;
+
+    friend class Thread;
+    void run() override
+    {
+        using namespace std::chrono;
+        const nanoseconds interval (intervalNanoseconds);
+        auto currentTime = high_resolution_clock::now();
+        auto nextTime = currentTime;
+        auto zeroTime = currentTime;
+        auto errorMargin = nanoseconds::zero();
+
+        int frame = 0;
+        double pts = 0.0;
+        double lastPts = 0.0;
+        const double ptsInterval = 1.0 / 60.0;
+        
+        bool firstFrame = false;
+        auto& display (*ui.display);
+        while (true)
+        {
+            currentTime = high_resolution_clock::now();
+            if (! firstFrame)
+            {
+                firstFrame = true;
+                zeroTime = currentTime;
+            }
+
+            errorMargin = (currentTime > nextTime) ? currentTime - nextTime 
+                                                   : nanoseconds::zero();
+            nextTime = currentTime + interval - errorMargin;
+            source.videoTick (pts);
+            displayImage = source.findImage (0.0);
+            display.setImage (displayImage);
+
+           #if 0
+            const double s = (currentTime - zeroTime).count() / 1000000000.0;
+            DBG("frame: " << frame << " pts: " << pts << " seconds: " << s);
+           #endif
+
+            ++frame;
+            lastPts = pts;
+            pts += ptsInterval;
+
+            if (threadShouldExit())
+                break;
+
+            std::this_thread::sleep_until (nextTime);
+        }
+    }
 };
 
 MainContentComponent::MainContentComponent()
 {
     tick = new TickService (*this);
     addAndMakeVisible (display = new VideoDisplayComponent());
-    
     devices.addAudioCallback (&player);
     player.setSource (this);
 
@@ -127,7 +189,7 @@ MainContentComponent::MainContentComponent()
     playButton.setButtonText ("P");
     playButton.addListener (this);
     
-    addAndMakeVisible(stopButton);
+    addAndMakeVisible (stopButton);
     stopButton.setButtonText ("S");
     stopButton.addListener (this);
     
@@ -140,10 +202,10 @@ MainContentComponent::MainContentComponent()
 
 MainContentComponent::~MainContentComponent()
 {
-    tick->stopTimer();
-    tick = nullptr;
-    devices.removeAudioCallback (&player);
     openButton.removeListener (this);
+    devices.removeAudioCallback (&player);
+    tick->stop();
+    tick = nullptr;
 }
 
 void MainContentComponent::mouseDown (const MouseEvent& ev)
@@ -176,8 +238,8 @@ void MainContentComponent::buttonClicked (Button* button)
         {
             tick->stop();
             display->setImage (Image());
-            tick->source.openFile (chooser.getResult());
-            movieLoaded = true;
+            display->resized();            
+            movieLoaded = tick->openFile (chooser.getResult());
         }
         else
         {
@@ -231,7 +293,7 @@ void MainContentComponent::releaseResources()
     transport.releaseResources();
 }
 
-void MainContentComponent::getNextAudioBlock (const AudioSourceChannelInfo& bufferToFill)
+void MainContentComponent::getNextAudioBlock (const AudioSourceChannelInfo& buf)
 {
-    transport.getNextAudioBlock (bufferToFill);
+    auto& source (tick->getVideoSource());
 }
