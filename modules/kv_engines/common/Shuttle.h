@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_SHUTTLE_H
-#define EL_SHUTTLE_H
+#pragma once
 
 /** A mini-transport for use in a processable that can loop */
 class Shuttle :  public AudioPlayHead
@@ -88,5 +87,3 @@ private:
     double ppqLoopEnd;
 
 };
-
-#endif /* EL_SHUTTLE_H */
