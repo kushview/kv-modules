@@ -1,5 +1,5 @@
 /*
-    kv_engines.h - This file is part of the Kushview Modules for JUCE
+    This file is part of the Kushview Modules for JUCE
     Copyright (C) 2014-2017  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
