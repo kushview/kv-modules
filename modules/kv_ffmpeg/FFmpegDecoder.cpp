@@ -1,3 +1,21 @@
+/*
+    This file is part of the Kushview Modules for JUCE
+    Copyright (C) 2017  Kushview, LLC.  All rights reserved.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
 
 #define LOG_FORMAT_INFO 0
 
@@ -180,7 +198,6 @@ struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
             DBG("[KV] ffmpeg:   time base: " << timeBase.num << " / " << timeBase.den);
             DBG("[KV] ffmpeg:   duration (seconds): " << duration * av_q2d (stream->time_base));
             DBG("[KV] ffmpeg:   num frames: " << stream->nb_frames);
-            // noop
         }
         
         audioStream = openCodecContext (&audio, AVMEDIA_TYPE_AUDIO, true);
@@ -273,6 +290,9 @@ struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
         return (format && isPositiveAndBelow (videoStream, static_cast<int> (format->nb_streams)))
             ? format->streams[videoStream] : nullptr;
     }
+    
+    int getWidth() const        { return (nullptr != video ? video->width : 0); }
+    int getHeight() const       { return (nullptr != video ? video->height : 0); }
     
 private:
     friend class FFmpegDecoder;
@@ -370,7 +390,7 @@ private:
     /** Decodes a video packet, returns the result of avcodec_decode_video2 */
     int decodeVideoPacket (AVPacket* packet, AVFrame* frame)
     {
-        if (video == nullptr || packet->size <= 0)
+        if (video == nullptr || packet->size <= 0 || frame == nullptr)
             return 0.0;
         
         int gotPicture = 0;
@@ -412,9 +432,8 @@ FFmpegDecoder::~FFmpegDecoder()
 bool FFmpegDecoder::openFile (const File& file)     { return pimpl->openFile (file); }
 void FFmpegDecoder::close()                         { pimpl->close(); }
 void FFmpegDecoder::read()                          { pimpl->read(); }
-
-int FFmpegDecoder::getWidth()   const { return (pimpl && pimpl->video) ? pimpl->video->width : 0; }
-int FFmpegDecoder::getHeight()  const { return (pimpl && pimpl->video) ? pimpl->video->height : 0; }
+int FFmpegDecoder::getWidth()   const { return pimpl->getWidth(); }
+int FFmpegDecoder::getHeight()  const { return pimpl->getHeight(); }
 
 AVPixelFormat FFmpegDecoder::getPixelFormat() const
 {
@@ -454,13 +473,45 @@ public:
             if (decoder->getPixelFormat() == AV_PIX_FMT_NONE)
                 continue;
             
-            if (queue.video.getNumFree() > 4 || queue.audio.getNumFree() > 20)
+            while (queue.video.getNumReady() < 2)
+                decoder->read();
+            
+            while (queue.audio.getNumReady() < 4)
                 decoder->read();
         }
         
         DBG("[KV] ffmpeg: video source thread exited");
     }
     
+    void videoTick (const double pts)
+    {
+        AVFrame* frame = nullptr;
+        const AVRational tb = { 1, 6000 };
+        bool gotFrame = false;
+        
+        while (queue.video.canRead())
+        {
+            frame = queue.video.getReadFrame();
+            const double myPts = av_q2d(tb) * (double)frame->pts;
+            
+            if (myPts >= pts)
+            {
+                gotFrame = true;
+                scale.convertFrameToImage (image, frame);
+                DBG("[KV] ffmpeg: decoded video @ " << av_q2d(tb) * (double)frame->pts << " master: " << pts);
+            }
+            
+            queue.video.finishedRead();
+            av_frame_unref (frame);
+            
+            if (gotFrame)
+                break;
+        }
+        
+        sem.post();
+    }
+    
+    /* not used, saved for reference and will be removed */
     void tick (double pts)
     {
         AVFrame* frame = nullptr;
@@ -469,7 +520,11 @@ public:
         {
             frame = queue.video.getReadFrame();
             scale.convertFrameToImage (image, frame);
+            
+           #if DEBUG_LOG_VIDEO_PACKETS
             DBG("[KV] ffmpeg: decoded video @ " << frame->pts << " master: " << pts);
+           #endif
+           
             queue.video.finishedRead();
             av_frame_unref (frame);
         }
@@ -508,22 +563,14 @@ public:
         sem.post();
     }
 
-    void process (int64 pts)
-    {
-        tick (pts);
-    }
-    
     void openFile (const File& file)
     {
         decoder->openFile (file);
-        
         audioOut.setSize (2, 32 * 1024);
-        
         scale.setupScaler (decoder->getWidth(),
                            decoder->getHeight(),
                            decoder->getPixelFormat(),
                            640, 360, AV_PIX_FMT_BGR0);
-
         sem.post();
     }
     
@@ -534,16 +581,8 @@ public:
         audioOut.setSize (1, 1);
     }
     
-    void videoFrameDecoded (const AVStream* stream, AVFrame* frame) override
-    {
-
-    }
-    
-    void audioFrameDecoded (const AVStream* stream, AVFrame* frame) override
-    {
-
-    }
-    
+    void videoFrameDecoded (const AVStream* stream, AVFrame* frame) override { }
+    void audioFrameDecoded (const AVStream* stream, AVFrame* frame) override { }
     void subtitleFrameDecoded (const AVStream* stream, AVFrame*) override { }
     
     Semaphore sem;
@@ -580,13 +619,9 @@ FFmpegVideoSource::~FFmpegVideoSource()
     pimpl = nullptr;
 }
 
-void FFmpegVideoSource::tick()
+void FFmpegVideoSource::videoTick (const double seconds)
 {
-}
-
-void FFmpegVideoSource::process (int64 pts)
-{
-    pimpl->process (pts);
+    pimpl->videoTick (seconds);
 }
 
 void FFmpegVideoSource::openFile (const File& file)
@@ -597,8 +632,4 @@ void FFmpegVideoSource::openFile (const File& file)
 Image FFmpegVideoSource::findImage (double pts)
 {
     return pimpl->image;
-}
-
-void readSamples (AudioSampleBuffer& buffer) {
-    
 }
