@@ -20,7 +20,7 @@
 #pragma once
 
 /** A mini-transport for use in a processable that can loop */
-class Shuttle :  public AudioPlayHead
+class Shuttle : public AudioPlayHead
 {
 public:
 
@@ -70,20 +70,17 @@ public:
     bool getCurrentPosition (CurrentPositionInfo &result);
 
 protected:
-
     bool playing, recording, looping;
 
 private:
-
     double framesPerBeat;
     double beatsPerFrame;
 
     int64 framePos;
     uint32 duration;
     double sampleRate;
-    Element::TimeScale ts;
+    kv::TimeScale ts;
 
     double ppqLoopStart;
     double ppqLoopEnd;
-
 };
