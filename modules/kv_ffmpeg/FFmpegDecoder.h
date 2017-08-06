@@ -68,8 +68,17 @@ public:
     /** Sets the sink. The Passed in sync is owned by the caller. */
     void setSink (Sink* newSink)            { sink = newSink; }
     
+    /** Returns the width video stream. If no video is available then zero
+        will be returned.
+     */
     int getWidth() const;
+
+    /** Returns the width video stream. If no video is available then zero
+        will be returned.
+     */
     int getHeight() const;
+
+    /** Returns pixel format of the format */
     AVPixelFormat getPixelFormat() const;
     
 private:
@@ -78,11 +87,6 @@ private:
     friend struct Pimpl;
     friend struct ContainerDeletePolicy<Pimpl>;
     ScopedPointer<Pimpl> pimpl;
-};
-
-class JUCE_API FFmpegReader
-{
-public:
 };
 
 class JUCE_API FFmpegVideoSource : public VideoSource
