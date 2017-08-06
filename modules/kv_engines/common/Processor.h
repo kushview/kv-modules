@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_PROCESSOR_BASE_H
-#define EL_PROCESSOR_BASE_H
+#pragma once
 
 class Processor :  public AudioPluginInstance
 {
@@ -61,5 +60,3 @@ public:
     static bool isPortInput (AudioProcessor*, uint32 port);
     static bool writeToPort (AudioProcessor*, uint32 port, uint32 size, uint32 protocol, void const* data);
 };
-
-#endif // EL_PROCESSOR_BASE_H
