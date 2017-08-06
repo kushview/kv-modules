@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_MONITOR_H_INCLUDED
-#define EL_MONITOR_H_INCLUDED
+#pragma once
 
 class Monitor
 {
@@ -51,5 +50,3 @@ private:
     AtomicValue<float> value;
 
 };
-
-#endif // EL_MONITOR_H

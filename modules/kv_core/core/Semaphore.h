@@ -18,8 +18,7 @@
     OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-#ifndef EL_SEMAPHORE_H
-#define EL_SEMAPHORE_H
+#pragma once
 
 #ifdef __APPLE__
  #include <mach/mach.h>
@@ -78,5 +77,3 @@ private:
   SemType semaphore;
 
 };
-
-#endif  /* EL_SEMAPHORE_H */

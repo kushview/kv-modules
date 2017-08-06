@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_PORT_TYPE_H
-#define EL_PORT_TYPE_H
+#pragma once
 
 #ifndef KV_INVALID_PORT
  #define KV_INVALID_PORT (uint32)-1
@@ -301,5 +300,3 @@ struct PortDescription
     bool        isInput;
     int32       type;
 };
-
-#endif /* EL_PORT_TYPE_H */

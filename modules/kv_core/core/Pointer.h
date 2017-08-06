@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_POINTER_H
-#define EL_POINTER_H
+#pragma once
 
 #define KV_FORCE_BOOST_SHARED_PTR 0
 
@@ -159,5 +158,3 @@ inline Shared<T> makeShared (A0& a0, A1& a1, A2& a2, A3& a3)
 }
 
 #endif
-
-#endif /* EL_POINTER_H */

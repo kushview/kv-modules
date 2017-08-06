@@ -37,8 +37,7 @@
  ==============================================================================
  */
 
-#ifndef FSPRO_AUDIOBASICS_AUDIOBUFFERFIFO_H_INCLUDED
-#define FSPRO_AUDIOBASICS_AUDIOBUFFERFIFO_H_INCLUDED
+#pragma once
 
 /**
     The AudioBufferFIFO implements an actual sample buffer using JUCEs AbstractFIFO
@@ -169,6 +168,3 @@ private:
     /*< The actual audio buffer */
     juce::AudioBuffer<FloatType> buffer;
 };
-
-#endif /* FSPRO_AUDIOBASICS_AUDIOBUFFERFIFO_H_INCLUDED */
-

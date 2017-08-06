@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_TIME_STAMP_H
-#define EL_TIME_STAMP_H
+#pragma once
 
 class TimeUnit
 {
@@ -44,5 +43,3 @@ public:
 private:
     int32 type;
 };
-
-#endif /* EL_TIME_STAMP_H */

@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_WORK_THREAD_H
-#define EL_WORK_THREAD_H
+#pragma once
 
 class WorkerBase;
 
@@ -27,14 +26,12 @@ class WorkerBase;
 class WorkThread :  public Thread
 {
 public:
-
     WorkThread (const String& name, uint32 bufsize, int32 priority = 5);
     ~WorkThread();
 
     inline static uint32 requiredSpace (uint32 msgSize) { return msgSize + (2 * sizeof (uint32)); }
 
 protected:
-
     friend class WorkerBase;
 
     /** Register a worker for scheduling. Does not take ownership */
@@ -48,7 +45,6 @@ protected:
     bool scheduleWork (WorkerBase* worker, uint32 size, const void* data);
 
 private:
-
     uint32 bufferSize;
 
     WorkerBase* getWorker (uint32 workerId) const;
@@ -131,6 +127,3 @@ private:
     friend class WorkThread;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WorkerBase);
 };
-
-
-#endif /* EL_WORK_THREAD_H */

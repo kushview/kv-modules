@@ -94,7 +94,6 @@ using namespace juce;
 
 #include "util/Utils.h"
 #include "util/FileHelpers.h"
-#include "util/Fraction.h"
 #include "util/Midi.h"
 #include "util/RangeTypes.h"
 #include "util/RelativePath.h"

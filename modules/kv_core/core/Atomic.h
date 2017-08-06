@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_ATOMIC_H
-#define EL_ATOMIC_H
+#pragma once
 
 #if ! _MSC_VER
 template<typename ValueType>
@@ -267,5 +266,3 @@ private:
 
 #endif
 #endif
-
-#endif // EL_ATOMIC_H

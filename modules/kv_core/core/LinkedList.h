@@ -20,8 +20,7 @@
    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 */
 
-#ifndef EL_LINKED_LIST_H
-#define EL_LINKED_LIST_H
+#pragma once
 
 /** A doubly linked list
 
@@ -305,5 +304,3 @@ int LinkedList<Node>::find (Node *node) const
 
   return -1;
 }
-
-#endif  /* EL_LINKED_LIST_H */

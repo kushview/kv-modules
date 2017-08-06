@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_MATRIX_STATE_H
-#define EL_MATRIX_STATE_H
+#pragma once
 
 class MatrixState
 {
@@ -132,5 +131,3 @@ private:
     BigInteger toggled;
     int numRows, numColumns;
 };
-
-#endif  /* EL_MATRIX_STATE_H */

@@ -17,9 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_PARAMETER_H
-#define EL_PARAMETER_H
-
+#pragma once
 
 /** Some kind of parameter to control Audio DSP classes with. */
 class Parameter
@@ -166,6 +164,3 @@ private:
 
     Seed seed;
 };
-
-
-#endif /* EL_PARAMETER_H */

@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_ARC_H
-#define EL_ARC_H
+#pragma once
 
 struct JUCE_API Arc
 {
@@ -170,5 +169,3 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE (ArcTable)
 };
-
-#endif // EL_ARC_H

@@ -17,10 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_RANGE_TYPES_H
-#define EL_RANGE_TYPES_H
+#pragma once
 
-class FrameSpan :  public Range<int64>
+class FrameSpan : public Range<int64>
 {
 public:
     inline FrameSpan (int64 i, int64 o) : Range<int64> (i, o) { }
@@ -32,5 +31,3 @@ public:
     inline void setInPoint (const int64 in) { setStart (in); }
     inline void setOutPoint (const int64 out) { setEnd (out); }
 };
-
-#endif // EL_RANGE_TYPES_H

@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_FILE_HELPERS_H
-#define EL_FILE_HELPERS_H
+#pragma once
 
 namespace FileHelpers {
 
@@ -78,6 +77,3 @@ private:
     Time fileModificationTime;
     juce::int64 fileHashCode, fileSize;
 };
-
-
-#endif   // EL_FILE_HELPERS_H

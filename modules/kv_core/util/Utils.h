@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_UTILS_H
-#define EL_UTILS_H
+#pragma once
 
 /** Convenient typdef for a string vector */
 typedef std::vector<std::string> StringVec;
@@ -66,7 +65,7 @@ isWithinRange (const VAL& input, const VAL& lower, const VAL& upper)
 
 template<typename SEQ>
 static int64_t
-index_of (SEQ& seq, typename SEQ::value_type const& val)
+indexOf (SEQ& seq, typename SEQ::value_type const& val)
 {
     int index = 0;
     for (typename SEQ::value_type const& i : seq)
@@ -149,6 +148,3 @@ hashString (const std::string& str)
     std::hash<std::string> hashit;
     return hashit (str);
 }
-
-
-#endif /* EL_UTILS_H */

@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_RINGBUFFER_H
-#define EL_RINGBUFFER_H
+#pragma once
 
 class RingBuffer
 {
@@ -110,5 +109,3 @@ private:
     HeapBlock<uint8> block;
     uint8* buffer;
 };
-
-#endif /* EL_RINGBUFFER_H */

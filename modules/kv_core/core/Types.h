@@ -17,12 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_TYPES_H
-#define EL_TYPES_H
+#pragma once
 
 typedef float  Sample;
 typedef uint32 SampleCount;
 typedef uint32 FrameTime;
 typedef uint16 Channel;
-
-#endif // EL_TYPES_H

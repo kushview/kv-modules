@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_MIDI_H
-#define EL_MIDI_H
+#pragma once
 
 typedef uint8  MidiByte;
 
@@ -135,6 +134,3 @@ namespace Midi {
     };
 
 } /* namespace Midi */
-
-
-#endif  /* EL_MIDI_H */

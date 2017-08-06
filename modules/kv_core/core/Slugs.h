@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_SLUGS_H
-#define EL_SLUGS_H
+#pragma once
 
 /** Commonly used Identifiers, these might represent different things depending
     on the context of use */
@@ -63,5 +62,3 @@ namespace Slugs {
     static const Identifier version  = "version";
     static const Identifier volume   = "volume";
 }
-
-#endif /* EL_SLUGS_H */

@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_DELAY_LOCKED_LOOP_H
-#define EL_DELAY_LOCKED_LOOP_H
+#pragma once
 
 #include <cmath>
 
@@ -96,5 +95,3 @@ private:
         c = omega * omega;
     }
 };
-
-#endif  /* EL_DELAY_LOCKED_LOOP_H */
