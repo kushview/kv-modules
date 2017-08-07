@@ -41,4 +41,6 @@ public:
         This is required for syncronous video sources
      */
     virtual int getHeight() const { return 0; }
+    
+    virtual void renderAudio (const AudioSourceChannelInfo&) { }
 };
