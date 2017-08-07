@@ -54,6 +54,7 @@ public:
         AbstractFifo (buffersize)
     {
         buffer.setSize (channels, buffersize);
+        clear();
     }
 
     /*< Resize the buffer with new number of channels and new number of samples */
@@ -61,7 +62,7 @@ public:
     {
         buffer.setSize (channels, newBufferSize);
         setTotalSize (newBufferSize);
-        reset ();
+        clear();
     }
 
     /*< Push samples into the FIFO from raw float arrays */
