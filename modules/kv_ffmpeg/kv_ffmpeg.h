@@ -68,6 +68,6 @@ using namespace juce;
 void ffmpeg_init (const bool useNetwork = false);
 void ffmpeg_deinit();
 
-#include "FFmpegDecoder.h"
-#include "FFmpegScaler.h"
+#include "filters/FFmpegScaler.h"
+#include "io/FFmpegDecoder.h"
 }

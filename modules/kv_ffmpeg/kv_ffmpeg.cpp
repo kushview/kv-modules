@@ -43,7 +43,7 @@ void ffmpeg_deinit()
 #endif
 
 namespace kv {
- #include "FFmpegDecoder.cpp"
+ #include "io/FFmpegDecoder.cpp"
 }
 
 #if __clang__
