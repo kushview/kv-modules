@@ -38,8 +38,9 @@ public:
     {
         const ScopedLock sl (displayLock);
         if (displayImage.isValid() && ! displayImage.isNull())
-            g.drawImage (displayImage, 0, 0, getWidth(), getHeight(),
-                         0, 0, displayImage.getWidth(), displayImage.getHeight());
+        {
+            g.drawImageWithin (displayImage, 0, 0, getWidth(), getHeight(), RectanglePlacement::centred);
+        }
         else
         {
             g.fillAll (Colours::black);
@@ -182,7 +183,6 @@ private:
         }
     }
 };
-
 
 //[/MiscUserDefs]
 

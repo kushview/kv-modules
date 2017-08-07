@@ -37,7 +37,6 @@ public:
 
     void shutdown() override
     {
-        
         mainWindow = nullptr;
         kv::ffmpeg_deinit();
     }
@@ -57,6 +56,7 @@ public:
             setUsingNativeTitleBar (true);
             setContentOwned (new ContentComponent(), true);
             centreWithSize (getWidth(), getHeight());
+            setResizable (true, false);
             setVisible (true);
         }
 
