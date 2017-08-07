@@ -97,6 +97,7 @@ public:
     void openFile (const File& file);
     
     void videoTick (const double seconds) override;
+    void renderAudio (const AudioSourceChannelInfo&) override;
 
     /** currently here for testing only */    
     Image findImage (double pts);

@@ -18,6 +18,7 @@
 */
 
 #define LOG_FORMAT_INFO 0
+#define DEBUG_LOG_AUDIO_PACKETS 1
 
 class FFmpegFrameQueue
 {
@@ -184,7 +185,7 @@ struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
             return false;
         }
         
-        videoStream = openCodecContext (&video, AVMEDIA_TYPE_VIDEO, true);
+        videoStream = openCodecContext (&video, AVMEDIA_TYPE_VIDEO, false);
         if (isPositiveAndBelow (videoStream, static_cast<int> (format->nb_streams)))
         {
             const AVStream* const stream = getVideoStream();
@@ -200,20 +201,21 @@ struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
             DBG("[KV] ffmpeg:   num frames: " << stream->nb_frames);
         }
         
-        audioStream = openCodecContext (&audio, AVMEDIA_TYPE_AUDIO, true);
+        audioStream = openCodecContext (&audio, AVMEDIA_TYPE_AUDIO, false);
         if (isPositiveAndBelow (audioStream, static_cast<int> (format->nb_streams)))
         {
-            const AVStream* stream = getVideoStream();
+            const AVStream* const stream = getAudioStream();
             const double duration = static_cast<double> (stream->duration);
-            const AVRational rate = av_stream_get_r_frame_rate (getAudioStream());
-            const AVRational codec_tb = av_stream_get_codec_timebase (getAudioStream());
+            const AVRational rate = av_stream_get_r_frame_rate (stream);
+            const AVRational codec_tb = stream->time_base; //av_stream_get_codec_timebase (getAudioStream());
             
-           // DBG("[KV] ffmpeg: audio stream opened: " << audioStream);
+            DBG("");
+            DBG("[KV] ffmpeg: audio stream opened: " << audioStream);
             audio->request_sample_fmt = AV_SAMPLE_FMT_FLTP;
-//            DBG("[KV] ffmpeg: ticks/frame: " << audio->ticks_per_frame);
-//            DBG("[KV] ffmpeg: real: " << rate.num << " / " << rate.den);
-//            DBG("[KV] ffmpeg: timebase: " << codec_tb.num << " / " << codec_tb.den);
-//            DBG("[KV] ffmpeg: duration: " << duration * av_q2d (stream->time_base));
+            DBG("[KV] ffmpeg:   samplerate: " << audio->sample_rate);
+            DBG("[KV] ffmpeg:   real: " << rate.num << " / " << rate.den);
+            DBG("[KV] ffmpeg:   timebase: " << codec_tb.num << " / " << codec_tb.den);
+            DBG("[KV] ffmpeg:   duration: " << duration * av_q2d (stream->time_base));
         }
         
        #if LOG_FORMAT_INFO
@@ -291,17 +293,27 @@ struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
             ? format->streams[videoStream] : nullptr;
     }
     
+    /** Returns the width of the decoded video stream. Zero if no video */
     int getWidth() const        { return (nullptr != video ? video->width : 0); }
+    
+    /** Returns the height of the decoded video stream. Zero if no video*/
     int getHeight() const       { return (nullptr != video ? video->height : 0); }
+    
+    /** Returns the sample rate of the audio stream. Zero if no audio */
+    double getSampleRate() const
+    {
+        return (nullptr != audio) ? static_cast<double> (audio->sample_rate)
+                                  : 0.0;
+    }
     
 private:
     friend class FFmpegDecoder;
     FFmpegDecoder& decoder;
-    
     AVFormatContext* format;
     AVCodecContext* audio, *video, *subtitle;
     int audioStream, videoStream, subtitleStream;
     AVFrame* audioFrame, *videoFrame;
+    
     OptionalScopedPointer<FFmpegStreamQueue> queue;
     
     /** Opens a context for reading. Returns the stream index */
@@ -312,7 +324,7 @@ private:
         
         int id = av_find_best_stream (format, type, -1, -1, nullptr, 0);
         
-        if (isPositiveAndBelow (id, static_cast<int> (format->nb_streams)))
+        if (isPositiveAndBelow (id, static_cast<int>(format->nb_streams)))
         {
             AVStream* const stream = format->streams[id];
             
@@ -366,6 +378,12 @@ private:
         int gotFrame = 0;
         int decoded = packet->size;
         int result = 0;
+        
+        if (nullptr == frame)
+        {
+            jassertfalse; // this should never happen
+            return 0;
+        }
         
         // decode audio frame
         do {
@@ -451,7 +469,6 @@ public:
           audioOut (1, 1)
     {
         decoder = new FFmpegDecoder (this, &queue);
-        frameIndex = 0;
         image = Image (Image::RGB, 640, 360, true);
         startThread();
     }
@@ -476,8 +493,8 @@ public:
             while (queue.video.getNumReady() < 2)
                 decoder->read();
             
-            while (queue.audio.getNumReady() < 4)
-                decoder->read();
+//            while (queue.audio.getNumReady() < 4)
+//                decoder->read();
         }
         
         DBG("[KV] ffmpeg: video source thread exited");
@@ -498,7 +515,7 @@ public:
             {
                 gotFrame = true;
                 scale.convertFrameToImage (image, frame);
-                DBG("[KV] ffmpeg: decoded video @ " << av_q2d(tb) * (double)frame->pts << " master: " << pts);
+                // DBG("[KV] ffmpeg: decoded video @ " << av_q2d(tb) * (double)frame->pts << " master: " << pts);
             }
             
             queue.video.finishedRead();
@@ -506,27 +523,6 @@ public:
             
             if (gotFrame)
                 break;
-        }
-        
-        sem.post();
-    }
-    
-    /* not used, saved for reference and will be removed */
-    void tick (double pts)
-    {
-        AVFrame* frame = nullptr;
-        
-        while (queue.video.canRead())
-        {
-            frame = queue.video.getReadFrame();
-            scale.convertFrameToImage (image, frame);
-            
-           #if DEBUG_LOG_VIDEO_PACKETS
-            DBG("[KV] ffmpeg: decoded video @ " << frame->pts << " master: " << pts);
-           #endif
-           
-            queue.video.finishedRead();
-            av_frame_unref (frame);
         }
         
         while (queue.audio.canRead())
@@ -537,40 +533,45 @@ public:
             const int numSamples = frame->nb_samples;
             AudioSampleBuffer audio ((float* const*) frame->extended_data,
                                      channels, 0, numSamples);
+            const double seconds = static_cast<double>(frame->pts) / (double)frame->sample_rate;
             
            #if DEBUG_LOG_AUDIO_PACKETS
-            DBG("decoded audio: " << "channels: "   << audio.getNumChannels()
-                                  << " samples: "   << audio.getNumSamples()
-                                  << " pts: "       << frame->pts
-                                  << " dts: "       << frame->pkt_dts
-                                  << " best effort: " << frame->best_effort_timestamp
-                                  << " level: "     << audio.getRMSLevel(0, 0, numSamples));
+            DBG("[KV] ffmpeg: decoded audio: " << "channels: "   << audio.getNumChannels()
+                << " samples: "   << audio.getNumSamples()
+                << " pts: "       << frame->pts
+                << " sec: " << seconds
+                << " free: " << audioOut.getFreeSpace());
            #endif
-
-            if (numSamples <= audioOut.getFreeSpace())
+            
+            bool stopFlag = false;
+            if (audioOut.getFreeSpace() >= numSamples)
             {
                 audioOut.addToFifo (audio);
             }
             else
             {
-                // DBG("[KV] ffmpeg: audio buffer overflow in decoding");
+                stopFlag = true;
             }
             
             queue.audio.finishedRead();
             av_frame_unref (frame);
+            
+            if (stopFlag)
+                break;
         }
         
         sem.post();
     }
-
+    
     void openFile (const File& file)
     {
         decoder->openFile (file);
-        audioOut.setSize (2, 32 * 1024);
+        audioOut.setSize (2, 192000);
         scale.setupScaler (decoder->getWidth(),
                            decoder->getHeight(),
                            decoder->getPixelFormat(),
                            640, 360, AV_PIX_FMT_BGR0);
+        DBG("Audio Buffer Size: " << audioOut.getFreeSpace());
         sem.post();
     }
     
@@ -632,4 +633,18 @@ void FFmpegVideoSource::openFile (const File& file)
 Image FFmpegVideoSource::findImage (double pts)
 {
     return pimpl->image;
+}
+
+void FFmpegVideoSource::renderAudio (const AudioSourceChannelInfo& info)
+{
+    if (pimpl->audioOut.getNumReady() >= info.numSamples)
+    {
+        pimpl->audioOut.readFromFifo (info);
+    }
+    else
+    {
+        info.clearActiveBufferRegion();
+    }
+    
+    pimpl->sem.post();
 }

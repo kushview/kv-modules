@@ -37,6 +37,7 @@ public:
     
     void paint (Graphics& g) override
     {
+        const ScopedLock sl (displayLock);
         if (displayImage.isValid() && ! displayImage.isNull())
             g.drawImage (displayImage, 0, 0, getWidth(), getHeight(),
                          0, 0, displayImage.getWidth(), displayImage.getHeight());
@@ -50,6 +51,7 @@ public:
     
     void timerCallback() override
     {
+        const ScopedLock sl (displayLock);
         if (dirty)
         {
             dirty = false;
@@ -63,7 +65,10 @@ public:
         dirty = true;
     }
     
+    CriticalSection& getDisplayLock() { return displayLock; }
+    
 private:
+    CriticalSection displayLock;
     Image displayImage;
     bool dirty;
 };
@@ -149,10 +154,14 @@ private:
             errorMargin = (currentTime > nextTime) ? currentTime - nextTime 
                                                    : nanoseconds::zero();
             nextTime = currentTime + interval - errorMargin;
-            source.videoTick (pts);
-            displayImage = source.findImage (0.0);
-            display.setImage (displayImage);
-
+            
+            {
+                const ScopedLock sl (display.getDisplayLock());
+                source.videoTick (pts);
+                displayImage = source.findImage (0.0);
+                display.setImage (displayImage);
+            }
+            
            #if 0
             const double s = (currentTime - zeroTime).count() / 1000000000.0;
             DBG("frame: " << frame << " pts: " << pts << " seconds: " << s);
@@ -296,4 +305,5 @@ void MainContentComponent::releaseResources()
 void MainContentComponent::getNextAudioBlock (const AudioSourceChannelInfo& buf)
 {
     auto& source (tick->getVideoSource());
+    source.renderAudio (buf);
 }
