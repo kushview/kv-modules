@@ -68,6 +68,8 @@ private:
     ScopedPointer<TickService> tick;
 
     std::atomic<float> gain, lastGain;
+    
+    void stabilizeComponents();
     //[/UserVariables]
 
     //==============================================================================

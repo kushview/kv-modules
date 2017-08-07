@@ -167,11 +167,6 @@ private:
                 display.setImage (displayImage);
             }
 
-#if 0
-            const double s = (currentTime - zeroTime).count() / 1000000000.0;
-            DBG("frame: " << frame << " pts: " << pts << " seconds: " << s);
-#endif
-
             ++frame;
             lastPts = pts;
             pts += ptsInterval;
@@ -362,13 +357,19 @@ void ContentComponent::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == playButton)
     {
         //[UserButtonCode_playButton] -- add your button handler code here..
-        tick->start();
+        if (! tick->isPlaying())
+            tick->start();
+        else
+            tick->stop();
+        
+        stabilizeComponents();
         //[/UserButtonCode_playButton]
     }
     else if (buttonThatWasClicked == stopButton)
     {
         //[UserButtonCode_stopButton] -- add your button handler code here..
         tick->stop();
+        stabilizeComponents();
         //[/UserButtonCode_stopButton]
     }
     else if (buttonThatWasClicked == audioButton)
@@ -402,7 +403,6 @@ void ContentComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     else if (sliderThatWasMoved == volumeSlider)
     {
         //[UserSliderCode_volumeSlider] -- add your slider handling code here..
-        DBG("Vol. " << volumeSlider->getValue() << " dB ");
         gain = Decibels::decibelsToGain (volumeSlider->getValue(), volumeSlider->getMinimum());
         //[/UserSliderCode_volumeSlider]
     }
@@ -429,6 +429,7 @@ void ContentComponent::getNextAudioBlock (const AudioSourceChannelInfo& buf)
 {
     auto& source (tick->getVideoSource());
     source.renderAudio (buf);
+    
     if (gain != lastGain)
     {
         buf.buffer->applyGainRamp (buf.startSample, buf.numSamples, lastGain, gain);
@@ -438,6 +439,12 @@ void ContentComponent::getNextAudioBlock (const AudioSourceChannelInfo& buf)
     {
         buf.buffer->applyGain (gain);
     }
+}
+
+void ContentComponent::stabilizeComponents()
+{
+    playButton->setToggleState (tick->isPlaying(), dontSendNotification);
+    playButton->setButtonText (playButton->getToggleState() ? "||" : ">");
 }
 //[/MiscUserCode]
 
