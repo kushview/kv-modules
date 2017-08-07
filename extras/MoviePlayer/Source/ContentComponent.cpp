@@ -25,7 +25,7 @@
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 class VideoDisplayComponent : public Component,
-public Timer
+                              public Timer
 {
 public:
     VideoDisplayComponent()
@@ -156,7 +156,7 @@ private:
             }
 
             errorMargin = (currentTime > nextTime) ? currentTime - nextTime
-            : nanoseconds::zero();
+                                                   : nanoseconds::zero();
             nextTime = currentTime + interval - errorMargin;
 
             {
@@ -234,7 +234,7 @@ ContentComponent::ContentComponent ()
 
     addAndMakeVisible (volumeSlider = new Slider ("VolumeSlider"));
     volumeSlider->setTooltip (TRANS("Audio Volume"));
-    volumeSlider->setRange (-120, 12, 0.25);
+    volumeSlider->setRange (-70, 12, 0.25);
     volumeSlider->setSliderStyle (Slider::LinearBar);
     volumeSlider->setTextBoxStyle (Slider::NoTextBox, true, 80, 20);
     volumeSlider->addListener (this);
@@ -251,6 +251,8 @@ ContentComponent::ContentComponent ()
 
 
     //[Constructor] You can add your own custom stuff here..
+    sliderValueChanged (volumeSlider);
+    lastGain = (float) gain;
     devices.initialiseWithDefaultDevices (0, 2);
     //[/Constructor]
 }
@@ -401,6 +403,7 @@ void ContentComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     {
         //[UserSliderCode_volumeSlider] -- add your slider handling code here..
         DBG("Vol. " << volumeSlider->getValue() << " dB ");
+        gain = Decibels::decibelsToGain (volumeSlider->getValue(), volumeSlider->getMinimum());
         //[/UserSliderCode_volumeSlider]
     }
 
@@ -426,6 +429,15 @@ void ContentComponent::getNextAudioBlock (const AudioSourceChannelInfo& buf)
 {
     auto& source (tick->getVideoSource());
     source.renderAudio (buf);
+    if (gain != lastGain)
+    {
+        buf.buffer->applyGainRamp (buf.startSample, buf.numSamples, lastGain, gain);
+        lastGain = (float) gain;
+    }
+    else
+    {
+        buf.buffer->applyGain (gain);
+    }
 }
 //[/MiscUserCode]
 
@@ -474,7 +486,7 @@ BEGIN_JUCER_METADATA
          kerning="0" bold="0" italic="0" justification="33"/>
   <SLIDER name="VolumeSlider" id="51d1dcb4238f3fec" memberName="volumeSlider"
           virtualName="" explicitFocusOrder="0" pos="8Rr 32R 96 26" tooltip="Audio Volume"
-          min="-120" max="12" int="0.25" style="LinearBar" textBoxPos="NoTextBox"
+          min="-70" max="12" int="0.25" style="LinearBar" textBoxPos="NoTextBox"
           textBoxEditable="0" textBoxWidth="80" textBoxHeight="20" skewFactor="1"
           needsCallback="1"/>
   <TEXTBUTTON name="AudioButton" id="979517d4887d9531" memberName="audioButton"

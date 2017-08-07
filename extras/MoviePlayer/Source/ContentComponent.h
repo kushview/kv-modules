@@ -66,6 +66,8 @@ private:
 
     friend class TickService;
     ScopedPointer<TickService> tick;
+
+    std::atomic<float> gain, lastGain;
     //[/UserVariables]
 
     //==============================================================================
