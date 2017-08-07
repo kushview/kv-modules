@@ -81,6 +81,8 @@ public:
     /** Returns pixel format of the format */
     AVPixelFormat getPixelFormat() const;
     
+    Rational getRealFrameRate() const;
+    
 private:
     Sink* sink;
     struct Pimpl;
@@ -96,6 +98,7 @@ public:
     ~FFmpegVideoSource();
     void openFile (const File& file);
     
+    Rational getRealFrameRate() const;
     void videoTick (const double seconds) override;
     void renderAudio (const AudioSourceChannelInfo&) override;
 
