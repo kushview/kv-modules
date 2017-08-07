@@ -98,7 +98,7 @@ public:
             stop();
         
         jassert (playing == false);
-        intervalNanoseconds = static_cast<size_t> (1000000000.0 / 60.0);
+        intervalNanoseconds = static_cast<size_t> (1000000000.0 / source.getRealFrameRate().ratio());
         playing = true;
         source.prepareToRender();
         startThread (9);
