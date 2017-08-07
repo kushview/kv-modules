@@ -18,7 +18,7 @@
 */
 
 #include "../JuceLibraryCode/JuceHeader.h"
-#include "MainComponent.h"
+#include "ContentComponent.h"
 
 class MoviePlayerApplication  : public JUCEApplication
 {
@@ -37,6 +37,7 @@ public:
 
     void shutdown() override
     {
+        
         mainWindow = nullptr;
         kv::ffmpeg_deinit();
     }
@@ -54,7 +55,7 @@ public:
         MainWindow (String name)  : DocumentWindow (name, Colours::black, DocumentWindow::allButtons)
         {
             setUsingNativeTitleBar (true);
-            setContentOwned (new MainContentComponent(), true);
+            setContentOwned (new ContentComponent(), true);
             centreWithSize (getWidth(), getHeight());
             setVisible (true);
         }

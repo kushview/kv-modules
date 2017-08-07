@@ -7,9 +7,10 @@
               companyWebsite="https://kushview.net" companyEmail="info@kushview.net">
   <MAINGROUP id="aWwIcW" name="MoviePlayer">
     <GROUP id="{84B55C65-0258-E9D3-F392-9636CD2240DE}" name="Source">
-      <FILE id="oS3hX4" name="MainComponent.cpp" compile="1" resource="0"
-            file="Source/MainComponent.cpp"/>
-      <FILE id="t0SRee" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="Kbpmyt" name="ContentComponent.cpp" compile="1" resource="0"
+            file="Source/ContentComponent.cpp"/>
+      <FILE id="II98n1" name="ContentComponent.h" compile="0" resource="0"
+            file="Source/ContentComponent.h"/>
       <FILE id="ZwfeoE" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
     </GROUP>
   </MAINGROUP>
