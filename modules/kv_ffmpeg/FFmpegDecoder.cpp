@@ -18,7 +18,7 @@
 */
 
 #define LOG_FORMAT_INFO 0
-#define DEBUG_LOG_AUDIO_PACKETS 1
+#define DEBUG_LOG_AUDIO_PACKETS 0
 
 class FFmpegFrameQueue
 {
@@ -252,7 +252,7 @@ struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
             avformat_close_input (&format);
     }
     
-    bool read (AVFrame* dst = nullptr)
+    bool read()
     {
         if (nullptr == format)
             return false;
@@ -267,7 +267,7 @@ struct FFmpegDecoder::Pimpl : public FFmpegDecoder::Sink
         {
             if (packet.stream_index == audioStream)
             {
-                decodeAudioPacket (&packet, queue->audio.getWriteFrame());
+                decodeAudioPacket (&packet, nullptr);
             }
             
             else if (packet.stream_index == videoStream)
@@ -366,42 +366,45 @@ private:
         }
         else
         {
-            DBG ("Could not find " + String (av_get_media_type_string(type)) +
+            DBG ("Could not find " + String (av_get_media_type_string (type)) +
                  " stream in input file");
             return -1;
         }
     }
     
     /** Decodes an audio packet, returns the number of samples decoded */
-    int decodeAudioPacket (AVPacket* packet, AVFrame* frame)
+    int decodeAudioPacket (AVPacket* packet, AVFrame* f)
     {
         int gotFrame = 0;
-        int decoded = packet->size;
+        int decoded = 0;
         int result = 0;
         
-        if (nullptr == frame)
-        {
-            jassertfalse; // this should never happen
-            return 0;
-        }
+        AVFrame* frame = queue->audio.getWriteFrame();
         
         // decode audio frame
-        do {
+        while (packet->size > 0)
+        {
             // call decode until packet is empty, result is num bytes decoded
             result = avcodec_decode_audio4 (audio, frame, &gotFrame, packet);
+            if (result < 0)
+            {
+                DBG("[KV] ffmpeg: error decoding audio AVPacket");
+                return 0;
+            }
             
             decoded = jmin (result, packet->size);
+            
             packet->data += decoded;
             packet->size -= decoded;
             
-            if (gotFrame > 0 && decoded > 0 && frame->extended_data != nullptr)
+            if (gotFrame > 0 && decoded > 0 && frame->extended_data[0] != nullptr &&
+                                               frame->extended_data[1] != nullptr)
             {
-                sink().audioFrameDecoded (format->streams[audioStream], frame);
-                queue->audio.finishedWrite();
+                //DBG("audio: " << frame->nb_samples << " : " << av_get_sample_fmt_name((AVSampleFormat) frame->format));
             }
-            av_frame_unref(0);
-        } while (gotFrame > 0 && packet->size > 0);
+        }
         
+        queue->audio.finishedWrite();
         return result;
     }
     
@@ -492,9 +495,6 @@ public:
             
             while (queue.video.getNumReady() < 2)
                 decoder->read();
-            
-//            while (queue.audio.getNumReady() < 4)
-//                decoder->read();
         }
         
         DBG("[KV] ffmpeg: video source thread exited");
@@ -514,7 +514,8 @@ public:
             if (myPts >= pts)
             {
                 gotFrame = true;
-                scale.convertFrameToImage (image, frame);
+                // scale.convertFrameToImage (image, frame);
+                image.clear(Rectangle<int> (0,0,image.getWidth(),image.getHeight()));
                 // DBG("[KV] ffmpeg: decoded video @ " << av_q2d(tb) * (double)frame->pts << " master: " << pts);
             }
             
@@ -525,28 +526,31 @@ public:
                 break;
         }
         
+        #if 0
         while (queue.audio.canRead())
         {
             frame = queue.audio.getReadFrame();
             
             const int channels = av_get_channel_layout_nb_channels (frame->channel_layout);
             const int numSamples = frame->nb_samples;
-            AudioSampleBuffer audio ((float* const*) frame->extended_data,
+
+            AudioSampleBuffer audio ((float**) frame->extended_data,
                                      channels, 0, numSamples);
-            const double seconds = static_cast<double>(frame->pts) / (double)frame->sample_rate;
             
            #if DEBUG_LOG_AUDIO_PACKETS
+            const double seconds = static_cast<double>(frame->pts) / (double)frame->sample_rate;
             DBG("[KV] ffmpeg: decoded audio: " << "channels: "   << audio.getNumChannels()
                 << " samples: "   << audio.getNumSamples()
                 << " pts: "       << frame->pts
-                << " sec: " << seconds
-                << " free: " << audioOut.getFreeSpace());
+                << " sec: "       << seconds
+                << " free: "      << audioOut.getFreeSpace()
+                << " fmt: "       << av_get_sample_fmt_name ((AVSampleFormat) frame->format));
            #endif
-            
+
             bool stopFlag = false;
-            if (audioOut.getFreeSpace() >= numSamples)
+            if (numSamples < audioOut.getFreeSpace())
             {
-                audioOut.addToFifo (audio);
+                audioOut.write (audio);
             }
             else
             {
@@ -559,6 +563,7 @@ public:
             if (stopFlag)
                 break;
         }
+        #endif
         
         sem.post();
     }
@@ -566,12 +571,13 @@ public:
     void openFile (const File& file)
     {
         decoder->openFile (file);
+        
         audioOut.setSize (2, 192000);
         scale.setupScaler (decoder->getWidth(),
                            decoder->getHeight(),
                            decoder->getPixelFormat(),
                            640, 360, AV_PIX_FMT_BGR0);
-        DBG("Audio Buffer Size: " << audioOut.getFreeSpace());
+
         sem.post();
     }
     
@@ -637,14 +643,64 @@ Image FFmpegVideoSource::findImage (double pts)
 
 void FFmpegVideoSource::renderAudio (const AudioSourceChannelInfo& info)
 {
-    if (pimpl->audioOut.getNumReady() >= info.numSamples)
+    auto& queue (pimpl->queue);
+    auto& audioOut (pimpl->audioOut);
+    
+    AVFrame* frame = nullptr;
+#if 1
+    while (queue.audio.canRead())
+    {
+        frame = queue.audio.getReadFrame();
+        
+        const int channels = av_get_channel_layout_nb_channels (frame->channel_layout);
+        const int numSamples = frame->nb_samples;
+        
+        AudioSampleBuffer audio ((float**) frame->extended_data,
+                                 channels, 0, numSamples);
+        
+#if DEBUG_LOG_AUDIO_PACKETS
+        const double seconds = static_cast<double>(frame->pts) / (double)frame->sample_rate;
+        DBG("[KV] ffmpeg: decoded audio: " << "channels: "   << audio.getNumChannels()
+            << " samples: "   << audio.getNumSamples()
+            << " pts: "       << frame->pts
+            << " sec: "       << seconds
+            << " free: "      << audioOut.getFreeSpace()
+            << " fmt: "       << av_get_sample_fmt_name ((AVSampleFormat) frame->format));
+#endif
+        
+        bool stopFlag = false;
+        if (numSamples < audioOut.getFreeSpace())
+        {
+            audioOut.write (audio);
+        }
+        else
+        {
+            stopFlag = true;
+        }
+        
+        queue.audio.finishedRead();
+        av_frame_unref (frame);
+        
+        if (stopFlag)
+            break;
+    }
+#endif
+
+    if (info.numSamples <= pimpl->audioOut.getNumReady())
     {
         pimpl->audioOut.readFromFifo (info);
     }
     else
     {
-        info.clearActiveBufferRegion();
+        int numSamples = pimpl->audioOut.getNumReady();
+        if (numSamples > 0)
+        {
+            pimpl->audioOut.readFromFifo (info, numSamples);
+            info.buffer->clear (numSamples, info.numSamples - numSamples);
+        }
+        else
+        {
+            info.clearActiveBufferRegion();
+        }
     }
-    
-    pimpl->sem.post();
 }
