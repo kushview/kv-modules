@@ -25,9 +25,10 @@
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
 
-// Simple audio source used for resampling audio from the media file
-// This may get absracted in to the Video source api one way or the
-// other
+/** Simple audio source used for resampling audio from the media file
+    This may get absracted in to the Video source api one way or the
+    other
+ */
 class VideoAudioSource : public AudioSource
 {
 public:
@@ -43,6 +44,7 @@ private:
     kv::VideoSource& video;
 };
 
+/** Component used as a video display */
 class VideoDisplayComponent : public Component,
                               public Timer
 {
@@ -106,6 +108,7 @@ using kv::FFmpegVideoSource;
 #include <chrono>
 #include <thread>
 
+/** A high precision timer that drives the video source */
 class TickService : private Thread
 {
 public:
@@ -311,9 +314,13 @@ ContentComponent::ContentComponent ()
 ContentComponent::~ContentComponent()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
-    devices.removeAudioCallback (&player);
     tick->stop();
-    tick = nullptr;
+    
+    if (auto* d = devices.getCurrentAudioDevice())
+        d->stop();
+    devices.removeAudioCallback (&player);
+    player.setSource (nullptr);
+    
     //[/Destructor_pre]
 
     videoDisplay = nullptr;
@@ -329,6 +336,7 @@ ContentComponent::~ContentComponent()
 
 
     //[Destructor]. You can add your own custom destruction code here..
+    tick = nullptr;
     //[/Destructor]
 }
 
