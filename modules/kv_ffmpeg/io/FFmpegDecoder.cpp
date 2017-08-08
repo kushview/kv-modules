@@ -506,6 +506,9 @@ public:
         {
             sem.wait();
             
+            if (threadShouldExit())
+                break;
+            
             if (decoder->getPixelFormat() == AV_PIX_FMT_NONE)
                 continue;
             
