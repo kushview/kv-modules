@@ -71,7 +71,7 @@ private:
     std::atomic<float> gain, lastGain;
     ScopedPointer<VideoAudioSource> video;
     ScopedPointer<ResamplingAudioSource> resampler;
-    
+
     friend class VideoDisplayComponent;
     void stabilizeComponents();
     void displayRefreshed();

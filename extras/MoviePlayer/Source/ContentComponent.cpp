@@ -138,12 +138,12 @@ public:
     {
         stop();
         jassert (isPlaying() == false);
-        
+
         intervalNanoseconds = static_cast<size_t> (1000000000.0 / source.getRealFrameRate().ratio());
         intervalSeconds = source.getRealFrameRate().invertedRatio();
-        
+
         source.prepareToRender();
-        
+
         startThread (9);
     }
 
@@ -162,21 +162,21 @@ public:
 
     void setPlaying (const bool isNowPlaying) { playing = isNowPlaying ? 1 : 0; }
     bool isPlaying() const { return playing != 0; }
-    
+
     void setTargetSampleRate (double sampleRate)
     {
         // FIXME: right now assuming all video files are 48KHz
         resampler.setResamplingRatio (48000.0 / sampleRate);
     }
-    
+
     kv::VideoSource& getVideoSource() { return source; }
     kv::AudioSource& getAudioSource() { return resampler; }
     double getCurrentPTS() const { return pts; }
-    
+
 private:
     std::atomic<size_t> intervalNanoseconds;
     std::atomic<double> intervalSeconds;
-    
+
     std::atomic<int> playing;
     std::atomic<double> pts;
     std::atomic<double> nextPts;
@@ -186,7 +186,7 @@ private:
     FFmpegVideoSource source;
     VideoAudioSource videoAudioSource;
     ResamplingAudioSource resampler;
-    
+
     Image displayImage;
 
     friend class Thread;
@@ -315,12 +315,12 @@ ContentComponent::~ContentComponent()
 {
     //[Destructor_pre]. You can add your own custom destruction code here..
     tick->stop();
-    
+
     if (auto* d = devices.getCurrentAudioDevice())
         d->stop();
     devices.removeAudioCallback (&player);
     player.setSource (nullptr);
-    
+
     //[/Destructor_pre]
 
     videoDisplay = nullptr;
@@ -480,7 +480,7 @@ void ContentComponent::prepareToPlay (int samplesPerBlockExpected, double sample
 {
     if (! tick)
         return;
-    
+
     tick->getAudioSource().prepareToPlay (samplesPerBlockExpected, sampleRate);
     tick->setTargetSampleRate (sampleRate);
 }
@@ -498,7 +498,7 @@ void ContentComponent::getNextAudioBlock (const AudioSourceChannelInfo& buf)
         buf.clearActiveBufferRegion();
         return;
     }
-    
+
     auto& source (tick->getAudioSource());
     source.getNextAudioBlock (buf);
 
@@ -523,7 +523,7 @@ void ContentComponent::displayRefreshed()
 {
     if (! tick)
         return;
-    
+
     if (tick->isPlaying())
     {
         timecodeLabel->setText (String(tick->getCurrentPTS(), 1),
