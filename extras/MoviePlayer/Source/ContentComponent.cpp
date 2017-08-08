@@ -24,11 +24,32 @@
 
 
 //[MiscUserDefs] You can add your own user definitions and misc code here...
+
+// Simple audio source used for resampling audio from the media file
+// This may get absracted in to the Video source api one way or the
+// other
+class VideoAudioSource : public AudioSource
+{
+public:
+    VideoAudioSource (kv::VideoSource& src)
+        : video (src)
+    { }
+    void prepareToPlay (int blockSize, double sampleRate) override { }
+    void releaseResources() override { }
+    void getNextAudioBlock (const AudioSourceChannelInfo& buf) override {
+        video.renderAudio (buf);
+    }
+private:
+    kv::VideoSource& video;
+};
+
 class VideoDisplayComponent : public Component,
                               public Timer
 {
 public:
-    VideoDisplayComponent()
+    ContentComponent& content;
+    VideoDisplayComponent (ContentComponent& c)
+        : content (c)
     {
         dirty = false;
         startTimerHz (60);
@@ -51,12 +72,8 @@ public:
 
     void timerCallback() override
     {
-        const ScopedLock sl (displayLock);
-        if (dirty)
-        {
-            dirty = false;
-            repaint();
-        }
+        content.displayRefreshed();
+        updateDirty();
     }
 
     void setImage (const Image& image)
@@ -71,6 +88,16 @@ private:
     CriticalSection displayLock;
     Image displayImage;
     bool dirty;
+
+    void updateDirty()
+    {
+        const ScopedLock sl (displayLock);
+        if (dirty)
+        {
+            dirty = false;
+            repaint();
+        }
+    }
 };
 
 using kv::FFmpegDecoder;
@@ -83,8 +110,13 @@ class TickService : private Thread
 {
 public:
     TickService (ContentComponent& u)
-        : Thread ("timer"), ui (u)
-    { }
+        : Thread ("timer"), ui (u),
+          videoAudioSource (source),
+          resampler (&videoAudioSource, false)
+    {
+        pts = 0.0;
+        playing = 0;
+    }
 
     ~TickService()
     {
@@ -93,41 +125,65 @@ public:
 
     bool openFile (const File& file)
     {
+        stop();
         source.openFile (file);
+        start();
         return true;
     }
 
     void start()
     {
-        if (isPlaying())
-            stop();
-
-        jassert (playing == false);
+        stop();
+        jassert (isPlaying() == false);
+        
         intervalNanoseconds = static_cast<size_t> (1000000000.0 / source.getRealFrameRate().ratio());
-        playing = true;
+        intervalSeconds = source.getRealFrameRate().invertedRatio();
+        
         source.prepareToRender();
+        
         startThread (9);
     }
 
     void stop()
     {
-        if (isThreadRunning())
-            stopThread (100);
-
+        setPlaying (false);
+        stopThread (1000);
+        jassert (isThreadRunning() == false);
         source.releaseResources();
-        playing = false;
     }
 
-    bool isPlaying() const { return playing; }
+    void requestPlayPosition (const double seconds)
+    {
+        nextPts = seconds;
+    }
 
+    void setPlaying (const bool isNowPlaying) { playing = isNowPlaying ? 1 : 0; }
+    bool isPlaying() const { return playing != 0; }
+    
+    void setTargetSampleRate (double sampleRate)
+    {
+        // FIXME: right now assuming all video files are 48KHz
+        resampler.setResamplingRatio (48000.0 / sampleRate);
+    }
+    
     kv::VideoSource& getVideoSource() { return source; }
-
+    kv::AudioSource& getAudioSource() { return resampler; }
+    double getCurrentPTS() const { return pts; }
+    
 private:
     std::atomic<size_t> intervalNanoseconds;
+    std::atomic<double> intervalSeconds;
+    
+    std::atomic<int> playing;
+    std::atomic<double> pts;
+    std::atomic<double> nextPts;
+    std::atomic<double> lastPts;
 
-    bool playing;
     ContentComponent& ui;
     FFmpegVideoSource source;
+    VideoAudioSource videoAudioSource;
+    ResamplingAudioSource resampler;
+    
     Image displayImage;
 
     friend class Thread;
@@ -141,9 +197,8 @@ private:
         auto errorMargin = nanoseconds::zero();
 
         int frame = 0;
-        double pts = 0.0;
-        double lastPts = 0.0;
-        const double ptsInterval = 1.0 / 60.0;
+        nextPts = pts = 0.0;
+        const double ptsInterval = 1.0 / source.getRealFrameRate().ratio();
 
         bool firstFrame = false;
         auto& display (ui.getVideoDisplay());
@@ -160,16 +215,15 @@ private:
                                                    : nanoseconds::zero();
             nextTime = currentTime + interval - errorMargin;
 
+            if (isPlaying())
             {
-                const ScopedLock sl (display.getDisplayLock());
+                { const ScopedLock sl (display.getDisplayLock());
                 source.videoTick (pts);
                 displayImage = source.findImage (0.0);
-                display.setImage (displayImage);
+                display.setImage (displayImage); }
+                pts = pts + ptsInterval;
+                ++frame;
             }
-
-            ++frame;
-            lastPts = pts;
-            pts += ptsInterval;
 
             if (threadShouldExit())
                 break;
@@ -190,7 +244,7 @@ ContentComponent::ContentComponent ()
     player.setSource (this);
     //[/Constructor_pre]
 
-    addAndMakeVisible (videoDisplay = new VideoDisplayComponent());
+    addAndMakeVisible (videoDisplay = new VideoDisplayComponent (*this));
     videoDisplay->setName ("VideoDisplay");
 
     addAndMakeVisible (openButton = new TextButton ("OpenButton"));
@@ -249,6 +303,8 @@ ContentComponent::ContentComponent ()
     sliderValueChanged (volumeSlider);
     lastGain = (float) gain;
     devices.initialiseWithDefaultDevices (0, 2);
+    tick->setPlaying (false);
+    tick->start();
     //[/Constructor]
 }
 
@@ -321,8 +377,6 @@ void ContentComponent::buttonClicked (Button* buttonThatWasClicked)
         FileChooser chooser ("Choose a Movie File", File(), "*.mp4");
         if (chooser.browseForFileToOpen())
         {
-            tick->stop();
-            videoDisplay->setImage (Image());
             movieLoaded = tick->openFile (chooser.getResult());
         }
         else
@@ -357,18 +411,15 @@ void ContentComponent::buttonClicked (Button* buttonThatWasClicked)
     else if (buttonThatWasClicked == playButton)
     {
         //[UserButtonCode_playButton] -- add your button handler code here..
-        if (! tick->isPlaying())
-            tick->start();
-        else
-            tick->stop();
-        
+        tick->setPlaying (! tick->isPlaying());
         stabilizeComponents();
         //[/UserButtonCode_playButton]
     }
     else if (buttonThatWasClicked == stopButton)
     {
         //[UserButtonCode_stopButton] -- add your button handler code here..
-        tick->stop();
+        tick->setPlaying (false);
+        tick->requestPlayPosition (0.0);
         stabilizeComponents();
         //[/UserButtonCode_stopButton]
     }
@@ -398,6 +449,7 @@ void ContentComponent::sliderValueChanged (Slider* sliderThatWasMoved)
     if (sliderThatWasMoved == positionSlider)
     {
         //[UserSliderCode_positionSlider] -- add your slider handling code here..
+        tick->requestPlayPosition (positionSlider->getValue());
         //[/UserSliderCode_positionSlider]
     }
     else if (sliderThatWasMoved == volumeSlider)
@@ -418,18 +470,30 @@ VideoDisplayComponent& ContentComponent::getVideoDisplay() { jassert(videoDispla
 
 void ContentComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRate)
 {
-    ignoreUnused (samplesPerBlockExpected, sampleRate);
+    if (! tick)
+        return;
+    
+    tick->getAudioSource().prepareToPlay (samplesPerBlockExpected, sampleRate);
+    tick->setTargetSampleRate (sampleRate);
 }
 
 void ContentComponent::releaseResources()
 {
+    if (tick)
+        tick->getAudioSource().releaseResources();
 }
 
 void ContentComponent::getNextAudioBlock (const AudioSourceChannelInfo& buf)
 {
-    auto& source (tick->getVideoSource());
-    source.renderAudio (buf);
+    if (! tick)
+    {
+        buf.clearActiveBufferRegion();
+        return;
+    }
     
+    auto& source (tick->getAudioSource());
+    source.getNextAudioBlock (buf);
+
     if (gain != lastGain)
     {
         buf.buffer->applyGainRamp (buf.startSample, buf.numSamples, lastGain, gain);
@@ -446,6 +510,19 @@ void ContentComponent::stabilizeComponents()
     playButton->setToggleState (tick->isPlaying(), dontSendNotification);
     playButton->setButtonText (playButton->getToggleState() ? "||" : ">");
 }
+
+void ContentComponent::displayRefreshed()
+{
+    if (! tick)
+        return;
+    
+    if (tick->isPlaying())
+    {
+        timecodeLabel->setText (String(tick->getCurrentPTS(), 1),
+                                dontSendNotification);
+    }
+}
+
 //[/MiscUserCode]
 
 
@@ -465,7 +542,7 @@ BEGIN_JUCER_METADATA
   <BACKGROUND backgroundColour="ff323e44"/>
   <GENERICCOMPONENT name="VideoDisplay" id="e58591e57002c5aa" memberName="videoDisplay"
                     virtualName="" explicitFocusOrder="0" pos="0 0 100% 36M" class="VideoDisplayComponent"
-                    params=""/>
+                    params="*this"/>
   <TEXTBUTTON name="OpenButton" id="4eae98cbc122baae" memberName="openButton"
               virtualName="" explicitFocusOrder="0" pos="-4r 4 48 24" posRelativeX="979517d4887d9531"
               buttonText="Open" connectedEdges="0" needsCallback="1" radioGroupId="0"/>

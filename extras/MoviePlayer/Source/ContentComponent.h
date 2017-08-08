@@ -22,6 +22,7 @@
 //[Headers]     -- You can add your own extra header files here --
 #include "../JuceLibraryCode/JuceHeader.h"
 
+class VideoAudioSource;
 class TickService;
 class VideoDisplayComponent;
 
@@ -68,8 +69,12 @@ private:
     ScopedPointer<TickService> tick;
 
     std::atomic<float> gain, lastGain;
+    ScopedPointer<VideoAudioSource> video;
+    ScopedPointer<ResamplingAudioSource> resampler;
     
+    friend class VideoDisplayComponent;
     void stabilizeComponents();
+    void displayRefreshed();
     //[/UserVariables]
 
     //==============================================================================
