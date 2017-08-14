@@ -19,7 +19,7 @@
 
 #pragma once
 
-#if ! _MSC_VER
+#if 1
 template<typename ValueType>
 class AtomicValue
 {
