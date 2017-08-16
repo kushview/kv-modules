@@ -34,7 +34,7 @@
  #include "AppConfig.h"
 #endif
 
-#include "element_lv2.h"
+#include "kv_lv2.h"
 
 namespace kv {
 #include "common/PortBuffer.cpp"

@@ -66,7 +66,7 @@
 #include <lv2/lv2plug.in/ns/ext/uri-map/uri-map.h>
 #include <lv2/lv2plug.in/ns/ext/worker/worker.h>
 
-#include <element_engines/element_engines.h>
+#include <kv_engines/kv_engines.h>
 #include <juce_audio_formats/juce_audio_formats.h>
 #include <juce_audio_processors/juce_audio_processors.h>
 
