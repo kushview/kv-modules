@@ -19,6 +19,6 @@
 #include <juce_product_unlocking/juce_product_unlocking.h>
 
 namespace kv {
-using namespace juce;
-#include "auth/EDDOnlineUnlockStatus.h"
+ using namespace juce;
+ #include "auth/EDDOnlineUnlockStatus.h"
 }

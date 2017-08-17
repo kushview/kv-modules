@@ -1,7 +1,9 @@
 
-namespace Crypto {
+namespace edd {
 
-static ValueTree decryptEDDValueTree (String hexData, RSAKey rsaPublicKey)
+static const char* nodeName = "edd";
+
+static ValueTree decryptValueTree (String hexData, RSAKey rsaPublicKey)
 {
     BigInteger val;
     val.parseString (hexData, 16);
@@ -25,7 +27,7 @@ static ValueTree decryptEDDValueTree (String hexData, RSAKey rsaPublicKey)
 
 }
 
-EDDOnlineUnlockStatus::EDDOnlineUnlockStatus() { }
+EDDOnlineUnlockStatus::EDDOnlineUnlockStatus() : edd (edd::nodeName) { }
 EDDOnlineUnlockStatus::~EDDOnlineUnlockStatus() { }
 
 String EDDOnlineUnlockStatus::readReplyFromWebserver (const String& email, const String& password)
@@ -39,22 +41,38 @@ String EDDOnlineUnlockStatus::readReplyFromWebserver (const String& email, const
         params.set (URL::isProbablyAnEmailAddress (email) ? "email" : "username", email);
     
     if (password.isNotEmpty())
-        params.set (useLicenseKey() ? "license" : "password", password);
+        params.set ("password", password);
+    
+    if (getLicenseKey().isNotEmpty())
+        params.set ("license", getLicenseKey());
     
     url = url.withParameters (params);
     DBG("[edd] authenticating @ " << url.toString (true));
     
     if (ScopedPointer<XmlElement> xml = url.readEntireXmlStream (true))
     {
-        if (auto* eddNode = xml->getChildByName ("EDD"))
+        if (auto* keyElement = xml->getChildByName ("KEY"))
         {
-            const String keyText (eddNode->getAllSubText().trim());
-            edd = Crypto::decryptEDDValueTree (keyText.fromFirstOccurrenceOf ("#", true, true),
-                                               publicKey);
+            const String keyText (keyElement->getAllSubText().trim());
+            edd = edd::decryptValueTree (keyText.fromFirstOccurrenceOf ("#", true, true),
+                                         publicKey);
+            DBG(edd.toXmlString());
+            edd = edd.getChildWithName (edd::nodeName);
         }
         
         return xml->createDocument (String());
     }
     
+    return String();
+}
+
+String EDDOnlineUnlockStatus::activateLicense (const String& license, const String& email,
+                                               const String& password)
+{
+    return String();
+}
+
+String EDDOnlineUnlockStatus::dectivateLicense (const String& license)
+{
     return String();
 }

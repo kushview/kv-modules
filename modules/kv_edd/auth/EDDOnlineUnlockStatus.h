@@ -12,37 +12,51 @@ public:
     
     virtual ~EDDOnlineUnlockStatus();
     
+    /** Activate a license with the webserver. Note this requires you have EDD
+        Software Licensing setup for your product.
+     */
+    String activateLicense (const String& license, const String& email = String(),
+                            const String& password = String());
     
+    /** Deactivate a license on this machine. Note this requires you have EDD
+        Software Licensing setup for your product.
+     */
+    String dectivateLicense (const String& license);
+    
+    /** Set the license key. Use this if you are using software licensing along with
+        EDD JUCE
+     */
+    void setLicenseKey (const String& licenseKey) { edd.setProperty("license", licenseKey.trim(), nullptr); }
+    
+    /** Returns the currently stored license key */
+    String getLicenseKey() const { return edd["license"].toString(); }
     
     /** Reads the reply from your server and decrypts the edd ValueTree */
     String readReplyFromWebserver (const String& email, const String& password) override;
-    
-    /** Returns the owned price IDs purchased by this user.
-        Note: This only returns the price ids with a completed payment.
-        You must perform your own checks to to provide additional unlocking features.
-     */
-    inline var getOwnedPriceIDs() const      { return edd["ownedPriceIDs"]; }
-
-    /** Returns the EDD download/product id on your website */
-    inline var getDownloadID() const         { return edd["downloadID"]; }
-
-    /** Override this to specify use of license key */
 
 protected:
-    /** Custom data sent back during authorization will be stored here. by default
-        this only has two properties ownedPriceIDs and downloadID. Depending on the
-        EDD extensions you have installed, the structure of this object may change
-     */
-    ValueTree edd;
-
     /** Override this to add additional query params sent to the web server */
     virtual StringPairArray getQueryParams() { return StringPairArray(); }
     
-    /** Override this to denote whether you are authenticating a license key or not.
-        It is ok to return false even if you are using EDD Software Licensing to track
-        activations */
-    inline virtual bool useLicenseKey() const { return false; }
-
+    /** Call this in your restoreState callback to update the edd node */
+    inline void eddRestoreState (const String& state)
+    {
+        MemoryBlock mb; mb.fromBase64Encoding (state);
+        if (mb.getSize() > 0) {
+            ValueTree l = ValueTree::readFromGZIPData (mb.getData(), mb.getSize());
+            edd = l.getChildWithName ("edd");
+        }
+        
+        if (!edd.isValid() || !edd.hasType("edd"))
+            edd = ValueTree ("edd");
+    }
+    
 private:
+    /** Custom data sent back during authorization will be stored here. by default
+        this only has two properties ownedPriceIDs and downloadID. Depending on the
+        EDD extensions you have installed, the structure of this object will change.
+     */
+    ValueTree edd;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EDDOnlineUnlockStatus);
 };
