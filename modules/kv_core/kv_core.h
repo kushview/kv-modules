@@ -19,7 +19,7 @@
     BEGIN_JUCE_MODULE_DECLARATION
 
     ID:               kv_core
-    vendor:           Kushview, LLC
+    vendor:           Kushview
     version:          0.0.1
     name:             Kushview core classes
     description:      Kushview core classes
