@@ -15,13 +15,16 @@ public:
     /** Activate a license with the webserver. Note this requires you have EDD
         Software Licensing setup for your product.
      */
-    String activateLicense (const String& license, const String& email = String(),
-                            const String& password = String());
+    UnlockResult activateLicense (const String& license, const String& email = String(),
+                                  const String& password = String());
     
     /** Deactivate a license on this machine. Note this requires you have EDD
         Software Licensing setup for your product.
      */
-    String deactivateLicense (const String& license);
+    UnlockResult deactivateLicense (const String& license);
+    
+    /** Checks the status of a license and updates the keyfile */
+    UnlockResult checkLicense (const String& license);
     
     /** Set the license key. Use this if you are using software licensing along with
         EDD JUCE
@@ -33,8 +36,11 @@ public:
     
     /** Reads the reply from your server and decrypts the edd ValueTree */
     String readReplyFromWebserver (const String& email, const String& password) override;
-
+    
 protected:
+    /** Return the base URL to your EDD installation. Usually this will be the root
+        URL of your website 
+     */
     virtual URL getApiEndPoint() { return URL(); }
     
     /** Override this to add additional query params sent to the web server */
