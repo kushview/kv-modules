@@ -94,13 +94,57 @@ String EDDOnlineUnlockStatus::activateLicense (const String& license, const Stri
              .withParameter ("license", license)
              .withParameter ("url", getLocalMachineIDs()[0]);
     
+    OnlineUnlockStatus::UnlockResult r;
+    r.succeeded = false;
+    
+    URL url ("http://kushview.dev/");
+    url = url.withParameter ("edd_action", "deactivate_license")
+    .withParameter ("item_id", "15")
+    .withParameter ("license", license)
+    .withParameter ("url", getLocalMachineIDs()[0]);
     DBG("connecting: " << url.toString(true));
-    const String result = url.readEntireTextStream();
     
-    DBG("deactivation response: " << result);
-    //?edd_action={request type}&item_id={download ID here}&license=cc22c1ec86304b36883440e2e84cddff&url={url of the site being licensed}");
+    const String raw (url.readEntireTextStream());
+    var response;
+    Result result (JSON::parse (raw, response));
+    if (result.failed())
+    {
+        r.errorMessage = result.getErrorMessage();
+        r.succeeded = false;
+        return r.errorMessage;
+    }
     
-    return result;
+    auto* object = response.getDynamicObject();
+    jassert (nullptr != object);
+    jassert (object->hasProperty ("success"));
+    jassert (object->hasProperty ("license"));
+    jassert (object->hasProperty ("key"));
+    
+    String keyText;
+    
+    MemoryOutputStream mo;
+    if (Base64::convertFromBase64 (mo, object->getProperty("key").toString()))
+    {
+        MemoryBlock mb = mo.getMemoryBlock();
+        if (CharPointer_UTF8::isValidString ((const char*) mb.getData(), (int) mb.getSize()))
+            keyText = String::fromUTF8 ((const char*) mb.getData());
+        
+    }
+    mo.flush();
+    applyKeyFile (keyText);
+    
+    r.succeeded = (bool) object->getProperty ("success");
+    edd.setProperty ("active", object->getProperty("license").toString().trim() == "deactivated", 0);
+    
+#if JUCE_DEBUG
+    DBG("deactivation response:");
+    for (int i = 0; i < object->getProperties().size(); ++i) {
+        DBG("  " << object->getProperties().getName(i) << " = " <<
+            object->getProperties().getValueAt(i).toString());
+    }
+#endif
+    
+    return r.errorMessage;
 }
 
 String EDDOnlineUnlockStatus::deactivateLicense (const String& license)
@@ -108,12 +152,13 @@ String EDDOnlineUnlockStatus::deactivateLicense (const String& license)
     OnlineUnlockStatus::UnlockResult r;
     r.succeeded = false;
     
-    URL url ("http://kushview.dev/");
-    url = url.withParameter ("edd_action", "deactivate_license")
+    const URL url (getApiEndPoint()
+             .withParameter ("edd_action", "activate_license")
              .withParameter ("item_id", "15")
              .withParameter ("license", license)
-             .withParameter ("url", getLocalMachineIDs()[0]);
-    DBG("connecting: " << url.toString(true));
+             .withParameter ("url", getLocalMachineIDs()[0]));
+
+    DBG("connecting: " << url.toString (true));
     
     const String raw (url.readEntireTextStream());
     var response;

@@ -35,6 +35,8 @@ public:
     String readReplyFromWebserver (const String& email, const String& password) override;
 
 protected:
+    virtual URL getApiEndPoint() { return URL(); }
+    
     /** Override this to add additional query params sent to the web server */
     virtual StringPairArray getQueryParams() { return StringPairArray(); }
     
