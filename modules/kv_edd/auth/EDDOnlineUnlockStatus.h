@@ -21,7 +21,7 @@ public:
     /** Deactivate a license on this machine. Note this requires you have EDD
         Software Licensing setup for your product.
      */
-    String dectivateLicense (const String& license);
+    String deactivateLicense (const String& license);
     
     /** Set the license key. Use this if you are using software licensing along with
         EDD JUCE
@@ -39,17 +39,7 @@ protected:
     virtual StringPairArray getQueryParams() { return StringPairArray(); }
     
     /** Call this in your restoreState callback to update the edd node */
-    inline void eddRestoreState (const String& state)
-    {
-        MemoryBlock mb; mb.fromBase64Encoding (state);
-        if (mb.getSize() > 0) {
-            ValueTree l = ValueTree::readFromGZIPData (mb.getData(), mb.getSize());
-            edd = l.getChildWithName ("edd");
-        }
-        
-        if (!edd.isValid() || !edd.hasType("edd"))
-            edd = ValueTree ("edd");
-    }
+    void eddRestoreState (const String& state);
     
 private:
     /** Custom data sent back during authorization will be stored here. by default

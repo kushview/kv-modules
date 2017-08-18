@@ -2,6 +2,7 @@
 namespace edd {
 
 static const char* nodeName = "edd";
+static const char* keyName  = "key";
 
 static ValueTree decryptValueTree (String hexData, RSAKey rsaPublicKey)
 {
@@ -66,13 +67,93 @@ String EDDOnlineUnlockStatus::readReplyFromWebserver (const String& email, const
     return String();
 }
 
+void EDDOnlineUnlockStatus::eddRestoreState (const String& state)
+{
+    const RSAKey publicKey (getPublicKey());
+    MemoryBlock mb; mb.fromBase64Encoding (state);
+    edd = ValueTree (edd::nodeName);
+    
+    if (mb.getSize() > 0)
+    {
+        const ValueTree reg = ValueTree::readFromGZIPData (mb.getData(), mb.getSize());
+        const String keyText = reg[edd::keyName].toString().fromFirstOccurrenceOf ("#", true, true);
+        edd = edd::decryptValueTree (keyText, publicKey);
+        edd = edd.getChildWithName (edd::nodeName);
+    }
+    
+    if (! edd.isValid() || !edd.hasType (edd::nodeName))
+        edd = ValueTree (edd::nodeName);
+}
+
 String EDDOnlineUnlockStatus::activateLicense (const String& license, const String& email,
                                                const String& password)
 {
-    return String();
+    URL url ("http://kushview.dev/");
+    url = url.withParameter ("edd_action", "activate_license")
+             .withParameter ("item_id", getProductID())
+             .withParameter ("license", license)
+             .withParameter ("url", getLocalMachineIDs()[0]);
+    
+    DBG("connecting: " << url.toString(true));
+    const String result = url.readEntireTextStream();
+    
+    DBG("deactivation response: " << result);
+    //?edd_action={request type}&item_id={download ID here}&license=cc22c1ec86304b36883440e2e84cddff&url={url of the site being licensed}");
+    
+    return result;
 }
 
-String EDDOnlineUnlockStatus::dectivateLicense (const String& license)
+String EDDOnlineUnlockStatus::deactivateLicense (const String& license)
 {
-    return String();
+    OnlineUnlockStatus::UnlockResult r;
+    r.succeeded = false;
+    
+    URL url ("http://kushview.dev/");
+    url = url.withParameter ("edd_action", "deactivate_license")
+             .withParameter ("item_id", "15")
+             .withParameter ("license", license)
+             .withParameter ("url", getLocalMachineIDs()[0]);
+    DBG("connecting: " << url.toString(true));
+    
+    const String raw (url.readEntireTextStream());
+    var response;
+    Result result (JSON::parse (raw, response));
+    if (result.failed())
+    {
+        r.errorMessage = result.getErrorMessage();
+        r.succeeded = false;
+        return r.errorMessage;
+    }
+    
+    auto* object = response.getDynamicObject();
+    jassert (nullptr != object);
+    jassert (object->hasProperty ("success"));
+    jassert (object->hasProperty ("license"));
+    jassert (object->hasProperty ("key"));
+    
+    String keyText;
+    
+    MemoryOutputStream mo;
+    if (Base64::convertFromBase64 (mo, object->getProperty("key").toString()))
+    {
+        MemoryBlock mb = mo.getMemoryBlock();
+        if (CharPointer_UTF8::isValidString ((const char*) mb.getData(), (int) mb.getSize()))
+            keyText = String::fromUTF8 ((const char*) mb.getData());
+        
+    }
+    mo.flush();
+    applyKeyFile (keyText);
+    
+    r.succeeded = (bool) object->getProperty ("success");
+    edd.setProperty ("active", object->getProperty("license").toString().trim() == "deactivated", 0);
+    
+   #if JUCE_DEBUG
+    DBG("deactivation response:");
+    for (int i = 0; i < object->getProperties().size(); ++i) {
+        DBG("  " << object->getProperties().getName(i) << " = " <<
+            object->getProperties().getValueAt(i).toString());
+    }
+   #endif
+    
+    return r.errorMessage;
 }
