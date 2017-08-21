@@ -56,7 +56,16 @@ public:
             toggled.setBit (index, true);
         }
     }
-
+    
+    inline void set (int r, int c, bool on)
+    {
+        if (isValid (r, c))
+        {
+            const int index = getIndexForCell (r, c);
+            toggled.setBit (index, on);
+        }
+    }
+    
     inline void disconnect (int row, int column)
     {
         if (! isValid (row, column))
