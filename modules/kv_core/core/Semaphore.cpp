@@ -80,22 +80,19 @@ Semaphore::~Semaphore()
     CloseHandle(semaphore);
 }
 
-void
-Semaphore::post()
+void Semaphore::post()
 {
     ReleaseSemaphore(semaphore, 1, NULL);
 }
 
-void
-Semaphore::wait()
+void Semaphore::wait()
 {
-    WaitForSingleObject(semaphore, INFINITE);
+    WaitForSingleObject (semaphore, INFINITE);
 }
 
-bool
-Semaphore::tryWait()
+bool Semaphore::tryWait()
 {
-    WaitForSingleObject(semaphore, 0);
+    return WAIT_FAILED != WaitForSingleObject (semaphore, 0);
 }
 
 #else  /* !defined(__APPLE__) && !defined(_WIN32) */
