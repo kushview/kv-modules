@@ -6,7 +6,7 @@
   version:          1.1.0
   name:             Classes for EDD Integration
   description:      Essential classes for communicating with an Easy Digital Downloads store front.
-  website:          https://kushview.net/edd-juce-product-unlocking
+  website:          https://kushview.net/edd-copy-protection
   license:
 
   dependencies:     juce_core juce_data_structures juce_product_unlocking
