@@ -83,7 +83,7 @@ PortBuffer::addEvent (int64 frames, uint32 size, uint32 bodyType, const uint8* d
             return false;
 
         LV2_Event* ev = (LV2_Event*)(buffer.event->data + buffer.event->size);
-        ev->frames    = frames;
+        ev->frames    = static_cast<uint32> (frames);
         ev->subframes = 0;
         ev->type      = type;
         ev->size      = size;
