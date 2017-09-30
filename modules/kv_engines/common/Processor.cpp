@@ -38,8 +38,9 @@ uint32 Processor::getNumPorts (AudioProcessor* proc, PortType type, bool isInput
     return count;
 }
 
-PortType Processor::getPortType (AudioProcessor* proc, uint32 port)
+PortType Processor::getPortType (AudioProcessor* proc, uint32 p)
 {
+	const int port = static_cast<int> (p);
     const bool haveControls = proc->getNumParameters() > 0;
     const bool haveAudio = (proc->getTotalNumInputChannels() + proc->getTotalNumOutputChannels()) > 0;
 
@@ -55,15 +56,17 @@ PortType Processor::getPortType (AudioProcessor* proc, uint32 port)
         return PortType::Atom;
     }
 
-    jassert (false);
+	jassertfalse;
     return PortType::Unknown;
 }
 
-bool Processor::isPortInput (AudioProcessor* proc, uint32 port)
+bool Processor::isPortInput (AudioProcessor* proc, uint32 p)
 {
-    if (port >= getNumPorts (proc))
-        jassertfalse;
+	if (p >= getNumPorts(proc)) {
+		jassertfalse;
+	}
 
+	const int port = static_cast<int> (p);
     const int audioIns = proc->getTotalNumInputChannels();
     const int totalAudio = audioIns + proc->getTotalNumOutputChannels();
     const int totalMidi  = (int)proc->acceptsMidi() + (int)proc->producesMidi();
@@ -91,7 +94,7 @@ bool Processor::isPortInput (AudioProcessor* proc, uint32 port)
             break;
     }
 
-    jassert (false);
+    jassertfalse;
     return false;
 }
 
