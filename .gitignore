@@ -7,9 +7,10 @@ build/
 *.autosave
 .vscode
 
-# ignore internal libraries (you need to build these yourself!)
-modules/kv_ffmpeg/libs/
-modules/kv_ffmpeg/local/
+# ffmpeg fragments
+/modules/kv_ffmpeg/include/
+/modules/kv_ffmpeg/libs/
+/modules/kv_ffmpeg/local/
 
 # Ignore vendor build files and packages
 vendor/build/
