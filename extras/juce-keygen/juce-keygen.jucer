@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="kpHp1u" name="juce-keygen" displaySplashScreen="0" reportAppUsage="0"
+              splashScreenColour="Dark" projectType="consoleapp" version="1.0.0"
+              bundleIdentifier="com.yourcompany.jucekeygen" includeBinaryInAppConfig="1"
+              cppLanguageStandard="11" jucerVersion="5.1.2">
+  <MAINGROUP id="DMIX2A" name="juce-keygen">
+    <GROUP id="{7861F992-C1F4-A2E2-12BC-FD4BBF73B8AF}" name="Source">
+      <FILE id="p3xuNj" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+    </GROUP>
+  </MAINGROUP>
+  <EXPORTFORMATS>
+    <XCODE_MAC targetFolder="Builds/MacOSX" vst3Folder="">
+      <CONFIGURATIONS>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="juce-keygen"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="juce-keygen"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_core" path="../../../../opt/kushview/JUCE5/modules"/>
+        <MODULEPATH id="juce_cryptography" path="../../../../opt/kushview/JUCE5/modules"/>
+      </MODULEPATHS>
+    </XCODE_MAC>
+  </EXPORTFORMATS>
+  <MODULES>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_cryptography" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <JUCEOPTIONS/>
+</JUCERPROJECT>
