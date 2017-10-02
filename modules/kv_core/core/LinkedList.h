@@ -2,8 +2,7 @@
    LinkedList.h
 
    Copyright (C) 2005-2012, rncbc aka Rui Nuno Capela. All rights reserved.
-   Modified 2013 Michael Fisher  <mfisher31@gmail.com>
-    - Adapted from qtractor for Element
+   Modified 2013 Michael Fisher <mfisher31@gmail.com>
 
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License
@@ -22,31 +21,22 @@
 
 #pragma once
 
-/** A doubly linked list
-
-    The main usage here is to aid in adapting other work(s) by rncbc.  New code
-    should use something boost::intrusive
- */
+/** A doubly linked list */
 template <class Node>
 class LinkedList
 {
 public:
-
-  // Default constructor.
-    LinkedList() : p_first(0), p_last(0), m_count(0), pFreeList(0), m_scoped(false) { }
-
-  // Default destructor.
+    LinkedList() : firstNode(0), lastNode(0), numNodes(0), freeList(0), scopedList(false) { }
     ~LinkedList() { clear(); }
 
-  // Accessors.
-    Node* first() const { return p_first; }
-    Node* last()  const { return p_last;  }
+    Node* first() const { return firstNode; }
+    Node* last()  const { return lastNode;  }
 
-    int count() const { return m_count; }
-
-  // Property accessors.
-    void setScoped (bool scoped) { m_scoped = scoped; }
-    bool isScoped() const { return m_scoped; }
+    int count() const { return numNodes; }
+    void setScoped (bool scoped) { scopedList
+ = scoped; }
+    bool isScoped() const { return scopedList
+; }
     void insertAfter  (Node *node, Node *prev = nullptr);
     void insertBefore (Node *node, Node *next = nullptr);
     void unlink (Node *node);
@@ -56,44 +46,36 @@ public:
     void prepend (Node *node) { insertBefore (node); }
     void append (Node *node)  { insertAfter (node); }
     Node *operator[] (int index) const { return at(index); }
-
-    /** find the index of a node */
     int find (Node *node) const;
 
     /** Base list node */
-  class Link
-  {
-  public:
-
-    // Constructor.
+    class Link
+    {
+    public:
         Link() : prevNode (nullptr),
                  nextNode (nullptr),
                  nextFreeNode (nullptr) { }
 
-    // Linked node getters.
         Node *prev() const { return prevNode; }
         Node *next() const { return nextNode; }
 
-    // Linked node setters.
         void setPrevious (Node *prev) { prevNode = prev; }
         void setNext (Node *next) { nextNode = next; }
 
-    // Linked free node accessors.
         Node *nextFree() const { return nextFreeNode; }
         void setNextFree (Node *node) { nextFreeNode = node; }
 
-  private:
-
+    private:
         Node *prevNode;
         Node *nextNode;
         Node *nextFreeNode;
 
-  };
+        JUCE_LEAK_DETECTOR(Link)
+    };
 
     class iterator
-  {
-  public:
-
+    {
+    public:
         inline iterator (LinkedList<Node>& list, Node* ptr) : nodes(list), nodePtr (ptr) { }
         inline iterator (const iterator& it) : nodes (it.nodes), nodePtr (it.nodePtr) { }
 
@@ -125,37 +107,27 @@ public:
         const LinkedList<Node>& list() const { return nodes; }
         Node *node() const { return nodePtr; }
 
-  private:
-
+    private:
         LinkedList<Node>& nodes;
         Node *nodePtr;
+    };
 
-  };
-
-    iterator begin() { return iterator (*this, first()); }
-    iterator end() { return iterator (*this, nullptr); }
+    iterator begin()    { return iterator (*this, first()); }
+    iterator end()      { return iterator (*this, nullptr); }
 
 private:
-
-    // Instance variables.
-    Node *p_first;
-    Node *p_last;
-    int m_count;
-
-  // The reclaimed freelist.
-    Node *pFreeList;
-    bool m_scoped;
+    Node *firstNode;
+    Node *lastNode;
+    int numNodes;
+    Node *freeList;
+    bool scopedList;
 };
 
-
-// Insert methods.
-
-template <class Node>
-void
-LinkedList<Node>::insertAfter (Node *node, Node *previous)
+template <class Node> 
+void LinkedList<Node>::insertAfter (Node *node, Node *previous)
 {
     if (previous == 0)
-        previous = p_last;
+        previous = lastNode;
 
     node->setPrevious (previous);
     if (previous)
@@ -164,23 +136,23 @@ LinkedList<Node>::insertAfter (Node *node, Node *previous)
         if (previous->next())
             (previous->next())->setPrevious (node);
         else
-            p_last = node;
+            lastNode = node;
         previous->setNext (node);
     }
     else
     {
-        p_first = p_last = node;
+        firstNode = lastNode = node;
         node->setNext(0);
     }
 
-    ++m_count;
+    ++numNodes;
 }
 
 template <class Node>
 void LinkedList<Node>::insertBefore (Node *node, Node *next_node)
 {
     if (next_node == 0)
-        next_node = p_first;
+        next_node = firstNode;
 
     node->setNext (next_node);
 
@@ -190,16 +162,16 @@ void LinkedList<Node>::insertBefore (Node *node, Node *next_node)
         if (next_node->prev())
             (next_node->prev())->setNext(node);
         else
-            p_first = node;
+            firstNode = node;
         next_node->setPrevious (node);
     }
     else
     {
-        p_last = p_first = node;
+        lastNode = firstNode = node;
         node->setPrevious (0);
     }
 
-    ++m_count;
+    ++numNodes;
 }
 
 template <class Node>
@@ -208,14 +180,14 @@ void LinkedList<Node>::unlink (Node *node)
     if (node->prev())
         (node->prev())->setNext(node->next());
     else
-        p_first = node->next();
+        firstNode = node->next();
 
     if (node->next())
         (node->next())->setPrevious (node->prev());
     else
-        p_last = node->prev();
+        lastNode = node->prev();
 
-    --m_count;
+    --numNodes;
 }
 
 // Remove method.
@@ -225,28 +197,27 @@ void LinkedList<Node>::remove (Node *node)
     unlink (node);
 
     // Add it to the alternate free list.
-    if (m_scoped)
+    if (scopedList)
     {
-        Node *pnextFree = pFreeList;
-        node->setNextFree (pnextFree);
-        pFreeList = node;
-  }
-
+        Node *nextFree = freeList;
+        node->setNextFree (nextFree);
+        freeList = node;
+    }
 }
 
 // Reset methods.
 template <class Node>
-void LinkedList<Node>::clear (void)
+void LinkedList<Node>::clear()
 {
     // Remove pending items.
-    Node *last = p_last;
+    Node *last = lastNode;
     while (last)
     {
         remove (last);
-        last = p_last;
+        last = lastNode;
     }
 
-    Node *free_list = pFreeList;
+    Node *free_list = freeList;
     while (free_list)
     {
         Node *nextFree = free_list->nextFree();
@@ -255,43 +226,39 @@ void LinkedList<Node>::clear (void)
     }
 
     // Force clean up.
-    p_first = p_last = 0;
-    m_count = 0;
-    pFreeList = 0;
+    firstNode = lastNode = 0;
+    numNodes = 0;
+    freeList = 0;
 }
 
-
-// Random accessor.
 template <class Node>
 Node* LinkedList<Node>::at (int index) const
 {
     int i;
     Node *node;
 
-    if (index < 0 || index >= m_count)
+    if (index < 0 || index >= numNodes)
       return 0;
 
-    if (index > (m_count >> 1))
+    if (index > (numNodes >> 1))
     {
-        for (i = m_count - 1, node = p_last; node && i > index; --i, node = node->prev())
+        for (i = numNodes - 1, node = lastNode; node && i > index; --i, node = node->prev())
         { ; }
     }
     else
     {
-        for (i = 0, node = p_first; node && i < index; ++i, node = node->next())
+        for (i = 0, node = firstNode; node && i < index; ++i, node = node->next())
         { ; }
     }
 
     return node;
 }
 
-
-// Node searcher.
 template <class Node>
 int LinkedList<Node>::find (Node *node) const
 {
     int index = 0;
-    Node *n = p_first;
+    Node *n = firstNode;
 
     while (n)
     {

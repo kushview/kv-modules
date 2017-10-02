@@ -19,7 +19,6 @@
 
 #pragma once
 
-#if 1
 template<typename ValueType>
 class AtomicValue
 {
@@ -33,8 +32,7 @@ public:
 
     inline const ValueType& get() const { return *readValue.load(); }
 
-    inline bool
-    set (ValueType newValue)
+    inline bool set (ValueType newValue)
     {
         State expected = ReadWrite;
         if (state.compare_exchange_strong (expected, ReadLock))
@@ -58,25 +56,22 @@ public:
         return false;
     }
 
-    inline ValueType
-    exchange (ValueType newValue)
+    inline ValueType exchange (ValueType newValue)
     {
         ValueType existingValue = get();
 
         while (! this->set (newValue))
-            ; // spin a little
+            ;
 
         return existingValue;
     }
 
-    inline void
-    exchange (ValueType nextValue, ValueType& previousValue)
+    inline void exchange (ValueType nextValue, ValueType& previousValue)
     {
         previousValue = exchange (nextValue);
     }
 
-    inline void
-    exchangeAndDelete (ValueType nextValue)
+    inline void exchangeAndDelete (ValueType nextValue)
     {
         ValueType ptr = exchange (nextValue);
         if (ptr != nullptr)
@@ -141,128 +136,3 @@ private:
     std::atomic_flag    a_mutex;
     AtomicValue<int>    a_locks;
 };
-
-#else //MSVC
-
-template<typename ValueType>
-class AtomicValue
-{
-public:
-    explicit AtomicValue (ValueType initial = ValueType())
-        : state (ReadWrite)
-    {
-        values[0] = values[1] = initial;
-        readValue.set(&values [0]);
-    }
-
-	inline ValueType get() const { return *readValue.get(); }
-
-    inline bool set (ValueType newValue)
-    {
-        State expected = ReadWrite;
-		if (expected == state.compareAndSetValue (expected, ReadLock))
-        {
-            values[1]  = newValue;
-            readValue.set(&values[1]);
-            state      = WriteRead;
-            return true;
-        }
-
-        expected = WriteRead;
-
-		if (expected == state.compareAndSetValue (expected, LockRead))
-        {
-            values[0] = newValue;
-            readValue.set(&values[0]);
-            state     = ReadWrite;
-            return true;
-        }
-
-        return false;
-    }
-
-    inline ValueType
-    exchange (ValueType newValue)
-    {
-        ValueType existingValue = get();
-
-        while (! this->set (newValue))
-            ; // spin a little
-
-        return existingValue;
-    }
-
-    inline void
-    exchange (ValueType nextValue, ValueType& previousValue)
-    {
-        previousValue = exchange (nextValue);
-    }
-
-    inline void
-    exchangeAndDelete (ValueType nextValue)
-    {
-        ValueType ptr = exchange (nextValue);
-        if (ptr != nullptr)
-            delete ptr;
-    }
-
-private:
-
-    enum State
-    {
-        ReadWrite,
-        ReadLock,
-        WriteRead,
-        LockRead
-    };
-
-    Atomic<State>         state;
-    Atomic<ValueType*>    readValue;
-    ValueType             values[2];
-};
-
-#if 1
-
-class AtomicLock
-{
-public:
-    AtomicLock() { }
-
-    inline bool acquire()
-    {
-		return a_mutex.set(1);
-    }
-
-    inline void release()
-    {
-       while (! a_mutex.set(0))
-			;
-    }
-
-    inline void lock()
-    {
-        a_locks.set (a_locks.get() + 1);
-        if (a_locks.get() == 1)
-            while (! acquire())
-                ; // spin
-    }
-
-    inline void unlock()
-    {
-        a_locks.set (a_locks.get() - 1);
-        if (a_locks.get() < 1)
-        {
-            a_locks.set(0);
-            release();
-        }
-    }
-
-    inline bool isBusy() const {  return a_locks.get() > 0; }
-
-private:
-    AtomicValue<int>    a_mutex;
-    AtomicValue<int>    a_locks;
-};
-
-#endif
-#endif

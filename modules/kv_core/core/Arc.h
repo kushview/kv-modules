@@ -43,8 +43,7 @@ private:
 
 struct ArcSorter
 {
-    static inline int
-    compareElements (const Arc* const first, const Arc* const second) noexcept
+    static inline int compareElements (const Arc* const first, const Arc* const second) noexcept
     {
         if (first->sourceNode < second->sourceNode)    return -1;
         if (first->sourceNode > second->sourceNode)    return 1;
@@ -59,9 +58,8 @@ struct ArcSorter
     }
 };
 
-/** Holds a fast lookup table for checking which nodes are inputs to others. */
-template<class ArcType>
-class ArcTable
+/** Holds a fast lookup table for checking which arcs are inputs to others. */
+template<class ArcType> class ArcTable
 {
 public:
     explicit ArcTable (const OwnedArray<ArcType>& arcs)
@@ -90,7 +88,6 @@ public:
     }
 
 private:
-    //==============================================================================
     struct Entry
     {
         explicit Entry (const uint32 destNode_) noexcept : destNode (destNode_) {}
