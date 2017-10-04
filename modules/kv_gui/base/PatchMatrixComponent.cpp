@@ -144,9 +144,10 @@ void PatchMatrixComponent::mouseDown (const MouseEvent& ev)
 {
     const int row = getRowForPixel (ev.y);
     const int col = getColumnForPixel (ev.x);
-    if (row >= 0 && col >= 0 && row < getNumRows() && col < getNumColumns()) {
+    if (row >= 0 && col >= 0 && row < getNumRows() && col < getNumColumns())
         matrixCellClicked (row, col, ev);
-    }
+    else
+        matrixBackgroundClicked (ev);
 }
 
 void PatchMatrixComponent::mouseMove (const MouseEvent& ev)
