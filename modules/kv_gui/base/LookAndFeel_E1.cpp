@@ -434,11 +434,9 @@ void LookAndFeel_E1::drawMenuBarItem (Graphics& g, int width, int height, int it
     }
 
     g.setOpacity (0.90);
-    g.setColour (LookAndFeel_E1::textBoldColor);
+    g.setColour (findColour (PopupMenu::textColourId));
     g.drawText (itemText, 0, 0, width, height, Justification::centred);
 }
-
-
 
 void LookAndFeel_E1::drawKeymapChangeButton (Graphics& g, int width, int height,
                                Button& button, const String& keyDescription)
