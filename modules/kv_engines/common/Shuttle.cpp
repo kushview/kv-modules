@@ -1,6 +1,6 @@
 /*
     This file is part of the Kushview Modules for JUCE
-    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
+    Copyright (C) 2014-2017  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -71,18 +71,18 @@ Shuttle::getCurrentPosition (CurrentPositionInfo &result)
     return true;
 }
 
-const double Shuttle::getLengthBeats()    const { return getLengthSeconds() * (getTempo() / 60.0f); }
-const uint32 Shuttle::getLengthFrames()   const { return duration; }
-const double Shuttle::getLengthSeconds()  const { return (double) duration / (double) ts.getSampleRate(); }
+const double Shuttle::getLengthBeats()      const { return getLengthSeconds() * (getTempo() / 60.0f); }
+const uint32 Shuttle::getLengthFrames()     const { return duration; }
+const double Shuttle::getLengthSeconds()    const { return (double) duration / (double) ts.getSampleRate(); }
 
-const double Shuttle::getPositionBeats()   const { return getPositionSeconds() * (getTempo() / 60.0f); }
-const int32  Shuttle::getPositionFrames()  const { return framePos; }
-const double Shuttle::getPositionSeconds() const { return (double) framePos / (double) ts.getSampleRate(); }
+const double Shuttle::getPositionBeats()    const { return getPositionSeconds() * (getTempo() / 60.0f); }
+const int64  Shuttle::getPositionFrames()   const { return framePos; }
+const double Shuttle::getPositionSeconds()  const { return (double) framePos / (double) ts.getSampleRate(); }
 
-int    Shuttle::getRemainingFrames() const { return getLengthFrames() - framePos; }
-double Shuttle::getSampleRate()      const { return (double) ts.getSampleRate(); }
-float  Shuttle::getTempo()           const { return ts.getTempo(); }
-const TimeScale& Shuttle::getTimeScale() const { return ts; }
+int64  Shuttle::getRemainingFrames()        const { return getLengthFrames() - framePos; }
+double Shuttle::getSampleRate()             const { return (double) ts.getSampleRate(); }
+float  Shuttle::getTempo()                  const { return ts.getTempo(); }
+const TimeScale& Shuttle::getTimeScale()    const { return ts; }
 
 bool Shuttle::isLooping()   const { return looping; }
 bool Shuttle::isPlaying()   const { return playing; }
@@ -94,7 +94,7 @@ void Shuttle::resetRecording()
 }
 
 void Shuttle::setLengthBeats   (const float beats) { setLengthFrames (framesPerBeat * beats); }
-void Shuttle::setLengthSeconds (const double seconds) { setLengthFrames (llrint (getSampleRate() * seconds)); }
+void Shuttle::setLengthSeconds (const double seconds) { setLengthFrames (roundDoubleToInt (getSampleRate() * seconds)); }
 void Shuttle::setLengthFrames  (const uint32 df) { duration = df; jassertfalse; }
 
 void Shuttle::setTempo (float bpm)

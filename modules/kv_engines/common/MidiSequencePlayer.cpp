@@ -110,8 +110,8 @@ void renderSequence (MidiBuffer& target, const MidiMessageSequence& seq, const T
     {
         const auto* const ev = seq.getEventPointer (i);
         const double tick = ev->message.getTimeStamp();
-        const int32 frameInSeq = ts.frameFromTick (static_cast<unsigned long> (tick));
-        const int32 timeStamp = frameInSeq - startFrame;
+        const int frameInSeq = (int) ts.frameFromTick (static_cast<unsigned long> (tick));
+        const int timeStamp = frameInSeq - startFrame;
 
         if (timeStamp >= numSamples)
             break;
