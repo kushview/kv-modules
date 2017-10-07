@@ -50,13 +50,15 @@ public:
     void setLengthSeconds (const double seconds);
 
     const double getLengthBeats()    const;
-    const uint32 getLengthFrames()   const;
+    const int64  getLengthFrames()   const;
     const double getLengthSeconds()  const;
 
     const double getPositionBeats()   const;
-    const int32  getPositionFrames()  const;
+    const int64  getPositionFrames()  const;
     const double getPositionSeconds() const;
 
+    int64 getRemainingFrames() const;
+    
     void resetRecording();
 
     const TimeScale& getTimeScale() const;
@@ -65,7 +67,7 @@ public:
 
     double getSampleRate() const;
     void setSampleRate (double rate);
-    int getRemainingFrames() const;
+    
     void advance (int nframes);
     bool getCurrentPosition (CurrentPositionInfo &result);
 

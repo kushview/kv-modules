@@ -103,7 +103,7 @@ private:
     /** @internal */
     static inline const String& typeURI (unsigned id)
     {
-        jassert (id <= Atom);
+        jassert (id <= Midi);
 
         static const String uris[] = {
             String ("http://lv2plug.in/ns/lv2core#ControlPort"),
@@ -111,6 +111,7 @@ private:
             String ("http://lv2plug.in/ns/lv2core#CVPort"),
             String ("http://lv2plug.in/ns/lv2core#AtomPort"),
             String ("http://lv2plug.in/ns/lv2core#EventPort"),
+            String ("https://kushview.net/ns/element#MidiPort"),
             String ("http://lvtoolkit.org/ns#null")
         };
 
@@ -120,12 +121,14 @@ private:
     /** @internal */
     static inline const String& typeName (unsigned id)
     {
-        jassert (id <= Atom);
+        jassert (id <= Midi);
         static const String uris[] = {
             String ("Control"),
             String ("Audio"),
             String ("CV"),
             String ("Atom"),
+            String ("Event"),
+            String ("MIDI"),
             String ("Unknown")
         };
         return uris [id];
@@ -134,20 +137,22 @@ private:
     /** @internal */
     static inline const String& slugName (unsigned id)
     {
-        jassert (id <= Atom);
+        jassert (id <= Midi);
         static const String slugs[] = {
             String ("control"),
             String ("audio"),
             String ("cv"),
             String ("atom"),
-            String ("Unknown")
+            String ("event"),
+            String ("midi"),
+            String ("unknown")
         };
         return slugs [id];
     }
     
     static inline ID typeForString (const String& identifier)
     {
-        for (int i = 0; i <= Atom; ++i)
+        for (int i = 0; i <= Midi; ++i)
         {
             if (slugName(i) == identifier || typeURI(i) == identifier ||
                 typeName(i) == identifier)

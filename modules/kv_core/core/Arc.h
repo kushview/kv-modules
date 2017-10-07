@@ -30,7 +30,7 @@ public:
 
     /** The source port id */
     uint32 sourcePort;
-
+    
     /** The destination node id */
     uint32 destNode;
 

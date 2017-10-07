@@ -72,7 +72,7 @@ Shuttle::getCurrentPosition (CurrentPositionInfo &result)
 }
 
 const double Shuttle::getLengthBeats()      const { return getLengthSeconds() * (getTempo() / 60.0f); }
-const uint32 Shuttle::getLengthFrames()     const { return duration; }
+const int64 Shuttle::getLengthFrames()      const { return duration; }
 const double Shuttle::getLengthSeconds()    const { return (double) duration / (double) ts.getSampleRate(); }
 
 const double Shuttle::getPositionBeats()    const { return getPositionSeconds() * (getTempo() / 60.0f); }
