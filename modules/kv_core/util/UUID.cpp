@@ -38,7 +38,7 @@ String createAlphaNumericUID()
 
 String hexString8Digits (int value)
 {
-    return String::toHexString (value).paddedLeft ('0', 8);
+    return String::toHexString(value).paddedLeft ('0', 8);
 }
 
 String createGUID (const String& seed)

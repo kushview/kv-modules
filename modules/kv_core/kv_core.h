@@ -93,9 +93,8 @@ using namespace juce;
 #include "time/TimeStamp.h"
 
 #include "util/Utils.h"
-#include "util/FileHelpers.h"
-#include "util/Midi.h"
 #include "util/RangeTypes.h"
+#include "util/FileHelpers.h"
 #include "util/RelativePath.h"
 #include "util/UUID.h"
 }

@@ -64,8 +64,7 @@ isWithinRange (const VAL& input, const VAL& lower, const VAL& upper)
 }
 
 template<typename SEQ>
-static int64_t
-indexOf (SEQ& seq, typename SEQ::value_type const& val)
+static int64_t indexOf (SEQ& seq, typename SEQ::value_type const& val)
 {
     int index = 0;
     for (typename SEQ::value_type const& i : seq)
@@ -77,28 +76,23 @@ indexOf (SEQ& seq, typename SEQ::value_type const& val)
     return -1;
 }
 
-/** Shortcut for containment test on a map
-       lumiera.org - Hermann Vosseler <Ichthyostega@web.de> */
+/** Containment test on a std::map */
 template <typename MAP>
-inline bool
-contains (MAP& map, typename MAP::key_type const& key)
+inline bool contains (MAP& map, typename MAP::key_type const& key)
 {
     return map.find(key) != map.end();
 }
 
-/** Shortcut for set value containment test
-       lumiera.org - Hermann Vosseler <Ichthyostega@web.de> */
+/** Shortcut for set value containment test */
 template <typename T>
-inline bool
-contains (std::set<T>& set, T const& val)
+inline bool contains (std::set<T>& set, T const& val)
 {
     return set.end() != set.find (val);
 }
 
-/** Shortcut for string value containment test
-        lumiera.org - Hermann Vosseler <Ichthyostega@web.de> */
-template <typename T> inline bool
-contains (std::string const& str, const T& val)
+/** Shortcut for string value containment test */
+template <typename T>
+inline bool contains (std::string const& str, const T& val)
 {
     return str.find (val) != std::string::npos;
 }
@@ -113,8 +107,8 @@ contains (SEQ const& cont, typename SEQ::const_reference val)
 }
 
 /** Shortcut for removing all copies of an Element in any sequential collection */
-template <typename SEQ> inline typename SEQ::iterator
-removeall (SEQ& coll, typename SEQ::value_type& val)
+template <typename SEQ>
+inline typename SEQ::iterator removeall (SEQ& coll, typename SEQ::value_type& val)
 {
     typename SEQ::iterator collEnd = coll.end();
     return coll.erase (std::remove (coll.begin(), collEnd, val), collEnd);
@@ -128,9 +122,10 @@ removeall (SEQ& coll, const typename SEQ::value_type& val)
 }
 
 /** Accumulate a hash value
-        @param accum Value to add to
-        @param changed New data to hash
-        @return Combined Hash Value */
+    @param accum Value to add to
+    @param changed New data to hash
+    @return Combined Hash Value
+*/
 template<typename VAL> inline HashValue
 chainedHash (HashValue accum, VAL changed)
 {
@@ -141,9 +136,8 @@ chainedHash (HashValue accum, VAL changed)
 }
 
 /** Create a hash value from a string
-        @return The HashValue */
-inline HashValue
-hashString (const std::string& str)
+    @return The HashValue */
+inline HashValue hashString (const std::string& str)
 {
     std::hash<std::string> hashit;
     return hashit (str);
