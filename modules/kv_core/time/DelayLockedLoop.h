@@ -28,7 +28,8 @@
 #define M_SQRT2 ((float) 1.41421356237309504880)
 #endif
 
-class DelayLockedLoop {
+class DelayLockedLoop
+{
 public:
     /** Create a new DLL */
     inline DelayLockedLoop()
@@ -49,7 +50,7 @@ public:
         samplerate = rate;
         periodSize = period;
 
-        // init the loop
+        // initialize the loop
         e2 = periodSize / samplerate;
         t0 = now;
         t1 = t0 + e2;

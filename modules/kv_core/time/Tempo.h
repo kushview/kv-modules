@@ -22,14 +22,9 @@
 class Tempo
 {
 public:
-
-    Tempo()  { }
-    ~Tempo() { }
-
-    inline static int32
-    framesPerBeat (double sampleRate, double bpmTempo)
+    /** Returns the number of audio frames per beat */
+    inline static int audioFramesPerBeat (double sampleRate, double beatsPerMinute)
     {
-        return roundDoubleToInt (sampleRate * 60.0f / bpmTempo);
+        return roundDoubleToInt (sampleRate * 60.0f / beatsPerMinute);
     }
-
 };

@@ -23,32 +23,32 @@
 struct Rational
 {
     explicit Rational (const int n = 1, const int d = 1)
-        : num(n), den(d) { }
+        : numerator (n), denominator (d) { }
     
     Rational (const Rational& o) { operator= (o); }
     Rational& operator= (const Rational& o)
     {
-        num = o.num;
-        den = o.den;
+        numerator   = o.numerator;
+        denominator = o.denominator;
         return *this;
     }
     
     /** The numerator */
-    int num;
+    int numerator;
     
     /** The denominator */
-    int den;
+    int denominator;
     
-    /** Returns numerator / denominator */
+    /** Returns a floating point version (numerator / denominator) */
     double ratio() const
     { 
-        jassert (den > 0);
-        return (double)num / (double)den; 
+        jassert (denominator > 0);
+        return (double)numerator / (double)denominator;
     }
 
     /** Returns an Inverted rational */
-    Rational inverted() const           { return Rational (den, num);  }
+    Rational inverted() const           { return Rational (denominator, numerator);  }
 
-    /** Returns an inverted ratio */
+    /** Returns an inverted ratio (denominator / numerator) */
     double invertedRatio() const        { return inverted().ratio(); }
 };

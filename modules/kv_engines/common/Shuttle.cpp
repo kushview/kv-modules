@@ -36,7 +36,7 @@ Shuttle::Shuttle()
 
     duration = 48000 * 4;
     framePos = 0;
-    framesPerBeat  = Tempo::framesPerBeat ((double) ts.getSampleRate(), ts.getTempo());
+    framesPerBeat  = Tempo::audioFramesPerBeat ((double) ts.getSampleRate(), ts.getTempo());
     beatsPerFrame  = 1.0f / framesPerBeat;
     playing = recording = false;
     looping = true;
@@ -106,7 +106,7 @@ void Shuttle::setTempo (float bpm)
 
         ts.setTempo (bpm);
         ts.updateScale();
-        framesPerBeat = (double) Tempo::framesPerBeat ((double) ts.getSampleRate(), ts.getTempo());
+        framesPerBeat = (double) Tempo::audioFramesPerBeat ((double) ts.getSampleRate(), ts.getTempo());
 
         beatsPerFrame  = 1.0f / framesPerBeat;
         framePos = llrint (oldTime * framesPerBeat);
@@ -126,7 +126,7 @@ void Shuttle::setSampleRate (double rate)
 
     framePos        = llrint (oldTime * ts.getSampleRate());
     duration        = (uint32) (oldLenSec * (float) ts.getSampleRate());
-    framesPerBeat  = Tempo::framesPerBeat (ts.getSampleRate(), ts.getTempo());
+    framesPerBeat  = Tempo::audioFramesPerBeat (ts.getSampleRate(), ts.getTempo());
     beatsPerFrame  = 1.0f / framesPerBeat;
 }
 
