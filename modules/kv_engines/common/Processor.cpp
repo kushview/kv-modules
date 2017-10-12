@@ -53,7 +53,7 @@ PortType Processor::getPortType (AudioProcessor* proc, uint32 p)
 
     if (port >= (proc->getTotalNumInputChannels() + proc->getTotalNumOutputChannels() + proc->getNumParameters()))
     {
-        return PortType::Atom;
+        return PortType::Midi;
     }
 
 	jassertfalse;
@@ -77,7 +77,7 @@ bool Processor::isPortInput (AudioProcessor* proc, uint32 p)
         case PortType::Audio:
             return (audioIns > 0 && port < audioIns);
             break;
-        case PortType::Atom:
+        case PortType::Midi:
         {
             if (totalMidi == 1 && proc->acceptsMidi())
                 return true;
