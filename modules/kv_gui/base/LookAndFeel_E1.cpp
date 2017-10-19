@@ -17,18 +17,18 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-const Colour LookAndFeel_E1::elementBlue            = Colour (0xff4765a0);
+const Colour LookAndFeel_KV1::elementBlue            = Colour (0xff4765a0);
 
-const Colour LookAndFeel_E1::backgroundColor        = Colour ((uint32) LookAndFeel_E1::defaultBackgroundColor);
-const Colour LookAndFeel_E1::contentBackgroundColor = Colour (0xff212125);
-const Colour LookAndFeel_E1::widgetBackgroundColor  = Colour (0xff3b3b3b);
+const Colour LookAndFeel_KV1::backgroundColor        = Colour ((uint32) LookAndFeel_KV1::defaultBackgroundColor);
+const Colour LookAndFeel_KV1::contentBackgroundColor = Colour (0xff212125);
+const Colour LookAndFeel_KV1::widgetBackgroundColor  = Colour (0xff3b3b3b);
 
-const Colour LookAndFeel_E1::textColor              = Colour ((uint32) LookAndFeel_E1::defaultTextColor);
-const Colour LookAndFeel_E1::textActiveColor        = Colour ((uint32) LookAndFeel_E1::defaultTextActiveColor);
-const Colour LookAndFeel_E1::textBoldColor          = Colour ((uint32) LookAndFeel_E1::defaultTextBoldColor);
-const Colour LookAndFeel_E1::highlightBackgroundColor = LookAndFeel_E1::textColor.darker(0.6000006).withAlpha(0.6f);
+const Colour LookAndFeel_KV1::textColor              = Colour ((uint32) LookAndFeel_KV1::defaultTextColor);
+const Colour LookAndFeel_KV1::textActiveColor        = Colour ((uint32) LookAndFeel_KV1::defaultTextActiveColor);
+const Colour LookAndFeel_KV1::textBoldColor          = Colour ((uint32) LookAndFeel_KV1::defaultTextBoldColor);
+const Colour LookAndFeel_KV1::highlightBackgroundColor = LookAndFeel_KV1::textColor.darker(0.6000006).withAlpha(0.6f);
 
-LookAndFeel_E1::LookAndFeel_E1()
+LookAndFeel_KV1::LookAndFeel_KV1()
 {
     // Text Buttons
     setColour (TextButton::buttonColourId, Colour (0xff525252));
@@ -61,34 +61,34 @@ LookAndFeel_E1::LookAndFeel_E1()
 
     // ListBox Styling
     setColour (ListBox::backgroundColourId, Colour (0x00000000));
-    setColour (ListBox::textColourId, LookAndFeel_E1::textColor);
+    setColour (ListBox::textColourId, LookAndFeel_KV1::textColor);
 
-    setColour (TextEditor::backgroundColourId, LookAndFeel_E1::backgroundColor);
-    setColour (TextEditor::highlightColourId, LookAndFeel_E1::backgroundColor.brighter());
+    setColour (TextEditor::backgroundColourId, LookAndFeel_KV1::backgroundColor);
+    setColour (TextEditor::highlightColourId, LookAndFeel_KV1::backgroundColor.brighter());
     setColour (TextEditor::highlightColourId, highlightBackgroundColor);
-    setColour (TextEditor::highlightedTextColourId, LookAndFeel_E1::textColor.contrasting());
-    setColour (TextEditor::textColourId, LookAndFeel_E1::textColor);
+    setColour (TextEditor::highlightedTextColourId, LookAndFeel_KV1::textColor.contrasting());
+    setColour (TextEditor::textColourId, LookAndFeel_KV1::textColor);
 
     // Toolbar Styling
-    setColour (Toolbar::backgroundColourId, LookAndFeel_E1::backgroundColor.brighter (0.05f));
-    setColour (Toolbar::buttonMouseDownBackgroundColourId, LookAndFeel_E1::backgroundColor.brighter (0.1f));
-    setColour (Toolbar::buttonMouseOverBackgroundColourId, LookAndFeel_E1::backgroundColor.darker (0.046f));
+    setColour (Toolbar::backgroundColourId, LookAndFeel_KV1::backgroundColor.brighter (0.05f));
+    setColour (Toolbar::buttonMouseDownBackgroundColourId, LookAndFeel_KV1::backgroundColor.brighter (0.1f));
+    setColour (Toolbar::buttonMouseOverBackgroundColourId, LookAndFeel_KV1::backgroundColor.darker (0.046f));
 
     // alert window
-    setColour (AlertWindow::backgroundColourId,  LookAndFeel_E1::backgroundColor);
-    setColour (AlertWindow::textColourId, LookAndFeel_E1::textColor);
+    setColour (AlertWindow::backgroundColourId,  LookAndFeel_KV1::backgroundColor);
+    setColour (AlertWindow::textColourId, LookAndFeel_KV1::textColor);
 
     // Label
-    setColour(Label::textColourId, LookAndFeel_E1::textColor);
+    setColour(Label::textColourId, LookAndFeel_KV1::textColor);
 
     // search path component
-    setColour (FileSearchPathListComponent::backgroundColourId, LookAndFeel_E1::backgroundColor);
+    setColour (FileSearchPathListComponent::backgroundColourId, LookAndFeel_KV1::backgroundColor);
 
     // Tree View
     setColour (TreeView::backgroundColourId, Colour (0x00000000));
-    setColour (TreeView::linesColourId, LookAndFeel_E1::textColor);
+    setColour (TreeView::linesColourId, LookAndFeel_KV1::textColor);
     setColour (TreeView::dragAndDropIndicatorColourId, Colours::orange.darker());
-    setColour (TreeView::selectedItemBackgroundColourId, highlightBackgroundColor);
+    setColour (TreeView::selectedItemBackgroundColourId, elementBlue.darker (0.6000006f));
 
     // Digital meter styling
     setColour (DigitalMeter::levelOverColourId, Colours::yellow.darker());
@@ -117,18 +117,18 @@ LookAndFeel_E1::LookAndFeel_E1()
 #endif
 }
 
-LookAndFeel_E1::~LookAndFeel_E1() { }
+LookAndFeel_KV1::~LookAndFeel_KV1() { }
 
-bool LookAndFeel_E1::areScrollbarButtonsVisible() { return false; }
+bool LookAndFeel_KV1::areScrollbarButtonsVisible() { return false; }
 
-void LookAndFeel_E1::drawStretchableLayoutResizerBar (Graphics& g, int /*w*/, int /*h*/, bool /*isVerticalBar*/,
+void LookAndFeel_KV1::drawStretchableLayoutResizerBar (Graphics& g, int /*w*/, int /*h*/, bool /*isVerticalBar*/,
                                              bool isMouseOver, bool isMouseDragging)
 {
     if (isMouseOver || isMouseDragging)
         g.fillAll (elementBlue.withAlpha (0.4f));
 }
 
-void LookAndFeel_E1::drawScrollbar (Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height,
+void LookAndFeel_KV1::drawScrollbar (Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height,
                                     bool isScrollbarVertical, int thumbStartPosition, int thumbSize, bool isMouseOver, bool isMouseDown)
 {
     Path thumbPath;
@@ -158,7 +158,7 @@ void LookAndFeel_E1::drawScrollbar (Graphics& g, ScrollBar& scrollbar, int x, in
     g.strokePath (thumbPath, PathStrokeType (1.0f));
 }
 
-void LookAndFeel_E1::drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
+void LookAndFeel_KV1::drawConcertinaPanelHeader (Graphics& g, const Rectangle<int>& area,
                                                 bool isMouseOver, bool /*isMouseDown*/,
                                                 ConcertinaPanel&, Component& panel)
 {
@@ -194,7 +194,7 @@ static void drawButtonShape (Graphics& g, const Path& outline, Colour baseColour
     g.strokePath (outline, PathStrokeType (1.0f));
 }
 
-void LookAndFeel_E1::drawButtonBackground (Graphics& g, Button& button, const Colour& backgroundColour,
+void LookAndFeel_KV1::drawButtonBackground (Graphics& g, Button& button, const Colour& backgroundColour,
                                            bool isMouseOverButton, bool isButtonDown)
 {
     Colour baseColour (backgroundColour.withMultipliedSaturation(button.hasKeyboardFocus (true) ? 1.3f : 0.9f)
@@ -222,7 +222,7 @@ void LookAndFeel_E1::drawButtonBackground (Graphics& g, Button& button, const Co
     drawButtonShape (g, outline, baseColour, height);
 }
 
-void LookAndFeel_E1::drawTableHeaderBackground (Graphics& g, TableHeaderComponent& header)
+void LookAndFeel_KV1::drawTableHeaderBackground (Graphics& g, TableHeaderComponent& header)
 {
     Rectangle<int> r (header.getLocalBounds());
 
@@ -238,10 +238,10 @@ void LookAndFeel_E1::drawTableHeaderBackground (Graphics& g, TableHeaderComponen
         g.fillRect (header.getColumnPosition (i).removeFromRight (1));
 }
 
-int LookAndFeel_E1::getTabButtonOverlap (int /*tabDepth*/)            { return -1; }
-int LookAndFeel_E1::getTabButtonSpaceAroundImage()                    { return 1; }
+int LookAndFeel_KV1::getTabButtonOverlap (int /*tabDepth*/)            { return -1; }
+int LookAndFeel_KV1::getTabButtonSpaceAroundImage()                    { return 1; }
 
-void LookAndFeel_E1::createTabTextLayout (const TabBarButton& button, float length, float depth,
+void LookAndFeel_KV1::createTabTextLayout (const TabBarButton& button, float length, float depth,
                                           Colour colour, TextLayout& textLayout)
 {
     Font font (depth * 0.5f);
@@ -254,7 +254,7 @@ void LookAndFeel_E1::createTabTextLayout (const TabBarButton& button, float leng
     textLayout.createLayout (s, length);
 }
 
-void LookAndFeel_E1::drawTabButton (TabBarButton& button, Graphics& g, bool isMouseOver, bool isMouseDown)
+void LookAndFeel_KV1::drawTabButton (TabBarButton& button, Graphics& g, bool isMouseOver, bool isMouseDown)
 {
     const Rectangle<int> activeArea (button.getActiveArea());
 
@@ -322,7 +322,7 @@ void LookAndFeel_E1::drawTabButton (TabBarButton& button, Graphics& g, bool isMo
     textLayout.draw (g, Rectangle<float> (length, depth));
 }
 
-void LookAndFeel_E1::drawTreeviewPlusMinusBox (Graphics& g, const Rectangle<float>& area,
+void LookAndFeel_KV1::drawTreeviewPlusMinusBox (Graphics& g, const Rectangle<float>& area,
                                                Colour backgroundColour, bool isOpen, bool isMouseOver)
 {
     Path p;
@@ -332,17 +332,17 @@ void LookAndFeel_E1::drawTreeviewPlusMinusBox (Graphics& g, const Rectangle<floa
     g.fillPath (p, p.getTransformToScaleToFit (area.reduced (2, area.getHeight() / 4), true));
 }
 
-bool LookAndFeel_E1::areLinesDrawnForTreeView (TreeView&)
+bool LookAndFeel_KV1::areLinesDrawnForTreeView (TreeView&)
 {
     return false;
 }
 
-int LookAndFeel_E1::getTreeViewIndentSize (TreeView&)
+int LookAndFeel_KV1::getTreeViewIndentSize (TreeView&)
 {
     return 20;
 }
 
-void LookAndFeel_E1::drawComboBox (Graphics& g, int width, int height, const bool isButtonDown,
+void LookAndFeel_KV1::drawComboBox (Graphics& g, int width, int height, const bool isButtonDown,
                                    int buttonX, int buttonY, int buttonW, int buttonH, ComboBox& box)
 {
     g.fillAll (box.findColour (ComboBox::backgroundColourId));
@@ -395,14 +395,14 @@ void LookAndFeel_E1::drawComboBox (Graphics& g, int width, int height, const boo
 
 // MARK: Popup Menu
 
-void LookAndFeel_E1::drawPopupMenuBackground (Graphics& g, int width, int height)
+void LookAndFeel_KV1::drawPopupMenuBackground (Graphics& g, int width, int height)
 {
     const Rectangle<float> r (0.f, 0.f, (float)width, (float)height);
     g.setColour (findColour (PopupMenu::backgroundColourId));
     g.fillRoundedRectangle (r, 0.0f);
 }
 
-void LookAndFeel_E1::getIdealPopupMenuItemSize (const String &text, bool isSeparator,
+void LookAndFeel_KV1::getIdealPopupMenuItemSize (const String &text, bool isSeparator,
                                                 int standardMenuItemHeight, int &idealWidth, int &idealHeight)
 {
     LookAndFeel_V3::getIdealPopupMenuItemSize (text, isSeparator, standardMenuItemHeight, idealWidth, idealHeight);
@@ -415,13 +415,13 @@ void LookAndFeel_E1::getIdealPopupMenuItemSize (const String &text, bool isSepar
 
 // MARK: MenuBar
 
-void LookAndFeel_E1::drawMenuBarBackground (Graphics& g, int width, int height,
+void LookAndFeel_KV1::drawMenuBarBackground (Graphics& g, int width, int height,
                                             bool isMouseOverBar, MenuBarComponent& mbc)
 {
     LookAndFeel_V3::drawMenuBarBackground (g, width, height, isMouseOverBar, mbc);
 }
 
-void LookAndFeel_E1::drawMenuBarItem (Graphics& g, int width, int height, int itemIndex,
+void LookAndFeel_KV1::drawMenuBarItem (Graphics& g, int width, int height, int itemIndex,
                                       const String& itemText, bool isMouseOverItem,
                                       bool isMenuOpen, bool isMouseOverBar, MenuBarComponent& bar)
 {
@@ -438,7 +438,7 @@ void LookAndFeel_E1::drawMenuBarItem (Graphics& g, int width, int height, int it
     g.drawText (itemText, 0, 0, width, height, Justification::centred);
 }
 
-void LookAndFeel_E1::drawKeymapChangeButton (Graphics& g, int width, int height,
+void LookAndFeel_KV1::drawKeymapChangeButton (Graphics& g, int width, int height,
                                Button& button, const String& keyDescription)
 {
     const Colour textColour (button.findColour (0x100ad01 /*KeyMappingEditorComponent::textColourId*/, true));

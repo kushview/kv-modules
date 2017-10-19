@@ -1,6 +1,6 @@
 /*
     This file is part of the Kushview Modules for JUCE
-    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
+    Copyright (C) 2014-2017  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef KV_OBJECT_MODEL_H
-#define KV_OBJECT_MODEL_H
+#pragma once
 
 /** A thin wrapper around a juce ValueTree */
 class ObjectModel
@@ -48,11 +47,13 @@ public:
     inline bool hasType (const Identifier& type) const { return objectData.hasType (type); }
 
     /** Access to the underlying ValueTree (const version) */
-    const ValueTree& node() const { return objectData; }
+    inline const ValueTree& node() const { return objectData; }
+    inline const ValueTree& getValueTree() const { return objectData; }
 
     /** Access to the underlying ValueTree */
     ValueTree node() { return objectData; }
-
+    ValueTree getValueTree() { return objectData; }
+    
     /** Replace this objects ValueTree with another
         If you need to do something special when data is set, then override
         the canAcceptData and setNodeData methods
@@ -100,6 +101,3 @@ protected:
             objectData.setProperty (prop, objectData.getProperty (prop, defaultValue), nullptr);
     }
 };
-
-
-#endif  /* KV_OBJECT_MODEL_H */

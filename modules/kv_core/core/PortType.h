@@ -23,6 +23,10 @@
  #define KV_INVALID_PORT (uint32)-1
 #endif
 
+#ifndef KV_INVALID_NODE
+ #define KV_INVALID_NODE KV_INVALID_PORT
+#endif
+
 /** The type of a port. */
 class PortType {
 public:

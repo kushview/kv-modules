@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_LOOK_AND_FEEL_E1_H
-#define EL_LOOK_AND_FEEL_E1_H
+#pragma once
 
 enum ColourIds
 {
@@ -26,7 +25,7 @@ enum ColourIds
     treeviewHighlightColourId       = 0x2340002
 };
 
-class JUCE_API LookAndFeel_E1 : public LookAndFeel_V3
+class JUCE_API LookAndFeel_KV1 : public LookAndFeel_V3
 {
 public:
     enum DefaultColorCodes
@@ -58,8 +57,8 @@ public:
     
     static const Colour highlightBackgroundColor;
 
-    LookAndFeel_E1();
-    virtual ~LookAndFeel_E1();
+    LookAndFeel_KV1();
+    virtual ~LookAndFeel_KV1();
 
     // Buttons
     virtual void drawButtonBackground (Graphics&, Button&, const Colour& backgroundColour,
@@ -108,7 +107,3 @@ private:
     Image backgroundTexture;
     Colour backgroundTextureBaseColour;
 };
-
-
-
-#endif /* EL_LOOK_AND_FEEL_E1_H */
