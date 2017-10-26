@@ -351,8 +351,7 @@ public:
 	}
 
     /** Return the timescale's current tempo (at the first node) */
-    float
-    getTempo() const
+    float getTempo() const
 	{
         Node *node = mNodes.first();
         return (node ? node->tempo : 120.0f);

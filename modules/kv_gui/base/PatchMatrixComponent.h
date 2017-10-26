@@ -64,8 +64,22 @@ public:
     virtual void matrixCellClicked (const int row, const int col, const MouseEvent& ev);
     virtual void matrixBackgroundClicked (const MouseEvent& ev) { }
     
-    bool mouseIsOverCell (const int row, const int col) const       { return row == hoveredRow || col == hoveredColumn; }
+    inline bool mouseIsOverRow (const int row) const {
+        return row >= 0 && hoveredRow >= 0 && row == hoveredRow;
+    }
+    
+    inline bool mouseIsOverColumn (const int col) const {
+        return col >= 0 && hoveredColumn >= 0 && col == hoveredColumn;
+    }
+    
+    inline bool mouseIsOverCell (const int row, const int col) const {
+        return mouseIsOverRow(row) && mouseIsOverColumn (col);
+    }
+    
+    void mouseEnter (const MouseEvent& ev) override;
     void mouseMove (const MouseEvent& ev) override;
+    void mouseExit (const MouseEvent& ev) override;
+    
     void mouseDown (const MouseEvent& ev) override;
     void paint (Graphics &g) override;
 

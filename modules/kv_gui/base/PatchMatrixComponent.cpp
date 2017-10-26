@@ -122,10 +122,9 @@ Component* QuadrantLayout::getQauadrantComponent (QuadrantLayout::Quadrant q) co
     return quadrants.getUnchecked (q);
 }
 
-
-
 PatchMatrixComponent::PatchMatrixComponent()
 {
+    hoveredRow = hoveredColumn = -1;
     verticalThickness = horizontalThickness = 30;
     offsetX = offsetY = 0;
 }
@@ -150,10 +149,23 @@ void PatchMatrixComponent::mouseDown (const MouseEvent& ev)
         matrixBackgroundClicked (ev);
 }
 
+void PatchMatrixComponent::mouseEnter (const MouseEvent& ev)
+{
+    hoveredRow = getRowForPixel (ev.y);
+    hoveredColumn = getColumnForPixel (ev.x);
+    repaint();
+}
+
 void PatchMatrixComponent::mouseMove (const MouseEvent& ev)
 {
     hoveredRow = getRowForPixel (ev.y);
     hoveredColumn = getColumnForPixel (ev.x);
+}
+
+void PatchMatrixComponent::mouseExit (const MouseEvent& ev)
+{
+    hoveredRow = hoveredColumn = -1;
+    repaint();
 }
 
 void PatchMatrixComponent::paint (Graphics &g)
@@ -167,7 +179,7 @@ void PatchMatrixComponent::paint (Graphics &g)
     const int w = horizontalThickness;
     const int h = verticalThickness;
     
-    int row = getRowForPixel(0);
+    int row = getRowForPixel (0);
     for (int y = ys; y < getHeight(); y += h)
     {
         int col = cs;
