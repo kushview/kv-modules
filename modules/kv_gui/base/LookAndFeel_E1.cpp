@@ -63,6 +63,7 @@ LookAndFeel_KV1::LookAndFeel_KV1()
     setColour (ListBox::backgroundColourId, Colour (0x00000000));
     setColour (ListBox::textColourId, LookAndFeel_KV1::textColor);
 
+	// Text Editor
     setColour (TextEditor::backgroundColourId, LookAndFeel_KV1::backgroundColor);
     setColour (TextEditor::highlightColourId, LookAndFeel_KV1::backgroundColor.brighter());
     setColour (TextEditor::highlightColourId, highlightBackgroundColor);
@@ -74,12 +75,12 @@ LookAndFeel_KV1::LookAndFeel_KV1()
     setColour (Toolbar::buttonMouseDownBackgroundColourId, LookAndFeel_KV1::backgroundColor.brighter (0.1f));
     setColour (Toolbar::buttonMouseOverBackgroundColourId, LookAndFeel_KV1::backgroundColor.darker (0.046f));
 
-    // alert window
+    // Alert Window
     setColour (AlertWindow::backgroundColourId,  LookAndFeel_KV1::backgroundColor);
     setColour (AlertWindow::textColourId, LookAndFeel_KV1::textColor);
 
     // Label
-    setColour(Label::textColourId, LookAndFeel_KV1::textColor);
+    setColour (Label::textColourId, LookAndFeel_KV1::textColor);
 
     // search path component
     setColour (FileSearchPathListComponent::backgroundColourId, LookAndFeel_KV1::backgroundColor);
@@ -98,7 +99,6 @@ LookAndFeel_KV1::LookAndFeel_KV1()
     setColour (DigitalMeter::level10dBColourId, Colours::darkgreen.darker());
     setColour (DigitalMeter::backgroundColourId, Colours::transparentBlack);
     setColour (DigitalMeter::foregroundColourId, Colours::transparentWhite);
-
 
     setColour (mainBackgroundColourId, Colour (0xff333333));
     setColour (treeviewHighlightColourId, Colour (0xffeeeeee));
@@ -120,6 +120,11 @@ LookAndFeel_KV1::LookAndFeel_KV1()
 LookAndFeel_KV1::~LookAndFeel_KV1() { }
 
 bool LookAndFeel_KV1::areScrollbarButtonsVisible() { return false; }
+
+Font LookAndFeel_KV1::getMenuBarFont (MenuBarComponent&, int, const String&)
+{
+	return Font(14);
+}
 
 void LookAndFeel_KV1::drawStretchableLayoutResizerBar (Graphics& g, int /*w*/, int /*h*/, bool /*isVerticalBar*/,
                                              bool isMouseOver, bool isMouseDragging)
@@ -197,8 +202,8 @@ static void drawButtonShape (Graphics& g, const Path& outline, Colour baseColour
 void LookAndFeel_KV1::drawButtonBackground (Graphics& g, Button& button, const Colour& backgroundColour,
                                            bool isMouseOverButton, bool isButtonDown)
 {
-    Colour baseColour (backgroundColour.withMultipliedSaturation(button.hasKeyboardFocus (true) ? 1.3f : 0.9f)
-                                       .withMultipliedAlpha(button.isEnabled() ? 0.9f : 0.5f));
+    Colour baseColour (backgroundColour.withMultipliedSaturation (button.hasKeyboardFocus(true) ? 1.3f : 0.9f)
+                                       .withMultipliedAlpha (button.isEnabled() ? 0.9f : 0.5f));
 
     if (isButtonDown || isMouseOverButton)
         baseColour = baseColour.contrasting (isButtonDown ? 0.2f : 0.1f);
@@ -323,7 +328,7 @@ void LookAndFeel_KV1::drawTabButton (TabBarButton& button, Graphics& g, bool isM
 }
 
 void LookAndFeel_KV1::drawTreeviewPlusMinusBox (Graphics& g, const Rectangle<float>& area,
-                                               Colour backgroundColour, bool isOpen, bool isMouseOver)
+                                                Colour backgroundColour, bool isOpen, bool isMouseOver)
 {
     Path p;
     p.addTriangle (0.0f, 0.0f, 1.0f, isOpen ? 0.0f : 0.5f, isOpen ? 0.5f : 0.0f, 1.0f);
@@ -422,21 +427,12 @@ void LookAndFeel_KV1::drawMenuBarBackground (Graphics& g, int width, int height,
 }
 
 void LookAndFeel_KV1::drawMenuBarItem (Graphics& g, int width, int height, int itemIndex,
-                                      const String& itemText, bool isMouseOverItem,
-                                      bool isMenuOpen, bool isMouseOverBar, MenuBarComponent& bar)
+                                       const String& itemText, bool isMouseOverItem,
+                                       bool isMenuOpen, bool isMouseOverBar, MenuBarComponent& bar)
 {
-    if (isMouseOverItem || isMenuOpen)
-    {
-        /* const Rectangle<float> r1(0.f, 3.0f, (float)width, (float)height - 6.0f);
-         g.setColour(getToggleColour());
-         g.setOpacity(0.20f);
-         g.fillRect(r1); */
-    }
-
-    g.setOpacity (0.90);
-    g.setColour (findColour (PopupMenu::textColourId));
-    g.drawText (itemText, 0, 0, width, height, Justification::centred);
-}
+	LookAndFeel_V3::drawMenuBarItem(g, width, height, itemIndex, itemText, isMouseOverItem,
+		isMenuOpen, isMouseOverBar, bar);
+} 
 
 void LookAndFeel_KV1::drawKeymapChangeButton (Graphics& g, int width, int height,
                                Button& button, const String& keyDescription)

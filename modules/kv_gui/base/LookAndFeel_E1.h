@@ -83,6 +83,7 @@ public:
     virtual void getIdealPopupMenuItemSize (const String &text, bool isSeparator, int standardMenuItemHeight,
                                             int& idealWidth, int& idealHeight) override;
 
+	virtual Font getMenuBarFont(MenuBarComponent&, int itemIndex, const String& itemText) override;
 
     virtual int getTabButtonOverlap (int tabDepth) override;
     virtual int getTabButtonSpaceAroundImage() override;
