@@ -28,6 +28,7 @@ namespace Slugs {
     static const Identifier attack   = "attack";
     static const Identifier block    = "block";
     static const Identifier bpm      = "bpm";
+    static const Identifier category = "category";
     static const Identifier channel  = "channel";
     static const Identifier clip     = "clip";
     static const Identifier decay    = "decay";
