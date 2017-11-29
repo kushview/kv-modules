@@ -31,19 +31,19 @@ void TimeScale::reset()
     mCursor.reset();
 
 	// There must always be one node, always.
-    addNode (0);
+    addNode(0);
 
 	// Commit new scale...
     updateScale();
 }
 
-void TimeScale::clear (void)
+void TimeScale::clear()
 {
-    mSnapPerBeat = 4;
+    mSnapPerBeat    = 4;
     mHorizontalZoom = 100;
-    mVerticalZoom = 100;
+    mVerticalZoom   = 100;
 
-    mDisplayFmt    = Frames;
+    mDisplayFmt     = Frames;
 
     mSampleRate     = 44100;
     mTicksPerBeat   = 960;
@@ -458,8 +458,7 @@ unsigned short TimeScale::snapFromIndex (int index)
 }
 
 // Beat divisor (snap index) accessors.
-int
-TimeScale::indexFromSnap (unsigned short snap_per_beat)
+int TimeScale::indexFromSnap (unsigned short snap_per_beat)
 {
     for (int snap = 0; snap < c_snap_item_count; ++snap) {
         if (s_snap_per_beat [snap] == snap_per_beat)

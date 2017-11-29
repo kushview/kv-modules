@@ -45,6 +45,7 @@ public:
     double getFramesPerBeat() const;
     double getBeatsPerFrame() const;
 
+    
     void setLengthBeats (const float beats);
     void setLengthFrames (const uint32 df);
     void setLengthSeconds (const double seconds);
@@ -69,9 +70,15 @@ public:
     void setSampleRate (double rate);
     
     void advance (int nframes);
+    inline void seekAudioFrame (int64 frame)
+    {
+        framePos = frame;
+    }
+    
     bool getCurrentPosition (CurrentPositionInfo &result);
 
 protected:
+    kv::TimeScale ts;
     bool playing, recording, looping;
 
 private:
@@ -81,7 +88,7 @@ private:
     int64 framePos;
     uint32 duration;
     double sampleRate;
-    kv::TimeScale ts;
+    
 
     double ppqLoopStart;
     double ppqLoopEnd;

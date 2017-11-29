@@ -19,6 +19,49 @@
 
 #pragma once
 
+struct BeatType
+{
+    enum ID {
+        WholeNote = 0,
+        HalfNote,
+        QuarterNote,
+        EighthNote,
+        SixteenthNote
+    };
+    
+    BeatType (const BeatType& o) { operator= (o); }
+    BeatType (const ID& t) : type (t) { }
+    
+    inline static int fromDivisor (const int d)
+    {
+        switch (d)
+        {
+            case 1:  return WholeNote; break;
+            case 2:  return HalfNote; break;
+            case 4:  return QuarterNote; break;
+            case 8:  return EighthNote; break;
+            case 16: return SixteenthNote; break;
+        }
+        
+        return QuarterNote;;
+    }
+    
+    inline static int fromPosition (const AudioPlayHead::CurrentPositionInfo& info) {
+        return fromDivisor (info.timeSigDenominator);
+    }
+    
+    uint8 getType() const { return static_cast<uint8> (type); }
+    uint8 divisor() const { return (1 << type); }
+    
+    operator int() const { return static_cast<int> (type); }
+    operator ID()  const { return type; }
+    
+    BeatType& operator= (const BeatType& o) { type = o.type; return *this; }
+    
+private:
+    ID type;
+};
+
 class Tempo
 {
 public:
