@@ -53,7 +53,7 @@ class ScreenManager;
 class ScreenDisplay;
 
 // look and feel
-#include "base/LookAndFeel_E1.h"
+#include "base/LookAndFeel_KV1.h"
 #include "base/PatchMatrixComponent.h"
 
 // screens

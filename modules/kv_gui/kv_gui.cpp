@@ -29,7 +29,7 @@ namespace kv {
 
 #include "base/DecibelScaleComponent.cpp"
 #include "base/DigitalMeter.cpp"
-#include "base/LookAndFeel_E1.cpp"
+#include "base/LookAndFeel_KV1.cpp"
 #include "base/PatchMatrixComponent.cpp"
 
 #if KV_DOCKING_WINDOWS

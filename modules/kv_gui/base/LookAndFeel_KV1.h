@@ -19,12 +19,6 @@
 
 #pragma once
 
-enum ColourIds
-{
-    mainBackgroundColourId          = 0x2340000,
-    treeviewHighlightColourId       = 0x2340002
-};
-
 class JUCE_API LookAndFeel_KV1 : public LookAndFeel_V3
 {
 public:
@@ -76,6 +70,7 @@ public:
     virtual void drawKeymapChangeButton (Graphics& g, int width, int height, Button& button, const String& keyDescription) override;
 
     // Menus
+    virtual Font getPopupMenuFont() override;
     virtual void drawPopupMenuBackground (Graphics& g, int width, int height) override;
     virtual void drawMenuBarBackground (Graphics&, int width, int height, bool isMouseOverBar, MenuBarComponent&) override;
     virtual void drawMenuBarItem (Graphics&, int width, int height, int itemIndex, const String& itemText,
@@ -83,7 +78,7 @@ public:
     virtual void getIdealPopupMenuItemSize (const String &text, bool isSeparator, int standardMenuItemHeight,
                                             int& idealWidth, int& idealHeight) override;
 
-	virtual Font getMenuBarFont(MenuBarComponent&, int itemIndex, const String& itemText) override;
+	virtual Font getMenuBarFont (MenuBarComponent&, int itemIndex, const String& itemText) override;
 
     virtual int getTabButtonOverlap (int tabDepth) override;
     virtual int getTabButtonSpaceAroundImage() override;

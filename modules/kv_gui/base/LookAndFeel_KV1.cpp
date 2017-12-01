@@ -52,12 +52,12 @@ LookAndFeel_KV1::LookAndFeel_KV1()
 
     // Meter Styling
     typedef kv::DigitalMeter Meter;
-    setColour (Meter::levelOverColourId, Colours::red);
-    setColour (Meter::level0dBColourId, Colours::red);
-    setColour (Meter::level3dBColourId, Colours::yellow);
-    setColour (Meter::level6dBColourId, Colours::yellow);
-    setColour (Meter::level10dBColourId, Colours::green);
-    setColour (Meter::backgroundColourId, Colours::black);
+    setColour (Meter::levelOverColourId,    Colours::red);
+    setColour (Meter::level0dBColourId,     Colours::red);
+    setColour (Meter::level3dBColourId,     Colours::yellow);
+    setColour (Meter::level6dBColourId,     Colours::yellow);
+    setColour (Meter::level10dBColourId,    Colours::green);
+    setColour (Meter::backgroundColourId,   Colours::black);
 
     // ListBox Styling
     setColour (ListBox::backgroundColourId, Colour (0x00000000));
@@ -99,10 +99,6 @@ LookAndFeel_KV1::LookAndFeel_KV1()
     setColour (DigitalMeter::level10dBColourId, Colours::darkgreen.darker());
     setColour (DigitalMeter::backgroundColourId, Colours::transparentBlack);
     setColour (DigitalMeter::foregroundColourId, Colours::transparentWhite);
-
-    setColour (mainBackgroundColourId, Colour (0xff333333));
-    setColour (treeviewHighlightColourId, Colour (0xffeeeeee));
-
 #if 0
     setColour (ListBox::backgroundColourId, Colour (0xff222222));
 
@@ -123,7 +119,7 @@ bool LookAndFeel_KV1::areScrollbarButtonsVisible() { return false; }
 
 Font LookAndFeel_KV1::getMenuBarFont (MenuBarComponent&, int, const String&)
 {
-	return Font(14);
+	return Font (14.f);
 }
 
 void LookAndFeel_KV1::drawStretchableLayoutResizerBar (Graphics& g, int /*w*/, int /*h*/, bool /*isVerticalBar*/,
@@ -399,6 +395,8 @@ void LookAndFeel_KV1::drawComboBox (Graphics& g, int width, int height, const bo
 
 
 // MARK: Popup Menu
+
+Font LookAndFeel_KV1::getPopupMenuFont() { return LookAndFeel_V2::getPopupMenuFont(); }
 
 void LookAndFeel_KV1::drawPopupMenuBackground (Graphics& g, int width, int height)
 {
