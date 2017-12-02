@@ -65,7 +65,7 @@ bool Shuttle::getCurrentPosition (CurrentPositionInfo &result)
     result.timeInSamples        = getPositionFrames();
     result.timeInSeconds        = getPositionSeconds();
     result.timeSigNumerator     = ts.beatsPerBar();
-    result.timeSigDenominator   = (1 << ts.beatType());
+    result.timeSigDenominator   = (1 << ts.beatDivisor());
     
     return true;
 }
