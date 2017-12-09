@@ -97,4 +97,6 @@ using namespace juce;
 #include "util/FileHelpers.h"
 #include "util/RelativePath.h"
 #include "util/UUID.h"
+
+#include "interprocess/SlaveProcess.h"
 }

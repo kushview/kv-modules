@@ -43,4 +43,5 @@ namespace kv {
  #include "time/TimeScale.cpp"
  #include "util/FileHelpers.cpp"
  #include "util/UUID.cpp"
+ #include "interprocess/SlaveProcess.cpp"
 }
