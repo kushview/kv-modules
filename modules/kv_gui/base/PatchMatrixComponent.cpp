@@ -124,7 +124,7 @@ Component* QuadrantLayout::getQauadrantComponent (QuadrantLayout::Quadrant q) co
 
 PatchMatrixComponent::PatchMatrixComponent()
 {
-    hoveredRow = hoveredColumn = -1;
+    hoveredRow = hoveredColumn = lastHoveredRow = lastHoveredColumn = -1;
     verticalThickness = horizontalThickness = 30;
     offsetX = offsetY = 0;
 }
@@ -139,6 +139,17 @@ void PatchMatrixComponent::matrixCellClicked (const int, const int, const MouseE
     // subclass must implement
 }
 
+void PatchMatrixComponent::updateHoveredCell (const int x, const int y)
+{
+    lastHoveredRow = hoveredRow;
+    hoveredRow = getRowForPixel (y);
+    lastHoveredColumn = hoveredColumn;
+    hoveredColumn = getColumnForPixel (x);
+    if (lastHoveredRow != hoveredRow || lastHoveredColumn != hoveredColumn)
+        matrixHoveredCellChanged (lastHoveredRow, lastHoveredColumn,
+                                  hoveredRow, hoveredColumn);
+}
+
 void PatchMatrixComponent::mouseDown (const MouseEvent& ev)
 {
     const int row = getRowForPixel (ev.y);
@@ -151,20 +162,18 @@ void PatchMatrixComponent::mouseDown (const MouseEvent& ev)
 
 void PatchMatrixComponent::mouseEnter (const MouseEvent& ev)
 {
-    hoveredRow = getRowForPixel (ev.y);
-    hoveredColumn = getColumnForPixel (ev.x);
+    updateHoveredCell (ev.x, ev.y);
     repaint();
 }
 
 void PatchMatrixComponent::mouseMove (const MouseEvent& ev)
 {
-    hoveredRow = getRowForPixel (ev.y);
-    hoveredColumn = getColumnForPixel (ev.x);
+    updateHoveredCell (ev.x, ev.y);
 }
 
 void PatchMatrixComponent::mouseExit (const MouseEvent& ev)
 {
-    hoveredRow = hoveredColumn = -1;
+    hoveredRow = hoveredColumn = lastHoveredRow = lastHoveredColumn = -1;
     repaint();
 }
 

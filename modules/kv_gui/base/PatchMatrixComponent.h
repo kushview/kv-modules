@@ -63,18 +63,14 @@ public:
                                   const int row, const int column) = 0;
     virtual void matrixCellClicked (const int row, const int col, const MouseEvent& ev);
     virtual void matrixBackgroundClicked (const MouseEvent& ev) { }
+    virtual void matrixHoveredCellChanged (const int prevRow, const int prevCol,
+                                           const int newRow,  const int newCol) {}
+
+    inline bool mouseIsOverRow (const int row) const { return row >= 0 && hoveredRow >= 0 && row == hoveredRow; }
     
-    inline bool mouseIsOverRow (const int row) const {
-        return row >= 0 && hoveredRow >= 0 && row == hoveredRow;
-    }
+    inline bool mouseIsOverColumn (const int col) const { return col >= 0 && hoveredColumn >= 0 && col == hoveredColumn; }
     
-    inline bool mouseIsOverColumn (const int col) const {
-        return col >= 0 && hoveredColumn >= 0 && col == hoveredColumn;
-    }
-    
-    inline bool mouseIsOverCell (const int row, const int col) const {
-        return mouseIsOverRow(row) && mouseIsOverColumn (col);
-    }
+    inline bool mouseIsOverCell (const int row, const int col) const { return mouseIsOverRow(row) && mouseIsOverColumn (col); }
     
     void mouseEnter (const MouseEvent& ev) override;
     void mouseMove (const MouseEvent& ev) override;
@@ -94,7 +90,8 @@ public:
 
 private:
     int verticalThickness, horizontalThickness;
-    int offsetX, offsetY, hoveredRow, hoveredColumn;
+    int offsetX, offsetY, hoveredRow, lastHoveredRow, hoveredColumn, lastHoveredColumn;
+    void updateHoveredCell (const int x, const int y);
 };
 
 #endif // EL_PATCH_MATRIX_COMPONENT_H
