@@ -31,7 +31,7 @@ Shuttle::Shuttle()
 {
     ts.setTempo (120.0f);
     ts.setSampleRate (44100);
-    ts.setTicksPerBeat (2);
+    ts.setTicksPerBeat (Shuttle::PPQ);
     ts.updateScale();
 
     duration = 0;
