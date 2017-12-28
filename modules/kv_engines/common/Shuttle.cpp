@@ -31,7 +31,7 @@ Shuttle::Shuttle()
 {
     ts.setTempo (120.0f);
     ts.setSampleRate (44100);
-    ts.setTicksPerBeat (Shuttle::PPQ);
+    ts.setTicksPerBeat (2);
     ts.updateScale();
 
     duration = 0;
@@ -56,12 +56,13 @@ bool Shuttle::getCurrentPosition (CurrentPositionInfo &result)
     result.isPlaying    = isPlaying();
     result.isRecording  = isRecording();
 
-    result.ppqLoopStart = ppqLoopStart;
-    result.ppqLoopEnd   = ppqLoopEnd;
-    result.ppqPosition  = ts.tickFromFrame (framePos);
+    result.ppqLoopStart = 0.0f; // ppqLoopStart;
+    result.ppqLoopEnd   = 0.0f; // ppqLoopEnd;
+    result.ppqPosition  = getPositionBeats();
     result.ppqPositionOfLastBarStart = 0.0f;
 
     result.editOriginTime       = 0.0f;
+    
     result.timeInSamples        = getPositionFrames();
     result.timeInSeconds        = getPositionSeconds();
     result.timeSigNumerator     = ts.beatsPerBar();
