@@ -25,8 +25,8 @@ class ScreenManager;
 
 class ScreenDisplay  : public Component,
                        public Timer,
-                       public ComboBoxListener,
-                       public LabelListener
+                       public ComboBox::Listener,
+                       public Label::Listener
 {
 public:
     ScreenDisplay ();
