@@ -64,7 +64,7 @@
  #endif
 
  #if _MSC_VER < 1800
-  #define llrint(x) juce::roundDoubleToInt(x)
+  #define llrint(x) juce::roundToInt(x)
  #endif
 #endif
 

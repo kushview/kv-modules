@@ -101,7 +101,7 @@
       inline void updateFramePixel()
       {
          const double ratio = valueToProportionOfLength (getValue());
-         frame = juce::roundDoubleToInt ((double)(nframes - 1) * ratio);
+         frame = juce::roundToInt ((double)(nframes - 1) * ratio);
          pixel = frame * frameSize();
       }
 

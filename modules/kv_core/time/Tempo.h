@@ -68,6 +68,6 @@ public:
     /** Returns the number of audio frames per beat */
     inline static int audioFramesPerBeat (double sampleRate, double beatsPerMinute)
     {
-        return roundDoubleToInt (sampleRate * 60.0f / beatsPerMinute);
+        return roundToInt (sampleRate * 60.0f / beatsPerMinute);
     }
 };
