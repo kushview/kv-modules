@@ -96,6 +96,7 @@ void DigitalMeterValue::paint (Graphics& g)
         dB = DIGITAL_METER_MAX_DB;
 
     level = meter->getIECScale (dB);
+
     if (valueHold < level)
     {
         valueHold = level;
@@ -126,22 +127,28 @@ void DigitalMeterValue::paint (Graphics& g)
 
 //        g.setColour (m_pMeter->color (iLevel));
 
-        if (vertical) {
+        if (vertical)
+        {
             g.setGradientFill (ColourGradient (meter->color (colorLevel), 0, h - ptOver,
-                                               meter->color (colorLevel-1), 0, h - ptCurr,
+                                               meter->color (colorLevel - 1), 0, h - ptCurr,
                                                false));
-        } else {
+        } 
+        else
+        {
             g.setGradientFill (ColourGradient (meter->color (colorLevel), ptOver, 0,
                                                meter->color (colorLevel - 1), ptCurr, 0,
                                                false));
         }
 
-        if (level < ptCurr) {
+        if (level < ptCurr)
+        {
             (vertical) ? g.fillRect (0, h - level, w, level - ptOver)
                        : g.fillRect (ptOver, 0, level - ptOver, h);
-        } else {
+        }
+        else 
+        {
             (vertical) ? g.fillRect (0, h - ptCurr, w, ptCurr - ptOver)
-                       : g.fillRect (ptCurr, 0, ptCurr - ptOver, h);
+                       : g.fillRect (ptOver, 0, ptCurr - ptOver, h);
         }
 
         ptOver = ptCurr;
@@ -150,8 +157,8 @@ void DigitalMeterValue::paint (Graphics& g)
     if (level > ptOver)
     {
         g.setColour (meter->color (DigitalMeter::ColorOver));
-        (level) ? g.fillRect (0, h - level, w, level - ptOver)
-                : g.fillRect (level, 0, level - ptOver, h);
+        (vertical) ? g.fillRect (0, h - level, w, level - ptOver)
+                   : g.fillRect (level, 0, level - ptOver, h);
     }
 
     if (peak < level)
