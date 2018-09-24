@@ -275,7 +275,7 @@ String LV2Module::getAuthorName() const
        lilv_node_free (node);
        return name;
    }
-   return String::empty;
+   return String();
 }
 
 const ChannelConfig& LV2Module::getChannelConfig() const
@@ -288,7 +288,7 @@ String LV2Module::getClassLabel() const
    if (const LilvPluginClass* klass = lilv_plugin_get_class (plugin))
        if (const LilvNode* node = lilv_plugin_class_get_label (klass))
            return CharPointer_UTF8 (lilv_node_as_string (node));
-   return String::empty;
+   return String();
 }
 
 const void* LV2Module::getExtensionData (const String& uri) const
@@ -310,7 +310,7 @@ String LV2Module::getName() const
        return name;
    }
 
-   return String::empty;
+   return String();
 }
 
 uint32 LV2Module::getNumPorts() const { return numPorts; }
@@ -379,7 +379,7 @@ const String LV2Module::getPortName (uint32 index) const
         return name;
     }
 
-    return String::empty;
+    return String();
 }
 
 void LV2Module::getPortRange (uint32 port, float& min, float& max, float& def) const

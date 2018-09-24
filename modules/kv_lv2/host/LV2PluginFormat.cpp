@@ -141,7 +141,7 @@ public:
     {
         desc.name = module->getName();
 
-        desc.descriptiveName = String::empty;
+        desc.descriptiveName = String();
         if (desc.descriptiveName.isEmpty())
             desc.descriptiveName = desc.name;
 
@@ -319,7 +319,7 @@ public:
     {
         if (isPositiveAndBelow (index, params.size()))
             return params.getUnchecked(index)->getName();
-        return String::empty;
+        return String();
     }
 
 
@@ -376,7 +376,7 @@ public:
 
     String getParameterLabel (int index) const
     {
-        return String::empty;
+        return String();
     }
 
     bool isParameterAutomatable (int index) const { return true; }
@@ -385,7 +385,7 @@ public:
     int getNumPrograms()          { return 0; }
     int getCurrentProgram()       { return 0; }
     void setCurrentProgram (int /*index*/) { }
-    const String getProgramName (int /*index*/)  { return String::empty; }
+    const String getProgramName (int /*index*/)  { return String(); }
     void changeProgramName (int /*index*/, const String& /*name*/) { }
 
     //==============================================================================

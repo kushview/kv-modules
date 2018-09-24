@@ -168,9 +168,9 @@ String simplifyPath (String::CharPointerType p)
         StringArray toks;
 
        #if JUCE_WINDOWS
-        toks.addTokens (p, "\\/", String::empty);
+        toks.addTokens (p, "\\/", String());
        #else
-        toks.addTokens (p, "/", String::empty);
+        toks.addTokens (p, "/", String());
        #endif
 
         while (toks[0] == ".")

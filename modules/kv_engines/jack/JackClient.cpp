@@ -148,7 +148,7 @@ JackPort JackClient::registerPort (const String& name, const String& type,
 
 String JackClient::getName()
 {
-    returnValueIfNull (client, String::empty);
+    returnValueIfNull (client, String());
     return jack_get_client_name (client);
 }
 

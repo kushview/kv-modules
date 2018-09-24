@@ -56,7 +56,7 @@ LV2Worker::~LV2Worker()
     worker = nullptr;
     zerostruct (feat);
     zerostruct (data);
-    uri = String::empty;
+    uri = String();
 }
 
 void LV2Worker::setInterface (LV2_Handle handle, LV2_Worker_Interface* iface)

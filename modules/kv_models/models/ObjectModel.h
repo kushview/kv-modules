@@ -91,7 +91,7 @@ protected:
             objectData.setProperty (prop, (POD) objectData.getProperty (prop, defaultValue), nullptr);
     }
 
-    inline void stabilizePropertyString (const Identifier& prop, const String& defaultValue = String::empty) {
+    inline void stabilizePropertyString (const Identifier& prop, const String& defaultValue = String()) {
         if (objectData.isValid())
             objectData.setProperty (prop, objectData.getProperty (prop, defaultValue).toString(), nullptr);
     }

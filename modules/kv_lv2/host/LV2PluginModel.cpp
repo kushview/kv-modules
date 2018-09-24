@@ -102,7 +102,7 @@ LV2PluginModel::getAuthorName() const
        lilv_node_free (node);
        return name;
    }
-   return String::empty;
+   return String();
 }
 
 String
@@ -111,7 +111,7 @@ LV2PluginModel::getClassLabel() const
    if (const LilvPluginClass* klass = lilv_plugin_get_class (plugin))
        if (const LilvNode* node = lilv_plugin_class_get_label (klass))
            return CharPointer_UTF8 (lilv_node_as_string (node));
-   return String::empty;
+   return String();
 }
 
 String
@@ -124,7 +124,7 @@ LV2PluginModel::getName() const
        return name;
    }
 
-   return String::empty;
+   return String();
 }
 
 uint32 LV2PluginModel::getNumPorts() const { return numPorts; }
@@ -198,7 +198,7 @@ LV2PluginModel::getPortName (uint32 index) const
         return name;
     }
 
-    return String::empty;
+    return String();
 }
 
 PortType

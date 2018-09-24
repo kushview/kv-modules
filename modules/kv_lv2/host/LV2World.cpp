@@ -137,7 +137,7 @@ void LV2World::fillPluginDescription (const String& uri, PluginDescription& desc
     {
         LV2PluginModel model (*const_cast<LV2World*> (this), plugin);
         desc.category = model.getClassLabel();
-        desc.descriptiveName = String::empty;
+        desc.descriptiveName = String();
         desc.fileOrIdentifier = uri;
         desc.hasSharedContainer = false;
         desc.isInstrument = model.getMidiPort() != LV2UI_INVALID_PORT_INDEX;
@@ -148,7 +148,7 @@ void LV2World::fillPluginDescription (const String& uri, PluginDescription& desc
         desc.numOutputChannels = model.getNumPorts (PortType::Audio, false);
         desc.pluginFormatName = String ("LV2");
         desc.uid = desc.fileOrIdentifier.hashCode();
-        desc.version = String::empty;
+        desc.version = String();
     }
 }
 
