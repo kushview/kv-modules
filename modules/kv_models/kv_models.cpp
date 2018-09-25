@@ -1,6 +1,6 @@
 /*
-    element_module.cpp - This file is part of Element
-    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
+    kv_models.cpp - This file is part of the Kushview Modules for JUCE
+    Copyright (C) 2014-2018  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
