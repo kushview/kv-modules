@@ -31,7 +31,7 @@
           pixel (0),
           scale(1)
       {
-         img = Image::null;
+         img = Image();
          setTextBoxStyle (Slider::NoTextBox, false, 0, 0);
          setSliderStyle (Slider::Rotary);
       }
@@ -47,7 +47,7 @@
       {
          img = source;
 
-          if (img != Image::null &&
+          if (! img.isNull() &&
               img.getWidth() >= 1 &&
               img.getHeight() >= 1)
           {
@@ -75,7 +75,7 @@
 
       inline void paint (Graphics& g) override
       {
-         if (img == Image::null)
+         if (img.isNull())
          {
             Slider::paint (g);
             return;

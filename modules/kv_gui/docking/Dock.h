@@ -1,6 +1,6 @@
 /*
     This file is part of the Kushview Modules for JUCE
-    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
+    Copyright (C) 2014-2018  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,9 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_GUI_DOCK_H
-#define EL_GUI_DOCK_H
-
+#pragma once
 
 class DockArea;
 class DockItem;
@@ -265,19 +263,17 @@ public:
                   public DragAndDropContainer
     {
     public:
-
         Grip (Component& parent_) : parent(parent_)
         {
-#if JUCE_IOS
+           #if JUCE_IOS
             setSize (36, 48);
-#else
+           #else
             setSize (12, 16);
-#endif
+           #endif
         }
 
         void paint (Graphics& g)
         {
-
             g.setColour(Colours::white);
 
             const int pad = 1;
@@ -294,8 +290,8 @@ public:
 
         void mouseDown (const MouseEvent&)
         {
-            parent.setAlpha(0.9);
-            startDragging("dock-item" ,&parent, Image::null, true);
+            parent.setAlpha (0.9);
+            startDragging ("dock-item" ,&parent, Image(), true);
         }
 
         void mouseDrag (const MouseEvent&)
@@ -308,12 +304,8 @@ public:
         }
 
     private:
-
         ComponentDragger dragger;
         Component& parent;
 
     } grip;
-
 };
-
-#endif /* EL_GUI_DOCK_H */
