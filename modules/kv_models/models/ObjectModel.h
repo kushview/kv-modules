@@ -23,12 +23,12 @@
 class ObjectModel
 {
 public:
-    explicit ObjectModel (const ValueTree& data = ValueTree::invalid);
+    explicit ObjectModel (const ValueTree& data = ValueTree());
     ObjectModel (const Identifier& slugId);
     virtual ~ObjectModel() { }
 
     /** Get a property from the underlying ValueTree */
-    inline var getProperty (const Identifier& id, const var& d = var::null) const {
+    inline var getProperty (const Identifier& id, const var& d = var()) const {
         return objectData.getProperty (id, d);
     }
     
@@ -86,7 +86,7 @@ protected:
     ValueTree objectData;
 
     template<typename POD>
-    inline void stabilizePropertyPOD (const Identifier& prop, const POD& defaultValue = var::null) {
+    inline void stabilizePropertyPOD (const Identifier& prop, const POD& defaultValue = var()) {
         if (objectData.isValid())
             objectData.setProperty (prop, (POD) objectData.getProperty (prop, defaultValue), nullptr);
     }
