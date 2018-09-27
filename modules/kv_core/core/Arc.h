@@ -1,6 +1,6 @@
 /*
     This file is part of the Kushview Modules for JUCE
-    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
+    Copyright (C) 2014-2018  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,16 +25,16 @@ public:
     Arc (uint32 sourceNode, uint32 sourcePort, uint32 destNode, uint32 destPort) noexcept;
     virtual ~Arc() { }
 
-    /** The source node id */
+    /** The source node ID */
     uint32 sourceNode;
 
-    /** The source port id */
+    /** The source port index */
     uint32 sourcePort;
     
-    /** The destination node id */
+    /** The destination node ID */
     uint32 destNode;
 
-    /** The destination port id */
+    /** The destination port index */
     uint32 destPort;
 
 private:
