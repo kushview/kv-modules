@@ -35,7 +35,7 @@ public:
     /** Get a property as a juce Value from the ValueTree */
     Value getPropertyAsValue (const Identifier& property);
 
-    /** Set a property */
+    // /** Set a property */
     inline ObjectModel& setProperty (const Identifier& property, const var& val)
     {
         objectData.setProperty (property, val, nullptr);
