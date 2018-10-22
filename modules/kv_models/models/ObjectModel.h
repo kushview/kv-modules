@@ -35,11 +35,16 @@ public:
     /** Get a property as a juce Value from the ValueTree */
     Value getPropertyAsValue (const Identifier& property);
 
-    ObjectModel& setProperty (const Identifier& property, const var& val) {
+    /** Set a property */
+    inline ObjectModel& setProperty (const Identifier& property, const var& val)
+    {
         objectData.setProperty (property, val, nullptr);
         return *this;
     }
     
+    /** Returns true if the property exists */
+    inline bool hasProperty (const Identifier& property) const { return objectData.hasProperty (property); }
+
     /** Get the ValueTree's type */
     inline Identifier getType() const { return objectData.getType(); }
 
