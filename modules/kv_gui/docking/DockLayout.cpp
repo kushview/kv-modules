@@ -59,8 +59,7 @@ void DockLayout::remove (DockItem* const child)
         buildComponentArray();
 }
 
-void
-DockLayout::layoutItems (int x, int y, int w, int h)
+void DockLayout::layoutItems (int x, int y, int w, int h)
 {
     if (comps.size() > 0)
     {
@@ -68,23 +67,21 @@ DockLayout::layoutItems (int x, int y, int w, int h)
     }
 }
 
-void
-DockLayout::layoutItems()
+void DockLayout::layoutItems()
 {
     layoutItems (0, 0, holder.getWidth(), holder.getHeight());
 }
 
-DockItem*
-DockLayout::root()
+DockItem* DockLayout::root()
 {
     if (items.size() > 0) {
-        return items[0];
+        return items [0];
     }
+
     return nullptr;
 }
 
-void
-DockLayout::buildComponentArray()
+void DockLayout::buildComponentArray()
 {
     bars.clear (true);
     layout.clearAllItems();
@@ -93,7 +90,7 @@ DockLayout::buildComponentArray()
     for (int i = 0; i < items.size(); ++i)
     {
         layout.setItemLayout (comps.size(), 30, -1.0, 100);
-        comps.add ((Component*) items[i]);
+        comps.add ((Component*) items [i]);
 
         if (i != items.size() -1)
         {

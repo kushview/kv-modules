@@ -23,7 +23,7 @@ DockItem::DockItem (Dock& parent, const String& id, const String& name)
 {
     setComponentID (id);
     addAndMakeVisible (&grip);
-    addChildComponent(&overlay);
+    addChildComponent (&overlay);
     overlay.setAlpha (0.50);
 }
 
