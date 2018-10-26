@@ -17,9 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_DECIBEL_SCALE_H
-#define EL_DECIBEL_SCALE_H
-
+#pragma once
 
 //==============================================================================
 /**
@@ -28,8 +26,6 @@
 class DecibelScaleComponent: public Component
 {
 public:
-
-    //==============================================================================
     enum DecibelLevels
     {
         LevelOver    = 0,
@@ -40,36 +36,28 @@ public:
         LevelCount   = 5
     };
 
-    //==============================================================================
-    // Constructor.
-    DecibelScaleComponent ();
+    enum ColourIds
+    {
+        markerColourId = 0x11112222
+    };
 
-    // Default destructor.
-    ~DecibelScaleComponent ();
+    DecibelScaleComponent();
+    ~DecibelScaleComponent();
 
-    //==============================================================================
     int iecScale (const float dB) const;
     int iecLevel (const int index) const;
 
-    //==============================================================================
     /** @internal */
     void paint (Graphics& g);
     /** @internal */
     void resized ();
 
 protected:
-
-    //==============================================================================
-    // Draw IEC scale line and label.
     void drawLabel (Graphics& g, const int y, const String& label);
 
-    // Style font
+private:
     Font font;
-
-    // Running variables.
     float scale;
     int lastY;
     int levels [LevelCount];
 };
-
-#endif  // EL_DECIBEL_SCALE_H

@@ -1,6 +1,6 @@
 /*
     This file is part of the Kushview Modules for JUCE
-    Copyright (C) 2014  Kushview, LLC.  All rights reserved.
+    Copyright (C) 2014-2018  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -17,26 +17,12 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-/*
-// Meter level limits (in dB).
-#define HQ_METER_MAXDB        (+3.0f)
-#define HQ_METER_MINDB        (-70.0f)
-// The decay rates (magic goes here :).
-// - value decay rate (faster)
-#define HQ_METER_DECAY_RATE1    (1.0f - 3E-2f)
-// - peak decay rate (slower)
-#define HQ_METER_DECAY_RATE2    (1.0f - 3E-6f)
-// Number of cycles the peak stays on hold before fall-off.
-#define HQ_METER_PEAK_FALLOFF    16
-*/
-
-//==============================================================================
 DecibelScaleComponent::DecibelScaleComponent ()
-  : font (7.0f, Font::plain),
-    scale (0.0f),
+  : font (7.0f, Font::plain), scale (0.0f),
     lastY (0)
 {
     zeromem (levels, sizeof (int) * LevelCount);
+    setColour (markerColourId, Colour (0xFFCCCCCC));
 }
 
 DecibelScaleComponent::~DecibelScaleComponent ()
@@ -46,7 +32,7 @@ DecibelScaleComponent::~DecibelScaleComponent ()
 void DecibelScaleComponent::paint (Graphics& g)
 {
     g.setFont (font);
-    g.setColour (Colours::lightgrey);
+    g.setColour (findColour (markerColourId));
 
     lastY = 0;
 
@@ -56,17 +42,17 @@ void DecibelScaleComponent::paint (Graphics& g)
     drawLabel (g, iecLevel (Level10dB), "10");
 
     for (float dB = -20.0f; dB > -70.0f; dB -= 10.0f)
-        drawLabel (g, DecibelScaleComponent::iecScale (dB), String ((int) -dB));
+        drawLabel (g, iecScale (dB), String ((int) -dB));
 }
 
 void DecibelScaleComponent::resized ()
 {
     scale = 0.85f * getHeight();
 
-    levels [Level0dB]  = iecScale(  0.0f);
-    levels [Level3dB]  = iecScale( -3.0f);
-    levels [Level6dB]  = iecScale( -6.0f);
-    levels [Level10dB] = iecScale(-10.0f);
+    levels [Level0dB]  = iecScale (  0.0f);
+    levels [Level3dB]  = iecScale ( -3.0f);
+    levels [Level6dB]  = iecScale ( -6.0f);
+    levels [Level10dB] = iecScale (-10.0f);
 }
 
 void DecibelScaleComponent::drawLabel (Graphics& g, const int y, const String& label)

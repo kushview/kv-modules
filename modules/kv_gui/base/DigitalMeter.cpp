@@ -219,9 +219,12 @@ DigitalMeter::DigitalMeter (const int numPorts, bool _horizontal)
 
 DigitalMeter::~DigitalMeter()
 {
-    for (int port = 0; port < portCount; port++)
-        delete values[port];
-    delete[] values;
+    if (values != nullptr)
+    {
+        for (int port = 0; port < portCount; port++)
+            delete values[port];
+        delete[] values;
+    }
 }
 
 void DigitalMeter::resized()
@@ -234,7 +237,7 @@ void DigitalMeter::resized()
             for (int port = 0; port < portCount; port++)
             {
                 values[port] = createDigitalMeterValue();
-                addAndMakeVisible (values[port]);
+                addAndMakeVisible (values [port]);
             }
         }
     }
@@ -258,13 +261,10 @@ void DigitalMeter::resized()
     }
 }
 
-void DigitalMeter::paint (Graphics&)
+void DigitalMeter::paint (Graphics& g)
 {
-/*
-    g.drawBevel (0, 0, getWidth(), getHeight(), 1,
-                 Colours::black.withAlpha(0.2f),
-                 Colours::white.withAlpha(0.2f));
-*/
+    g.setColour (Colour (0xFF202020));
+    g.fillAll();
 }
 
 DigitalMeterValue* DigitalMeter::createDigitalMeterValue()
@@ -296,7 +296,7 @@ int DigitalMeter::getIECScale (const float dB) const
 
 int DigitalMeter::getIECLevel (const int index) const
 {
-    return levels[index];
+    return levels [index];
 }
 
 int DigitalMeter::getPortCount () const { return portCount; }
