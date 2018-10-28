@@ -20,8 +20,9 @@
 const Colour LookAndFeel_KV1::elementBlue            = Colour (0xff4765a0);
 
 const Colour LookAndFeel_KV1::backgroundColor        = Colour ((uint32) LookAndFeel_KV1::defaultBackgroundColor);
-const Colour LookAndFeel_KV1::contentBackgroundColor = Colour (0xff212125);
 const Colour LookAndFeel_KV1::widgetBackgroundColor  = Colour (0xff3b3b3b);
+const Colour LookAndFeel_KV1::contentBackgroundColor =  LookAndFeel_KV1::widgetBackgroundColor.darker().darker();
+// const Colour LookAndFeel_KV1::contentBackgroundColor = Colour (0xff212125);
 
 const Colour LookAndFeel_KV1::textColor              = Colour ((uint32) LookAndFeel_KV1::defaultTextColor);
 const Colour LookAndFeel_KV1::textActiveColor        = Colour ((uint32) LookAndFeel_KV1::defaultTextActiveColor);
