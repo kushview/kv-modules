@@ -82,8 +82,9 @@ void DigitalMeterValue::paint (Graphics& g)
     }
     else
     {
-        g.setColour (Colours::black);
+        g.setColour (meter->color (DigitalMeter::ColorBack));
         g.fillRect (0, 0, w, h);
+        return;
     }
 
     float dB = DIGITAL_METER_MIN_DB;
@@ -305,19 +306,21 @@ int DigitalMeter::getPeakFalloff() const { return peakFalloff; }
 
 void DigitalMeter::resetPeaks()
 {
-    for (int iPort = 0; iPort < portCount; iPort++)
-        values[iPort]->resetPeak();
+    if (nullptr != values)
+        for (int iPort = 0; iPort < portCount; iPort++)
+            values[iPort]->resetPeak();
 }
 
 void DigitalMeter::refresh()
 {
-    for (int port = 0; port < portCount; ++port)
-        values[port]->refresh();
+    if (nullptr != values)
+        for (int port = 0; port < portCount; ++port)
+            values[port]->refresh();
 }
 
 void DigitalMeter::setValue (const int port, const float value)
 {
-    if (isPositiveAndBelow (port, portCount))
+    if (values != nullptr && isPositiveAndBelow (port, portCount))
         values[port]->setValue (value);
 }
 
