@@ -49,9 +49,9 @@ public:
     DockItem* createItem (const String& id, const String& name, Dock::Placement placement);
     DockItem* getItem    (const String& id);
 
-    void paint (Graphics&) { }
+    void paint (Graphics&) override { }
 
-    void resized();
+    void resized() override;
 
 private:
     void detatchAll (DockItem* item);
