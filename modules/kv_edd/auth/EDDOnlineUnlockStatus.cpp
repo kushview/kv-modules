@@ -178,7 +178,6 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const S
     {
         r.errorMessage = "Corrupt response received from server. Please try again.";
         r.succeeded = false;
-        
         return r;
     }
     
