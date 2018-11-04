@@ -178,12 +178,13 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const S
     {
         r.errorMessage = "Corrupt response received from server. Please try again.";
         r.succeeded = false;
+        
         return r;
     }
     
     DBG ("JSON Response:");
     DBG (JSON::toString (response, false));
-    
+
     r.succeeded = false;
     const edd::ApiResponseData data (edd::processJSONResponse (response));
     
@@ -191,6 +192,12 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const S
     {
         r.succeeded = false;
         r.errorMessage = edd::getMessageForError (data.error);
+        if (data.key.isNotEmpty())
+        {
+            applyKeyFile (data.key);
+            const ValueTree reg = edd::decryptValueTree (data.key.fromFirstOccurrenceOf ("#", true, true), getPublicKey());
+            edd = reg.getChildWithName (edd::nodeName);
+        }
         return r;
     }
     

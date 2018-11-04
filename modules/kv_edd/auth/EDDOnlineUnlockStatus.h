@@ -19,7 +19,7 @@ public:
     inline bool hasProperty (const Identifier& key) const { return edd.hasProperty (key); }
     
     /** Set the license key. Use this if you are using software licensing along with
-     EDD JUCE
+        EDD JUCE
      */
     inline void setLicenseKey (const String& licenseKey) {
         edd.setProperty (licenseName, licenseKey.trim(), nullptr);
