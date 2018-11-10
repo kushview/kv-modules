@@ -318,8 +318,6 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::checkLicense (const Stri
         applyKeyFile ("#nil");
     }
 
-    DBG("KEYFILE: " << newLine << data.key);
-
     r.succeeded = true;
     r.errorMessage = r.informativeMessage = String();
     return r;
