@@ -75,6 +75,7 @@ using namespace juce;
 #include "core/Atomic.h"
 #include "core/LinkedList.h"
 #include "core/MatrixState.h"
+#include "core/MidiChannels.h"
 #include "core/Monitor.h"
 #include "core/Parameter.h"
 #include "core/Pointer.h"
