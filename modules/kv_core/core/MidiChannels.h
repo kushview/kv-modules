@@ -3,21 +3,32 @@
 
 struct JUCE_API MidiChannels
 {
-    MidiChannels()
+    inline MidiChannels()
     {
        reset();
     }
 
-    MidiChannels (const MidiChannels& o) { operator= (o);  }
+    inline MidiChannels (int channel)
+    {
+        reset();
+        if (channel <= 0)
+            setOmni (true);
+        else 
+            setChannel (channel);
+    }
+
+    inline MidiChannels (const MidiChannels& o) { operator= (o);  }
 
     ~MidiChannels() = default;
 
+    /** Reset channels and toggle omni to on */
     inline void reset()
     {
         channels.setRange (0, 17, false);
         channels.setBit (0, true);
     }
 
+    /** Set a specific channel */
     inline void setChannel (const int channel)
     {
         jassert (channel >= 1 && channel <= 16);
@@ -26,15 +37,23 @@ struct JUCE_API MidiChannels
         channels.setBit (channel, true);
     }
 
-    inline void setChannels (const BigInteger& newChannels)
+    /** Set channels */
+    inline void setChannels (const BigInteger newChannels)
     {
         channels = newChannels;
     }
 
-    inline void setOmni (const bool omni)               { channels.setBit (0, omni); }
-    inline bool isOmni() const noexcept                 { return  channels[0]; }
-    inline bool isOn (const int channel) const noexcept     { return  channels[0] ||  channels[channel]; }
-    inline bool isNotOn (const int channel) const noexcept  { return !channels[0] && !channels[channel]; }
+    /** Set if omni */
+    inline void setOmni (const bool omni)                 { channels.setBit (0, omni); }
+
+    /** Returns true if it is omni */
+    inline bool isOmni() const noexcept                   { return  channels[0]; }
+
+    /** Returns true if omni or the channel is toggled */
+    inline bool isOn (const int channel) const noexcept   { return  channels[0] ||  channels[channel]; }
+
+    /** Returns true if the channel isn't omni and isn't toggled */
+    inline bool isOff (const int channel) const noexcept  { return !channels[0] && !channels[channel]; }
     
     inline MidiChannels& operator= (const MidiChannels& o)
     {
@@ -42,7 +61,9 @@ struct JUCE_API MidiChannels
         return *this;
     }
 
+    /** Returns the underlying BigInteger */
     const BigInteger& get() const { return channels; }
+
 private:
     BigInteger channels;
 };
