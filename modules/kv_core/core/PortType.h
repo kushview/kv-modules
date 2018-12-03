@@ -19,6 +19,10 @@
 
 #pragma once
 
+#ifndef KV_INVALID_CHANNEL
+ #define KV_INVALID_CHANNEL -1
+#endif
+
 #ifndef KV_INVALID_PORT
  #define KV_INVALID_PORT (uint32)-1
 #endif
@@ -49,6 +53,13 @@ public:
                 
     PortType (ID id) : type(id) { }
 
+    PortType (const int t) : type (static_cast<ID> (t)) { }
+
+    PortType (const PortType& o)
+    {
+        type = o.type;
+    }
+
     /** Get a URI string for this port type */
     inline const String& getURI()  const { return typeURI (type); }
                 
@@ -60,6 +71,18 @@ public:
                 
     /** Get the port type id. This is useful in switch statements */
     inline ID               id()   const { return type; }
+
+    inline PortType& operator= (const int& t) {
+        jassert (t >= PortType::Control && t <= PortType::Unknown);
+        type = static_cast<ID> (t);
+        return *this;
+    }
+
+    inline PortType& operator= (const PortType& o)
+    {
+        type = o.type;
+        return *this;
+    }
 
     inline bool operator== (const ID& id) const { return (type == id); }
     inline bool operator!= (const ID& id) const { return (type != id); }
@@ -172,9 +195,9 @@ private:
 
 /** Maps channel numbers to a port indexes for all port types. This is an attempt
     to handle boiler-plate port to channel mapping functions */
-class ChannelMapping {
+class ChannelMapping
+{
 public:
-
     inline ChannelMapping() { init(); }
 
     /** Maps an array of port types sorted by port index, to channels */
@@ -300,12 +323,130 @@ private:
     ChannelMapping inputs, outputs;
 };
 
-/** A detailed descption of a port. (not used currently) */
+/** A detailed descption of a port */
 struct PortDescription
 {
-    PortDescription() : index(0), isInput (false), type (PortType::Unknown) { }
-    int32       index;
-    String      symbol;
-    bool        isInput;
-    int32       type;
+    PortDescription() { }
+    PortDescription (int32 portType, int32 portIndex, int32 portChannel, 
+                     const String& portSymbol, const String& portName, 
+                     const bool isInput)
+        : type (portType), index (portIndex), channel (portChannel),
+          symbol (portSymbol), name (portName), input (isInput) { }
+
+    int32   type     { 0 };
+    int32   index    { 0 };
+    int32   channel  { 0 };
+    String  symbol   { };
+    String  name     { };
+    bool    input    { false };
+};
+
+struct PortIndexComparator
+{
+    static int compareElements (const PortDescription* const first, const PortDescription* const second)
+    {
+        return (first->index < second->index) ? -1 
+            : ((second->index < first->index) ? 1
+            : 0);
+    }
+};
+
+class PortList
+{
+public:
+    PortList() = default;
+    ~PortList()
+    {
+        ports.clear();
+    }
+
+    inline void clear() { ports.clear(); }
+    inline void clearQuick() { ports.clearQuick (true); }
+    inline int size() const { return ports.size(); }
+    inline int size (int type, bool input) const
+    {
+        int n = 0;
+        for (const auto* port : ports)
+            if (port->type == type && port->input == input)
+                ++n;
+        return n;
+    }
+
+    inline void add (PortDescription* port)
+    {
+        jassert (port != nullptr);
+        jassert (port->type >= PortType::Control && port->type < PortType::Unknown);
+        jassert (nullptr == findByIndexInternal (port->index));
+        jassert (nullptr == findByChannelInternal (port->type, port->channel, port->input));
+        PortIndexComparator sorter;
+        ports.addSorted (sorter, port);
+    }
+
+    inline void add (int32 type, int32 index, int32 channel, 
+                     const String& symbol, const String& name,
+                     const bool input)
+    {
+        add (new PortDescription (type, index, channel, symbol, name, input));
+    }
+
+    inline int getChannelForPort (const int port) const
+    {
+        if (auto* const desc = findByIndexInternal (port))
+            return desc->channel;
+        return KV_INVALID_CHANNEL;
+    }
+
+    inline int getPortForChannel (int type, int channel, bool input) const
+    {
+        if (auto* const desc = findByChannelInternal (type, channel, input))
+            return desc->index;
+        return static_cast<int> (KV_INVALID_PORT);
+    }
+
+    inline int getType (const int port) const
+    {
+        if (auto* const desc = findByIndexInternal (port))
+            return desc->type;
+        return PortType::Unknown;
+    }
+
+    inline bool isInput (const int port, const bool defaultRet = false) const
+    {
+        if (auto* const desc = findByIndexInternal (port))
+            return desc->input;
+        return defaultRet;
+    }
+    inline bool isOutput (const int port, const bool defaultRet = true) const {
+        return ! isInput (port, defaultRet);
+    }
+
+    inline const OwnedArray<PortDescription>& getPorts() const { return ports; }
+    inline void swapWith (PortList& o) { ports.swapWith (o.ports); }
+
+private:
+    OwnedArray<PortDescription> ports;
+
+    inline PortDescription* findByIndexInternal (int index) const
+    {
+        for (auto* port : ports)
+            if (port->index == index)
+                return port;
+        return nullptr;
+    }
+
+    inline PortDescription* findBySymbolInternal (const String& symbol) const
+    {
+        for (auto* port : ports)
+            if (port->symbol == symbol)
+                return port;
+        return nullptr;
+    }
+
+    inline PortDescription* findByChannelInternal (int type, int channel, bool isInput) const
+    {
+        for (auto* port : ports)
+            if (port->type == type && port->channel == channel && port->input == isInput)
+                return port;
+        return nullptr;
+    }
 };
