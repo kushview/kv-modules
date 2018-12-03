@@ -68,7 +68,9 @@ public:
                 
     /** Get a slug version of the port type */
     inline const String& getSlug() const { return slugName (type); }
-                
+    /** Get a slug version of the port type */
+    inline static const String& getSlug (const int t) { return slugName (static_cast<unsigned> (t)); }
+
     /** Get the port type id. This is useful in switch statements */
     inline ID               id()   const { return type; }
 
@@ -449,4 +451,24 @@ private:
                 return port;
         return nullptr;
     }
+
+#if JUCE_MODULE_AVAILABLE_juce_data_structures
+public:
+    inline ValueTree createValueTree (const int port) const
+    {
+        if (const auto* desc = findByIndexInternal (port))
+        {
+            ValueTree data ("port");
+            data.setProperty ("index",     desc->index, nullptr)
+                .setProperty ("channel",   desc->channel, nullptr)
+                .setProperty ("type",      PortType::getSlug (desc->type), nullptr)
+                .setProperty ("input",     desc->input, nullptr)
+                .setProperty ("name",      desc->name, nullptr)
+                .setProperty ("symbol",    desc->symbol, nullptr);
+            return data;
+        }
+
+        return ValueTree();
+    }
+#endif
 };
