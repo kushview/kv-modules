@@ -126,7 +126,7 @@ String EDDOnlineUnlockStatus::readReplyFromWebserver (const String& email, const
     params.set ("password", password);
     
     const URL url (getServerAuthenticationURL().withParameters (params));
-    DBG("[edd] authenticating @ " << url.toString (true));
+    // DBG("[edd] authenticating @ " << url.toString (true));
     
     if (ScopedPointer<XmlElement> xml = url.readEntireXmlStream (true))
     {
@@ -170,7 +170,7 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const S
              .withParameter ("item_id", getProductID())
              .withParameter ("license", license.trim())
              .withParameter ("url", getLocalMachineIDs()[0]));
-    DBG("connecting: " << url.toString (true));
+    // DBG("connecting: " << url.toString (true));
     
     var response;
     Result result (JSON::parse (url.readEntireTextStream(), response));
@@ -181,8 +181,8 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const S
         return r;
     }
     
-    DBG ("JSON Response:");
-    DBG (JSON::toString (response, false));
+    // DBG("JSON Response:");
+    // DBG(JSON::toString (response, false));
 
     r.succeeded = false;
     const edd::ApiResponseData data (edd::processJSONResponse (response));
@@ -207,10 +207,10 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const S
     
     if (! r.succeeded && r.errorMessage.isEmpty()) {
         r.errorMessage = "Key file is not compatible with this computer.";
-        DBG("NOT COMPAT: " << data.key);
+        // DBG("NOT COMPAT: " << data.key);
         const ValueTree reg = edd::decryptValueTree (data.key.fromFirstOccurrenceOf ("#", true, true), getPublicKey());
-        DBG(newLine << "XML:");
-        DBG(reg.toXmlString());
+        // DBG(newLine << "XML:");
+        // DBG(reg.toXmlString());
     }
     if (r.succeeded && r.informativeMessage.isEmpty())
         r.informativeMessage = "Successfully activated this machine";
@@ -233,7 +233,7 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::deactivateLicense (const
              .withParameter ("item_id", getProductID())
              .withParameter ("license", license)
              .withParameter ("url", getLocalMachineIDs()[0]));
-    DBG("connecting: " << url.toString (true));
+    // DBG("connecting: " << url.toString (true));
     
     const String responseText = url.readEntireTextStream();
     
@@ -246,8 +246,8 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::deactivateLicense (const
         return r;
     }
     
-    DBG ("JSON Response:");
-    DBG (JSON::toString (response, false));
+    // DBG("JSON Response:");
+    // DBG(JSON::toString (response, false));
     
     const edd::ApiResponseData data (edd::processJSONResponse (response));
     
@@ -285,7 +285,7 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::checkLicense (const Stri
                    .withParameter ("item_id", getProductID())
                    .withParameter ("license", license.trim())
                    .withParameter ("url", getLocalMachineIDs()[0]));
-    DBG("connecting: " << url.toString (true));
+    // DBG("connecting: " << url.toString (true));
     
     var response;
     Result result (JSON::parse (url.readEntireTextStream(), response));
@@ -296,8 +296,8 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::checkLicense (const Stri
         return r;
     }
     
-    DBG ("JSON Response:");
-    DBG (JSON::toString (response, false));
+    // DBG("JSON Response:");
+    // DBG(JSON::toString (response, false));
     
     const edd::ApiResponseData data (edd::processJSONResponse (response));
     if (! data.success)
