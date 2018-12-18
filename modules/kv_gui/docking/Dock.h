@@ -67,6 +67,8 @@ private:
     DockItem* maximizedItem;
     OwnedArray<DockArea>      areas;
     OwnedArray<DockItem>      items;
+
+    Placement defaultPlacement = BottomPlacement;
     friend class DockItem;
 };
 
