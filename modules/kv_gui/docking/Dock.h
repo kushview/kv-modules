@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 class DockArea;
 class DockItem;
 class DockLayout;
@@ -240,7 +242,6 @@ public:
         }
     }
 
-
     class DragOverlay : public Component
     {
     public:
@@ -309,3 +310,5 @@ public:
 
     } grip;
 };
+
+}

@@ -73,12 +73,12 @@ class ScreenDisplay;
 #include "base/DigitalMeter.h"
 #include "base/SkinDial.h"
 
-// docking
-#if KV_DOCKING_WINDOWS
- #include "docking/Dock.h"
-#endif
-
 // embedding
 #include "embed/NativeComponent.h"
 
 }
+
+// docking
+#if KV_DOCKING_WINDOWS
+ #include "docking/Dock.h"
+#endif
