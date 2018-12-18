@@ -32,13 +32,6 @@ namespace kv {
 #include "base/LookAndFeel_KV1.cpp"
 #include "base/PatchMatrixComponent.cpp"
 
-#if KV_DOCKING_WINDOWS
- #include "docking/Dock.cpp"
- #include "docking/DockArea.cpp"
- #include "docking/DockItem.cpp"
- #include "docking/DockLayout.cpp"
-#endif
-
 #include "embed/NativeComponent.cpp"
 #include "screens/Screen.cpp"
 #include "screens/ScreenDisplay.cpp"
@@ -50,3 +43,10 @@ namespace kv {
 #endif
 
 }
+
+#if KV_DOCKING_WINDOWS
+ #include "docking/Dock.cpp"
+ #include "docking/DockArea.cpp"
+ #include "docking/DockItem.cpp"
+ #include "docking/DockLayout.cpp"
+#endif

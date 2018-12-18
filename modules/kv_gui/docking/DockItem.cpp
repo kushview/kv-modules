@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
+
 DockItem::DockItem (Dock& parent, const String& id, const String& name)
     : Component (name), dock (parent),
       layout (*this, false), dragging (false), grip (*this)
@@ -41,7 +43,7 @@ void DockItem::append (const String& itemID)
 
 void DockItem::dockTo (DockItem* target, Dock::Placement placement)
 {
-    if (placement == Dock::Floating)
+    if (placement == Dock::FloatingPlacement)
         return;
 
     if (DockArea* area = target->getDockArea())
@@ -67,4 +69,6 @@ void DockItem::layoutItems()
 void DockItem::mouseDown (const MouseEvent& ev)
 {
     Component::mouseDown(ev);
+}
+
 }

@@ -17,6 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
 
 DockLayout::DockLayout (Component& holder_, bool vertical)
     : isVertical (vertical), holder (holder_)
@@ -102,4 +103,6 @@ void DockLayout::buildComponentArray()
             layout.setItemLayout (index, 4, 4, 4);
         }
     }
+}
+
 }

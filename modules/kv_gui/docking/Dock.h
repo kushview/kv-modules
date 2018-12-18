@@ -29,30 +29,25 @@ class Dock : public Component
 {
 public:
     enum Placement {
-        TopArea,
-        BottomArea,
-        LeftArea,
-        RightArea,
-        Center,
-        Floating
+        TopPlacement = 0,
+        BottomPlacement,
+        LeftPlacement,
+        RightPlacement,
+        CenterPlacement,
+        FloatingPlacement,
+        numPlacements
     };
 
     Dock();
     virtual ~Dock();
 
-    //Component* mainComponent();
-    //void setMainComponent (Component* comp);
-
-    DockArea& getTopArea()    { return *areas [Dock::TopArea]; }
-    DockArea& getBottomArea() { return *areas [Dock::BottomArea]; }
-    DockArea& getLeftArea()   { return *areas [Dock::LeftArea]; }
-    DockArea& getRightArea()  { return *areas [Dock::RightArea]; }
-
+    DockItem* createItem();
     DockItem* createItem (const String& id, const String& name, Dock::Placement placement);
     DockItem* getItem    (const String& id);
 
+    /** @internal */
     void paint (Graphics&) override { }
-
+    /** @internal */
     void resized() override;
 
 private:
@@ -61,13 +56,6 @@ private:
     DockItem* maximizedItem;
     OwnedArray<DockArea>      areas;
     OwnedArray<DockItem>      items;
-
-    class MiddleLayout;
-    ScopedPointer<MiddleLayout> middleLayout;
-
-    StretchableLayoutManager areaLayout;
-    StretchableLayoutResizerBar leftbar, rightbar;
-
     friend class DockItem;
 };
 
@@ -108,27 +96,26 @@ class DockArea : public Component
 {
 public:
     DockArea();
-    DockArea(Dock::Placement placement);
+    DockArea (Dock::Placement placement);
+    DockArea (const bool vertical);
+
     ~DockArea();
 
     void append (DockItem* const item);
     void detachItem (DockItem* item);
 
-    void paint(Graphics&) { }
-    void resized();
+    void paint (Graphics&) override { }
+    void resized() override;
+
 private:
-
     void disposeEmptyLayouts();
-
-    OwnedArray<DockLayout> layouts;
+    DockLayout layout;
 };
-
 
 class DockItem : public Component,
                  public DragAndDropTarget
 {
 public:
-
     DockItem (Dock& parent, const String& slug, const String& name);
     virtual ~DockItem();
 
@@ -189,8 +176,7 @@ public:
         if (item == this)
             return;
 
-        item->dockTo (this, Dock::RightArea);
-
+        item->dockTo (this, Dock::RightPlacement);
     }
 
     virtual void itemDragEnter (const SourceDetails&)
