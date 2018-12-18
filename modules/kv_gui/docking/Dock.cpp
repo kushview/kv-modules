@@ -21,11 +21,12 @@ namespace kv {
 
 namespace DockHelpers {
 
-DockItem* createDockAreaItem()
+DockItem* createDockAreaItemFor (Dock& parent)
 {
-    auto* item = new DockItem ();
+    auto* item = new DockItem (parent, "", "");
     auto* area = new DockArea();
-    item->setContent (area);
+    item->setContentOwned (area);
+    return item;
 }
 
 }
@@ -45,9 +46,6 @@ Dock::~Dock ()
 
 DockItem* Dock::getItem (const String& id)
 {
-    for (int i = items.size(); --i >= 0; --i)
-        if (items[i] && items[i]->getComponentID() == id)
-            return items[i];
     return nullptr;
 }
 
@@ -62,9 +60,9 @@ DockItem* Dock::createItem (const String& id, const String& name,
     return nullptr;
 }
 
- DockItem* createItem()
- {
-     DockItem* item = new DockItem();
-     item->setContent
- }
+DockItem* Dock::createItem()
+{
+    return new DockItem (*this, "identifier", "Name");
+}
+
 }

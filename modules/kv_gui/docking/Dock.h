@@ -25,10 +25,21 @@ class DockArea;
 class DockItem;
 class DockLayout;
 
+class DockItemFactory
+{
+public:
+    virtual ~DockItemFactory() { }
+    virtual Component* createDockItemContent (int typeId) = 0;
+
+protected:
+    DockItemFactory() { }
+};
+
 class Dock : public Component
 {
 public:
-    enum Placement {
+    enum Placement
+    {
         TopPlacement = 0,
         BottomPlacement,
         LeftPlacement,
