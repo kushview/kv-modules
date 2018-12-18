@@ -92,10 +92,11 @@ public:
         return array.getData();
     }
 
-    inline void
-    getFeatures (Array<const LV2_Feature*>& feats, bool nullTerminated = false) const
+    inline void getFeatures (Array<const LV2_Feature*>& feats, bool nullTerminated = false) const
     {
-        feats = Array<const LV2_Feature*> (array.getData());
+        for (auto* const f : features)
+            if (f != nullptr)
+                feats.add (f->getFeature());
         if (nullTerminated)
             feats.add (nullptr);
     }
