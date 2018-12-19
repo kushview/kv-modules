@@ -41,7 +41,10 @@ class DockLayout
 public:
     DockLayout (Component& holder_, bool vertical = false);
     ~DockLayout ();
-    int indexOf (Component* const child) const { return comps.indexOf (child); }
+    
+    /** Returns the index of the child component */
+    inline int indexOf (Component* const child) const { return items.indexOf (child); }
+    void clear();
     
     void append (Component* child);
     void insert (int index, Component* const child);
@@ -107,13 +110,15 @@ public:
     void resized() override;
 
 private:
+    friend class DockItem;
+
     OwnedArray<DockArea> rootAreas [numPlacements];
     DockLayout verticalLayout;
     DockLayout horizontalLayout;
     
     DockItem* maximizedItem = nullptr;
     void detatchAll (DockItem* item);
-    friend class DockItem;
+    void removeEmptyRootAreas();
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dock)
 };

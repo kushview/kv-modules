@@ -25,6 +25,11 @@ DockLayout::DockLayout (Component& holder_, bool vertical)
 
 DockLayout::~DockLayout()
 {
+   clear();
+}
+
+void DockLayout::clear()
+{
     items.clear();
     comps.clear();
     bars.clear();

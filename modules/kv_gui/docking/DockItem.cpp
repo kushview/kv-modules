@@ -63,7 +63,10 @@ void DockItem::dockTo (DockItem* const target, Dock::Placement placement)
     
     if (targetParent != nullptr && wantsVerticalPlacement == targetParent->isVertical())
     {
+        detach(); // detach before fidning indexes in case the parent is the same
         int insertIdx = targetParent->indexOf (target);
+        
+        DBG("[A] insert index: " << insertIdx);
         
         if (wantsVerticalPlacement)
         {
@@ -76,14 +79,16 @@ void DockItem::dockTo (DockItem* const target, Dock::Placement placement)
                 ++insertIdx;
         }
         
-        detach();
-        DBG("insert index: " << insertIdx);
+        DBG("[B] insert index: " << insertIdx);
+        
         targetParent->insert (insertIdx, this);
     }
     else
     {
         DBG("opposite direction as parent area");
     }
+    
+    dock.removeEmptyRootAreas();
 }
 
 void DockItem::paint (Graphics& g)

@@ -88,4 +88,25 @@ DockItem* Dock::createItem()
     return createItem (Uuid().toString(), "Dock Item", Dock::TopPlacement);
 }
 
+void Dock::removeEmptyRootAreas()
+{
+    verticalLayout.clear();
+    
+    for (int i = 0; i < numPlacements; ++i)
+    {
+        auto& area = rootAreas [i];
+        for (int j = area.size(); --j >= 0;)
+        {
+            if (area[j]->getNumChildComponents() <= 0)
+                area.remove (j);
+        }
+    }
+    
+    auto& areas = rootAreas [Dock::TopPlacement];
+    for (auto* const area : areas)
+        verticalLayout.append (area);
+    
+    resized();
+}
+
 }
