@@ -25,8 +25,7 @@ DockLayout::DockLayout (Component& holder_, bool vertical)
 
 DockLayout::~DockLayout() { }
 
-void
-DockLayout::append (DockItem* item)
+void DockLayout::append (DockItem* item)
 {
     if (! items.contains (item))
     {

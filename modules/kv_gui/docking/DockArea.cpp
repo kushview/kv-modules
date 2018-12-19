@@ -31,17 +31,19 @@ DockArea::DockArea (const bool vertical)
 }
 
 DockArea::DockArea (Dock::Placement placement)
-    : layout(*this)
+    : layout (*this)
 {
     switch (placement)
     {
         case Dock::TopPlacement:
         case Dock::BottomPlacement:
-            layout.setIsVertical (true);
+            layout.setIsVertical (false);
+            break;
         case Dock::LeftPlacement:
         case Dock::RightPlacement:
         default:
-            layout.setIsVertical (false);
+            layout.setIsVertical (true);
+            break;
     }
 }
 

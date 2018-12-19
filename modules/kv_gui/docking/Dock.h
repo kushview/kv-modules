@@ -53,8 +53,9 @@ public:
     virtual ~Dock();
 
     DockItem* createItem();
-    DockItem* createItem (const String& id, const String& name, Dock::Placement placement);
-    DockItem* getItem    (const String& id);
+    DockItem* createItem (const String& itemId, const String& itemName,
+                          Dock::Placement placement);
+    DockItem* getItem (const String& itemId);
 
     /** @internal */
     void paint (Graphics&) override { }
@@ -62,14 +63,13 @@ public:
     void resized() override;
 
 private:
+    OwnedArray<DockArea> areas [numPlacements];
+    
+    DockItem* maximizedItem = nullptr;
     void detatchAll (DockItem* item);
-
-    DockItem* maximizedItem;
-    OwnedArray<DockArea>      areas;
-    OwnedArray<DockItem>      items;
-
-    Placement defaultPlacement = BottomPlacement;
     friend class DockItem;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dock)
 };
 
 class DockLayout
@@ -146,9 +146,10 @@ public:
 
     void setContentOwned (Component* component)
     {
-        if (content != nullptr)
-            removeChildComponent (content);
-
+        if (content == component)
+            return;
+        
+        content = nullptr;
         content = component;
         addAndMakeVisible (content);
     }
@@ -157,7 +158,8 @@ public:
     {
         if (isMaximized())
         {
-            content->setBounds (getLocalBounds());
+            if (content != nullptr)
+                content->setBounds (getLocalBounds());
         }
         else
         {

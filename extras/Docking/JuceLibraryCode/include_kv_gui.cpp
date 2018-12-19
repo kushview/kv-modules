@@ -6,4 +6,4 @@
 */
 
 #include "AppConfig.h"
-#include <juce_audio_formats/juce_audio_formats.cpp>
+#include <kv_gui/kv_gui.cpp>

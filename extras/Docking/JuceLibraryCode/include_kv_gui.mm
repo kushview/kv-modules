@@ -6,4 +6,4 @@
 */
 
 #include "AppConfig.h"
-#include <juce_opengl/juce_opengl.mm>
+#include <kv_gui/kv_gui.mm>

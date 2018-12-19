@@ -37,11 +37,17 @@ void Dock::detatchAll (DockItem* item)
 
 Dock::Dock ()
 {
-    maximizedItem = nullptr;
+    for (int i = 0; i < numPlacements; ++i)
+        addAndMakeVisible (rootAreas.add (new DockArea ()));
+    rootAreas[LeftPlacement]->setVertical (false);
+    rootAreas[TopPlacement]->setVertical (true);
+    rootAreas[BottomPlacement]->setVertical (true);
+    rootAreas[RightPlacement]->setVertical (false);
 }
 
-Dock::~Dock ()
+Dock::~Dock()
 {
+    
 }
 
 DockItem* Dock::getItem (const String& id)
@@ -51,18 +57,24 @@ DockItem* Dock::getItem (const String& id)
 
 void Dock::resized()
 {
-    
+    if (auto* const top = rootAreas [Dock::TopPlacement])
+        top->setBounds (getLocalBounds());
 }
 
-DockItem* Dock::createItem (const String& id, const String& name,
-                            Dock::Placement placement)
+DockItem* Dock::createItem (const String& itemId, const String& itemName,
+                            Dock::Placement itemPlacement)
 {
-    return nullptr;
+    std::unique_ptr<DockItem> item;
+    item.reset (new DockItem (*this, itemId, itemName));
+    
+    auto& root = *rootAreas [itemPlacement];
+
+    return item.release();
 }
 
 DockItem* Dock::createItem()
 {
-    return new DockItem (*this, "identifier", "Name");
+    return createItem (Uuid().toString(), "Dock Item", Dock::TopPlacement);
 }
 
 }
