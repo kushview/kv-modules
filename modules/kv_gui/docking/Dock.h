@@ -35,6 +35,36 @@ protected:
     DockItemFactory() { }
 };
 
+/** Manages panel layouts in DockAreas and the root Dock objects */
+class DockLayout
+{
+public:
+    DockLayout (Component& holder_, bool vertical = false);
+    ~DockLayout ();
+    int indexOf (Component* const child) const { return comps.indexOf (child); }
+    
+    void append (Component* child);
+    void insert (int index, Component* const child);
+    void remove (Component* const child);
+    
+    void layoutItems (int x, int y, int w, int h);
+    void layoutItems();
+    void setIsVertical (bool vertical) { isVertical = vertical; }
+    bool getIsVertical() const { return isVertical; }
+    Component* root();
+    
+private:
+    void buildComponentArray();
+    bool isVertical;
+    Component& holder;
+    OwnedArray<StretchableLayoutResizerBar> bars;
+    Array<Component*> items;
+    Array<Component*> comps;
+    StretchableLayoutManager layout;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockLayout)
+};
+
 class Dock : public Component
 {
 public:
@@ -51,7 +81,21 @@ public:
 
     Dock();
     virtual ~Dock();
-
+    
+    inline static String getDirectionString (const int placement)
+    {
+        switch (placement)
+        {
+            case TopPlacement:      return "Top"; break;
+            case BottomPlacement:   return "Bottom"; break;
+            case LeftPlacement:     return "Left"; break;
+            case RightPlacement:    return "Right"; break;
+            case CenterPlacement:   return "Center"; break;
+            case FloatingPlacement: return "Floating"; break;
+        }
+        return {};
+    }
+    
     DockItem* createItem();
     DockItem* createItem (const String& itemId, const String& itemName,
                           Dock::Placement placement);
@@ -63,7 +107,9 @@ public:
     void resized() override;
 
 private:
-    OwnedArray<DockArea> areas [numPlacements];
+    OwnedArray<DockArea> rootAreas [numPlacements];
+    DockLayout verticalLayout;
+    DockLayout horizontalLayout;
     
     DockItem* maximizedItem = nullptr;
     void detatchAll (DockItem* item);
@@ -72,57 +118,35 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dock)
 };
 
-class DockLayout
-{
-public:
-    DockLayout (Component& holder_, bool vertical = false);
-
-    ~DockLayout ();
-
-    void append (DockItem* child);
-
-    void remove (DockItem* const child);
-
-    void layoutItems (int x, int y, int w, int h);
-
-    void layoutItems();
-
-    void setIsVertical (bool vertical) { isVertical = vertical; }
-
-    bool getIsVertical() const { return isVertical; }
-
-    DockItem* root();
-
-private:
-
-    void buildComponentArray();
-
-    bool isVertical;
-    Component& holder;
-    Array<DockItem*> items;
-    OwnedArray<StretchableLayoutResizerBar> bars;
-    Array<Component*> comps;
-    StretchableLayoutManager layout;
-};
-
 class DockArea : public Component
 {
 public:
-    DockArea();
+    explicit DockArea (const bool vertical = false);
     DockArea (Dock::Placement placement);
-    DockArea (const bool vertical);
 
     ~DockArea();
-
+    
+    int indexOf (DockItem* const item) const { return layout.indexOf ((Component*) item); }
+    
+    /** Append a DockItem to the end of the layout */
     void append (DockItem* const item);
+    
+    /** Insert a DockItem at a specific location */
+    void insert (int index, DockItem* const item);
+    
     void detachItem (DockItem* item);
-
+    void setVertical (const bool vertical);
+    bool isVertical() const         { return layout.getIsVertical(); }
+    
+    /** @internal */
     void paint (Graphics&) override { }
+    /** @internal */
     void resized() override;
 
 private:
     void disposeEmptyLayouts();
     DockLayout layout;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockArea)
 };
 
 class DockItem : public Component,
@@ -133,16 +157,14 @@ public:
     virtual ~DockItem();
 
     void append (const String& itemID);
-
     void dockTo (DockItem* target, Dock::Placement placement);
 
-    bool isToplevel() { return nullptr == getDockArea(); }
-    DockArea* getDockArea() { return dynamic_cast<DockArea*> (getParentComponent()); }
+    DockArea* getParentArea() const { return dynamic_cast<DockArea*> (getParentComponent()); }
 
     void layoutItems();
 
-    /* Component */
-    void paint (Graphics& g);
+    /** Component */
+    void paint (Graphics& g) override;
 
     void setContentOwned (Component* component)
     {
@@ -154,7 +176,7 @@ public:
         addAndMakeVisible (content);
     }
 
-    void resized()
+    void resized() override
     {
         if (isMaximized())
         {
@@ -170,44 +192,54 @@ public:
         }
     }
 
-    void mouseDown (const MouseEvent& ev);
+    void mouseDown (const MouseEvent& ev) override;
 
     /* Drag and drop */
 
-    bool isInterestedInDragSource (const SourceDetails& dragSourceDetails)
+    bool isInterestedInDragSource (const SourceDetails& dragSourceDetails) override
     {
         if (dragSourceDetails.description.toString() == "dock-item")
             return true;
         return false;
     }
 
-    void itemDropped (const SourceDetails& dragSourceDetails)
+    void itemDropped (const SourceDetails& dragSourceDetails) override
     {
-        Component* comp = dragSourceDetails.sourceComponent.get();
-        DockItem* item = (DockItem*) comp;
-
         overlay.setVisible (false);
-
-        if (item == this)
+        
+        Component* comp = dragSourceDetails.sourceComponent.get();
+        DockItem* const item = dynamic_cast<DockItem*> (comp);
+        if (item == this || item == nullptr)
             return;
-
-        item->dockTo (this, Dock::RightPlacement);
+        
+        const auto x = dragSourceDetails.localPosition.getX();
+        const auto y = dragSourceDetails.localPosition.getY();
+        Dock::Placement placement = Dock::CenterPlacement;
+        
+        if (x >= 0 && x < 30 && y >= 30 && y < getHeight() - 30)
+            placement = Dock::LeftPlacement;
+        else if (x >= getWidth() - 30 && x < getWidth() && y >= 30 && y < getHeight() - 30)
+            placement = Dock::RightPlacement;
+        if (y >= 0 && y < 30 && x >= 30 && x < getWidth() - 30)
+            placement = Dock::TopPlacement;
+        else if (y >= getHeight() - 30 && y < getHeight() && x >= 30 && x < getWidth() - 30)
+            placement = Dock::BottomPlacement;
+        
+        item->dockTo (this, placement);
     }
 
-    virtual void itemDragEnter (const SourceDetails&)
+    virtual void itemDragEnter (const SourceDetails&) override
     {
         overlay.toFront (false);
         overlay.setVisible (true);
     }
 
-    virtual void itemDragExit (const SourceDetails&)
+    virtual void itemDragExit (const SourceDetails&) override
     {
         overlay.setVisible (false);
     }
 
-    bool isMaximized() const {
-        return dock.maximizedItem == this;
-    }
+    bool isMaximized() const { return dock.maximizedItem == this; }
 
     void setMaximized (const bool shouldBeMaximized)
     {
@@ -223,7 +255,7 @@ public:
         dock.resized();
     }
 
-public:
+private:
     Dock&      dock;
     DockLayout layout;
 
@@ -236,7 +268,7 @@ public:
 
     void detach()
     {
-        if (DockArea* area = getDockArea())
+        if (DockArea* area = getParentArea())
         {
             area->detachItem (this);
             area->resized();
@@ -310,6 +342,8 @@ public:
         Component& parent;
 
     } grip;
+    
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockItem)
 };
 
 }

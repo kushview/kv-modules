@@ -31,25 +31,23 @@ DockItem* createDockAreaItemFor (Dock& parent)
 
 }
 
-void Dock::detatchAll (DockItem* item)
-{
-}
-
 Dock::Dock ()
+    : verticalLayout (*this, true),
+      horizontalLayout (*this, false)
 {
-    for (int i = 0; i < numPlacements; ++i)
-        addAndMakeVisible (rootAreas.add (new DockArea ()));
-    rootAreas[LeftPlacement]->setVertical (false);
-    rootAreas[TopPlacement]->setVertical (true);
-    rootAreas[BottomPlacement]->setVertical (true);
-    rootAreas[RightPlacement]->setVertical (false);
 }
 
 Dock::~Dock()
 {
+    for (int i = 0; i < numPlacements; ++i)
+        rootAreas[i].clear();
     
 }
 
+void Dock::detatchAll (DockItem* item)
+{
+}
+    
 DockItem* Dock::getItem (const String& id)
 {
     return nullptr;
@@ -57,19 +55,32 @@ DockItem* Dock::getItem (const String& id)
 
 void Dock::resized()
 {
-    if (auto* const top = rootAreas [Dock::TopPlacement])
-        top->setBounds (getLocalBounds());
+    verticalLayout.layoutItems();
 }
 
 DockItem* Dock::createItem (const String& itemId, const String& itemName,
                             Dock::Placement itemPlacement)
 {
-    std::unique_ptr<DockItem> item;
-    item.reset (new DockItem (*this, itemId, itemName));
+    if (itemPlacement != TopPlacement)
+        return nullptr;
     
-    auto& root = *rootAreas [itemPlacement];
-
-    return item.release();
+    if (itemPlacement != LeftPlacement &&
+        itemPlacement != TopPlacement &&
+        itemPlacement != BottomPlacement &&
+        itemPlacement != RightPlacement)
+    {
+        return nullptr;
+    }
+    
+    auto& areas = rootAreas [itemPlacement];
+    auto* area = areas.add (new DockArea (itemPlacement));
+    auto* item = new DockItem (*this, itemId, itemName);
+    addAndMakeVisible (area);
+    area->append (item);
+    verticalLayout.append (area);
+    resized();
+    
+    return item;
 }
 
 DockItem* Dock::createItem()

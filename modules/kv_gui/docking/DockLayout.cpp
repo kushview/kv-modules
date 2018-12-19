@@ -23,9 +23,14 @@ DockLayout::DockLayout (Component& holder_, bool vertical)
     : isVertical (vertical), holder (holder_)
 { }
 
-DockLayout::~DockLayout() { }
+DockLayout::~DockLayout()
+{
+    items.clear();
+    comps.clear();
+    bars.clear();
+}
 
-void DockLayout::append (DockItem* item)
+void DockLayout::append (Component* item)
 {
     if (! items.contains (item))
     {
@@ -45,7 +50,17 @@ void DockLayout::append (DockItem* item)
     }
 }
 
-void DockLayout::remove (DockItem* const child)
+void DockLayout::insert (int index, Component* const item)
+{
+    if (items.contains (item))
+        return;
+    if (index >= items.size() || index < 0)
+        return append (item);
+    items.insert (index, item);
+    buildComponentArray();
+}
+
+void DockLayout::remove (Component* const child)
 {
     bool wasRemoved = true;
 
@@ -63,7 +78,8 @@ void DockLayout::layoutItems (int x, int y, int w, int h)
 {
     if (comps.size() > 0)
     {
-        layout.layOutComponents ((Component**) &comps.getReference(0), comps.size(), x, y, w, h, isVertical, true);
+        layout.layOutComponents ((Component**) &comps.getReference (0),
+            comps.size(), x, y, w, h, isVertical, true);
     }
 }
 
@@ -72,7 +88,7 @@ void DockLayout::layoutItems()
     layoutItems (0, 0, holder.getWidth(), holder.getHeight());
 }
 
-DockItem* DockLayout::root()
+Component* DockLayout::root()
 {
     if (items.size() > 0) {
         return items [0];
@@ -90,13 +106,12 @@ void DockLayout::buildComponentArray()
     for (int i = 0; i < items.size(); ++i)
     {
         layout.setItemLayout (comps.size(), 30, -1.0, 100);
-        comps.add ((Component*) items [i]);
+        comps.add (items [i]);
 
         if (i != items.size() -1)
         {
             int index = comps.size();
-            bars.add (new StretchableLayoutResizerBar (&layout, index,
-                                                       ! isVertical));
+            bars.add (new StretchableLayoutResizerBar (&layout, index, ! isVertical));
             comps.add (bars.getLast());
             holder.addAndMakeVisible (bars.getLast());
             layout.setItemLayout (index, 4, 4, 4);

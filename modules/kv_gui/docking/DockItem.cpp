@@ -31,6 +31,7 @@ DockItem::DockItem (Dock& parent, const String& id, const String& name)
 
 DockItem::~DockItem()
 {
+
 }
 
 void DockItem::append (const String& itemID)
@@ -41,18 +42,49 @@ void DockItem::append (const String& itemID)
     }
 }
 
-void DockItem::dockTo (DockItem* target, Dock::Placement placement)
+void DockItem::dockTo (DockItem* const target, Dock::Placement placement)
 {
+    
     if (placement == Dock::FloatingPlacement)
         return;
-
-    if (DockArea* area = target->getDockArea())
+    
+    if (placement == Dock::CenterPlacement)
     {
+        DBG("dock to center placement: noop");
+        return;
+    }
+    
+    jassert (target); // target can't be nil!
+    
+    DBG("Docking " << getName() << " to " << Dock::getDirectionString(placement) << " of " << target->getName());
+    
+    auto* const targetParent = target->getParentArea();
+    const bool wantsVerticalPlacement = placement == Dock::TopPlacement || placement == Dock::BottomPlacement;
+    
+    if (targetParent != nullptr && wantsVerticalPlacement == targetParent->isVertical())
+    {
+        int insertIdx = targetParent->indexOf (target);
+        
+        if (wantsVerticalPlacement)
+        {
+            if (placement == Dock::BottomPlacement)
+                ++insertIdx;
+        }
+        else
+        {
+            if (placement == Dock::RightPlacement)
+                ++insertIdx;
+        }
+        
         detach();
-        area->append (this);
+        DBG("insert index: " << insertIdx);
+        targetParent->insert (insertIdx, this);
+    }
+    else
+    {
+        DBG("opposite direction as parent area");
     }
 }
-
 
 void DockItem::paint (Graphics& g)
 {
@@ -61,8 +93,6 @@ void DockItem::paint (Graphics& g)
 
 void DockItem::layoutItems()
 {
-    Rectangle<int> b (getBoundsInParent());
-    //area.layoutItems (b.getX(), b.getY(), b.getWidth(), b.getHeight());
 }
 
 

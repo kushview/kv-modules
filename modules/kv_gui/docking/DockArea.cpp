@@ -19,16 +19,9 @@
 
 namespace kv {
 
-DockArea::DockArea()
-    : layout (*this)
-{ 
-    layout.setIsVertical (false);
-}
-
 DockArea::DockArea (const bool vertical)
     : layout (*this, vertical)
-{
-}
+{ }
 
 DockArea::DockArea (Dock::Placement placement)
     : layout (*this)
@@ -55,6 +48,15 @@ void DockArea::append (DockItem* const item)
 {
     layout.append (item);
     addAndMakeVisible (item);
+    item->repaint();
+    resized();
+}
+
+void DockArea::insert (int index, DockItem* const item)
+{
+    layout.insert (index, item);
+    addAndMakeVisible (item);
+    item->repaint();
     resized();
 }
 
@@ -62,6 +64,11 @@ void DockArea::detachItem (DockItem* item)
 {
     removeChildComponent (item);
     layout.remove (item);
+}
+
+void DockArea::setVertical (const bool vertical)
+{
+    layout.setIsVertical (vertical);
 }
 
 void DockArea::resized()
