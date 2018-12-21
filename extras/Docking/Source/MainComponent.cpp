@@ -60,8 +60,6 @@ void MainComponent::addDockItem ()
     if (auto* item = dock.createItem (Uuid().toString(), text,
         static_cast<Dock::Placement> (placement)))
     {
-        auto* label = new Label();
-        label->setText (text, dontSendNotification);
         ++itemNo;
     }
     else
