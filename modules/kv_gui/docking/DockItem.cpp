@@ -61,53 +61,11 @@ DockPanel* DockItem::getCurrentPanel() const
 {
     return dynamic_cast<DockPanel*> (tabs.getCurrentContentComponent());
 }
- 
-void DockItem::append (const String& itemID)
-{
-
-}
 
 void DockItem::dockTo (DockItem* const target, Dock::Placement placement)
 {
-    if (placement == Dock::FloatingPlacement)
-        return;
-    jassert (target); // target can't be nil!
-    
-    if (placement == Dock::CenterPlacement)
-    {
-        DBG("dock to center placement");
-        return;
-    }
-    
-    DBG("Docking " << getName() << " to " << Dock::getDirectionString(placement) << " of " << target->getName());
-    
-    auto* const targetParent = target->getParentArea();
-    const bool wantsVerticalPlacement = placement == Dock::TopPlacement || placement == Dock::BottomPlacement;
-    
-    if (targetParent != nullptr && wantsVerticalPlacement == targetParent->isVertical())
-    {
-        int insertIdx = targetParent->indexOf (target);
-        
-        if (wantsVerticalPlacement)
-        {
-            if (placement == Dock::BottomPlacement)
-                ++insertIdx;
-        }
-        else
-        {
-            if (placement == Dock::RightPlacement)
-                ++insertIdx;
-        }
-        
-        targetParent->insert (insertIdx, this);
-    }
-    else
-    {
-        DBG("opposite direction as parent area");
-    }
-    
-    buildTabs();
-    dock.removeEmptyRootAreas();
+    for (auto* const panel : panels)
+        panel->dockTo (target, placement);
 }
 
 void DockItem::buildTabs()
@@ -148,16 +106,17 @@ void DockItem::mouseDown (const MouseEvent& ev)
 
 bool DockItem::isInterestedInDragSource (const SourceDetails& details)
 {
-    return details.description.toString() == "DockPanel";
+    return details.description.toString() == "DockPanel" ||
+           details.description.toString() == "DockItem";
 }
-    
+
 void DockItem::itemDropped (const SourceDetails& dragSourceDetails)
 {
     overlay.setVisible (false);
     
     auto* const panel = dynamic_cast<DockPanel*> (dragSourceDetails.sourceComponent.get());
     auto* const item  = (panel != nullptr) ? panel->findParentComponentOfClass<DockItem>() : nullptr;
-    if (panel == nullptr || item == nullptr || panels.contains (panel))
+    if (panel == nullptr || item == nullptr)
         return;
     
     const auto x = dragSourceDetails.localPosition.getX();
@@ -172,6 +131,12 @@ void DockItem::itemDropped (const SourceDetails& dragSourceDetails)
         placement = Dock::TopPlacement;
     else if (y >= getHeight() - 30 && y < getHeight() && x >= 30 && x < getWidth() - 30)
         placement = Dock::BottomPlacement;
+    
+    const bool isMyPanel = panels.contains (panel);
+    
+    // same item center, don't add to container of self
+    if (isMyPanel && placement == Dock::CenterPlacement)
+        return;
     
     panel->dockTo (this, placement);
     

@@ -135,20 +135,17 @@ class DockItem : public Component,
                  public DragAndDropTarget
 {
 public:
-    DockItem (Dock& parent, const String& slug, const String& name);
-    DockItem (Dock& parent, DockPanel* panel);
     virtual ~DockItem();
-
-    void append (const String& itemID);
     
     void dockTo (DockItem* target, Dock::Placement placement);
 
     DockArea* getParentArea() const { return dynamic_cast<DockArea*> (getParentComponent()); }
     
     int getNumPanels() const { return panels.size(); }
-    
-    int getCurrentPanelIndex() const { return panelIndex; }
+    int getCurrentPanelIndex() const { return tabs.getCurrentTabIndex(); }
     DockPanel* getCurrentPanel() const;
+    
+    int getNumItems() const;
     
     /** @internal */
     void paint (Graphics& g) override;
@@ -172,11 +169,13 @@ private:
     friend class DockPanel;
     friend class Dock;
     
-    Dock&      dock;
-    bool dragging = false;
-    int panelIndex = 0;
-    TabbedComponent tabs;
+    DockItem (Dock& parent, DockPanel* panel);
+    DockItem (Dock& parent, const String& slug, const String& name);
     
+    Dock& dock;
+    bool dragging = false;
+    TabbedComponent tabs;
+    DockArea area;
     OwnedArray<DockPanel> panels;
     
     void detach (DockPanel* const panel)
