@@ -10,9 +10,7 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
     if (placement == Dock::CenterPlacement)
     {
         if (source != nullptr)
-        {
             source->detach (this);
-        }
         
         target->panels.add (this);
         target->buildTabs();
@@ -45,25 +43,24 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
         {
             source->detach();
             int insertIdx = targetParent->indexOf (target);
-            DBG("[A] index: " << insertIdx);
             insertIdx += offsetIdx;
-            DBG("[B] index: " << insertIdx);
             targetParent->insert (insertIdx, source);
         }
         else if (source->getNumPanels() > 1)
         {
             source->detach (this);
             int insertIdx = targetParent->indexOf (target);
-            DBG("[A] index: " << insertIdx);
             insertIdx += offsetIdx;
-            DBG("[B] index: " << insertIdx);
             targetParent->insert (insertIdx, new DockItem (source->dock, this));
         }
     }
     else
     {
         DBG("opposite direction as parent area");
+        source->detach (this);
+        target->area.insert (-1, new DockItem (source->dock, this));
+        target->resized();
     }
 }
-    
+
 }

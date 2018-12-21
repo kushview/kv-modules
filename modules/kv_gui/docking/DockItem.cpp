@@ -88,7 +88,6 @@ void DockItem::resized()
     ir.removeFromTop (20);
     ir.removeFromLeft (2);
     ir.removeFromRight (2);
-    
     if (overlay.isVisible())
         overlay.centreWithSize (getWidth() - 2, getHeight() - 2);
     tabs.setBounds (ir);
