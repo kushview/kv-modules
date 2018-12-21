@@ -62,7 +62,6 @@ void MainComponent::addDockItem ()
     {
         auto* label = new Label();
         label->setText (text, dontSendNotification);
-        item->setContentOwned (label);
         ++itemNo;
     }
     else

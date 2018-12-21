@@ -80,5 +80,7 @@ class ScreenDisplay;
 
 // docking
 #if KV_DOCKING_WINDOWS
- #include "docking/Dock.h"
+ #include "docking/DockLayout.h"
+ #include "docking/Dock.h" 
+ #include "docking/DockPanel.h"
 #endif

@@ -21,13 +21,6 @@ namespace kv {
 
 namespace DockHelpers {
 
-DockItem* createDockAreaItemFor (Dock& parent)
-{
-    auto* item = new DockItem (parent, "", "");
-    auto* area = new DockArea();
-    item->setContentOwned (area);
-    return item;
-}
 
 }
 
@@ -35,19 +28,19 @@ Dock::Dock ()
     : verticalLayout (*this, true),
       horizontalLayout (*this, false)
 {
+    
 }
 
 Dock::~Dock()
 {
     for (int i = 0; i < numPlacements; ++i)
         rootAreas[i].clear();
-    
 }
 
 void Dock::detatchAll (DockItem* item)
 {
 }
-    
+
 DockItem* Dock::getItem (const String& id)
 {
     return nullptr;
@@ -56,6 +49,20 @@ DockItem* Dock::getItem (const String& id)
 void Dock::resized()
 {
     verticalLayout.layoutItems();
+}
+
+void Dock::dragOperationStarted (const DragAndDropTarget::SourceDetails& details)
+{
+    if (auto* panel = dynamic_cast<DockPanel*> (details.sourceComponent.get()))
+        if (auto* item = dynamic_cast<DockItem*> (panel->findParentComponentOfClass<DockItem>()))
+            item->setMouseCursor (MouseCursor::CopyingCursor);
+}
+
+void Dock::dragOperationEnded (const DragAndDropTarget::SourceDetails& details)
+{
+    if (auto* panel = dynamic_cast<DockPanel*> (details.sourceComponent.get()))
+        if (auto* item = dynamic_cast<DockItem*> (panel->findParentComponentOfClass<DockItem>()))
+            item->setMouseCursor (MouseCursor::NormalCursor);
 }
 
 DockItem* Dock::createItem (const String& itemId, const String& itemName,
@@ -102,8 +109,8 @@ void Dock::removeEmptyRootAreas()
         }
     }
     
-    auto& areas = rootAreas [Dock::TopPlacement];
-    for (auto* const area : areas)
+    auto& topAreas = rootAreas [Dock::TopPlacement];
+    for (auto* const area : topAreas)
         verticalLayout.append (area);
     
     resized();
