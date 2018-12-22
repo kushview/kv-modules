@@ -19,11 +19,11 @@
 
 namespace kv {
 
-DockLayout::DockLayout (Component& holder_, bool vertical)
-    : isVertical (vertical), holder (holder_)
+DockLayout::DockLayout (Component& holder_, bool vertical_)
+    : vertical (vertical_), holder (holder_)
 { }
 
-DockLayout::~DockLayout()
+DockLayout::~DockLayout() noexcept
 {
    clear();
 }
@@ -42,8 +42,7 @@ void DockLayout::append (Component* item)
         if (items.size() > 0)
         {
             int index = comps.size();
-            bars.add (new StretchableLayoutResizerBar (&layout, index,
-                                                       ! isVertical));
+            bars.add (new StretchableLayoutResizerBar (&layout, index, ! vertical));
             comps.add (bars.getLast());
             holder.addAndMakeVisible (bars.getLast());
             layout.setItemLayout (index, 4, 4, 4);
@@ -84,7 +83,7 @@ void DockLayout::layoutItems (int x, int y, int w, int h)
     if (comps.size() > 0)
     {
         layout.layOutComponents ((Component**) &comps.getReference (0),
-            comps.size(), x, y, w, h, isVertical, true);
+            comps.size(), x, y, w, h, vertical, true);
     }
 }
 
@@ -116,7 +115,7 @@ void DockLayout::buildComponentArray()
         if (i != items.size() -1)
         {
             int index = comps.size();
-            bars.add (new StretchableLayoutResizerBar (&layout, index, ! isVertical));
+            bars.add (new StretchableLayoutResizerBar (&layout, index, ! vertical));
             comps.add (bars.getLast());
             holder.addAndMakeVisible (bars.getLast());
             layout.setItemLayout (index, 4, 4, 4);

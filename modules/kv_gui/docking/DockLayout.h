@@ -8,25 +8,36 @@ class DockLayout
 {
 public:
     DockLayout (Component& holder_, bool vertical = false);
-    ~DockLayout ();
+    
+    ~DockLayout() noexcept;
     
     /** Returns the index of the child component */
     inline int indexOf (Component* const child) const { return items.indexOf (child); }
-    void clear();
+    
+    /** Returns the number of items in the layout */
+    inline int getNumItems() const { return items.size(); }
+    
+    void insert (int index, Component* const child);
     
     void append (Component* child);
-    void insert (int index, Component* const child);
+    
     void remove (Component* const child);
     
+    void clear();
+    
     void layoutItems (int x, int y, int w, int h);
+    
     void layoutItems();
-    void setIsVertical (bool vertical) { isVertical = vertical; }
-    bool getIsVertical() const { return isVertical; }
+    
+    inline void setVertical (bool isNowVertical) { vertical = isNowVertical; }
+    
+    inline bool isVertical() const { return vertical; }
+    
     Component* root();
     
 private:
     void buildComponentArray();
-    bool isVertical;
+    bool vertical;
     Component& holder;
     OwnedArray<StretchableLayoutResizerBar> bars;
     Array<Component*> items;

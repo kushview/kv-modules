@@ -13,7 +13,7 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
             source->detach (this);
         
         target->panels.add (this);
-        target->buildTabs();
+        target->refreshPanelContainer();
         target->dock.resized();
         return;
     }
@@ -26,6 +26,7 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
     
     if (targetParent != nullptr && wantsVerticalPlacement == targetParent->isVertical())
     {
+        // same direction as target parent area
         int offsetIdx = 0;
      
         if (wantsVerticalPlacement)
@@ -54,12 +55,28 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
             targetParent->insert (insertIdx, new DockItem (source->dock, this));
         }
     }
+    else if (targetParent != nullptr && target->getNumItems() <= 0)
+    {
+        // opposite direction as target parent area
+        auto& area = target->area;
+        area.setVisible (true);
+        area.setVertical (! targetParent->isVertical());
+        
+        auto* item0 = new DockItem (target->dock, "Temp Panel", "Temp Panel");
+        item0->tabs.clearTabs();
+        item0->panels.clear();
+        target->movePanelsTo (item0);
+        area.append (item0);
+
+        source->detach (this);
+        area.append (new DockItem (target->dock, this));
+        target->resized();
+        target->repaint();
+    }
     else
     {
-        DBG("opposite direction as parent area");
-        source->detach (this);
-        target->area.insert (-1, new DockItem (source->dock, this));
-        target->resized();
+        // unhandled docking condition
+        jassertfalse;
     }
 }
 

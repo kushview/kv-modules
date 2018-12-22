@@ -88,7 +88,8 @@ public:
     
 private:
     friend class DockItem;
-
+    
+    OwnedArray<DockItem> items;
     OwnedArray<DockArea> rootAreas [numPlacements];
     DockLayout verticalLayout;
     DockLayout horizontalLayout;
@@ -103,12 +104,12 @@ private:
 class DockArea : public Component
 {
 public:
-    explicit DockArea (const bool vertical = false);
-    DockArea (Dock::Placement placement);
-
     ~DockArea();
     
     int indexOf (DockItem* const item) const { return layout.indexOf ((Component*) item); }
+    
+    /** Returns the number of items in the layout */
+    int getNumItems() const { return layout.getNumItems(); }
     
     /** Append a DockItem to the end of the layout */
     void append (DockItem* const item);
@@ -118,7 +119,7 @@ public:
     
     void detachItem (DockItem* item);
     void setVertical (const bool vertical);
-    bool isVertical() const { return layout.getIsVertical(); }
+    bool isVertical() const { return layout.isVertical(); }
     
     /** @internal */
     void paint (Graphics&) override { }
@@ -126,6 +127,12 @@ public:
     void resized() override;
 
 private:
+    friend class Dock;
+    friend class DockItem;
+    
+    explicit DockArea (const bool vertical = false);
+    DockArea (Dock::Placement placement);
+    
     void disposeEmptyLayouts();
     DockLayout layout;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockArea)
@@ -137,15 +144,23 @@ class DockItem : public Component,
 public:
     virtual ~DockItem();
     
+    /** Dock all panels in this item to the target item */
     void dockTo (DockItem* target, Dock::Placement placement);
 
+    /** Returns the DockArea which contains this item */
     DockArea* getParentArea() const { return dynamic_cast<DockArea*> (getParentComponent()); }
     
+    /** Returns the number of panels in this item's container */
     int getNumPanels() const { return panels.size(); }
+    
+    /** Returns the current panel index */
     int getCurrentPanelIndex() const { return tabs.getCurrentTabIndex(); }
+
+    /** Returns the current panel object */
     DockPanel* getCurrentPanel() const;
     
-    int getNumItems() const;
+    /** Returns the number of sub items on this panel */
+    int getNumItems() const { return area.getNumItems(); }
     
     /** @internal */
     void paint (Graphics& g) override;
@@ -165,9 +180,9 @@ public:
     bool shouldDrawDragImageWhenOver() override;
     
 private:
+    friend class Dock;
     friend class DockArea;
     friend class DockPanel;
-    friend class Dock;
     
     DockItem (Dock& parent, DockPanel* panel);
     DockItem (Dock& parent, const String& slug, const String& name);
@@ -178,25 +193,12 @@ private:
     DockArea area;
     OwnedArray<DockPanel> panels;
     
-    void detach (DockPanel* const panel)
-    {
-        panels.removeObject (panel, false);
-        if (panels.size() == 0)
-            detach();
-        else
-            buildTabs();
-    }
+    void detach (DockPanel* const panel);
+    void detach();
     
-    void detach()
-    {
-        if (auto* const area = getParentArea())
-        {
-            area->detachItem (this);
-            area->resized();
-        }
-    }
-    
-    void buildTabs();
+    void movePanelsTo (DockItem* const target);
+
+    void refreshPanelContainer();
     
     class DragOverlay : public Component
     {
@@ -211,9 +213,6 @@ private:
             g.drawRect (0, 0, getWidth(), getHeight(),2);
             g.drawRect (30, 30, getWidth() - 60, getHeight() - 60);
         }
-
-    private:
-
     } overlay;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockItem)

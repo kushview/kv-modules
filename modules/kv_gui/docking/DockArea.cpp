@@ -30,12 +30,12 @@ DockArea::DockArea (Dock::Placement placement)
     {
         case Dock::TopPlacement:
         case Dock::BottomPlacement:
-            layout.setIsVertical (false);
+            layout.setVertical (false);
             break;
         case Dock::LeftPlacement:
         case Dock::RightPlacement:
         default:
-            layout.setIsVertical (true);
+            layout.setVertical (true);
             break;
     }
 }
@@ -68,7 +68,7 @@ void DockArea::detachItem (DockItem* item)
 
 void DockArea::setVertical (const bool vertical)
 {
-    layout.setIsVertical (vertical);
+    layout.setVertical (vertical);
 }
 
 void DockArea::resized()

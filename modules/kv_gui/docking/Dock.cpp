@@ -53,16 +53,16 @@ void Dock::resized()
 
 void Dock::dragOperationStarted (const DragAndDropTarget::SourceDetails& details)
 {
-    if (auto* panel = dynamic_cast<DockPanel*> (details.sourceComponent.get()))
-        if (auto* item = dynamic_cast<DockItem*> (panel->findParentComponentOfClass<DockItem>()))
-            item->setMouseCursor (MouseCursor::CopyingCursor);
+//    if (auto* panel = dynamic_cast<DockPanel*> (details.sourceComponent.get()))
+//        if (auto* item = dynamic_cast<DockItem*> (panel->findParentComponentOfClass<DockItem>()))
+//            item->setMouseCursor (MouseCursor::CopyingCursor);
 }
 
 void Dock::dragOperationEnded (const DragAndDropTarget::SourceDetails& details)
 {
-    if (auto* panel = dynamic_cast<DockPanel*> (details.sourceComponent.get()))
-        if (auto* item = dynamic_cast<DockItem*> (panel->findParentComponentOfClass<DockItem>()))
-            item->setMouseCursor (MouseCursor::NormalCursor);
+//    if (auto* panel = dynamic_cast<DockPanel*> (details.sourceComponent.get()))
+//        if (auto* item = dynamic_cast<DockItem*> (panel->findParentComponentOfClass<DockItem>()))
+//            item->setMouseCursor (MouseCursor::NormalCursor);
 }
 
 DockItem* Dock::createItem (const String& itemId, const String& itemName,
@@ -79,12 +79,13 @@ DockItem* Dock::createItem (const String& itemId, const String& itemName,
         return nullptr;
     }
     
+    const int insertIdx = 0;
     auto& areas = rootAreas [itemPlacement];
-    auto* area = areas.add (new DockArea (itemPlacement));
+    auto* area = areas.insert (insertIdx, new DockArea (itemPlacement));
     auto* item = new DockItem (*this, itemId, itemName);
     addAndMakeVisible (area);
     area->append (item);
-    verticalLayout.append (area);
+    verticalLayout.insert (insertIdx, area);
     resized();
     
     return item;
@@ -113,6 +114,14 @@ void Dock::removeEmptyRootAreas()
     for (auto* const area : topAreas)
         verticalLayout.append (area);
     
+   #if 0
+    // attempt to remove invalid items
+    for (int i = items.size(); --i >= 0;)
+        if (items[i]->panels.size() <= 0)
+            if (items[i]->area.getNumChildComponents() <= 0)
+                items.remove (i, true);
+   #endif
+
     resized();
 }
 
