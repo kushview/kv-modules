@@ -46,15 +46,12 @@ DockArea::~DockArea ()
 
 void DockArea::append (DockItem* const item)
 {
-    layout.append (item);
-    addAndMakeVisible (item);
-    item->repaint();
-    resized();
+    insert (-1, item);
 }
 
-void DockArea::insert (int index, DockItem* const item)
+void DockArea::insert (int index, DockItem* const item, Dock::SplitType split)
 {
-    layout.insert (index, item);
+    layout.insert (index, item, split);
     addAndMakeVisible (item);
     item->repaint();
     resized();

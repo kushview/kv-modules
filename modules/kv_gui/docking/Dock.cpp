@@ -86,7 +86,7 @@ DockItem* Dock::createItem (const String& itemId, const String& itemName,
     auto* item = new DockItem (*this, itemId, itemName);
     addAndMakeVisible (area);
     area->append (item);
-    verticalLayout.insert (insertIdx, area);
+    verticalLayout.insert (insertIdx, area, SplitAfter);
     resized();
     
     return item;

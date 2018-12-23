@@ -25,6 +25,7 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
         return;
     
     auto* source = findParentComponentOfClass<DockItem>();
+    auto* sourceArea = source->getParentArea();
     
     if (placement == Dock::CenterPlacement)
     {
@@ -40,10 +41,17 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
     DBG("Docking Panel: " << getName() << " to " << Dock::getDirectionString(placement)
         << " of Item: " << target->getName());
     
-    auto* const targetParent = target->getParentArea();
+    auto* const targetArea = target->getParentArea();
+    if (nullptr == targetArea)
+    {
+        // need an area to dock to
+        jassertfalse;
+        return;
+    }
+    
     const bool wantsVerticalPlacement = placement == Dock::TopPlacement || placement == Dock::BottomPlacement;
     
-    if (targetParent != nullptr && wantsVerticalPlacement == targetParent->isVertical())
+    if (targetArea != nullptr && wantsVerticalPlacement == targetArea->isVertical())
     {
         // same direction as target parent area
         int offsetIdx = 0;
@@ -59,27 +67,35 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
                 ++offsetIdx;
         }
         
+        Dock::SplitType split = sourceArea == targetArea
+            ? Dock::NoSplit : Dock::getSplitType (placement);
+        DBG("[A] source " << getWidth() << "x" << getHeight());
+        
         if (source->getNumPanels() == 1)
         {
             source->detach();
-            int insertIdx = targetParent->indexOf (target);
+            int insertIdx = targetArea->indexOf (target);
             insertIdx += offsetIdx;
-            targetParent->insert (insertIdx, source);
+            DBG("[B] source " << getWidth() << "x" << getHeight());
+            targetArea->insert (insertIdx, source, split);
         }
         else if (source->getNumPanels() > 1)
         {
             source->detach (this);
-            int insertIdx = targetParent->indexOf (target);
+            int insertIdx = targetArea->indexOf (target);
             insertIdx += offsetIdx;
-            targetParent->insert (insertIdx, new DockItem (source->dock, this));
+            DBG("[B] source " << getWidth() << "x" << getHeight());
+            targetArea->insert (insertIdx, new DockItem (source->dock, this), split);
         }
+        
+        DBG("[C] source " << getWidth() << "x" << getHeight());
     }
-    else if (targetParent != nullptr && target->getNumItems() <= 0)
+    else if (targetArea != nullptr && target->getNumItems() <= 0)
     {
         // opposite direction as target parent area
         auto& area = target->area;
         area.setVisible (true);
-        area.setVertical (! targetParent->isVertical());
+        area.setVertical (! targetArea->isVertical());
         
         auto* item0 = new DockItem (target->dock, "Temp Panel", "Temp Panel");
         item0->tabs->clearTabs();

@@ -481,13 +481,47 @@ void DockLayout::append (Component* item)
     }
 }
 
-void DockLayout::insert (int index, Component* const item)
+void DockLayout::insert (int index, Component* const item, int splitType)
 {
     if (items.contains (item))
         return;
     if (index >= items.size() || index < 0)
-        return append (item);
+        index = -1;
+    
     items.insert (index, item);
+    
+    DBG("Split: " << Dock::getSplitString (splitType));
+    if (splitType == Dock::SplitBefore || splitType == Dock::SplitAfter)
+    {
+        const auto offset = splitType == Dock::SplitBefore ? -1 : 1;
+        if (auto* affectedItem = items [index + offset])
+        {
+            const int splitSize = (vertical ? affectedItem->getHeight() : affectedItem->getWidth()) / 2;
+            if (vertical)
+            {
+                item->setSize (item->getWidth(), splitSize);
+                affectedItem->setSize (affectedItem->getWidth(), splitSize);
+            }
+            else
+            {
+                item->setSize (splitSize, item->getHeight());
+                affectedItem->setSize (splitSize, item->getHeight());
+            }
+        }
+    }
+    else
+    {
+        int itemSize = vertical ? item->getHeight() : item->getWidth();
+        if (vertical)
+        {
+            item->setSize (holder.getWidth(), itemSize);
+        }
+        else
+        {
+            item->setSize (itemSize, holder.getHeight());
+        }
+    }
+    
     buildComponentArray();
 }
 
@@ -521,12 +555,13 @@ void DockLayout::layoutItems()
 
 void DockLayout::buildComponentArray()
 {
-    bars.clear (true);
-    comps.clear();
-
+    bars.clearQuick (true);
+    comps.clearQuick();
+    layout.clearAllItems();
     for (int i = 0; i < items.size(); ++i)
     {
         auto itemSize = vertical ? items[i]->getHeight() : items[i]->getWidth();
+        
         layout.setItemLayout (comps.size(), 30, -1.0, itemSize);
         comps.add (items [i]);
 
@@ -539,6 +574,8 @@ void DockLayout::buildComponentArray()
             layout.setItemLayout (index, barSize, barSize, barSize);
         }
     }
+    
+    holder.resized();
 }
 
 void DockLayout::setBarSize (int newBarSize)
@@ -547,7 +584,6 @@ void DockLayout::setBarSize (int newBarSize)
     {
         barSize = newBarSize;
         buildComponentArray();
-        holder.resized();
     }
 }
 

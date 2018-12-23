@@ -55,8 +55,48 @@ public:
         numPlacements
     };
 
+    enum SplitType {
+        NoSplit,
+        SplitBefore,
+        SplitAfter
+    };
+
     Dock();
     virtual ~Dock();
+    
+    inline static SplitType getSplitType (const Placement placement)
+    {
+        SplitType split = NoSplit;
+        
+        switch (placement)
+        {
+            case TopPlacement:
+            case LeftPlacement:
+                split = SplitAfter;
+                break;
+            case BottomPlacement:
+            case RightPlacement:
+                split = SplitBefore;
+                break;
+
+            default:
+                break;
+        }
+        
+        return split;
+    }
+    
+    inline static String getSplitString (const int splitType)
+    {
+        switch (splitType)
+        {
+            case NoSplit:       return "No split"; break;
+            case SplitBefore:   return "Split before"; break;
+            case SplitAfter:    return "Split after"; break;
+        }
+        
+        return "Unknown Split";
+    }
     
     inline static String getDirectionString (const int placement)
     {
@@ -119,7 +159,7 @@ public:
     void append (DockItem* const item);
     
     /** Insert a DockItem at a specific location */
-    void insert (int index, DockItem* const item);
+    void insert (int index, DockItem* const item, Dock::SplitType split = Dock::NoSplit);
     
     void detachItem (DockItem* item);
     void setVertical (const bool vertical);
