@@ -19,59 +19,83 @@
 
 namespace kv {
 
+class DockItem::DragOverlay : public Component
+{
+public:
+    DragOverlay() = default;
+    ~DragOverlay() = default;
+    void paint (Graphics &g) override
+    {
+        g.setOpacity (0.40);
+        g.fillAll (Colours::white);
+        
+        g.setColour (Colours::black);
+        g.drawRect (0, 0, getWidth(), getHeight(),2);
+        g.drawRect (30, 30, getWidth() - 60, getHeight() - 60);
+    }
+};
+
 DockItem::DockItem (Dock& parent, const String& id, const String& name)
-    : Component (name), dock (parent),
-      tabs (TabbedButtonBar::TabsAtTop)
+    : Component (name), dock (parent)
 {
     setComponentID (id);
-    addAndMakeVisible (tabs);
+    
+    tabs.reset (new DockItemTabs());
+    addAndMakeVisible (tabs.get());
     
     addChildComponent (area);
-
-    addChildComponent (overlay, 9000);
-    overlay.setAlpha (0.50);
+    
+    overlay.reset (new DragOverlay());
+    addChildComponent (overlay.get(), 9000);
+    overlay->setAlpha (0.50);
     
     auto* panel = new DockPanel();
     panel->setName (name);
     panels.add (panel);
     refreshPanelContainer();
-    tabs.setCurrentTabIndex(0);
+
+    tabs->setCurrentTabIndex (0);
     
     parent.items.add (this);
 }
 
 DockItem::DockItem (Dock& parent, DockPanel* panel)
-    : Component (panel->getName()), dock (parent),
-      tabs (TabbedButtonBar::TabsAtTop)
+    : Component (panel->getName()), dock (parent)
 {
     setComponentID (panel->getComponentID());
-    addAndMakeVisible (tabs);
+    tabs.reset (new DockItemTabs());
+    addAndMakeVisible (tabs.get());
     
-    addChildComponent (overlay, 9000);
-    overlay.setAlpha (0.50);
+    overlay.reset (new DragOverlay());
+    addChildComponent (overlay.get(), 9000);
+    overlay->setAlpha (0.50);
     
     panels.add (panel);
     refreshPanelContainer();
-    tabs.setCurrentTabIndex (panels.indexOf (panel));
+    tabs->setCurrentTabIndex (panels.indexOf (panel));
     
     parent.items.add (this);
 }
 
 DockItem::~DockItem()
 {
-    tabs.clearTabs();
+    overlay = nullptr;
+    tabs->clearTabs();
+    tabs = nullptr;
     panels.clear();
 }
 
+int DockItem::getCurrentPanelIndex() const { return tabs->getCurrentTabIndex(); }
 DockPanel* DockItem::getCurrentPanel() const
 {
-    return dynamic_cast<DockPanel*> (tabs.getCurrentContentComponent());
+    return dynamic_cast<DockPanel*> (tabs->getCurrentContentComponent());
 }
 
 void DockItem::dockTo (DockItem* const target, Dock::Placement placement)
 {
     for (auto* const panel : panels)
         panel->dockTo (target, placement);
+    dock.removeEmptyRootAreas();
 }
 
 void DockItem::detach (DockPanel* const panel)
@@ -111,38 +135,36 @@ void DockItem::movePanelsTo (DockItem* const target)
 
 void DockItem::refreshPanelContainer()
 {
-    const auto lastIndex = tabs.getCurrentTabIndex();
-    tabs.clearTabs();
+    const auto lastIndex = tabs->getCurrentTabIndex();
+    tabs->clearTabs();
+    const auto colour = findColour(DocumentWindow::backgroundColourId);
+    
     for (auto* const panel : panels)
-        tabs.addTab (panel->getName(), Colours::black, panel, false);
+        tabs->addTab (panel->getName(), colour, panel, false);
     if (panels.size() > 0)
-        tabs.setCurrentTabIndex (jlimit (0, panels.size() - 1, lastIndex));
+        tabs->setCurrentTabIndex (jlimit (0, panels.size() - 1, lastIndex));
 }
 
 void DockItem::paint (Graphics& g) { }
 
 void DockItem::resized()
 {
+    const int indent = 0;
     if (panels.size() > 0)
     {
-        auto ir = getLocalBounds();
-        ir.removeFromTop (20);
-        ir.removeFromLeft (2);
-        ir.removeFromRight (2);
-        
-        if (overlay.isVisible())
-            overlay.centreWithSize (getWidth() - 2, getHeight() - 2);
-        tabs.setBounds (ir);
+        auto ir = getLocalBounds().reduced (indent);
+        if (overlay->isVisible())
+            overlay->centreWithSize (getWidth() - 2, getHeight() - 2);
+        tabs->setBounds (ir);
     }
     else
     {
-        area.setBounds (getLocalBounds().reduced (2));
+        area.setBounds (getLocalBounds().reduced (indent));
     }
 }
 
 void DockItem::mouseDown (const MouseEvent& ev)
 {
-    Component::mouseDown (ev);
     if (DockPanel* const panel = getCurrentPanel())
     {
         Image image (Image::ARGB, 1, 1, true);
@@ -162,7 +184,7 @@ bool DockItem::isInterestedInDragSource (const SourceDetails& details)
 
 void DockItem::itemDropped (const SourceDetails& dragSourceDetails)
 {
-    overlay.setVisible (false);
+    overlay->setVisible (false);
     
     auto* const panel = dynamic_cast<DockPanel*> (dragSourceDetails.sourceComponent.get());
     auto* const item  = (panel != nullptr) ? panel->findParentComponentOfClass<DockItem>() : nullptr;
@@ -196,14 +218,14 @@ void DockItem::itemDropped (const SourceDetails& dragSourceDetails)
 
 void DockItem::itemDragEnter (const SourceDetails&)
 {
-    overlay.toFront (true);
-    overlay.setVisible (true);
+    overlay->toFront (true);
+    overlay->setVisible (true);
     resized();
 }
 
 void DockItem::itemDragExit (const SourceDetails&)
 {
-    overlay.setVisible (false);
+    overlay->setVisible (false);
     resized();
 }
 

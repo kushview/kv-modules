@@ -23,6 +23,7 @@ namespace kv {
 
 class DockArea;
 class DockItem;
+class DockItemTabs;
 class DockLayout;
 class DockPanel;
 
@@ -76,7 +77,10 @@ public:
     DockItem* getItem (const String& itemId);
 
     /** @internal */
-    void paint (Graphics&) override { }
+    inline virtual void paint (Graphics& g) override
+    {
+        g.fillAll (findColour(DocumentWindow::backgroundColourId).darker());
+    }
     /** @internal */
     void resized() override;
     /** @internal */
@@ -122,7 +126,7 @@ public:
     bool isVertical() const { return layout.isVertical(); }
     
     /** @internal */
-    void paint (Graphics&) override { }
+    inline virtual void paint (Graphics&) override { }
     /** @internal */
     void resized() override;
 
@@ -154,7 +158,7 @@ public:
     int getNumPanels() const { return panels.size(); }
     
     /** Returns the current panel index */
-    int getCurrentPanelIndex() const { return tabs.getCurrentTabIndex(); }
+    int getCurrentPanelIndex() const;
 
     /** Returns the current panel object */
     DockPanel* getCurrentPanel() const;
@@ -189,7 +193,8 @@ private:
     
     Dock& dock;
     bool dragging = false;
-    TabbedComponent tabs;
+    std::unique_ptr<DockItemTabs> tabs;
+    
     DockArea area;
     OwnedArray<DockPanel> panels;
     
@@ -200,20 +205,8 @@ private:
 
     void refreshPanelContainer();
     
-    class DragOverlay : public Component
-    {
-    public:
-        DragOverlay() { }
-        void paint (Graphics &g)
-        {
-            g.setOpacity (.50);
-            g.fillAll (Colours::teal);
-
-            g.setColour (Colours::black);
-            g.drawRect (0, 0, getWidth(), getHeight(),2);
-            g.drawRect (30, 30, getWidth() - 60, getHeight() - 60);
-        }
-    } overlay;
+    class DragOverlay;
+    std::unique_ptr<DragOverlay> overlay;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockItem)
 };

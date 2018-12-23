@@ -6,6 +6,7 @@ using namespace kv;
 MainComponent::MainComponent()
 {
     addAndMakeVisible (dock);
+    
     addAndMakeVisible (addItemButton);
     addItemButton.setButtonText ("Add Item");
     addItemButton.onClick = std::bind (&MainComponent::addDockItem, this);
@@ -18,6 +19,31 @@ MainComponent::MainComponent()
     placementCombo.addItem ("Floating", 1 + Dock::FloatingPlacement);
     
     setSize (600 * 2, 400 * 2);
+    
+    // build typical layout
+    std::function<String(int)> itemName = [](int index) -> String {
+        return String("Item ") + String (index);
+    };
+    
+    int itemNo = 0;
+    auto* item1 = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
+    auto* item2 = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
+    
+    auto* item3 = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
+    item3->dockTo (item2, Dock::RightPlacement);
+    
+    auto* item4 = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
+    auto* item5 = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
+    auto* item6 = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
+    item4->dockTo (item1, Dock::RightPlacement);
+    item5->dockTo (item1, Dock::RightPlacement);
+    item6->dockTo (item1, Dock::RightPlacement);
+    
+    for (int i = 0; i < 4; ++i)
+    {
+        auto* item = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
+        item->dockTo (item2, Dock::CenterPlacement);
+    }
 }
 
 MainComponent::~MainComponent()
@@ -25,10 +51,8 @@ MainComponent::~MainComponent()
     addItemButton.onClick = nullptr;
 }
 
-//==============================================================================
 void MainComponent::paint (Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
 
 //    g.setFont (Font (16.0f));

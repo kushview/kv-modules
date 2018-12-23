@@ -83,4 +83,5 @@ class ScreenDisplay;
  #include "docking/DockLayout.h"
  #include "docking/Dock.h" 
  #include "docking/DockPanel.h"
+ #include "docking/DockItemTabs.h"
 #endif
