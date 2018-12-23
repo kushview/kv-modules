@@ -587,49 +587,4 @@ void DockLayout::setBarSize (int newBarSize)
     }
 }
 
-void DockLayout::resizeStarted (const int barIndex)
-{
-    double minSize, maxSize, prefSize;
-    
-    for (int i = 0; i < comps.size(); ++i)
-    {
-        if (i % 2 != 0)
-            continue;
-
-        auto* comp = comps [i];
-        const auto itemSize = !vertical ? comp->getHeight() : comp->getWidth();
-        layout.getItemLayout (i, minSize, maxSize, prefSize);
-
-        if (DockItem* item = dynamic_cast<DockItem*> (comp))
-        {
-            if (i == barIndex - 1 || i == barIndex + 1)
-            {
-                DBG("unlock: " << item->getName());
-                layout.setItemLayout (i, 30.0, itemSize, itemSize);
-            }
-            else
-            {
-                DBG("lock: " << item->getName());
-                layout.setItemLayout (i, itemSize, itemSize, itemSize);
-            }
-        }
-    }
-}
-
-void DockLayout::resizeStopped (const int barIndex)
-{
-    double minSize, maxSize, prefSize;
-    
-    for (int i = 0; i < comps.size(); ++i)
-    {
-        if (i % 2 != 0)
-            continue;
-        
-        auto* const comp = comps [i];
-        const auto itemSize = !vertical ? comp->getHeight() : comp->getWidth();
-        layout.getItemLayout (i, minSize, maxSize, prefSize);
-        layout.setItemLayout (i, 30.0, -1.0, itemSize);
-    }
-}
-
 }

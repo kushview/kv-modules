@@ -33,8 +33,7 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
             source->detach (this);
         
         target->panels.add (this);
-        target->refreshPanelContainer();
-        target->dock.resized();
+        target->refreshPanelContainer (this);
         return;
     }
     
@@ -51,7 +50,7 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
     
     const bool wantsVerticalPlacement = placement == Dock::TopPlacement || placement == Dock::BottomPlacement;
     
-    if (targetArea != nullptr && wantsVerticalPlacement == targetArea->isVertical())
+    if (wantsVerticalPlacement == targetArea->isVertical())
     {
         // same direction as target parent area
         int offsetIdx = 0;
@@ -67,16 +66,14 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
                 ++offsetIdx;
         }
         
-        Dock::SplitType split = sourceArea == targetArea
+        const Dock::SplitType split = sourceArea == targetArea
             ? Dock::NoSplit : Dock::getSplitType (placement);
-        DBG("[A] source " << getWidth() << "x" << getHeight());
         
         if (source->getNumPanels() == 1)
         {
             source->detach();
             int insertIdx = targetArea->indexOf (target);
             insertIdx += offsetIdx;
-            DBG("[B] source " << getWidth() << "x" << getHeight());
             targetArea->insert (insertIdx, source, split);
         }
         else if (source->getNumPanels() > 1)
@@ -84,29 +81,40 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
             source->detach (this);
             int insertIdx = targetArea->indexOf (target);
             insertIdx += offsetIdx;
-            DBG("[B] source " << getWidth() << "x" << getHeight());
             targetArea->insert (insertIdx, new DockItem (source->dock, this), split);
         }
-        
-        DBG("[C] source " << getWidth() << "x" << getHeight());
     }
-    else if (targetArea != nullptr && target->getNumItems() <= 0)
+    else if (target->getNumItems() <= 0)
     {
-        // opposite direction as target parent area
+        // opposite direction as target parent area and not
         auto& area = target->area;
+        auto& tabs = *target->tabs;
+        tabs.setVisible (false);
         area.setVisible (true);
         area.setVertical (! targetArea->isVertical());
         
-        auto* item0 = new DockItem (target->dock, "Temp Panel", "Temp Panel");
+        const Dock::SplitType split = sourceArea == &area
+            ? Dock::NoSplit : Dock::getSplitType (placement);
+        
+        std::unique_ptr<DockItem> item0;
+        item0.reset (new DockItem (target->dock, "Temp Panel", "Temp Panel"));
         item0->tabs->clearTabs();
         item0->panels.clear();
-        target->movePanelsTo (item0);
-        area.append (item0);
-
-        source->detach (this);
-        area.append (new DockItem (target->dock, this));
-        target->resized();
-        target->repaint();
+        item0->setSize (target->getWidth(), target->getHeight());
+        target->movePanelsTo (item0.get());
+        area.append (item0.release());
+        
+        if (split != Dock::NoSplit)
+        {
+            source->detach (this);
+            area.insert (-1, new DockItem (target->dock, this), split);
+            target->resized();
+            target->repaint();
+        }
+        else
+        {
+            jassertfalse;
+        }
     }
     else
     {

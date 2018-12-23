@@ -135,8 +135,7 @@ private:
     OwnedArray<DockLayoutResizerBar> bars;
     Array<Component*> items;
     Array<Component*> comps;
-    void resizeStarted (const int barIndex);
-    void resizeStopped (const int barIndex);
+
     void buildComponentArray();
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DockLayout)

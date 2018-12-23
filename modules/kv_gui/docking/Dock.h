@@ -243,7 +243,7 @@ private:
     
     void movePanelsTo (DockItem* const target);
 
-    void refreshPanelContainer();
+    void refreshPanelContainer (DockPanel* const panelToSelect = nullptr);
     
     class DragOverlay;
     std::unique_ptr<DragOverlay> overlay;

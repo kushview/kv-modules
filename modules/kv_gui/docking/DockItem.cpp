@@ -133,14 +133,18 @@ void DockItem::movePanelsTo (DockItem* const target)
     target->refreshPanelContainer();
 }
 
-void DockItem::refreshPanelContainer()
+void DockItem::refreshPanelContainer (DockPanel* const panelToSelect)
 {
-    const auto lastIndex = tabs->getCurrentTabIndex();
+    auto lastIndex = tabs->getCurrentTabIndex();
     tabs->clearTabs();
     const auto colour = findColour(DocumentWindow::backgroundColourId);
     
     for (auto* const panel : panels)
         tabs->addTab (panel->getName(), colour, panel, false);
+    
+    if (panelToSelect != nullptr && panels.contains (panelToSelect))
+        lastIndex = panels.indexOf (panelToSelect);
+
     if (panels.size() > 0)
         tabs->setCurrentTabIndex (jlimit (0, panels.size() - 1, lastIndex));
 }
