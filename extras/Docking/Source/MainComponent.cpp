@@ -26,22 +26,22 @@ MainComponent::MainComponent()
     };
     
     int itemNo = 0;
-    auto* item1 = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
-    auto* item2 = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
+    auto* item1 = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
+    auto* item2 = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
     
-    auto* item3 = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
+    auto* item3 = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
     item3->dockTo (item2, Dock::RightPlacement);
     
-    auto* item4 = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
-    auto* item5 = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
-    auto* item6 = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
+    auto* item4 = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
+    auto* item5 = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
+    auto* item6 = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
     item4->dockTo (item1, Dock::RightPlacement);
     item5->dockTo (item1, Dock::RightPlacement);
     item6->dockTo (item1, Dock::RightPlacement);
     
     for (int i = 0; i < 4; ++i)
     {
-        auto* item = dock.createItem (Uuid().toString(), itemName(itemNo++), Dock::TopPlacement);
+        auto* item = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
         item->dockTo (item2, Dock::CenterPlacement);
     }
 }
@@ -54,10 +54,6 @@ MainComponent::~MainComponent()
 void MainComponent::paint (Graphics& g)
 {
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
-
-//    g.setFont (Font (16.0f));
-//    g.setColour (Colours::white);
-//    g.drawText ("Hello World!", getLocalBounds(), Justification::centred, true);
 }
 
 void MainComponent::resized()
@@ -72,7 +68,7 @@ void MainComponent::resized()
     dock.setBounds (r);
 }
 
-void MainComponent::addDockItem ()
+void MainComponent::addDockItem()
 {
     placement = placementCombo.getSelectedId() - 1;
     if (! isPositiveAndBelow (placement, Dock::numPlacements))
@@ -81,7 +77,7 @@ void MainComponent::addDockItem ()
     static int itemNo = 1;
     String text = "Docking Item "; text << itemNo;
     
-    if (auto* item = dock.createItem (Uuid().toString(), text,
+    if (auto* item = dock.createItem (text,
         static_cast<Dock::Placement> (placement)))
     {
         ++itemNo;

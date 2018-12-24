@@ -27,19 +27,6 @@ class DockItemTabs;
 class DockLayout;
 class DockPanel;
 
-class DockFactory
-{
-public:
-    virtual ~DockFactory() { }
-    virtual DockPanel* createDockPanel (int typeId) = 0;
-
-protected:
-    DockFactory() { }
-    
-private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockFactory)
-};
-
 class Dock : public Component,
              public DragAndDropContainer
 {
@@ -98,6 +85,17 @@ public:
         return "Unknown Split";
     }
     
+    inline static bool isDirectional (const Placement placement)
+    {
+        return placement == TopPlacement || placement == BottomPlacement ||
+            placement == LeftPlacement || placement == RightPlacement;
+    }
+    
+    inline static bool isVertical (const Placement placement)
+    {
+        return placement == TopPlacement || placement == BottomPlacement;
+    }
+    
     inline static String getDirectionString (const int placement)
     {
         switch (placement)
@@ -112,10 +110,12 @@ public:
         return {};
     }
     
-    DockItem* createItem();
-    DockItem* createItem (const String& itemId, const String& itemName, Dock::Placement placement);
-    DockItem* getItem (const String& itemId);
-
+    /** Create a default panel with a given name */
+    DockItem* createItem (const String& panelName, Dock::Placement placement);
+    
+    /** Start a drag operation on the passed in DockPanel */
+    void startDragging (DockPanel* const panel);
+    
     /** @internal */
     inline virtual void paint (Graphics& g) override
     {
@@ -129,12 +129,16 @@ public:
     void dragOperationStarted (const DragAndDropTarget::SourceDetails& details) override;
     /** @internal */
     void dragOperationEnded (const DragAndDropTarget::SourceDetails& details) override;
-    
+
+protected:
+    virtual DockPanel* getOrCreatePanel (const String&);
+
 private:
     friend class DockItem;
     
-    OwnedArray<DockItem> items;
     OwnedArray<DockArea> rootAreas [numPlacements];
+    OwnedArray<DockItem> items;
+    
     DockLayout verticalLayout;
     DockLayout horizontalLayout;
     
@@ -178,6 +182,7 @@ private:
     DockArea (Dock::Placement placement);
     
     void disposeEmptyLayouts();
+    
     DockLayout layout;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockArea)
 };
@@ -193,6 +198,9 @@ public:
 
     /** Returns the DockArea which contains this item */
     DockArea* getParentArea() const { return dynamic_cast<DockArea*> (getParentComponent()); }
+    
+    /** Returns the DockArea containing sub items */
+    DockArea* getItemArea() const   { return const_cast<DockArea*> (&area); }
     
     /** Returns the number of panels in this item's container */
     int getNumPanels() const { return panels.size(); }
@@ -218,6 +226,8 @@ public:
     void itemDropped (const SourceDetails& dragSourceDetails) override;
     /** @internal */
     void itemDragEnter (const SourceDetails&) override;
+    /** @internal */
+    void itemDragMove (const SourceDetails& dragSourceDetails) override;
     /** @internal */
     void itemDragExit (const SourceDetails&) override;
     /** @internal */

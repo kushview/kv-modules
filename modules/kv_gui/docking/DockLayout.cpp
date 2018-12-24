@@ -474,8 +474,10 @@ void DockLayout::append (Component* item)
             holder.addAndMakeVisible (bars.getLast());
             layout.setItemLayout (index, barSize, barSize, barSize);
         }
-
-        layout.setItemLayout (comps.size(), 30, -1.0, 100);
+        
+        const auto prefSize = jmax (100, vertical ? item->getHeight() : item->getWidth());
+        layout.setItemLayout (comps.size(), 30, -1.0, prefSize);
+        
         comps.add (item);
         items.add (item);
     }
@@ -490,7 +492,8 @@ void DockLayout::insert (int index, Component* const item, int splitType)
     
     items.insert (index, item);
     
-    DBG("Split: " << Dock::getSplitString (splitType));
+    // DBG("Split: " << Dock::getSplitString (splitType));
+
     if (splitType == Dock::SplitBefore || splitType == Dock::SplitAfter)
     {
         const auto offset = splitType == Dock::SplitBefore ? -1 : 1;

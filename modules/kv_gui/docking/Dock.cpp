@@ -38,13 +38,19 @@ Dock::~Dock()
     items.clear();
 }
 
-void Dock::detatchAll (DockItem* item)
+DockPanel* Dock::getOrCreatePanel (const String& panelType)
 {
+    DockPanel* panel = nullptr;
+    if (panelType == "GenericDockPanel")
+    {
+        panel = new DockPanel();
+        panel->setName ("Panel");
+    }
+    return panel;
 }
 
-DockItem* Dock::getItem (const String& id)
+void Dock::detatchAll (DockItem* item)
 {
-    return nullptr;
 }
 
 void Dock::resized()
@@ -66,11 +72,8 @@ void Dock::dragOperationEnded (const DragAndDropTarget::SourceDetails& details)
 //            item->setMouseCursor (MouseCursor::NormalCursor);
 }
 
-DockItem* Dock::createItem (const String& itemId, const String& itemName,
-                            Dock::Placement itemPlacement)
+DockItem* Dock::createItem (const String& itemName, Dock::Placement itemPlacement)
 {
-    if (itemPlacement != TopPlacement)
-        return nullptr;
     
     if (itemPlacement != LeftPlacement &&
         itemPlacement != TopPlacement &&
@@ -80,21 +83,31 @@ DockItem* Dock::createItem (const String& itemId, const String& itemName,
         return nullptr;
     }
     
-    const int insertIdx = 0;
+    auto* panel = getOrCreatePanel ("GenericDockPanel");
+    if (! panel)
+    {
+        jassertfalse;
+        return nullptr;
+    }
+    
+    panel->setName (itemName);
+    
+    const int insertIdx = itemPlacement == LeftPlacement || itemPlacement == TopPlacement ? 0
+                        : itemPlacement == RightPlacement || itemPlacement == BottomPlacement ? -1
+                        : 0;
+    
     auto& areas = rootAreas [itemPlacement];
+    auto& layout = Dock::isVertical (itemPlacement) ? verticalLayout : horizontalLayout;
     auto* area = areas.insert (insertIdx, new DockArea (itemPlacement));
-    auto* item = new DockItem (*this, itemId, itemName);
     addAndMakeVisible (area);
+    
+    auto* item = new DockItem (*this, panel);
     area->append (item);
-    verticalLayout.insert (insertIdx, area, SplitAfter);
+
+    layout.insert (insertIdx, area, SplitAfter);
     resized();
     
     return item;
-}
-
-DockItem* Dock::createItem()
-{
-    return createItem (Uuid().toString(), "Dock Item", Dock::TopPlacement);
 }
 
 void Dock::removeEmptyRootAreas()
@@ -105,10 +118,8 @@ void Dock::removeEmptyRootAreas()
     {
         auto& area = rootAreas [i];
         for (int j = area.size(); --j >= 0;)
-        {
             if (area[j]->getNumChildComponents() <= 0)
                 area.remove (j);
-        }
     }
     
     auto& topAreas = rootAreas [Dock::TopPlacement];
@@ -124,6 +135,13 @@ void Dock::removeEmptyRootAreas()
    #endif
 
     resized();
+}
+
+void Dock::startDragging (DockPanel* const panel)
+{
+    jassert (panel != nullptr);
+    Image image (Image::ARGB, 1, 1, true);
+    DragAndDropContainer::startDragging ("DockPanel", panel, image, true);
 }
 
 }

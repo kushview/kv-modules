@@ -22,17 +22,93 @@ namespace kv {
 class DockItem::DragOverlay : public Component
 {
 public:
-    DragOverlay() = default;
+    DragOverlay()
+    {
+        setRepaintsOnMouseActivity (true);
+        resized();
+    }
+    
     ~DragOverlay() = default;
+    
+    void visibilityChanged() override { resized(); }
+    
     void paint (Graphics &g) override
     {
-        g.setOpacity (0.40);
-        g.fillAll (Colours::white);
+        const auto backgroundColor  = Colours::grey;
+        const auto highlightColor   = Colours::blueviolet;
+        const auto outlineColor     = Colours::black;
         
-        g.setColour (Colours::black);
-        g.drawRect (0, 0, getWidth(), getHeight(),2);
-        g.drawRect (30, 30, getWidth() - 60, getHeight() - 60);
+        g.setOpacity (0.40);
+        g.fillAll (backgroundColor);
+        
+        bool hasPaintedMouseArea = false;
+        Path* paths[] = { &left, &right, &top, &bottom };
+        for (int i = 0; i < 4; ++i)
+        {
+            if (paths[i]->contains (mouse))
+            {
+                g.setColour (highlightColor);
+                g.fillPath (*paths[i]);
+                hasPaintedMouseArea = true;
+                break;
+            }
+        }
+        
+        if (! hasPaintedMouseArea && center.contains (mouse))
+        {
+            g.setColour (highlightColor);
+            g.fillRect (center);
+        }
+        
+        auto bounds = getLocalBounds().toFloat();
+        g.setColour (outlineColor);
+        g.drawRect (getLocalBounds(), 1);
+
+        g.drawLine ({ bounds.getTopLeft(), center.getTopLeft() }, 1.f);
+        g.drawLine ({ bounds.getTopRight(), center.getTopRight() }, 1.f);
+        g.drawLine ({ bounds.getBottomLeft(), center.getBottomLeft() }, 1.f);
+        g.drawLine ({ bounds.getBottomRight(), center.getBottomRight() }, 1.f);
+        g.drawRect (center, 1);
     }
+    
+    void resized() override
+    {
+        auto bounds = getLocalBounds().toFloat();
+        center = getLocalBounds().reduced(spacingX, spacingY).toFloat();
+        left.clear(); right.clear(); top.clear(); bottom.clear();
+        
+        left.startNewSubPath (bounds.getTopLeft());
+        left.lineTo (bounds.getBottomLeft());
+        left.lineTo (center.getBottomLeft());
+        left.lineTo (center.getTopLeft());
+        left.closeSubPath();
+        
+        right.startNewSubPath (bounds.getTopRight());
+        right.lineTo (bounds.getBottomRight());
+        right.lineTo (center.getBottomRight());
+        right.lineTo (center.getTopRight());
+        right.closeSubPath();
+        
+        top.startNewSubPath (bounds.getTopLeft());
+        top.lineTo (bounds.getTopRight());
+        top.lineTo (center.getTopRight());
+        top.lineTo (center.getTopLeft());
+        top.closeSubPath();
+        
+        bottom.startNewSubPath (bounds.getBottomLeft());
+        bottom.lineTo (bounds.getBottomRight());
+        bottom.lineTo (center.getBottomRight());
+        bottom.lineTo (center.getBottomLeft());
+        bottom.closeSubPath();
+    }
+    
+private:
+    friend class DockItem;
+    int spacingX = 30;
+    int spacingY = 30;
+    Rectangle<float> center;
+    Path left, right, top, bottom;
+    Point<float> mouse;
 };
 
 DockItem::DockItem (Dock& parent, const String& id, const String& name)
@@ -170,10 +246,7 @@ void DockItem::resized()
 void DockItem::mouseDown (const MouseEvent& ev)
 {
     if (DockPanel* const panel = getCurrentPanel())
-    {
-        Image image (Image::ARGB, 1, 1, true);
-        dock.startDragging ("DockPanel", panel, image, true);
-    }
+        dock.startDragging (panel);
 }
 
 bool DockItem::isInterestedInDragSource (const SourceDetails& details)
@@ -225,6 +298,12 @@ void DockItem::itemDragEnter (const SourceDetails&)
     overlay->toFront (true);
     overlay->setVisible (true);
     resized();
+}
+
+void DockItem::itemDragMove (const SourceDetails& dragSourceDetails)
+{
+    overlay->mouse = dragSourceDetails.localPosition.toFloat();
+    overlay->repaint();
 }
 
 void DockItem::itemDragExit (const SourceDetails&)

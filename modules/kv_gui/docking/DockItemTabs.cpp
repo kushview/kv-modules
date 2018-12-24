@@ -52,7 +52,7 @@ public:
             auto* dock = getDock();
             auto* panel = getDockPanel();
             if (dock && panel)
-                dock->startDragging ("DockPanel", panel);
+                dock->startDragging (panel);
         }
     }
     

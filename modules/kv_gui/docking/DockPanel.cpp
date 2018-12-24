@@ -18,7 +18,11 @@
 */
 
 namespace kv {
-    
+
+#ifndef KV_DOCKING_NESTING
+ #define KV_DOCKING_NESTING 0
+#endif
+
 void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
 {
     if (placement == Dock::FloatingPlacement)
@@ -37,8 +41,8 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
         return;
     }
     
-    DBG("Docking Panel: " << getName() << " to " << Dock::getDirectionString(placement)
-        << " of Item: " << target->getName());
+//    DBG("Docking Panel: " << getName() << " to " << Dock::getDirectionString(placement)
+//        << " of Item: " << target->getName());
     
     auto* const targetArea = target->getParentArea();
     if (nullptr == targetArea)
@@ -50,9 +54,10 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
     
     const bool wantsVerticalPlacement = placement == Dock::TopPlacement || placement == Dock::BottomPlacement;
     
-    if (wantsVerticalPlacement == targetArea->isVertical())
+    if (wantsVerticalPlacement == targetArea->isVertical() && (source != target || source->getNumPanels() > 1))
     {
-        // same direction as target parent area
+        // Same direction as target parent area
+        // Not same item unless source has 2 or more panels
         int offsetIdx = 0;
      
         if (wantsVerticalPlacement)
@@ -66,7 +71,7 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
                 ++offsetIdx;
         }
         
-        const Dock::SplitType split = sourceArea == targetArea
+        const Dock::SplitType split = sourceArea == targetArea && source->getNumPanels() == 1
             ? Dock::NoSplit : Dock::getSplitType (placement);
         
         if (source->getNumPanels() == 1)
@@ -86,7 +91,20 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
     }
     else if (target->getNumItems() <= 0)
     {
-        // opposite direction as target parent area and not
+       #if KV_DOCKING_NESTING
+        DBG("num source items:  " << source->getNumItems());
+        DBG("num source panels: " << source->getNumPanels());
+        DBG("source == target:  " << (int) (source == target));
+        
+        source->detach (this);
+        
+        std::unique_ptr<DockItem> item0;
+        item0.reset (new DockItem (target->dock, "Temp Panel", "Temp Panel"));
+        item0->tabs->clearTabs();
+        item0->panels.clear();
+        item0->setSize (target->getWidth(), target->getHeight());
+        target->movePanelsTo (item0.get());
+        
         auto& area = target->area;
         auto& tabs = *target->tabs;
         tabs.setVisible (false);
@@ -96,17 +114,10 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
         const Dock::SplitType split = sourceArea == &area
             ? Dock::NoSplit : Dock::getSplitType (placement);
         
-        std::unique_ptr<DockItem> item0;
-        item0.reset (new DockItem (target->dock, "Temp Panel", "Temp Panel"));
-        item0->tabs->clearTabs();
-        item0->panels.clear();
-        item0->setSize (target->getWidth(), target->getHeight());
-        target->movePanelsTo (item0.get());
         area.append (item0.release());
         
         if (split != Dock::NoSplit)
         {
-            source->detach (this);
             area.insert (-1, new DockItem (target->dock, this), split);
             target->resized();
             target->repaint();
@@ -115,6 +126,9 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
         {
             jassertfalse;
         }
+       #else
+        DBG("Nested docking not enabled");
+       #endif
     }
     else
     {
@@ -123,4 +137,16 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
     }
 }
 
+void DockPanel::paint (Graphics& g)
+{
+    g.setColour (Colours::white);
+    g.drawText (getName(), 0, 0, getWidth(), getHeight(), Justification::centred);
+}
+
+void DockPanel::resized()
+{
+    if (content)
+        content->setBounds (getLocalBounds());
+}
+    
 }

@@ -23,22 +23,51 @@ namespace kv {
 
 class DockItem;
 
+struct DockPanelInfo
+{
+    String name;
+    String description;
+};
+
 class DockPanel : public Component
 {
 public:
-    DockPanel() { }
-    virtual ~DockPanel() { }
-    
-    void dockTo (DockItem* const target, Dock::Placement placement);
-    
-    inline virtual void paint (Graphics& g) override
+    /** Destructor */
+    virtual ~DockPanel()
     {
-        g.setColour (Colours::white);
-        g.drawText (getName(), 0, 0, getWidth(), getHeight(), Justification::centred);
+        content.reset (nullptr);
+    }
+
+    /** Dock the panel to another Dock Item */
+    void dockTo (DockItem* const target, Dock::Placement placement);
+
+    /** @internal */
+    void paint (Graphics& g) override;
+    /** @internal */
+    void resized() override;
+
+protected:
+    friend class Dock;
+    friend class DockItem;
+    /** Constructor */
+    DockPanel()
+    {
+        
     }
     
+    std::unique_ptr<Component> content;
+
 private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockPanel)
+};
+
+class DockPanelType
+{
+public:
+    virtual ~DockPanelType() { }
+    
+protected:
+    DockPanelType() { }
 };
 
 }
