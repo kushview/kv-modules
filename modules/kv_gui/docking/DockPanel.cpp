@@ -44,7 +44,7 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
 //    DBG("Docking Panel: " << getName() << " to " << Dock::getDirectionString(placement)
 //        << " of Item: " << target->getName());
     
-    auto* const targetArea = target->getParentArea();
+    auto* const targetArea = target->getDockAreaFor (placement);
     if (nullptr == targetArea)
     {
         // need an area to dock to

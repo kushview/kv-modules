@@ -30,6 +30,25 @@ public:
     
     ~DragOverlay() = default;
     
+    Dock::Placement getPlacement (const MouseEvent& event)
+    {
+        const auto point = event.getPosition().toFloat();
+        return getPlacement (point);
+    }
+    
+    Dock::Placement getPlacement (const Point<float>& point)
+    {
+        if (left.contains(point))
+            return Dock::LeftPlacement;
+        if (right.contains(point))
+            return Dock::RightPlacement;
+        if (top.contains (point))
+            return Dock::TopPlacement;
+        if (bottom.contains (point))
+            return Dock::BottomPlacement;
+        return Dock::CenterPlacement;
+    }
+    
     void visibilityChanged() override { resized(); }
     
     void paint (Graphics &g) override
@@ -101,7 +120,7 @@ public:
         bottom.lineTo (center.getBottomLeft());
         bottom.closeSubPath();
     }
-    
+
 private:
     friend class DockItem;
     int spacingX = 30;
@@ -131,8 +150,6 @@ DockItem::DockItem (Dock& parent, const String& id, const String& name)
     refreshPanelContainer();
 
     tabs->setCurrentTabIndex (0);
-    
-    parent.items.add (this);
 }
 
 DockItem::DockItem (Dock& parent, DockPanel* panel)
@@ -149,8 +166,6 @@ DockItem::DockItem (Dock& parent, DockPanel* panel)
     panels.add (panel);
     refreshPanelContainer();
     tabs->setCurrentTabIndex (panels.indexOf (panel));
-    
-    parent.items.add (this);
 }
 
 DockItem::~DockItem()
@@ -167,10 +182,38 @@ DockPanel* DockItem::getCurrentPanel() const
     return dynamic_cast<DockPanel*> (tabs->getCurrentContentComponent());
 }
 
+DockArea* DockItem::getDockAreaFor (const Dock::Placement placement) const
+{
+    if (! Dock::isDirectional (placement))
+        return nullptr;
+    
+    auto* const parentArea = getParentArea();
+    if (getNumPanels() <= 0 && parentArea && parentArea->isVertical() == Dock::isVertical (placement))
+        return parentArea;
+    
+    if (auto* const itemArea = getItemArea())
+    {
+        if (parentArea->isVertical() == itemArea->isVertical())
+            itemArea->setVertical (! parentArea->isVertical());        
+        if (itemArea->isVertical() == Dock::isVertical (placement))
+            return itemArea;
+    }
+    
+    return nullptr;
+}
+
 void DockItem::dockTo (DockItem* const target, Dock::Placement placement)
 {
-    for (auto* const panel : panels)
-        panel->dockTo (target, placement);
+    if (target->getNumPanels() > 0)
+    {
+        for (auto* const panel : panels)
+            panel->dockTo (target, placement);
+    }
+    else
+    {
+        // TODO: unhandled docking condition
+        jassertfalse;
+    }
     dock.removeEmptyRootAreas();
 }
 
@@ -270,17 +313,8 @@ void DockItem::itemDropped (const SourceDetails& dragSourceDetails)
     
     const auto x = dragSourceDetails.localPosition.getX();
     const auto y = dragSourceDetails.localPosition.getY();
-    Dock::Placement placement = Dock::CenterPlacement;
-    
-    if (x >= 0 && x < 30 && y >= 30 && y < getHeight() - 30)
-        placement = Dock::LeftPlacement;
-    else if (x >= getWidth() - 30 && x < getWidth() && y >= 30 && y < getHeight() - 30)
-        placement = Dock::RightPlacement;
-    if (y >= 0 && y < 30 && x >= 30 && x < getWidth() - 30)
-        placement = Dock::TopPlacement;
-    else if (y >= getHeight() - 30 && y < getHeight() && x >= 30 && x < getWidth() - 30)
-        placement = Dock::BottomPlacement;
-    
+    Dock::Placement placement = overlay->getPlacement (dragSourceDetails.localPosition.toFloat());
+
     const bool isMyPanel = panels.contains (panel);
     
     // same item center, don't add to container of self

@@ -199,6 +199,9 @@ public:
     /** Returns the dock */
     Dock* getDock() const { return const_cast<Dock*> (&dock); }
     
+    /** Gets the most logical area for the given placement */
+    DockArea* getDockAreaFor (const Dock::Placement) const;
+    
     /** Returns the DockArea which contains this item */
     DockArea* getParentArea() const { return dynamic_cast<DockArea*> (getParentComponent()); }
     
