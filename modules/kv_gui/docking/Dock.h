@@ -149,7 +149,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dock)
 };
 
-class DockArea : public Component
+class JUCE_API DockArea : public Component
 {
 public:
     ~DockArea();
@@ -187,7 +187,7 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockArea)
 };
 
-class DockItem : public Component,
+class JUCE_API DockItem : public Component,
                  public DragAndDropTarget
 {
 public:
@@ -195,7 +195,10 @@ public:
     
     /** Dock all panels in this item to the target item */
     void dockTo (DockItem* target, Dock::Placement placement);
-
+    
+    /** Returns the dock */
+    Dock* getDock() const { return const_cast<Dock*> (&dock); }
+    
     /** Returns the DockArea which contains this item */
     DockArea* getParentArea() const { return dynamic_cast<DockArea*> (getParentComponent()); }
     
@@ -215,19 +218,19 @@ public:
     int getNumItems() const { return area.getNumItems(); }
     
     /** @internal */
-    void paint (Graphics& g) override;
+    void paint (Graphics&) override;
     /** @internal */
     void resized() override;
     /** @internal */
-    void mouseDown (const MouseEvent& ev) override;
+    void mouseDown (const MouseEvent&) override;
     /** @internal */
-    bool isInterestedInDragSource (const SourceDetails& details) override;
+    bool isInterestedInDragSource (const SourceDetails&) override;
     /** @internal */
-    void itemDropped (const SourceDetails& dragSourceDetails) override;
+    void itemDropped (const SourceDetails&) override;
     /** @internal */
     void itemDragEnter (const SourceDetails&) override;
     /** @internal */
-    void itemDragMove (const SourceDetails& dragSourceDetails) override;
+    void itemDragMove (const SourceDetails&) override;
     /** @internal */
     void itemDragExit (const SourceDetails&) override;
     /** @internal */

@@ -30,7 +30,12 @@ public:
     
     ~DockTabBarButton() { }
     
-    Dock* getDock() { return findParentComponentOfClass<Dock>(); }
+    Dock* getDock()
+    {
+        if (auto* const item = findParentComponentOfClass<DockItem>())
+            return item->getDock();
+        return nullptr;
+    }
     
     DockPanel* getDockPanel()
     {

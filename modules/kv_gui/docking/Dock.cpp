@@ -74,6 +74,26 @@ void Dock::dragOperationEnded (const DragAndDropTarget::SourceDetails& details)
 
 DockItem* Dock::createItem (const String& itemName, Dock::Placement itemPlacement)
 {
+    auto* const panel = getOrCreatePanel ("GenericDockPanel");
+    
+    if (! panel)
+    {
+        jassertfalse;
+        return nullptr;
+    }
+    
+    panel->setName (itemName);
+    
+    if (itemPlacement == Dock::FloatingPlacement)
+    {
+        auto* window = new DockWindow ();
+        window->setContentNonOwned (new DockItem (*this, panel), false);
+        window->setVisible (true);
+        window->centreWithSize (window->getWidth(), window->getHeight());
+        window->addToDesktop();
+        window->toFront (true);
+        return nullptr;
+    }
     
     if (itemPlacement != LeftPlacement &&
         itemPlacement != TopPlacement &&
@@ -82,15 +102,6 @@ DockItem* Dock::createItem (const String& itemName, Dock::Placement itemPlacemen
     {
         return nullptr;
     }
-    
-    auto* panel = getOrCreatePanel ("GenericDockPanel");
-    if (! panel)
-    {
-        jassertfalse;
-        return nullptr;
-    }
-    
-    panel->setName (itemName);
     
     const int insertIdx = itemPlacement == LeftPlacement || itemPlacement == TopPlacement ? 0
                         : itemPlacement == RightPlacement || itemPlacement == BottomPlacement ? -1
