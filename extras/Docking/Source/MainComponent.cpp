@@ -17,9 +17,11 @@ MainComponent::MainComponent()
     placementCombo.addItem ("Right", 1 + Dock::RightPlacement);
     placementCombo.addItem ("Bottom", 1 + Dock::BottomPlacement);
     placementCombo.addItem ("Floating", 1 + Dock::FloatingPlacement);
+    placementCombo.setSelectedItemIndex (0);
     
     setSize (600 * 2, 400 * 2);
     
+   #if 0
     // build typical layout
     std::function<String(int)> itemName = [](int index) -> String {
         return String("Item ") + String (index);
@@ -44,6 +46,7 @@ MainComponent::MainComponent()
         auto* item = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
         item->dockTo (item2, Dock::CenterPlacement);
     }
+   #endif
 }
 
 MainComponent::~MainComponent()

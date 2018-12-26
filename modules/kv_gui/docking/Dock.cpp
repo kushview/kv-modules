@@ -25,17 +25,14 @@ namespace DockHelpers {
 }
 
 Dock::Dock ()
-    : verticalLayout (*this, true),
-      horizontalLayout (*this, false)
 {
-    
+    container.reset (new DockContainer());
+    addAndMakeVisible (container.get());
 }
 
 Dock::~Dock()
 {
-    for (int i = 0; i < numPlacements; ++i)
-        rootAreas[i].clear();
-    items.clear();
+    container.reset (nullptr);
 }
 
 DockPanel* Dock::getOrCreatePanel (const String& panelType)
@@ -49,13 +46,9 @@ DockPanel* Dock::getOrCreatePanel (const String& panelType)
     return panel;
 }
 
-void Dock::detatchAll (DockItem* item)
-{
-}
-
 void Dock::resized()
 {
-    verticalLayout.layoutItems();
+    container->setBounds (getLocalBounds());
 }
 
 void Dock::dragOperationStarted (const DragAndDropTarget::SourceDetails& details)
@@ -74,7 +67,7 @@ void Dock::dragOperationEnded (const DragAndDropTarget::SourceDetails& details)
 
 DockItem* Dock::createItem (const String& itemName, Dock::Placement itemPlacement)
 {
-    auto* const panel = getOrCreatePanel ("GenericDockPanel");
+    auto* panel = getOrCreatePanel ("GenericDockPanel");
     
     if (! panel)
     {
@@ -86,13 +79,14 @@ DockItem* Dock::createItem (const String& itemName, Dock::Placement itemPlacemen
     
     if (itemPlacement == Dock::FloatingPlacement)
     {
-        auto* window = new DockWindow ();
-        window->setContentNonOwned (new DockItem (*this, panel), false);
+        auto* window = new DockWindow();
+        auto* item = new DockItem (*this, panel);
+        window->setContentNonOwned (item, false);
         window->setVisible (true);
         window->centreWithSize (window->getWidth(), window->getHeight());
         window->addToDesktop();
         window->toFront (true);
-        return nullptr;
+        return item;
     }
     
     if (itemPlacement != LeftPlacement &&
@@ -100,51 +94,19 @@ DockItem* Dock::createItem (const String& itemName, Dock::Placement itemPlacemen
         itemPlacement != BottomPlacement &&
         itemPlacement != RightPlacement)
     {
+        deleteAndZero (panel);
         return nullptr;
     }
     
-    const int insertIdx = itemPlacement == LeftPlacement || itemPlacement == TopPlacement ? 0
-                        : itemPlacement == RightPlacement || itemPlacement == BottomPlacement ? -1
-                        : 0;
-    
-    auto& areas = rootAreas [itemPlacement];
-    auto& layout = Dock::isVertical (itemPlacement) ? verticalLayout : horizontalLayout;
-    auto* area = areas.insert (insertIdx, new DockArea (itemPlacement));
-    addAndMakeVisible (area);
-    
     auto* item = new DockItem (*this, panel);
-    area->append (item);
-
-    layout.insert (insertIdx, area, SplitAfter);
+    if (! container->dockItem (item, itemPlacement))
+        deleteAndZero (item);
     resized();
-    
     return item;
 }
 
 void Dock::removeEmptyRootAreas()
 {
-    verticalLayout.clear();
-    
-    for (int i = 0; i < numPlacements; ++i)
-    {
-        auto& area = rootAreas [i];
-        for (int j = area.size(); --j >= 0;)
-            if (area[j]->getNumChildComponents() <= 0)
-                area.remove (j);
-    }
-    
-    auto& topAreas = rootAreas [Dock::TopPlacement];
-    for (auto* const area : topAreas)
-        verticalLayout.append (area);
-    
-   #if 0
-    // attempt to remove invalid items
-    for (int i = items.size(); --i >= 0;)
-        if (items[i]->panels.size() <= 0)
-            if (items[i]->area.getNumChildComponents() <= 0)
-                items.remove (i, true);
-   #endif
-
     resized();
 }
 

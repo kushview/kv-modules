@@ -52,4 +52,5 @@ namespace kv {
  #include "docking/DockPanel.cpp"
  #include "docking/DockItemTabs.cpp"
  #include "docking/DockWindow.cpp"
+ #include "docking/DockContainer.cpp"
 #endif

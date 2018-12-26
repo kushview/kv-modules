@@ -44,9 +44,22 @@ DockArea::~DockArea ()
 {
 }
 
+void DockArea::append (DockArea* const area)
+{
+    insert (-1, area);
+}
+
 void DockArea::append (DockItem* const item)
 {
     insert (-1, item);
+}
+
+void DockArea::insert (int index, DockArea* const area, Dock::SplitType split)
+{
+    area->setVertical (! isVertical());
+    layout.insert (index, area, split);
+    addAndMakeVisible (area);
+    resized();
 }
 
 void DockArea::insert (int index, DockItem* const item, Dock::SplitType split)
@@ -55,6 +68,12 @@ void DockArea::insert (int index, DockItem* const item, Dock::SplitType split)
     addAndMakeVisible (item);
     item->repaint();
     resized();
+}
+
+void DockArea::remove (DockArea* const area)
+{
+    removeChildComponent (area);
+    layout.remove (area);
 }
 
 void DockArea::detachItem (DockItem* item)

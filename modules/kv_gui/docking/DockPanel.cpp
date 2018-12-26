@@ -41,10 +41,10 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
         return;
     }
     
-//    DBG("Docking Panel: " << getName() << " to " << Dock::getDirectionString(placement)
-//        << " of Item: " << target->getName());
+    DBG("Docking Panel: " << getName() << " to " << Dock::getDirectionString(placement)
+        << " of Item: " << target->getName());
     
-    auto* const targetArea = target->getDockAreaFor (placement);
+    auto* const targetArea = target->getParentArea();
     if (nullptr == targetArea)
     {
         // need an area to dock to
@@ -56,6 +56,7 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
     
     if (wantsVerticalPlacement == targetArea->isVertical() && (source != target || source->getNumPanels() > 1))
     {
+        DBG("Same direction as target parent area");
         // Same direction as target parent area
         // Not same item unless source has 2 or more panels
         int offsetIdx = 0;
@@ -89,46 +90,40 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
             targetArea->insert (insertIdx, new DockItem (source->dock, this), split);
         }
     }
-    else if (target->getNumItems() <= 0)
+    else if (wantsVerticalPlacement != targetArea->isVertical())
     {
-       #if KV_DOCKING_NESTING
-        DBG("num source items:  " << source->getNumItems());
+        DBG("dock to opposite direction");
+
+        int insertIdx = targetArea->indexOf (target);
+        DBG("insertIdx=" << insertIdx);
         DBG("num source panels: " << source->getNumPanels());
         DBG("source == target:  " << (int) (source == target));
         
-        source->detach (this);
+        auto* newArea = new DockArea (wantsVerticalPlacement);
+        newArea->setSize (target->getWidth(), target->getHeight());
+        target->detach();
+        newArea->append (target);
         
-        std::unique_ptr<DockItem> item0;
-        item0.reset (new DockItem (target->dock, "Temp Panel", "Temp Panel"));
-        item0->tabs->clearTabs();
-        item0->panels.clear();
-        item0->setSize (target->getWidth(), target->getHeight());
-        target->movePanelsTo (item0.get());
-        
-        auto& area = target->area;
-        auto& tabs = *target->tabs;
-        tabs.setVisible (false);
-        area.setVisible (true);
-        area.setVertical (! targetArea->isVertical());
-        
-        const Dock::SplitType split = sourceArea == &area
-            ? Dock::NoSplit : Dock::getSplitType (placement);
-        
-        area.append (item0.release());
-        
-        if (split != Dock::NoSplit)
+        if (source->getNumPanels() > 1)
         {
-            area.insert (-1, new DockItem (target->dock, this), split);
-            target->resized();
-            target->repaint();
+            source->detach (this);
+            newArea->append (new DockItem (source->dock, this));
         }
         else
         {
-            jassertfalse;
+            source->detach();
+            newArea->append (source);
         }
-       #else
-        DBG("Nested docking not enabled");
-       #endif
+        
+        if (newArea != nullptr)
+        {
+            newArea->resized();
+            jassert(newArea->isVertical() != targetArea->isVertical());
+            int insertIdx = targetArea->indexOf (target);
+            
+            targetArea->insert (insertIdx, newArea, Dock::NoSplit);
+            jassert(newArea->isVertical() != targetArea->isVertical());
+        }
     }
     else
     {

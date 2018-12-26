@@ -138,8 +138,6 @@ DockItem::DockItem (Dock& parent, const String& id, const String& name)
     tabs.reset (new DockItemTabs());
     addAndMakeVisible (tabs.get());
     
-    addChildComponent (area);
-    
     overlay.reset (new DragOverlay());
     addChildComponent (overlay.get(), 9000);
     overlay->setAlpha (0.50);
@@ -182,26 +180,6 @@ DockPanel* DockItem::getCurrentPanel() const
     return dynamic_cast<DockPanel*> (tabs->getCurrentContentComponent());
 }
 
-DockArea* DockItem::getDockAreaFor (const Dock::Placement placement) const
-{
-    if (! Dock::isDirectional (placement))
-        return nullptr;
-    
-    auto* const parentArea = getParentArea();
-    if (getNumPanels() <= 0 && parentArea && parentArea->isVertical() == Dock::isVertical (placement))
-        return parentArea;
-    
-    if (auto* const itemArea = getItemArea())
-    {
-        if (parentArea->isVertical() == itemArea->isVertical())
-            itemArea->setVertical (! parentArea->isVertical());        
-        if (itemArea->isVertical() == Dock::isVertical (placement))
-            return itemArea;
-    }
-    
-    return nullptr;
-}
-
 void DockItem::dockTo (DockItem* const target, Dock::Placement placement)
 {
     if (target->getNumPanels() > 0)
@@ -214,7 +192,6 @@ void DockItem::dockTo (DockItem* const target, Dock::Placement placement)
         // TODO: unhandled docking condition
         jassertfalse;
     }
-    dock.removeEmptyRootAreas();
 }
 
 void DockItem::detach (DockPanel* const panel)
@@ -228,14 +205,21 @@ void DockItem::detach (DockPanel* const panel)
 
 void DockItem::detach()
 {
-    if (auto* const area = getParentArea())
+    if (auto* area = getParentArea())
     {
         area->detachItem (this);
         area->resized();
-        if (auto* const parent = area->findParentComponentOfClass<DockItem>())
-            if (parent->getNumItems() <= 0)
-                parent->detach();
+        
+        while (area != nullptr)
+        {
+            auto* parent = area->findParentComponentOfClass<DockArea>();
+            if (parent && area->getNumItems() <= 0)
+                parent->remove (area);
+            area = parent;
+        }
     }
+    
+    jassert (getParentComponent() == nullptr);
 }
 
 void DockItem::movePanelsTo (DockItem* const target)
@@ -280,10 +264,6 @@ void DockItem::resized()
             overlay->centreWithSize (getWidth() - 2, getHeight() - 2);
         tabs->setBounds (ir);
     }
-    else
-    {
-        area.setBounds (getLocalBounds().reduced (indent));
-    }
 }
 
 void DockItem::mouseDown (const MouseEvent& ev)
@@ -294,10 +274,6 @@ void DockItem::mouseDown (const MouseEvent& ev)
 
 bool DockItem::isInterestedInDragSource (const SourceDetails& details)
 {
-    // don't dock to container items
-    if (getNumItems() > 0)
-        return false;
-
     return details.description.toString() == "DockPanel" ||
            details.description.toString() == "DockItem";
 }
@@ -311,8 +287,6 @@ void DockItem::itemDropped (const SourceDetails& dragSourceDetails)
     if (panel == nullptr || item == nullptr)
         return;
     
-    const auto x = dragSourceDetails.localPosition.getX();
-    const auto y = dragSourceDetails.localPosition.getY();
     Dock::Placement placement = overlay->getPlacement (dragSourceDetails.localPosition.toFloat());
 
     const bool isMyPanel = panels.contains (panel);

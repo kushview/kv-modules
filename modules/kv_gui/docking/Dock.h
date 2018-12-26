@@ -22,6 +22,7 @@
 namespace kv {
 
 class DockArea;
+class DockContainer;
 class DockItem;
 class DockItemTabs;
 class DockLayout;
@@ -65,7 +66,6 @@ public:
             case RightPlacement:
                 split = SplitBefore;
                 break;
-
             default:
                 break;
         }
@@ -121,6 +121,7 @@ public:
     {
         g.fillAll (findColour(DocumentWindow::backgroundColourId).darker());
     }
+    
     /** @internal */
     void resized() override;
     /** @internal */
@@ -135,15 +136,8 @@ protected:
 
 private:
     friend class DockItem;
+    std::unique_ptr<DockContainer> container;
     
-    OwnedArray<DockArea> rootAreas [numPlacements];
-    OwnedArray<DockItem> items;
-    
-    DockLayout verticalLayout;
-    DockLayout horizontalLayout;
-    
-    DockItem* maximizedItem = nullptr;
-    void detatchAll (DockItem* item);
     void removeEmptyRootAreas();
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dock)
@@ -159,13 +153,20 @@ public:
     /** Returns the number of items in the layout */
     int getNumItems() const { return layout.getNumItems(); }
     
+    /** Append a DockArea to the end of the layout */
+    void append (DockArea* const area);
+    
     /** Append a DockItem to the end of the layout */
     void append (DockItem* const item);
     
     /** Insert a DockItem at a specific location */
     void insert (int index, DockItem* const item, Dock::SplitType split = Dock::NoSplit);
     
+    /** Insert a DockArea at a specific location */
+    void insert (int index, DockArea* const area, Dock::SplitType split = Dock::NoSplit);
+    
     void detachItem (DockItem* item);
+    void remove (DockArea* const area);
     void setVertical (const bool vertical);
     bool isVertical() const { return layout.isVertical(); }
     
@@ -176,7 +177,9 @@ public:
 
 private:
     friend class Dock;
+    friend class DockContainer;
     friend class DockItem;
+    friend class DockPanel;
     
     explicit DockArea (const bool vertical = false);
     DockArea (Dock::Placement placement);
@@ -188,7 +191,7 @@ private:
 };
 
 class JUCE_API DockItem : public Component,
-                 public DragAndDropTarget
+                          public DragAndDropTarget
 {
 public:
     virtual ~DockItem();
@@ -199,14 +202,8 @@ public:
     /** Returns the dock */
     Dock* getDock() const { return const_cast<Dock*> (&dock); }
     
-    /** Gets the most logical area for the given placement */
-    DockArea* getDockAreaFor (const Dock::Placement) const;
-    
     /** Returns the DockArea which contains this item */
     DockArea* getParentArea() const { return dynamic_cast<DockArea*> (getParentComponent()); }
-    
-    /** Returns the DockArea containing sub items */
-    DockArea* getItemArea() const   { return const_cast<DockArea*> (&area); }
     
     /** Returns the number of panels in this item's container */
     int getNumPanels() const { return panels.size(); }
@@ -216,9 +213,6 @@ public:
 
     /** Returns the current panel object */
     DockPanel* getCurrentPanel() const;
-    
-    /** Returns the number of sub items on this panel */
-    int getNumItems() const { return area.getNumItems(); }
     
     /** @internal */
     void paint (Graphics&) override;
@@ -250,8 +244,6 @@ private:
     Dock& dock;
     bool dragging = false;
     std::unique_ptr<DockItemTabs> tabs;
-    
-    DockArea area;
     OwnedArray<DockPanel> panels;
     
     void detach (DockPanel* const panel);
@@ -265,6 +257,23 @@ private:
     std::unique_ptr<DragOverlay> overlay;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockItem)
+};
+
+class DockContainer : public Component
+{
+public:
+    DockContainer();
+    ~DockContainer();
+
+    bool dockItem (DockItem* const item, Dock::Placement placement);
+
+    /** @internal */
+    void resized() override;
+    /** @internal */
+    void paint (Graphics&) override;
+
+private:
+    std::unique_ptr<DockArea> root;
 };
 
 }
