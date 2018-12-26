@@ -56,7 +56,6 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
     
     if (wantsVerticalPlacement == targetArea->isVertical() && (source != target || source->getNumPanels() > 1))
     {
-        DBG("Same direction as target parent area");
         // Same direction as target parent area
         // Not same item unless source has 2 or more panels
         int offsetIdx = 0;
@@ -92,37 +91,38 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
     }
     else if (wantsVerticalPlacement != targetArea->isVertical())
     {
-        DBG("dock to opposite direction");
-
-        int insertIdx = targetArea->indexOf (target);
-        DBG("insertIdx=" << insertIdx);
-        DBG("num source panels: " << source->getNumPanels());
-        DBG("source == target:  " << (int) (source == target));
+        // opposite direction as parent
+        // Create a new area, flip orientation, add target item, and insert source item.
+        const int insertAreaIdx = targetArea->indexOf (target);
         
-        auto* newArea = new DockArea (wantsVerticalPlacement);
+        std::unique_ptr<DockArea> newArea;
+        newArea.reset (new DockArea (wantsVerticalPlacement));
         newArea->setSize (target->getWidth(), target->getHeight());
         target->detach();
         newArea->append (target);
         
+        const int insertPanelIdx = placement == Dock::LeftPlacement || placement == Dock::TopPlacement ? 0 : -1;
+        
         if (source->getNumPanels() > 1)
         {
             source->detach (this);
-            newArea->append (new DockItem (source->dock, this));
+            newArea->insert (insertPanelIdx, new DockItem (source->dock, this));
+        }
+        else if (source->getNumPanels() == 1)
+        {
+            source->detach();
+            newArea->insert (insertPanelIdx, source);
         }
         else
         {
-            source->detach();
-            newArea->append (source);
+            newArea = nullptr;
+            jassertfalse; // unhandled docking condition, target lost?
         }
         
         if (newArea != nullptr)
         {
             newArea->resized();
-            jassert(newArea->isVertical() != targetArea->isVertical());
-            int insertIdx = targetArea->indexOf (target);
-            
-            targetArea->insert (insertIdx, newArea, Dock::NoSplit);
-            jassert(newArea->isVertical() != targetArea->isVertical());
+            targetArea->insert (insertAreaIdx, newArea.release(), Dock::NoSplit);
         }
     }
     else
