@@ -28,6 +28,8 @@ public:
     DockItemTabs (TabbedButtonBar::Orientation orientation);
     virtual ~DockItemTabs();
     
+    virtual void popupMenuClickOnTab (int tabIndex, const String& tabName) override;
+
 protected:
     virtual TabBarButton* createTabButton (const String &tabName, int tabIndex) override;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DockItemTabs)

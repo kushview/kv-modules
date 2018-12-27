@@ -105,4 +105,11 @@ TabBarButton* DockItemTabs::createTabButton (const String &tabName, int tabIndex
     return new DockTabBarButton (tabName, *tabs);
 }
 
+void DockItemTabs::popupMenuClickOnTab (int tabIndex, const String& tabName)
+{
+    auto* const panel = dynamic_cast<DockPanel*> (this->getCurrentContentComponent());
+    ignoreUnused (panel);
+    // TODO: deal with common menus and actions
+}
+
 }
