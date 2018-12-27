@@ -23,15 +23,20 @@ namespace kv {
  #define KV_DOCKING_NESTING 0
 #endif
 
-void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
+DockPanel::~DockPanel()
 {
-    if (placement == Dock::FloatingPlacement)
+    content.reset (nullptr);
+}
+
+void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
+{
+    if (placement == DockPlacement::Floating)
         return;
     
     auto* source = findParentComponentOfClass<DockItem>();
     auto* sourceArea = source->getParentArea();
     
-    if (placement == Dock::CenterPlacement)
+    if (placement == DockPlacement::Center)
     {
         if (source != nullptr)
             source->detach (this);
@@ -52,7 +57,7 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
         return;
     }
     
-    const bool wantsVerticalPlacement = placement == Dock::TopPlacement || placement == Dock::BottomPlacement;
+    const bool wantsVerticalPlacement = placement == DockPlacement::Top || placement == DockPlacement::Bottom;
     
     if (wantsVerticalPlacement == targetArea->isVertical() && (source != target || source->getNumPanels() > 1))
     {
@@ -62,12 +67,12 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
      
         if (wantsVerticalPlacement)
         {
-            if (placement == Dock::BottomPlacement)
+            if (placement == DockPlacement::Bottom)
                 ++offsetIdx;
         }
         else
         {
-            if (placement == Dock::RightPlacement)
+            if (placement == DockPlacement::Right)
                 ++offsetIdx;
         }
         
@@ -101,7 +106,7 @@ void DockPanel::dockTo (DockItem* const target, Dock::Placement placement)
         target->detach();
         newArea->append (target);
         
-        const int insertPanelIdx = placement == Dock::LeftPlacement || placement == Dock::TopPlacement ? 0 : -1;
+        const int insertPanelIdx = placement == DockPlacement::Left || placement == DockPlacement::Top ? 0 : -1;
         
         if (source->getNumPanels() > 1)
         {

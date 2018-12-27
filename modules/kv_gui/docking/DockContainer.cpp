@@ -12,16 +12,16 @@ DockContainer::~DockContainer()
     root = nullptr;
 }
 
-bool DockContainer::dockItem (DockItem* const item, Dock::Placement placement)
+bool DockContainer::dockItem (DockItem* const item, DockPlacement placement)
 {
-    if (! Dock::isDirectional (placement))
+    if (! placement.isDirectional())
         return false;
     
     bool result = true;
-    const int insertIdx = placement == Dock::TopPlacement || placement == Dock::LeftPlacement ? 0 : -1;
+    const int insertIdx = placement == DockPlacement::Top || placement == DockPlacement::Left ? 0 : -1;
     const auto split = insertIdx < 0 ? Dock::SplitBefore : Dock::SplitAfter;
     
-    if (root->isVertical() == Dock::isVertical (placement))
+    if (root->isVertical() == placement.isVertical())
     {
         root->insert (insertIdx, item, split);
     }

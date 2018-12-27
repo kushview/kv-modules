@@ -10,7 +10,7 @@ class DockWindow : public DocumentWindow
 public:
     virtual ~DockWindow();
     
-    bool dockItem (DockItem* const item, Dock::Placement placement);
+    bool dockItem (DockItem* const item, DockPlacement placement);
 
     /** @internal */
     void closeButtonPressed() override;

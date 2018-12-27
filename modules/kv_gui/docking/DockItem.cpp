@@ -30,23 +30,23 @@ public:
     
     ~DragOverlay() = default;
     
-    Dock::Placement getPlacement (const MouseEvent& event)
+    DockPlacement getPlacement (const MouseEvent& event)
     {
         const auto point = event.getPosition().toFloat();
         return getPlacement (point);
     }
     
-    Dock::Placement getPlacement (const Point<float>& point)
+    DockPlacement getPlacement (const Point<float>& point)
     {
         if (left.contains(point))
-            return Dock::LeftPlacement;
-        if (right.contains(point))
-            return Dock::RightPlacement;
+            return DockPlacement::Left;
+        if (right.contains (point))
+            return DockPlacement::Right;
         if (top.contains (point))
-            return Dock::TopPlacement;
+            return DockPlacement::Top;
         if (bottom.contains (point))
-            return Dock::BottomPlacement;
-        return Dock::CenterPlacement;
+            return DockPlacement::Bottom;
+        return DockPlacement::Center;
     }
     
     void visibilityChanged() override { resized(); }
@@ -180,7 +180,7 @@ DockPanel* DockItem::getCurrentPanel() const
     return dynamic_cast<DockPanel*> (tabs->getCurrentContentComponent());
 }
 
-void DockItem::dockTo (DockItem* const target, Dock::Placement placement)
+void DockItem::dockTo (DockItem* const target, DockPlacement placement)
 {
     if (target->getNumPanels() > 0)
     {
@@ -287,12 +287,12 @@ void DockItem::itemDropped (const SourceDetails& dragSourceDetails)
     if (panel == nullptr || item == nullptr)
         return;
     
-    Dock::Placement placement = overlay->getPlacement (dragSourceDetails.localPosition.toFloat());
+    DockPlacement placement = overlay->getPlacement (dragSourceDetails.localPosition.toFloat());
 
     const bool isMyPanel = panels.contains (panel);
     
     // same item center, don't add to container of self
-    if (isMyPanel && placement == Dock::CenterPlacement)
+    if (isMyPanel && placement == DockPlacement::Center)
         return;
     
     panel->dockTo (this, placement);

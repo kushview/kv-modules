@@ -12,11 +12,11 @@ MainComponent::MainComponent()
     addItemButton.onClick = std::bind (&MainComponent::addDockItem, this);
     
     addAndMakeVisible (placementCombo);
-    placementCombo.addItem ("Top", 1 + Dock::TopPlacement);
-    placementCombo.addItem ("Left", 1 + Dock::LeftPlacement);
-    placementCombo.addItem ("Right", 1 + Dock::RightPlacement);
-    placementCombo.addItem ("Bottom", 1 + Dock::BottomPlacement);
-    placementCombo.addItem ("Floating", 1 + Dock::FloatingPlacement);
+    placementCombo.addItem ("Top", 1 + DockPlacement::Top);
+    placementCombo.addItem ("Left", 1 + DockPlacement::Left);
+    placementCombo.addItem ("Right", 1 + DockPlacement::Right);
+    placementCombo.addItem ("Bottom", 1 + DockPlacement::Bottom);
+    placementCombo.addItem ("Floating", 1 + DockPlacement::Floating);
     placementCombo.setSelectedItemIndex (0);
     
     setSize (600 * 2, 400 * 2);
@@ -27,23 +27,23 @@ MainComponent::MainComponent()
     };
     
     int itemNo = 0;
-    auto* item1 = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
-    auto* item2 = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
+    auto* item1 = dock.createItem (itemName(itemNo++), DockPlacement::Top);
+    auto* item2 = dock.createItem (itemName(itemNo++), DockPlacement::Top);
     
-    auto* item3 = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
-    item3->dockTo (item2, Dock::RightPlacement);
+    auto* item3 = dock.createItem (itemName(itemNo++), DockPlacement::Top);
+    item3->dockTo (item2, DockPlacement::Right);
     
-    auto* item4 = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
-    auto* item5 = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
-    auto* item6 = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
-    item4->dockTo (item1, Dock::RightPlacement);
-    item5->dockTo (item1, Dock::RightPlacement);
-    item6->dockTo (item1, Dock::RightPlacement);
+    auto* item4 = dock.createItem (itemName(itemNo++), DockPlacement::Top);
+    auto* item5 = dock.createItem (itemName(itemNo++), DockPlacement::Top);
+    auto* item6 = dock.createItem (itemName(itemNo++), DockPlacement::Top);
+    item4->dockTo (item1, DockPlacement::Right);
+    item5->dockTo (item1, DockPlacement::Right);
+    item6->dockTo (item1, DockPlacement::Right);
     
     for (int i = 0; i < 4; ++i)
     {
-        auto* item = dock.createItem (itemName(itemNo++), Dock::TopPlacement);
-        item->dockTo (item2, Dock::CenterPlacement);
+        auto* item = dock.createItem (itemName(itemNo++), DockPlacement::Top);
+        item->dockTo (item2, DockPlacement::Center);
     }
 }
 
@@ -72,14 +72,13 @@ void MainComponent::resized()
 void MainComponent::addDockItem()
 {
     placement = placementCombo.getSelectedId() - 1;
-    if (! isPositiveAndBelow (placement, Dock::numPlacements))
-        placement = kv::Dock::TopPlacement;
+    if (! DockPlacement::isValid (placement))
+        placement = kv::DockPlacement::Top;
     
     static int itemNo = 1;
     String text = "Docking Item "; text << itemNo;
     
-    if (auto* item = dock.createItem (text,
-        static_cast<Dock::Placement> (placement)))
+    if (auto* item = dock.createItem (text, placement))
     {
         ++itemNo;
     }

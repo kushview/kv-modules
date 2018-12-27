@@ -32,17 +32,6 @@ class Dock : public Component,
              public DragAndDropContainer
 {
 public:
-    enum Placement
-    {
-        TopPlacement = 0,
-        LeftPlacement,
-        BottomPlacement,
-        RightPlacement,
-        CenterPlacement,
-        FloatingPlacement,
-        numPlacements
-    };
-
     enum SplitType {
         NoSplit,
         SplitBefore,
@@ -52,18 +41,18 @@ public:
     Dock();
     virtual ~Dock();
     
-    inline static SplitType getSplitType (const Placement placement)
+    inline static SplitType getSplitType (const DockPlacement placement)
     {
         SplitType split = NoSplit;
         
         switch (placement)
         {
-            case TopPlacement:
-            case LeftPlacement:
+            case DockPlacement::Top:
+            case DockPlacement::Left:
                 split = SplitAfter;
                 break;
-            case BottomPlacement:
-            case RightPlacement:
+            case DockPlacement::Bottom:
+            case DockPlacement::Right:
                 split = SplitBefore;
                 break;
             default:
@@ -85,33 +74,14 @@ public:
         return "Unknown Split";
     }
     
-    inline static bool isDirectional (const Placement placement)
-    {
-        return placement == TopPlacement || placement == BottomPlacement ||
-            placement == LeftPlacement || placement == RightPlacement;
-    }
-    
-    inline static bool isVertical (const Placement placement)
-    {
-        return placement == TopPlacement || placement == BottomPlacement;
-    }
-    
     inline static String getDirectionString (const int placement)
     {
-        switch (placement)
-        {
-            case TopPlacement:      return "Top"; break;
-            case BottomPlacement:   return "Bottom"; break;
-            case LeftPlacement:     return "Left"; break;
-            case RightPlacement:    return "Right"; break;
-            case CenterPlacement:   return "Center"; break;
-            case FloatingPlacement: return "Floating"; break;
-        }
-        return {};
+        const DockPlacement info (placement);
+        return info.toString();
     }
     
     /** Create a default panel with a given name */
-    DockItem* createItem (const String& panelName, Dock::Placement placement);
+    DockItem* createItem (const String& panelName, DockPlacement placement);
     
     /** Start a drag operation on the passed in DockPanel */
     void startDragging (DockPanel* const panel);
@@ -182,7 +152,7 @@ private:
     friend class DockPanel;
     
     explicit DockArea (const bool vertical = false);
-    DockArea (Dock::Placement placement);
+    DockArea (DockPlacement placement);
     
     void disposeEmptyLayouts();
     
@@ -197,7 +167,7 @@ public:
     virtual ~DockItem();
     
     /** Dock all panels in this item to the target item */
-    void dockTo (DockItem* target, Dock::Placement placement);
+    void dockTo (DockItem* target, DockPlacement placement);
     
     /** Returns the dock */
     Dock* getDock() const { return const_cast<Dock*> (&dock); }

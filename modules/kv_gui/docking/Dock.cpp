@@ -65,7 +65,7 @@ void Dock::dragOperationEnded (const DragAndDropTarget::SourceDetails& details)
 //            item->setMouseCursor (MouseCursor::NormalCursor);
 }
 
-DockItem* Dock::createItem (const String& itemName, Dock::Placement itemPlacement)
+DockItem* Dock::createItem (const String& itemName, DockPlacement placement)
 {
     auto* panel = getOrCreatePanel ("GenericDockPanel");
     
@@ -77,11 +77,11 @@ DockItem* Dock::createItem (const String& itemName, Dock::Placement itemPlacemen
     
     panel->setName (itemName);
     
-    if (itemPlacement == Dock::FloatingPlacement)
+    if (placement.isFloating())
     {
         auto* window = new DockWindow();
         auto* item = new DockItem (*this, panel);
-        window->dockItem (item, Dock::TopPlacement);
+        window->dockItem (item, DockPlacement::Top);
         window->setVisible (true);
         window->centreWithSize (window->getWidth(), window->getHeight());
         window->addToDesktop();
@@ -89,17 +89,14 @@ DockItem* Dock::createItem (const String& itemName, Dock::Placement itemPlacemen
         return item;
     }
     
-    if (itemPlacement != LeftPlacement &&
-        itemPlacement != TopPlacement &&
-        itemPlacement != BottomPlacement &&
-        itemPlacement != RightPlacement)
+    if (! placement.isDirectional())
     {
         deleteAndZero (panel);
         return nullptr;
     }
     
     auto* item = new DockItem (*this, panel);
-    if (! container->dockItem (item, itemPlacement))
+    if (! container->dockItem (item, placement))
         deleteAndZero (item);
     resized();
     return item;

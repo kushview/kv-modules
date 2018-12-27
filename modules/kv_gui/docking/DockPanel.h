@@ -33,13 +33,10 @@ class DockPanel : public Component
 {
 public:
     /** Destructor */
-    virtual ~DockPanel()
-    {
-        content.reset (nullptr);
-    }
+    virtual ~DockPanel();
 
     /** Dock the panel to another Dock Item */
-    void dockTo (DockItem* const target, Dock::Placement placement);
+    void dockTo (DockItem* const target, DockPlacement placement);
 
     /** @internal */
     void paint (Graphics& g) override;

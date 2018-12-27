@@ -18,9 +18,9 @@ DockWindow::~DockWindow()
     container.reset (nullptr);
 }
 
-bool DockWindow::dockItem (DockItem* const item, Dock::Placement placement)
+bool DockWindow::dockItem (DockItem* const item, DockPlacement placement)
 {
-    if (! Dock::isDirectional (placement))
+    if (! placement.isDirectional())
         return false;
     return container->dockItem (item, placement);
 }

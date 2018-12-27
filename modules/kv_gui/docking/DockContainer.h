@@ -11,7 +11,7 @@ public:
     DockContainer();
     ~DockContainer();
 
-    bool dockItem (DockItem* const item, Dock::Placement placement);
+    bool dockItem (DockItem* const item, DockPlacement placement);
 
     /** @internal */
     void resized() override;
