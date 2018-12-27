@@ -4,12 +4,35 @@ namespace kv {
 DockWindow::DockWindow()
     : DocumentWindow ("DockWindow", Colours::black, DocumentWindow::closeButton, false)
 {
-    setSize (600, 400);
     setUsingNativeTitleBar (true);
+    setAlwaysOnTop (true);
+
+    container.reset (new DockContainer());
+    setContentNonOwned (container.get(), true);
+    setSize (600, 400);
 }
 
 DockWindow::~DockWindow()
 {
+    clearContentComponent();
+    container.reset (nullptr);
+}
+
+bool DockWindow::dockItem (DockItem* const item, Dock::Placement placement)
+{
+    if (! Dock::isDirectional (placement))
+        return false;
+    return container->dockItem (item, placement);
+}
+
+void DockWindow::closeButtonPressed()
+{
+    delete this;
+}
+
+int DockWindow::getDesktopWindowStyleFlags() const
+{
+    return DocumentWindow::getDesktopWindowStyleFlags();
 }
 
 }

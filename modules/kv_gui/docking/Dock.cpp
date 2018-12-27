@@ -81,7 +81,7 @@ DockItem* Dock::createItem (const String& itemName, Dock::Placement itemPlacemen
     {
         auto* window = new DockWindow();
         auto* item = new DockItem (*this, panel);
-        window->setContentNonOwned (item, false);
+        window->dockItem (item, Dock::TopPlacement);
         window->setVisible (true);
         window->centreWithSize (window->getWidth(), window->getHeight());
         window->addToDesktop();

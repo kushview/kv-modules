@@ -35,8 +35,8 @@ public:
     enum Placement
     {
         TopPlacement = 0,
-        BottomPlacement,
         LeftPlacement,
+        BottomPlacement,
         RightPlacement,
         CenterPlacement,
         FloatingPlacement,
@@ -257,23 +257,6 @@ private:
     std::unique_ptr<DragOverlay> overlay;
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockItem)
-};
-
-class DockContainer : public Component
-{
-public:
-    DockContainer();
-    ~DockContainer();
-
-    bool dockItem (DockItem* const item, Dock::Placement placement);
-
-    /** @internal */
-    void resized() override;
-    /** @internal */
-    void paint (Graphics&) override;
-
-private:
-    std::unique_ptr<DockArea> root;
 };
 
 }
