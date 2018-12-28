@@ -107,6 +107,8 @@ public:
     /** Returns the number of items in the layout */
     inline int getNumItems() const { return items.size(); }
     
+    const Array<Component*>& getItems() const { return items; }
+
     void insert (int index, Component* const child, int splitType);
     
     void append (Component* child);

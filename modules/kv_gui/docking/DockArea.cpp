@@ -92,4 +92,27 @@ void DockArea::resized()
     layout.layoutItems (0, 0, getWidth(), getHeight());
 }
 
+ValueTree DockArea::getState() const
+{
+    ValueTree state ("area");
+    state.setProperty ("vertical", isVertical(), nullptr);
+    for (auto* const child : layout.getItems())
+    {
+        if (auto* const item = dynamic_cast<DockItem*> (child))
+        {
+            state.addChild (item->getState(), -1, nullptr);
+        }
+        else if (auto* const area = dynamic_cast<DockArea*> (child))
+        {
+            state.addChild (area->getState(), -1, nullptr);
+        }
+    }
+    return state;
+}
+
+bool DockArea::applyState (const ValueTree& state)
+{
+
+}
+
 }

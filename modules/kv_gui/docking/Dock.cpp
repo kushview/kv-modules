@@ -19,11 +19,6 @@
 
 namespace kv {
 
-namespace DockHelpers {
-
-
-}
-
 Dock::Dock ()
 {
     container.reset (new DockContainer());
@@ -98,6 +93,7 @@ DockItem* Dock::createItem (const String& itemName, DockPlacement placement)
     auto* item = new DockItem (*this, panel);
     if (! container->dockItem (item, placement))
         deleteAndZero (item);
+    
     resized();
     return item;
 }
@@ -112,6 +108,106 @@ void Dock::startDragging (DockPanel* const panel)
     jassert (panel != nullptr);
     Image image (Image::ARGB, 1, 1, true);
     DragAndDropContainer::startDragging ("DockPanel", panel, image, true);
+}
+
+ValueTree Dock::getState() const
+{
+    ValueTree state ("dock");
+    state.setProperty ("bounds", getLocalBounds().toString(), nullptr);
+    state.addChild (container->root->getState(), -1, nullptr);
+    return state;
+}
+
+void Dock::loadArea (DockArea& area, const ValueTree& state)
+{
+    for (int i = 0; i < state.getNumChildren(); ++i)
+    {
+        const auto child = state.getChild (i);
+        const auto bounds = Dock::getBounds (child);
+        
+        if (child.hasType ("item"))
+        {
+            auto* item = new DockItem (*this, "loaded", "Loaded");
+            item->tabs->clearTabs();
+            item->panels.clear();
+            item->setBounds (bounds);
+            loadItem (*item, child);
+            area.append (item);
+        }
+        else if (child.hasType ("area"))
+        {
+            auto* newArea = new DockArea (! area.isVertical());
+            newArea->setBounds (bounds);
+            loadArea (*newArea, child);
+            area.append (newArea);
+        }
+    }
+}
+
+void Dock::loadItem (DockItem& item, const ValueTree& state)
+{ 
+    for (int i = 0; i < state.getNumChildren(); ++i)
+    {
+        const auto child = state.getChild (i);
+        
+        if (child.hasType ("panel"))
+        {
+            auto* panel = new DockPanel();
+            item.panels.add (panel);
+            panel->setBounds (item.getLocalBounds());
+            panel->setName (child.getProperty (Slugs::name, "Panel").toString());
+        }
+        else
+        {
+            DBG(child.toXmlString());
+            jassertfalse; // not a panel?
+        }
+    }
+
+    item.refreshPanelContainer();
+}
+
+bool Dock::applyState (const ValueTree& state)
+{
+    if (! state.hasType ("dock"))
+        return false;
+
+    std::unique_ptr<DockContainer> newContainer;
+    
+    for (int i = 0; i < state.getNumChildren(); ++i)
+    {
+        const auto child = state.getChild (i);
+        if (child.hasType ("area"))
+        {
+            if (newContainer == nullptr)
+            {
+                newContainer.reset (new DockContainer());
+                const auto bounds = Dock::getBounds (child);
+                newContainer->setBounds (bounds);
+                newContainer->resized();
+                auto& area (newContainer->getRootArea());
+                area.setVertical ((bool) child.getProperty ("vertical", true));
+                area.setBounds (bounds);
+                loadArea (area, child);
+            }
+            else
+            {
+                // root state should only have one area child
+                jassertfalse;
+            }
+        }
+    }
+
+    if (newContainer)
+    {
+        removeChildComponent (container.get());
+        container.swap (newContainer);
+        addAndMakeVisible (container.get());
+        resized();
+        return true;
+    }
+
+    return false;
 }
 
 }

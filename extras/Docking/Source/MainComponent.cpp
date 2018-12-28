@@ -19,6 +19,14 @@ MainComponent::MainComponent()
     placementCombo.addItem ("Floating", 1 + DockPlacement::Floating);
     placementCombo.setSelectedItemIndex (0);
     
+    addAndMakeVisible (saveButton);
+    saveButton.setButtonText ("Save Layout");
+    saveButton.onClick = std::bind (&MainComponent::saveLayout, this);
+
+    addAndMakeVisible (loadButton);
+    loadButton.setButtonText ("Load Layout");
+    loadButton.onClick = std::bind (&MainComponent::loadLayout, this);
+    
     setSize (600 * 2, 400 * 2);
     
     // build typical layout
@@ -50,6 +58,8 @@ MainComponent::MainComponent()
 MainComponent::~MainComponent()
 {
     addItemButton.onClick = nullptr;
+    loadButton.onClick = nullptr;
+    saveButton.onClick = nullptr;
 }
 
 void MainComponent::paint (Graphics& g)
@@ -65,6 +75,11 @@ void MainComponent::resized()
     addItemButton.setBounds (r2.removeFromLeft(60));
     r2.removeFromLeft(2);
     placementCombo.setBounds (r2.removeFromLeft (90));
+    r2.removeFromLeft (6);
+    saveButton.setBounds (r2.removeFromLeft (60));
+    r2.removeFromLeft(2);
+    loadButton.setBounds (r2.removeFromLeft (60));
+    
     r.removeFromTop (2);
     dock.setBounds (r);
 }
@@ -86,4 +101,35 @@ void MainComponent::addDockItem()
     {
         AlertWindow::showMessageBoxAsync (AlertWindow::WarningIcon, "Error", "Could not add dock item");
     }
+}
+
+void MainComponent::saveLayout()
+{
+    FileChooser chooser ("Save Layout", File(), "*.xml", true, true, this);
+    if (chooser.browseForFileToSave (true))
+    {
+        auto state = dock.getState();
+        if (auto* xml = state.createXml())
+        {
+            xml->writeToFile (chooser.getResult(), String());
+            deleteAndZero (xml);
+        }
+    }
+}
+
+void MainComponent::loadLayout()
+{
+    FileChooser chooser ("Load Layout", File(), "*.xml", true, true, this);
+    ValueTree state;
+    if (chooser.browseForFileToOpen())
+    {
+        if (auto* xml = XmlDocument::parse (chooser.getResult()))
+        {
+            state = ValueTree::fromXml (*xml);
+            deleteAndZero (xml);
+        }
+    }
+
+    if (state.isValid())
+        dock.applyState (state);
 }

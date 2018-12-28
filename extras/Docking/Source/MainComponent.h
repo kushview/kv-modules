@@ -14,10 +14,11 @@ public:
 
 private:
     kv::Dock dock;
-    TextButton addItemButton;
+    TextButton addItemButton, saveButton, loadButton;
     ComboBox placementCombo;
     int placement = kv::DockPlacement::Top;
     void addDockItem();
-    
+    void saveLayout();
+    void loadLayout();
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };

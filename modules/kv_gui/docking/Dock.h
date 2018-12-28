@@ -27,6 +27,7 @@ class DockItem;
 class DockItemTabs;
 class DockLayout;
 class DockPanel;
+class DockWindow;
 
 class Dock : public Component,
              public DragAndDropContainer
@@ -80,12 +81,19 @@ public:
         return info.toString();
     }
     
+    inline static Rectangle<int> getBounds (const ValueTree& data) {
+        return Rectangle<int>::fromString (data.getProperty ("bounds").toString());
+    }
+
     /** Create a default panel with a given name */
     DockItem* createItem (const String& panelName, DockPlacement placement);
     
     /** Start a drag operation on the passed in DockPanel */
     void startDragging (DockPanel* const panel);
     
+    ValueTree getState() const;
+    bool applyState (const ValueTree& state);
+
     /** @internal */
     inline virtual void paint (Graphics& g) override
     {
@@ -107,9 +115,13 @@ protected:
 private:
     friend class DockItem;
     std::unique_ptr<DockContainer> container;
-    
+    OwnedArray<DockWindow> windows;
+
+    void loadArea (DockArea&, const ValueTree&);
+    void loadItem (DockItem&, const ValueTree&);
+    void loadPanel (DockPanel&, const ValueTree&);
     void removeEmptyRootAreas();
-    
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dock)
 };
 
@@ -140,6 +152,9 @@ public:
     void setVertical (const bool vertical);
     bool isVertical() const { return layout.isVertical(); }
     
+    ValueTree getState() const;
+    bool applyState (const ValueTree& state);
+
     /** @internal */
     inline virtual void paint (Graphics&) override { }
     /** @internal */
@@ -155,7 +170,7 @@ private:
     DockArea (DockPlacement placement);
     
     void disposeEmptyLayouts();
-    
+
     DockLayout layout;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockArea)
 };
@@ -184,6 +199,8 @@ public:
     /** Returns the current panel object */
     DockPanel* getCurrentPanel() const;
     
+    ValueTree getState() const;
+
     /** @internal */
     void paint (Graphics&) override;
     /** @internal */

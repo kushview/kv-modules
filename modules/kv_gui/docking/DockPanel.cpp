@@ -23,10 +23,8 @@ namespace kv {
  #define KV_DOCKING_NESTING 0
 #endif
 
-DockPanel::~DockPanel()
-{
-    content.reset (nullptr);
-}
+DockPanel::DockPanel() { }
+DockPanel::~DockPanel() { }
 
 void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
 {
@@ -57,15 +55,13 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
         return;
     }
     
-    const bool wantsVerticalPlacement = placement == DockPlacement::Top || placement == DockPlacement::Bottom;
-    
-    if (wantsVerticalPlacement == targetArea->isVertical() && (source != target || source->getNumPanels() > 1))
+    if (placement.isVertical() == targetArea->isVertical() && (source != target || source->getNumPanels() > 1))
     {
         // Same direction as target parent area
         // Not same item unless source has 2 or more panels
         int offsetIdx = 0;
      
-        if (wantsVerticalPlacement)
+        if (placement.isVertical())
         {
             if (placement == DockPlacement::Bottom)
                 ++offsetIdx;
@@ -94,14 +90,14 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
             targetArea->insert (insertIdx, new DockItem (source->dock, this), split);
         }
     }
-    else if (wantsVerticalPlacement != targetArea->isVertical())
+    else if (placement.isVertical() != targetArea->isVertical())
     {
         // opposite direction as parent
         // Create a new area, flip orientation, add target item, and insert source item.
         const int insertAreaIdx = targetArea->indexOf (target);
         
         std::unique_ptr<DockArea> newArea;
-        newArea.reset (new DockArea (wantsVerticalPlacement));
+        newArea.reset (new DockArea (placement.isVertical()));
         newArea->setSize (target->getWidth(), target->getHeight());
         target->detach();
         newArea->append (target);
@@ -137,6 +133,15 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
     }
 }
 
+ValueTree DockPanel::getState() const
+{
+    ValueTree state ("panel");
+    state.setProperty ("name", getName(), nullptr)
+         .setProperty ("type", getPanelType(), nullptr)
+         .setProperty ("bounds", getLocalBounds().toString(), nullptr);
+    return state;
+}
+
 void DockPanel::paint (Graphics& g)
 {
     g.setColour (Colours::white);
@@ -145,8 +150,7 @@ void DockPanel::paint (Graphics& g)
 
 void DockPanel::resized()
 {
-    if (content)
-        content->setBounds (getLocalBounds());
+
 }
     
 }

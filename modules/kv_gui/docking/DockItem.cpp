@@ -252,6 +252,17 @@ void DockItem::refreshPanelContainer (DockPanel* const panelToSelect)
         tabs->setCurrentTabIndex (jlimit (0, panels.size() - 1, lastIndex));
 }
 
+ValueTree DockItem::getState() const
+{
+    ValueTree state ("item");
+    state.setProperty ("bounds", getLocalBounds().toString(), nullptr)
+         .setProperty ("mode", "tabs", nullptr)
+         .setProperty ("panel", getCurrentPanelIndex(), nullptr);
+    for (auto* panel : panels)
+        state.addChild (panel->getState(), -1, nullptr);
+    return state;
+}
+
 void DockItem::paint (Graphics& g) { }
 
 void DockItem::resized()

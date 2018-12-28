@@ -38,6 +38,12 @@ public:
     /** Dock the panel to another Dock Item */
     void dockTo (DockItem* const target, DockPlacement placement);
 
+    /** Returns the type of this panel */
+    const String& getPanelType() const { return panelType; }
+
+    /** Get the state of this object */
+    ValueTree getState() const;
+    
     /** @internal */
     void paint (Graphics& g) override;
     /** @internal */
@@ -46,15 +52,12 @@ public:
 protected:
     friend class Dock;
     friend class DockItem;
-    /** Constructor */
-    DockPanel()
-    {
-        
-    }
-    
-    std::unique_ptr<Component> content;
 
-private:
+    /** Constructor */
+    DockPanel();
+
+private: 
+    String panelType { "GenericDockPanel" };
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockPanel)
 };
 

@@ -21,15 +21,23 @@
 
 namespace kv {
 
+class DockArea;
 class DockItem;
 
 class DockContainer : public Component
 {
 public:
+    /** Constructor */
     DockContainer();
+
+    /** Destructor */
     ~DockContainer();
 
+    /** Dock an item at the root level */
     bool dockItem (DockItem* const item, DockPlacement placement);
+    
+    /** Returns the root area */
+    DockArea& getRootArea();
 
     /** @internal */
     void resized() override;
@@ -37,6 +45,8 @@ public:
     void paint (Graphics&) override;
 
 private:
+    friend class Dock;
+    friend class DockWindow;
     std::unique_ptr<DockArea> root;
 };
 

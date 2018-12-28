@@ -30,6 +30,8 @@ DockContainer::~DockContainer()
     root = nullptr;
 }
 
+DockArea& DockContainer::getRootArea() { jassert (root != nullptr); return *root; }
+
 bool DockContainer::dockItem (DockItem* const item, DockPlacement placement)
 {
     if (! placement.isDirectional())
