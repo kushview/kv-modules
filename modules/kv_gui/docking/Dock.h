@@ -128,6 +128,7 @@ private:
 class JUCE_API DockArea : public Component
 {
 public:
+    /** Destructor */
     ~DockArea();
     
     /** Returns the index of the given item */
@@ -188,6 +189,7 @@ public:
         Tabs = 0
     };
 
+    /** Destructor */
     virtual ~DockItem();
     
     /** Dock all panels in this item to the target item */
