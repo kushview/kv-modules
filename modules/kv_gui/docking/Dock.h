@@ -130,10 +130,14 @@ class JUCE_API DockArea : public Component
 public:
     ~DockArea();
     
-    int indexOf (DockItem* const item) const { return layout.indexOf ((Component*) item); }
+    /** Returns the index of the given item */
+    inline int indexOf (DockItem* const item) const { return layout.indexOf ((Component*) item); }
     
+    /** Returns the index of the given area */
+    inline int indexOf (DockArea* const area) const { return layout.indexOf ((Component*) area); }
+
     /** Returns the number of items in the layout */
-    int getNumItems() const { return layout.getNumItems(); }
+    inline int getNumItems() const { return layout.getNumItems(); }
     
     /** Append a DockArea to the end of the layout */
     void append (DockArea* const area);
@@ -181,8 +185,7 @@ class JUCE_API DockItem : public Component,
 {
 public:
     enum DisplayMode {
-        Tabs = 0,
-        Accordion
+        Tabs = 0
     };
 
     virtual ~DockItem();
