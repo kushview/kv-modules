@@ -28,7 +28,7 @@ class DockContainer : public Component
 {
 public:
     /** Constructor */
-    DockContainer();
+    DockContainer (Dock&);
 
     /** Destructor */
     ~DockContainer();
@@ -37,7 +37,7 @@ public:
     bool dockItem (DockItem* const item, DockPlacement placement);
     
     /** Returns the root area */
-    DockArea& getRootArea();
+    DockArea* getRootArea() const;
 
     /** @internal */
     void resized() override;
@@ -47,7 +47,8 @@ public:
 private:
     friend class Dock;
     friend class DockWindow;
-    std::unique_ptr<DockArea> root;
+    Dock& dock;
+    Component::SafePointer<DockArea> root;
 };
 
 }

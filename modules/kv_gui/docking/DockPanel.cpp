@@ -23,11 +23,14 @@ namespace kv {
  #define KV_DOCKING_NESTING 0
 #endif
 
-DockPanel::DockPanel() { }
+DockPanel::DockPanel (const int panelTypeId, const String& panelTypeString) 
+    : typeId (panelTypeId), typeString (panelTypeString) { }
+
 DockPanel::~DockPanel() { }
 
 void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
 {
+    
     if (placement == DockPlacement::Floating)
         return;
     
@@ -54,7 +57,9 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
         jassertfalse;
         return;
     }
-    
+
+    Dock& dock (target->dock);
+
     if (placement.isVertical() == targetArea->isVertical() && (source != target || source->getNumPanels() > 1))
     {
         // Same direction as target parent area
@@ -87,7 +92,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
             source->detach (this);
             int insertIdx = targetArea->indexOf (target);
             insertIdx += offsetIdx;
-            targetArea->insert (insertIdx, new DockItem (source->dock, this), split);
+            targetArea->insert (insertIdx, dock.getOrCreateItem (this), split);
         }
     }
     else if (placement.isVertical() != targetArea->isVertical())
@@ -96,8 +101,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
         // Create a new area, flip orientation, add target item, and insert source item.
         const int insertAreaIdx = targetArea->indexOf (target);
         
-        std::unique_ptr<DockArea> newArea;
-        newArea.reset (new DockArea (placement.isVertical()));
+        DockArea* newArea = dock.getOrCreateArea (placement.isVertical());
         newArea->setSize (target->getWidth(), target->getHeight());
         target->detach();
         newArea->append (target);
@@ -107,7 +111,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
         if (source->getNumPanels() > 1)
         {
             source->detach (this);
-            newArea->insert (insertPanelIdx, new DockItem (source->dock, this));
+            newArea->insert (insertPanelIdx, dock.getOrCreateItem (this));
         }
         else if (source->getNumPanels() == 1)
         {
@@ -123,7 +127,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
         if (newArea != nullptr)
         {
             newArea->resized();
-            targetArea->insert (insertAreaIdx, newArea.release(), Dock::NoSplit);
+            targetArea->insert (insertAreaIdx, newArea, Dock::NoSplit);
         }
     }
     else
@@ -135,10 +139,10 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
 
 ValueTree DockPanel::getState() const
 {
-    ValueTree state ("panel");
-    state.setProperty ("name", getName(), nullptr)
-         .setProperty ("type", getPanelType(), nullptr)
-         .setProperty ("bounds", getLocalBounds().toString(), nullptr);
+    ValueTree state (Slugs::panel);
+    state.setProperty (Slugs::name, getName(), nullptr)
+         .setProperty (Slugs::type, getTypeString(), nullptr)
+         .setProperty (Slugs::bounds, getLocalBounds().toString(), nullptr);
     return state;
 }
 

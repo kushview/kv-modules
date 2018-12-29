@@ -3,9 +3,36 @@
 
 using namespace kv;
 
+class GenericDockPanel : public DockPanel
+{
+public:
+    GenericDockPanel() : DockPanel (1, "GenericDockPanel") { }
+    ~GenericDockPanel() { }
+};
+
+class GenericPanelType : public DockPanelType
+{
+public:
+    const Identifier genericType { "GenericDockPanel" };
+
+    void getAllTypes (OwnedArray<DockPanelInfo>& types) override
+    {
+        auto* type = types.add (new DockPanelInfo());
+        type->identifier = genericType;
+        type->name = "Generic";
+        type->description = "A generic panel for development purposes";
+    }
+
+    DockPanel* createPanel (const Identifier& panelType) override
+    {
+        return panelType == genericType ? new GenericDockPanel() : nullptr;
+    }
+};
+
 MainComponent::MainComponent()
 {
     addAndMakeVisible (dock);
+    dock.registerPanelType (new GenericPanelType());
     
     addAndMakeVisible (addItemButton);
     addItemButton.setButtonText ("Add Item");

@@ -19,10 +19,11 @@
 
 namespace kv {
 
-DockContainer::DockContainer()
+DockContainer::DockContainer (Dock& d)
+    : dock (d)
 {
-    root.reset (new DockArea (true));
-    addAndMakeVisible (root.get());
+    root = dock.getOrCreateArea();
+    addAndMakeVisible (root.getComponent());
 }
 
 DockContainer::~DockContainer()
@@ -30,7 +31,7 @@ DockContainer::~DockContainer()
     root = nullptr;
 }
 
-DockArea& DockContainer::getRootArea() { jassert (root != nullptr); return *root; }
+DockArea* DockContainer::getRootArea() const { jassert (root != nullptr); return root.getComponent(); }
 
 bool DockContainer::dockItem (DockItem* const item, DockPlacement placement)
 {
@@ -47,12 +48,13 @@ bool DockContainer::dockItem (DockItem* const item, DockPlacement placement)
     }
     else
     {
-        std::unique_ptr<DockArea> oldRoot;
-        oldRoot.reset (root.release());
-        removeChildComponent (oldRoot.get());
-        root.reset (new DockArea (! oldRoot->isVertical()));
-        addAndMakeVisible (root.get());
-        root->append (oldRoot.release());
+        DockArea* oldRoot = root.getComponent();
+        jassert (oldRoot);
+        removeChildComponent (oldRoot);
+        root = dock.getOrCreateArea (! oldRoot->isVertical());
+        jassert (root);
+        addAndMakeVisible (root);
+        root->append (oldRoot);
         root->insert (insertIdx, item, split);
     }
 
@@ -61,10 +63,7 @@ bool DockContainer::dockItem (DockItem* const item, DockPlacement placement)
     return result;
 }
 
-void DockContainer::paint (Graphics& g)
-{
-    
-}
+void DockContainer::paint (Graphics& g) { }
 
 void DockContainer::resized()
 {

@@ -19,13 +19,13 @@
 
 namespace kv {
     
-DockWindow::DockWindow()
+DockWindow::DockWindow (Dock& dock)
     : DocumentWindow ("DockWindow", Colours::black, DocumentWindow::closeButton, false)
 {
     setUsingNativeTitleBar (true);
     setAlwaysOnTop (true);
 
-    container.reset (new DockContainer());
+    container.reset (new DockContainer (dock));
     setContentNonOwned (container.get(), true);
     setSize (600, 400);
 }

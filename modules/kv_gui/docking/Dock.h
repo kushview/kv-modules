@@ -27,6 +27,8 @@ class DockItem;
 class DockItemTabs;
 class DockLayout;
 class DockPanel;
+class DockPanelInfo;
+class DockPanelType;
 class DockWindow;
 
 class Dock : public Component,
@@ -85,7 +87,9 @@ public:
         return Rectangle<int>::fromString (data.getProperty ("bounds").toString());
     }
 
-    /** Create a default panel with a given name */
+    void registerPanelType (DockPanelType* newType);
+
+    /** Create an item by panel type and dock it to the given placement */
     DockItem* createItem (const String& panelName, DockPlacement placement);
     
     /** Start a drag operation on the passed in DockPanel */
@@ -97,7 +101,7 @@ public:
     /** @internal */
     inline virtual void paint (Graphics& g) override
     {
-        g.fillAll (findColour(DocumentWindow::backgroundColourId).darker());
+        g.fillAll (findColour (DocumentWindow::backgroundColourId).darker());
     }
     
     /** @internal */
@@ -110,12 +114,21 @@ public:
     void dragOperationEnded (const DragAndDropTarget::SourceDetails& details) override;
 
 protected:
-    virtual DockPanel* getOrCreatePanel (const String&);
+    friend class DockContainer;
+    friend class DockPanel;
+    DockArea* getOrCreateArea (const bool isVertical = true, DockArea* areaToSkip = nullptr);
+    DockItem* getOrCreateItem (DockPanel* const panel = nullptr);
+    DockPanel* getOrCreatePanel (const String&);
 
 private:
     friend class DockItem;
+    OwnedArray<DockPanelType> types;
+    OwnedArray<DockPanelInfo> available;
     std::unique_ptr<DockContainer> container;
     OwnedArray<DockWindow> windows;
+    OwnedArray<DockArea> areas;
+    OwnedArray<DockItem> items;
+    OwnedArray<DockPanel> panels;
 
     void loadArea (DockArea&, const ValueTree&);
     void loadItem (DockItem&, const ValueTree&);
@@ -243,7 +256,7 @@ private:
     DisplayMode displayMode = Tabs;
     bool dragging = false;
     std::unique_ptr<DockItemTabs> tabs;
-    OwnedArray<DockPanel> panels;
+    Array<DockPanel*> panels;
     
     ValueTree getState() const;
     void movePanelsTo (DockItem* const target);

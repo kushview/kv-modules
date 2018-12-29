@@ -193,7 +193,10 @@ void DockItem::reset()
 
 void DockItem::detach (DockPanel* const panel)
 {
-    panels.removeObject (panel, false);
+    if (! panels.contains (panel))
+        return;
+    
+    panels.removeFirstMatchingValue (panel);
     if (panels.size() == 0)
         detach();
     else
@@ -224,7 +227,7 @@ void DockItem::movePanelsTo (DockItem* const target)
     Array<DockPanel*> tempPanels;
     for (auto* const panel : panels)
         tempPanels.add (panel);
-    panels.clearQuick (false);
+    panels.clear();
     refreshPanelContainer();
     
     for (auto* const panel : tempPanels)

@@ -21,7 +21,7 @@ namespace kv {
 
 Dock::Dock ()
 {
-    container.reset (new DockContainer());
+    container.reset (new DockContainer (*this));
     addAndMakeVisible (container.get());
 }
 
@@ -30,15 +30,75 @@ Dock::~Dock()
     container.reset (nullptr);
 }
 
+void Dock::registerPanelType (DockPanelType* newType)
+{
+    jassert (newType != nullptr);
+    jassert (! types.contains (newType));
+    types.add (newType);
+    newType->getAllTypes (available);
+}
+
+DockArea* Dock::getOrCreateArea (const bool isVertical, DockArea* areaToSkip)
+{
+    DockArea* retArea = nullptr;
+    for (auto* const area : areas)
+        if (area->getNumItems() <= 0 && area->getParentComponent() == nullptr)
+            { retArea = area; break; }
+    if (! retArea || (areaToSkip != nullptr && retArea == areaToSkip))
+        retArea = areas.add (new DockArea ());
+
+    if (retArea)
+    {
+        retArea->setVertical (isVertical);
+    }
+
+    return retArea;
+}
+
+DockItem* Dock::getOrCreateItem (DockPanel* const panel)
+{
+    DockItem* dockItem = nullptr;
+    for (auto* const item : items)
+        if (item->getNumPanels() <= 0 && item->getParentComponent() == nullptr)
+            { dockItem = item; break; }
+    if (! dockItem)
+        dockItem = items.add (new DockItem (*this));
+    
+    if (dockItem != nullptr)
+    {
+        dockItem->reset();
+        if (panel != nullptr)
+        {
+            dockItem->panels.add (panel);
+            dockItem->refreshPanelContainer();
+        }
+    }
+
+    return dockItem;
+}
+
 DockPanel* Dock::getOrCreatePanel (const String& panelType)
 {
-    DockPanel* panel = nullptr;
-    
-    if (panelType == "GenericDockPanel")
+    DockPanelInfo* panelInfo = nullptr;
+    for (auto* const info : available)
     {
-        panel = new DockPanel();
-        panel->setName ("Panel");
+        if (info->identifier == Identifier (panelType))
+            panelInfo = info;
+        if (panelInfo != nullptr)
+            break;
     }
+
+    if (! panelInfo) return nullptr;
+
+    DockPanel* panel = nullptr;
+    for (auto* type : types)
+    {
+        panel = type->createPanel (*panelInfo);
+        if (panel != nullptr) break;
+    }
+
+    if (panel != nullptr)
+        panels.add (panel);
 
     return panel;
 }
@@ -76,8 +136,11 @@ DockItem* Dock::createItem (const String& itemName, DockPlacement placement)
     
     if (placement.isFloating())
     {
-        auto* window = new DockWindow();
-        auto* item = new DockItem (*this, panel);
+        auto* window = windows.add (new DockWindow (*this));
+        auto* item = getOrCreateItem();
+        item->panels.add (panel);
+        item->refreshPanelContainer();
+
         window->dockItem (item, DockPlacement::Top);
         window->setVisible (true);
         window->centreWithSize (window->getWidth(), window->getHeight());
@@ -92,9 +155,12 @@ DockItem* Dock::createItem (const String& itemName, DockPlacement placement)
         return nullptr;
     }
     
-    auto* item = new DockItem (*this, panel);
-    if (! container->dockItem (item, placement))
-        deleteAndZero (item);
+    auto* item = getOrCreateItem (panel);
+    if (item && ! container->dockItem (item, placement))
+    {
+        item->reset();
+        item = nullptr;
+    }
     
     resized();
     return item;
@@ -136,14 +202,15 @@ void Dock::loadArea (DockArea& area, const ValueTree& state)
         const auto child = state.getChild (i);        
         if (child.hasType (Slugs::item))
         {
-            auto* item = new DockItem (*this);
+            auto* item = getOrCreateItem();
             loadItem (*item, child);
             area.append (item);
         }
         else if (child.hasType (Slugs::area))
         {
             jassert (area.isVertical() != (bool) child[Slugs::vertical]);
-            auto* newArea = new DockArea (! area.isVertical());
+            auto* newArea = getOrCreateArea (! area.isVertical(), &area);
+            jassert (newArea != &area);
             loadArea (*newArea, child);
             area.append (newArea);
         }
@@ -168,7 +235,7 @@ void Dock::loadItem (DockItem& item, const ValueTree& state)
             if (auto* panel = getOrCreatePanel (child["type"].toString()))
             {
                 loadPanel (*panel, child);
-                item.panels.add (panel);
+                item.panels.addIfNotAlreadyThere (panel);
             }
             else
             {
@@ -207,13 +274,14 @@ bool Dock::applyState (const ValueTree& state)
         {
             if (newContainer == nullptr)
             {
-                newContainer.reset (new DockContainer());
+                newContainer.reset (new DockContainer (*this));
                 newContainer->setBounds (Dock::getBounds (state));
                 newContainer->resized();
-                auto& area (newContainer->getRootArea());
-                area.setVertical ((bool) child.getProperty (Slugs::vertical, true));
-                area.setBounds (Dock::getBounds (child));
-                loadArea (area, child);
+                auto* area (newContainer->getRootArea());
+                jassert(area);
+                area->setVertical ((bool) child.getProperty (Slugs::vertical, true));
+                area->setBounds (Dock::getBounds (child));
+                loadArea (*area, child);
             }
             else
             {
