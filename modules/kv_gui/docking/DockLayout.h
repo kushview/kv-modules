@@ -93,10 +93,10 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DockLayoutResizerBar)
 };
 
-
 class JUCE_API DockLayout
 {
 public:
+    /** Constructor */
     DockLayout (Component& holder_, bool vertical = false);
     
     ~DockLayout() noexcept;
@@ -127,6 +127,8 @@ public:
     
     inline int getBarSize() const { return barSize; }
     void setBarSize (int newBarSize);
+    String getSizesString() const;
+    void setSizes (const String& sizes);
 
 private:
     friend class DockLayoutResizerBar;

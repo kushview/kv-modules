@@ -33,11 +33,13 @@ Dock::~Dock()
 DockPanel* Dock::getOrCreatePanel (const String& panelType)
 {
     DockPanel* panel = nullptr;
+    
     if (panelType == "GenericDockPanel")
     {
         panel = new DockPanel();
         panel->setName ("Panel");
     }
+
     return panel;
 }
 
@@ -112,7 +114,7 @@ void Dock::startDragging (DockPanel* const panel)
 
 ValueTree Dock::getState() const
 {
-    ValueTree state ("dock");
+    ValueTree state (Slugs::dock);
     state.setProperty ("bounds", getLocalBounds().toString(), nullptr);
     state.addChild (container->root->getState(), -1, nullptr);
     return state;
@@ -120,42 +122,59 @@ ValueTree Dock::getState() const
 
 void Dock::loadArea (DockArea& area, const ValueTree& state)
 {
+    const auto sizes = state.getProperty (Slugs::sizes).toString();
+    const auto barSize = (int) state.getProperty (Slugs::barSize, 4);
+    area.setBounds (Dock::getBounds (state));
+    area.layout.clear();
+    area.layout.setBarSize (barSize);
+    
+    if (sizes.isNotEmpty())
+        area.layout.setSizes (sizes);
+
     for (int i = 0; i < state.getNumChildren(); ++i)
     {
-        const auto child = state.getChild (i);
-        const auto bounds = Dock::getBounds (child);
-        
-        if (child.hasType ("item"))
+        const auto child = state.getChild (i);        
+        if (child.hasType (Slugs::item))
         {
-            auto* item = new DockItem (*this, "loaded", "Loaded");
-            item->tabs->clearTabs();
-            item->panels.clear();
-            item->setBounds (bounds);
+            auto* item = new DockItem (*this);
             loadItem (*item, child);
             area.append (item);
         }
-        else if (child.hasType ("area"))
+        else if (child.hasType (Slugs::area))
         {
+            jassert (area.isVertical() != (bool) child[Slugs::vertical]);
             auto* newArea = new DockArea (! area.isVertical());
-            newArea->setBounds (bounds);
             loadArea (*newArea, child);
             area.append (newArea);
         }
     }
+
+    if (sizes.isNotEmpty())
+        area.layout.setSizes (sizes);
+
+    area.resized();
 }
 
 void Dock::loadItem (DockItem& item, const ValueTree& state)
-{ 
+{
+    item.reset();
+    item.setBounds (Dock::getBounds (state));
     for (int i = 0; i < state.getNumChildren(); ++i)
     {
         const auto child = state.getChild (i);
         
-        if (child.hasType ("panel"))
+        if (child.hasType (Slugs::panel))
         {
-            auto* panel = new DockPanel();
-            item.panels.add (panel);
-            panel->setBounds (item.getLocalBounds());
-            panel->setName (child.getProperty (Slugs::name, "Panel").toString());
+            if (auto* panel = getOrCreatePanel (child["type"].toString()))
+            {
+                loadPanel (*panel, child);
+                item.panels.add (panel);
+            }
+            else
+            {
+                // couldn't create panel
+                jassertfalse;
+            }
         }
         else
         {
@@ -165,11 +184,18 @@ void Dock::loadItem (DockItem& item, const ValueTree& state)
     }
 
     item.refreshPanelContainer();
+    item.setCurrentPanelIndex ((int) state.getProperty (Slugs::panel, 0));
+}
+
+void Dock::loadPanel (DockPanel& panel, const ValueTree& state)
+{
+    panel.setName (state.getProperty (Slugs::name, "Panel").toString());
+    panel.setBounds (Dock::getBounds (state));
 }
 
 bool Dock::applyState (const ValueTree& state)
 {
-    if (! state.hasType ("dock"))
+    if (! state.hasType (Slugs::dock))
         return false;
 
     std::unique_ptr<DockContainer> newContainer;
@@ -177,17 +203,16 @@ bool Dock::applyState (const ValueTree& state)
     for (int i = 0; i < state.getNumChildren(); ++i)
     {
         const auto child = state.getChild (i);
-        if (child.hasType ("area"))
+        if (child.hasType (Slugs::area))
         {
             if (newContainer == nullptr)
             {
                 newContainer.reset (new DockContainer());
-                const auto bounds = Dock::getBounds (child);
-                newContainer->setBounds (bounds);
+                newContainer->setBounds (Dock::getBounds (state));
                 newContainer->resized();
                 auto& area (newContainer->getRootArea());
-                area.setVertical ((bool) child.getProperty ("vertical", true));
-                area.setBounds (bounds);
+                area.setVertical ((bool) child.getProperty (Slugs::vertical, true));
+                area.setBounds (Dock::getBounds (child));
                 loadArea (area, child);
             }
             else
@@ -195,6 +220,10 @@ bool Dock::applyState (const ValueTree& state)
                 // root state should only have one area child
                 jassertfalse;
             }
+        }
+        else if (child.hasType ("window"))
+        {
+            DBG("load dock window");
         }
     }
 

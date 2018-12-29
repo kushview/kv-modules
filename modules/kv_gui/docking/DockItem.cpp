@@ -36,9 +36,9 @@ public:
         return getPlacement (point);
     }
     
-    DockPlacement getPlacement (const Point<float>& point)
+    DockPlacement getPlacement (const juce::Point<float>& point)
     {
-        if (left.contains(point))
+        if (left.contains (point))
             return DockPlacement::Left;
         if (right.contains (point))
             return DockPlacement::Right;
@@ -127,33 +127,12 @@ private:
     int spacingY = 30;
     Rectangle<float> center;
     Path left, right, top, bottom;
-    Point<float> mouse;
+    juce::Point<float> mouse;
 };
 
-DockItem::DockItem (Dock& parent, const String& id, const String& name)
-    : Component (name), dock (parent)
-{
-    setComponentID (id);
-    
-    tabs.reset (new DockItemTabs());
-    addAndMakeVisible (tabs.get());
-    
-    overlay.reset (new DragOverlay());
-    addChildComponent (overlay.get(), 9000);
-    overlay->setAlpha (0.50);
-    
-    auto* panel = new DockPanel();
-    panel->setName (name);
-    panels.add (panel);
-    refreshPanelContainer();
-
-    tabs->setCurrentTabIndex (0);
-}
-
 DockItem::DockItem (Dock& parent, DockPanel* panel)
-    : Component (panel->getName()), dock (parent)
+    : dock (parent)
 {
-    setComponentID (panel->getComponentID());
     tabs.reset (new DockItemTabs());
     addAndMakeVisible (tabs.get());
     
@@ -161,9 +140,12 @@ DockItem::DockItem (Dock& parent, DockPanel* panel)
     addChildComponent (overlay.get(), 9000);
     overlay->setAlpha (0.50);
     
-    panels.add (panel);
-    refreshPanelContainer();
-    tabs->setCurrentTabIndex (panels.indexOf (panel));
+    if (panel != nullptr && ! panels.contains (panel))
+    {
+        panels.add (panel);
+        refreshPanelContainer();
+        tabs->setCurrentTabIndex (panels.indexOf (panel));
+    }
 }
 
 DockItem::~DockItem()
@@ -194,6 +176,21 @@ void DockItem::dockTo (DockItem* const target, DockPlacement placement)
     }
 }
 
+void DockItem::setCurrentPanelIndex (int panel)
+{
+    if (getCurrentPanelIndex() == panel)
+        return;
+    tabs->setCurrentTabIndex (jlimit (0, panels.size() - 1, panel));
+    
+}
+
+void DockItem::reset()
+{
+    tabs->clearTabs();
+    panels.clear();
+    refreshPanelContainer();
+}
+
 void DockItem::detach (DockPanel* const panel)
 {
     panels.removeObject (panel, false);
@@ -207,7 +204,7 @@ void DockItem::detach()
 {
     if (auto* area = getParentArea())
     {
-        area->detachItem (this);
+        area->remove (this);
         area->resized();
         
         while (area != nullptr)

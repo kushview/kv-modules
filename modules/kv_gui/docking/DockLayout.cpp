@@ -542,6 +542,43 @@ void DockLayout::remove (Component* const child)
         buildComponentArray();
 }
 
+String DockLayout::getSizesString() const
+{
+    StringArray sizes;
+
+    for (int i = 0; i < comps.size(); ++i)
+    {
+        double minSize, maxSize, prefSize;
+        layout.getItemLayout (i, minSize, maxSize, prefSize);
+        sizes.add (String (minSize));
+        sizes.add (String (maxSize));
+        sizes.add (String (prefSize));
+    }
+
+    return sizes.joinIntoString(":");
+}
+
+void DockLayout::setSizes (const String& strSizes)
+{
+    StringArray sizes = StringArray::fromTokens (strSizes, ":", "'");
+    if (sizes.size() < 3 || sizes.size() % 3 != 0)
+    {
+        jassertfalse;
+        return;
+    }
+    
+    layout.clearAllItems();
+    for (int i = 0, j = 0; i < sizes.size(); i += 3, ++j)
+    {
+        layout.setItemLayout (j,
+            sizes.getReference(i).getDoubleValue(),
+            sizes.getReference(i + 1).getDoubleValue(),
+            sizes.getReference(i + 2).getDoubleValue());
+    }
+
+    holder.resized();
+}
+
 void DockLayout::layoutItems (int x, int y, int w, int h)
 {
     if (comps.size() > 0)

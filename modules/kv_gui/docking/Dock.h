@@ -147,14 +147,15 @@ public:
     /** Insert a DockArea at a specific location */
     void insert (int index, DockArea* const area, Dock::SplitType split = Dock::NoSplit);
     
-    void detachItem (DockItem* item);
+    /** Remove a dock item from the area */
+    void remove (DockItem* const item);
+
+    /** Remove a child area from this area */
     void remove (DockArea* const area);
-    void setVertical (const bool vertical);
+    
+    /** Returns true if this area has a top to bottom layout */
     bool isVertical() const { return layout.isVertical(); }
     
-    ValueTree getState() const;
-    bool applyState (const ValueTree& state);
-
     /** @internal */
     inline virtual void paint (Graphics&) override { }
     /** @internal */
@@ -168,17 +169,22 @@ private:
     
     explicit DockArea (const bool vertical = false);
     DockArea (DockPlacement placement);
-    
-    void disposeEmptyLayouts();
+    ValueTree getState() const;
+    void setVertical (const bool vertical);
 
     DockLayout layout;
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockArea)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DockArea)
 };
 
 class JUCE_API DockItem : public Component,
                           public DragAndDropTarget
 {
 public:
+    enum DisplayMode {
+        Tabs = 0,
+        Accordion
+    };
+
     virtual ~DockItem();
     
     /** Dock all panels in this item to the target item */
@@ -192,14 +198,15 @@ public:
     
     /** Returns the number of panels in this item's container */
     int getNumPanels() const { return panels.size(); }
-    
+
     /** Returns the current panel index */
     int getCurrentPanelIndex() const;
 
     /** Returns the current panel object */
     DockPanel* getCurrentPanel() const;
     
-    ValueTree getState() const;
+    /** Set the current panel index */
+    void setCurrentPanelIndex (int panel);
 
     /** @internal */
     void paint (Graphics&) override;
@@ -225,24 +232,22 @@ private:
     friend class DockArea;
     friend class DockPanel;
     
-    DockItem (Dock& parent, DockPanel* panel);
-    DockItem (Dock& parent, const String& slug, const String& name);
+    explicit DockItem (Dock& parent, DockPanel* const panel = nullptr);
     
     Dock& dock;
+    DisplayMode displayMode = Tabs;
     bool dragging = false;
     std::unique_ptr<DockItemTabs> tabs;
     OwnedArray<DockPanel> panels;
     
+    ValueTree getState() const;
+    void movePanelsTo (DockItem* const target);
     void detach (DockPanel* const panel);
     void detach();
-    
-    void movePanelsTo (DockItem* const target);
-
     void refreshPanelContainer (DockPanel* const panelToSelect = nullptr);
+    void reset();
     
-    class DragOverlay;
-    std::unique_ptr<DragOverlay> overlay;
-    
+    class DragOverlay; std::unique_ptr<DragOverlay> overlay;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockItem)
 };
 

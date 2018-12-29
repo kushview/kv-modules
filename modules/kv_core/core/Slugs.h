@@ -62,4 +62,12 @@ namespace Slugs {
     static const Identifier velocity = "velocity";
     static const Identifier version  = "version";
     static const Identifier volume   = "volume";
+    static const Identifier dock     = "dock";
+    static const Identifier panel    = "panel";
+    static const Identifier item     = "item";
+    static const Identifier area     = "area";
+    static const Identifier vertical = "vertical";
+    static const Identifier bounds   = "bounds";
+    static const Identifier barSize  = "barSize";
+    static const Identifier sizes    = "sizes";
 }

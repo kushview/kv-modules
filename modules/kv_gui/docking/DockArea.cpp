@@ -76,7 +76,7 @@ void DockArea::remove (DockArea* const area)
     layout.remove (area);
 }
 
-void DockArea::detachItem (DockItem* item)
+void DockArea::remove (DockItem* const item)
 {
     removeChildComponent (item);
     layout.remove (item);
@@ -94,25 +94,21 @@ void DockArea::resized()
 
 ValueTree DockArea::getState() const
 {
-    ValueTree state ("area");
-    state.setProperty ("vertical", isVertical(), nullptr);
+    ValueTree state (Slugs::area);
+    state.setProperty (Slugs::bounds,   getLocalBounds().toString(), nullptr)
+         .setProperty (Slugs::vertical, isVertical(), nullptr)
+         .setProperty (Slugs::barSize,  layout.getBarSize(), nullptr)
+         .setProperty (Slugs::sizes,    layout.getSizesString(), nullptr);
+    
     for (auto* const child : layout.getItems())
     {
         if (auto* const item = dynamic_cast<DockItem*> (child))
-        {
             state.addChild (item->getState(), -1, nullptr);
-        }
         else if (auto* const area = dynamic_cast<DockArea*> (child))
-        {
             state.addChild (area->getState(), -1, nullptr);
-        }
     }
+
     return state;
-}
-
-bool DockArea::applyState (const ValueTree& state)
-{
-
 }
 
 }
