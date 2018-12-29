@@ -3,7 +3,7 @@
 
     Copyright 2012 David Robillard <http://drobilla.net>
     Adapted 2013 Michael Fisher <mfisher@kushview.net>
-     * Converted to a C++ class
+      * Converted to a C++ class
 
     Permission to use, copy, modify, and/or distribute this software for any
     purpose with or without fee is hereby granted, provided that the above
