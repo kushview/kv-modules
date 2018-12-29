@@ -62,22 +62,22 @@ MainComponent::MainComponent()
     };
     
     int itemNo = 0;
-    auto* item1 = dock.createItem (itemName(itemNo++), DockPlacement::Top);
-    auto* item2 = dock.createItem (itemName(itemNo++), DockPlacement::Top);
+    auto* item1 = dock.createItem ("GenericDockPanel", DockPlacement::Top);
+    auto* item2 = dock.createItem ("GenericDockPanel", DockPlacement::Top);
     
-    auto* item3 = dock.createItem (itemName(itemNo++), DockPlacement::Top);
+    auto* item3 = dock.createItem ("GenericDockPanel", DockPlacement::Top);
     item3->dockTo (item2, DockPlacement::Right);
     
-    auto* item4 = dock.createItem (itemName(itemNo++), DockPlacement::Top);
-    auto* item5 = dock.createItem (itemName(itemNo++), DockPlacement::Top);
-    auto* item6 = dock.createItem (itemName(itemNo++), DockPlacement::Top);
+    auto* item4 = dock.createItem ("GenericDockPanel", DockPlacement::Top);
+    auto* item5 = dock.createItem ("GenericDockPanel", DockPlacement::Top);
+    auto* item6 = dock.createItem ("GenericDockPanel", DockPlacement::Top);
     item4->dockTo (item1, DockPlacement::Right);
     item5->dockTo (item1, DockPlacement::Right);
     item6->dockTo (item1, DockPlacement::Right);
     
     for (int i = 0; i < 4; ++i)
     {
-        auto* item = dock.createItem (itemName(itemNo++), DockPlacement::Top);
+        auto* item = dock.createItem ("GenericDockPanel", DockPlacement::Top);
         item->dockTo (item2, DockPlacement::Center);
     }
 }

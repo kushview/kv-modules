@@ -122,9 +122,9 @@ void Dock::dragOperationEnded (const DragAndDropTarget::SourceDetails& details)
 //            item->setMouseCursor (MouseCursor::NormalCursor);
 }
 
-DockItem* Dock::createItem (const String& itemName, DockPlacement placement)
+DockItem* Dock::createItem (const String& panelType, DockPlacement placement)
 {
-    auto* panel = getOrCreatePanel ("GenericDockPanel");
+    auto* panel = getOrCreatePanel (panelType);
     
     if (! panel)
     {
@@ -132,7 +132,8 @@ DockItem* Dock::createItem (const String& itemName, DockPlacement placement)
         return nullptr;
     }
     
-    panel->setName (itemName);
+    if (panel->getName().isEmpty())
+        panel->setName (panelType);
     
     if (placement.isFloating())
     {
@@ -150,10 +151,7 @@ DockItem* Dock::createItem (const String& itemName, DockPlacement placement)
     }
     
     if (! placement.isDirectional())
-    {
-        deleteAndZero (panel);
         return nullptr;
-    }
     
     auto* item = getOrCreateItem (panel);
     if (item && ! container->dockItem (item, placement))
