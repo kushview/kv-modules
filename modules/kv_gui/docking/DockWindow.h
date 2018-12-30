@@ -40,7 +40,7 @@ public:
     int getDesktopWindowStyleFlags() const override;
 
 protected:
-    DockWindow (Dock& dock);
+    DockWindow (Dock& dock, const int width = 600, const int height = 400);
     
 private:
     friend class Dock;

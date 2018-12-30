@@ -40,10 +40,13 @@ public:
     void dockTo (DockItem* const target, DockPlacement placement);
 
     /** Returns the type of this panel */
-    inline const String& getTypeString() const      { return typeString; }
+    inline const String& getTypeString() const      { return identifier.toString(); }
 
     /** Returns the type of this panel */
-    inline const int getType() const                { return typeId; }
+    inline const Identifier& getType() const        { return identifier; }
+
+    /** Returns true if this panel is of the given type */
+    inline bool hasType (const Identifier& panelType) const { return identifier == panelType; }
 
     /** Get the state of this object */
     ValueTree getState() const;
@@ -58,11 +61,11 @@ protected:
     friend class DockItem;
 
     /** Constructor */
-    DockPanel (const int panelTypeId, const String& panelTypeString);
+    DockPanel (const Identifier& panelTypeString);
 
 private: 
     int typeId = 0;
-    String typeString { "GenericDockPanel" };
+    const Identifier identifier;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockPanel)
 };
 

@@ -49,6 +49,7 @@ private:
     friend class DockWindow;
     Dock& dock;
     Component::SafePointer<DockArea> root;
+    struct DropZone; OwnedArray<DropZone> zones;
 };
 
 }

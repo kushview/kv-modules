@@ -240,7 +240,7 @@ void DockItem::refreshPanelContainer (DockPanel* const panelToSelect)
 {
     auto lastIndex = tabs->getCurrentTabIndex();
     tabs->clearTabs();
-    const auto colour = findColour(DocumentWindow::backgroundColourId);
+    const auto colour = findColour (DocumentWindow::backgroundColourId);
     
     for (auto* const panel : panels)
         tabs->addTab (panel->getName(), colour, panel, false);
@@ -308,7 +308,6 @@ void DockItem::itemDropped (const SourceDetails& dragSourceDetails)
     
     panel->dockTo (this, placement);
     
-    dock.removeEmptyRootAreas();
     refreshPanelContainer();
 }
 

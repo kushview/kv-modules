@@ -23,14 +23,13 @@ namespace kv {
  #define KV_DOCKING_NESTING 0
 #endif
 
-DockPanel::DockPanel (const int panelTypeId, const String& panelTypeString) 
-    : typeId (panelTypeId), typeString (panelTypeString) { }
+DockPanel::DockPanel (const Identifier& panelType) 
+    : identifier (panelType) { }
 
 DockPanel::~DockPanel() { }
 
 void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
 {
-    
     if (placement == DockPlacement::Floating)
         return;
     

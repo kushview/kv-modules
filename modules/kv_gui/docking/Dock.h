@@ -104,6 +104,8 @@ public:
         g.fillAll (findColour (DocumentWindow::backgroundColourId).darker());
     }
     
+    void dumpObjects();
+
     /** @internal */
     void resized() override;
     /** @internal */
@@ -133,7 +135,7 @@ private:
     void loadArea (DockArea&, const ValueTree&);
     void loadItem (DockItem&, const ValueTree&);
     void loadPanel (DockPanel&, const ValueTree&);
-    void removeEmptyRootAreas();
+    void removeOrphanObjects();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(Dock)
 };

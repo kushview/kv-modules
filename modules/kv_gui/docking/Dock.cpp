@@ -19,6 +19,24 @@
 
 namespace kv {
 
+void Dock::dumpObjects()
+{
+    for (auto* area : areas)
+    {
+        DBG("AREA: " << area->getNumChildComponents());
+    }
+    
+    for (auto* item : items)
+    {
+        DBG("ITEM: " << item->getNumPanels());
+    }
+
+    for (auto* panel : panels)
+    {
+        DBG("PANEL: " << panel->getName() << ": " << (int) (panel->getParentComponent() == nullptr));
+    }
+}
+
 Dock::Dock ()
 {
     container.reset (new DockContainer (*this));
@@ -133,18 +151,19 @@ DockItem* Dock::createItem (const String& panelType, DockPlacement placement)
     }
     
     if (panel->getName().isEmpty())
+    {
+        jassertfalse; // you might want to give your panel a name
         panel->setName (panelType);
+    }
     
     if (placement.isFloating())
     {
         auto* window = windows.add (new DockWindow (*this));
-        auto* item = getOrCreateItem();
-        item->panels.add (panel);
-        item->refreshPanelContainer();
-
+        auto* item = getOrCreateItem (panel);
+        window->setBackgroundColour (findColour (DocumentWindow::backgroundColourId).darker());
+        window->centreWithSize (window->getWidth(), window->getHeight());
         window->dockItem (item, DockPlacement::Top);
         window->setVisible (true);
-        window->centreWithSize (window->getWidth(), window->getHeight());
         window->addToDesktop();
         window->toFront (true);
         return item;
@@ -164,9 +183,24 @@ DockItem* Dock::createItem (const String& panelType, DockPlacement placement)
     return item;
 }
 
-void Dock::removeEmptyRootAreas()
+void Dock::removeOrphanObjects()
 {
-    resized();
+    const int sizeBefore = panels.size() + items.size() + areas.size();
+   #if 0
+    for (int i = panels.size(); --i >= 0;)
+        if (panels.getUnchecked(i)->getParentComponent() == nullptr)
+            panels.remove (i);
+    for (int i = items.size(); --i >= 0;)
+        if (items.getUnchecked(i)->getNumPanels() <= 0 && items.getUnchecked(i)->getParentComponent() == nullptr)
+            items.remove (i);
+    for (int i = areas.size(); --i >= 0;)
+        if (areas.getUnchecked(i)->getNumItems() <= 0 && items.getUnchecked(i)->getParentComponent() == nullptr)
+            areas.remove (i);
+    const int sizeAfter = panels.size() + items.size() + areas.size();
+    DBG("Dock: purged " << (sizeBefore - sizeAfter) << " orphan objects.");
+   #else
+    DBG("Dock: not purging orphans.");
+   #endif
 }
 
 void Dock::startDragging (DockPanel* const panel)
@@ -179,7 +213,7 @@ void Dock::startDragging (DockPanel* const panel)
 ValueTree Dock::getState() const
 {
     ValueTree state (Slugs::dock);
-    state.setProperty ("bounds", getLocalBounds().toString(), nullptr);
+    state.setProperty (Slugs::bounds, getLocalBounds().toString(), nullptr);
     state.addChild (container->root->getState(), -1, nullptr);
     return state;
 }
@@ -299,6 +333,7 @@ bool Dock::applyState (const ValueTree& state)
         container.swap (newContainer);
         addAndMakeVisible (container.get());
         resized();
+        removeOrphanObjects();
         return true;
     }
 

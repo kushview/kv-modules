@@ -6,13 +6,18 @@ using namespace kv;
 class GenericDockPanel : public DockPanel
 {
 public:
-    GenericDockPanel() : DockPanel (1, "GenericDockPanel") { }
+    GenericDockPanel (const String& panelName) 
+        : DockPanel ("GenericDockPanel")
+    { 
+        setName (panelName);
+    }
     ~GenericDockPanel() { }
 };
 
 class GenericPanelType : public DockPanelType
 {
 public:
+    int lastPanelNo = 0;
     const Identifier genericType { "GenericDockPanel" };
 
     void getAllTypes (OwnedArray<DockPanelInfo>& types) override
@@ -25,7 +30,12 @@ public:
 
     DockPanel* createPanel (const Identifier& panelType) override
     {
-        return panelType == genericType ? new GenericDockPanel() : nullptr;
+        if (panelType == genericType)
+        {
+            ++lastPanelNo;
+            return new GenericDockPanel (String("Generic ") + String(lastPanelNo));
+        }
+        return nullptr;
     }
 };
 
@@ -118,11 +128,13 @@ void MainComponent::addDockItem()
         placement = kv::DockPlacement::Top;
     
     static int itemNo = 1;
-    String text = "Docking Item "; text << itemNo;
+    String text = "Item "; text << itemNo;
     
-    if (auto* item = dock.createItem (text, placement))
+    if (auto* item = dock.createItem ("GenericDockPanel", placement))
     {
         ++itemNo;
+        if (auto* panel = item->getCurrentPanel())
+            panel->setName (text);
     }
     else
     {
@@ -158,5 +170,7 @@ void MainComponent::loadLayout()
     }
 
     if (state.isValid())
+    {
         dock.applyState (state);
+    }
 }
