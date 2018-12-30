@@ -145,7 +145,7 @@
 #endif
 
 #ifndef    JUCE_USE_XRENDER
- //#define JUCE_USE_XRENDER 0
+ #define   JUCE_USE_XRENDER 1
 #endif
 
 #ifndef    JUCE_USE_XCURSOR
