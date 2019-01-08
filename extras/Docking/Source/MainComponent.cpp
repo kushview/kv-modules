@@ -12,6 +12,27 @@ public:
         setName (panelName);
     }
     ~GenericDockPanel() { }
+
+    void showPopupMenu() override
+    {
+        PopupMenu menu;
+        menu.addItem (1, "Close Panel");
+        menu.addItem (2, "Undock Panel");
+        const auto result = menu.show();
+
+        switch (result)
+        {
+            case 1: {
+                close();
+            } break;
+
+            case 2: {
+                undock();
+            } break;
+
+            default: break;
+        }
+    }
 };
 
 class GenericPanelType : public DockPanelType

@@ -136,6 +136,21 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
     }
 }
 
+void DockPanel::close()
+{
+    // TODO: handle single panel panel in a floating window
+
+    if (auto* source = findParentComponentOfClass<DockItem>())
+    {
+        source->detach (this);
+    }
+}
+
+void DockPanel::undock()
+{
+    DBG("undocking not yet supported");
+}
+
 ValueTree DockPanel::getState() const
 {
     ValueTree state (Slugs::panel);

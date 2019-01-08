@@ -115,11 +115,11 @@
 			path = System/Library/Frameworks/Cocoa.framework;
 			sourceTree = SDKROOT;
 		};
-		2A068AB2FC41CF4ACDA451E8 = {
+		2529F82CFB63F97E5E79FDFA = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
-			name = "juce_graphics";
-			path = "~/JUCE/modules/juce_graphics";
+			name = "juce_cryptography";
+			path = "/opt/kushview/JUCE/modules/juce_cryptography";
 			sourceTree = "<absolute>";
 		};
 		361AE2F03AB23D86A8FC9085 = {
@@ -178,12 +178,40 @@
 			path = "../../../../modules/kv_gui";
 			sourceTree = "SOURCE_ROOT";
 		};
+		6D7752C97615FDA3116DD1BB = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_gui_basics";
+			path = "/opt/kushview/JUCE/modules/juce_gui_basics";
+			sourceTree = "<absolute>";
+		};
+		701DD5EA7CCE4C2CEEA1AA94 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_events";
+			path = "/opt/kushview/JUCE/modules/juce_events";
+			sourceTree = "<absolute>";
+		};
 		75FD1E9DA5739E3284949A0B = {
 			isa = PBXFileReference;
 			lastKnownFileType = file;
 			name = "kv_models";
 			path = "../../../../modules/kv_models";
 			sourceTree = "SOURCE_ROOT";
+		};
+		76735E2914535ECD17658410 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_data_structures";
+			path = "/opt/kushview/JUCE/modules/juce_data_structures";
+			sourceTree = "<absolute>";
+		};
+		7A2FE4DCAB428BA1CE3B5D84 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_graphics";
+			path = "/opt/kushview/JUCE/modules/juce_graphics";
+			sourceTree = "<absolute>";
 		};
 		7F58E92786A91E2E056A7FCE = {
 			isa = PBXFileReference;
@@ -199,33 +227,12 @@
 			path = ../../Source/MainComponent.cpp;
 			sourceTree = "SOURCE_ROOT";
 		};
-		8555BF29A6FB705828F84238 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_events";
-			path = "~/JUCE/modules/juce_events";
-			sourceTree = "<absolute>";
-		};
 		8F3F845450827C72B0192C69 = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.objcpp;
 			name = "include_kv_core.mm";
 			path = "../../JuceLibraryCode/include_kv_core.mm";
 			sourceTree = "SOURCE_ROOT";
-		};
-		A4C7DE8D93A7188847A8B67F = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_gui_basics";
-			path = "~/JUCE/modules/juce_gui_basics";
-			sourceTree = "<absolute>";
-		};
-		A8DB9E8370E82341BB985B64 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_data_structures";
-			path = "~/JUCE/modules/juce_data_structures";
-			sourceTree = "<absolute>";
 		};
 		AF171F9295F18D462581C72D = {
 			isa = PBXFileReference;
@@ -248,6 +255,13 @@
 			path = ../../JuceLibraryCode/JuceHeader.h;
 			sourceTree = "SOURCE_ROOT";
 		};
+		D6C40FF0772E5D3323722CA9 = {
+			isa = PBXFileReference;
+			lastKnownFileType = file;
+			name = "juce_core";
+			path = "/opt/kushview/JUCE/modules/juce_core";
+			sourceTree = "<absolute>";
+		};
 		D98098BAA7A7787889D267D6 = {
 			isa = PBXFileReference;
 			explicitFileType = wrapper.application;
@@ -262,26 +276,12 @@
 			path = RecentFilesMenuTemplate.nib;
 			sourceTree = "SOURCE_ROOT";
 		};
-		F872C08DBEA2DD161FFDA186 = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_core";
-			path = "~/JUCE/modules/juce_core";
-			sourceTree = "<absolute>";
-		};
 		FB873078136592EC3BF609CD = {
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.cpp.objcpp;
 			name = "include_juce_cryptography.mm";
 			path = "../../JuceLibraryCode/include_juce_cryptography.mm";
 			sourceTree = "SOURCE_ROOT";
-		};
-		FE3E775EEC93679A4F8FFD0B = {
-			isa = PBXFileReference;
-			lastKnownFileType = file;
-			name = "juce_cryptography";
-			path = "~/JUCE/modules/juce_cryptography";
-			sourceTree = "<absolute>";
 		};
 		4E2EF3602C862985F2578726 = {
 			isa = PBXGroup;
@@ -304,12 +304,12 @@
 		237CDCD86513065B088E6A35 = {
 			isa = PBXGroup;
 			children = (
-				F872C08DBEA2DD161FFDA186,
-				FE3E775EEC93679A4F8FFD0B,
-				A8DB9E8370E82341BB985B64,
-				8555BF29A6FB705828F84238,
-				2A068AB2FC41CF4ACDA451E8,
-				A4C7DE8D93A7188847A8B67F,
+				D6C40FF0772E5D3323722CA9,
+				2529F82CFB63F97E5E79FDFA,
+				76735E2914535ECD17658410,
+				701DD5EA7CCE4C2CEEA1AA94,
+				7A2FE4DCAB428BA1CE3B5D84,
+				6D7752C97615FDA3116DD1BB,
 				55C66DE3B243E03A594120B9,
 				668DE203F6945C6DDA105DDB,
 				75FD1E9DA5739E3284949A0B,
@@ -405,7 +405,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"../../JuceLibraryCode",
-					"$(HOME)/JUCE/modules",
+					"/opt/kushview/JUCE/modules",
 					"../../../../modules",
 					"$(inherited)",
 				);
@@ -449,7 +449,7 @@
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				HEADER_SEARCH_PATHS = (
 					"../../JuceLibraryCode",
-					"$(HOME)/JUCE/modules",
+					"/opt/kushview/JUCE/modules",
 					"../../../../modules",
 					"$(inherited)",
 				);

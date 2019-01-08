@@ -50,7 +50,16 @@ public:
 
     /** Get the state of this object */
     ValueTree getState() const;
+
+    /** Close this panel */
+    void close();
     
+    /** Undock this panel to a Floating placement */
+    void undock();
+
+    /** This will be called when a popup menu is requested for this panel */
+    virtual void showPopupMenu() { }
+
     /** @internal */
     void paint (Graphics& g) override;
     /** @internal */
@@ -62,6 +71,8 @@ protected:
 
     /** Constructor */
     DockPanel (const Identifier& panelTypeString);
+
+
 
 private: 
     int typeId = 0;
