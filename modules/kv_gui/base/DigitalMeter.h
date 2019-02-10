@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_DIGITAL_METER_H
-#define EL_DIGITAL_METER_H
+#pragma once
 
 class DigitalMeter;
 class DigitalMeterValue;
@@ -132,5 +131,3 @@ private:
     bool horizontal;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DigitalMeter)
 };
-
-#endif  // EL_DIGITAL_METER_H

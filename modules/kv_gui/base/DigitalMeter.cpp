@@ -321,7 +321,10 @@ void DigitalMeter::refresh()
 void DigitalMeter::setValue (const int port, const float value)
 {
     if (values != nullptr && isPositiveAndBelow (port, portCount))
-        values[port]->setValue (value);
+    {
+        if (value != values[port]->getValue())
+            values[port]->setValue (value);
+    }
 }
 
 const Colour& DigitalMeter::color (const int index) const
