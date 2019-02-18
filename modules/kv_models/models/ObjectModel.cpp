@@ -36,9 +36,9 @@ int32 ObjectModel::countChildrenOfType (const Identifier& slug) const
     return cnt;
 }
 
-Value ObjectModel::getPropertyAsValue (const Identifier& property)
+Value ObjectModel::getPropertyAsValue (const Identifier& property, bool updateSynchronously)
 {
-    return objectData.getPropertyAsValue (property, nullptr);
+    return objectData.getPropertyAsValue (property, nullptr, updateSynchronously);
 }
 
 ValueTree ObjectModel::setData (const ValueTree& data)
