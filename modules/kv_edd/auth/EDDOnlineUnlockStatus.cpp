@@ -162,14 +162,18 @@ void EDDOnlineUnlockStatus::eddRestoreState (const String& state)
 
 OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const String& license,
                                                                          const String& email,
-                                                                         const String& password)
+                                                                         const String& password,
+                                                                         const StringPairArray& params)
 {
     OnlineUnlockStatus::UnlockResult r;
-    const URL url (getServerAuthenticationURL()
-             .withParameter ("edd_action", "activate_license")
-             .withParameter ("item_id", getProductID())
-             .withParameter ("license", license.trim())
-             .withParameter ("url", getLocalMachineIDs()[0]));
+    URL url (getServerAuthenticationURL()
+        .withParameter ("edd_action", "activate_license")
+        .withParameter ("item_id", getProductID())
+        .withParameter ("license", license.trim())
+        .withParameter ("url", getLocalMachineIDs()[0]));
+    if (params.size() > 0)
+        url = url.withParameters (params);
+    
     // DBG("connecting: " << url.toString (true));
     
     var response;

@@ -32,7 +32,8 @@ public:
         Software Licensing setup for your product.
      */
     UnlockResult activateLicense (const String& license, const String& email = String(),
-                                  const String& password = String());
+                                  const String& password = String(),
+                                  const StringPairArray& params = StringPairArray());
     
     /** Deactivate a license on this machine. Note this requires you have EDD
         Software Licensing setup for your product.
