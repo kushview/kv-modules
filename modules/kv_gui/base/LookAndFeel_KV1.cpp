@@ -328,7 +328,14 @@ void LookAndFeel_KV1::drawTreeviewPlusMinusBox (Graphics& g, const Rectangle<flo
                                                 Colour backgroundColour, bool isOpen, bool isMouseOver)
 {
     Path p;
-    p.addTriangle (0.0f, 0.0f, 1.0f, isOpen ? 0.0f : 0.5f, isOpen ? 0.5f : 0.0f, 1.0f);
+    if (isOpen)
+    {
+        p.addTriangle (0.0f, 0.0f, 1.0f, 0.0f, 0.5f, 1.0f);
+    }
+    else
+    {
+        p.addTriangle (0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.5);
+    }
 
     g.setColour (backgroundColour.contrasting().withAlpha (isMouseOver ? 0.5f : 0.3f));
     g.fillPath (p, p.getTransformToScaleToFit (area.reduced (2, area.getHeight() / 4), true));
