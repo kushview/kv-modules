@@ -174,7 +174,7 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const S
     if (params.size() > 0)
         url = url.withParameters (params);
     
-    // DBG("connecting: " << url.toString (true));
+    DBG("connecting: " << url.toString (true));
     
     var response;
     Result result (JSON::parse (url.readEntireTextStream(), response));
@@ -184,9 +184,6 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const S
         r.succeeded = false;
         return r;
     }
-    
-    // DBG("JSON Response:");
-    // DBG(JSON::toString (response, false));
 
     r.succeeded = false;
     const edd::ApiResponseData data (edd::processJSONResponse (response));
@@ -205,20 +202,27 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const S
     }
     
     if (data.key.isNotEmpty())
+    {
         r.succeeded = applyKeyFile (data.key);
-    else
-        r.errorMessage = "Server did not return a key file.";
-    
-    if (! r.succeeded && r.errorMessage.isEmpty()) {
-        r.errorMessage = "Key file is not compatible with this computer.";
-        // DBG("NOT COMPAT: " << data.key);
-        const ValueTree reg = edd::decryptValueTree (data.key.fromFirstOccurrenceOf ("#", true, true), getPublicKey());
-        // DBG(newLine << "XML:");
-        // DBG(reg.toXmlString());
     }
+    else
+    {
+        r.errorMessage = "Server did not return a key file.";
+    }
+    
+    if (! r.succeeded && r.errorMessage.isEmpty())
+    {
+        r.errorMessage = "Key file is not compatible with this computer.";
+        const ValueTree reg = edd::decryptValueTree (data.key.fromFirstOccurrenceOf ("#", true, true), getPublicKey());
+    }
+
     if (r.succeeded && r.informativeMessage.isEmpty())
         r.informativeMessage = "Successfully activated this machine";
     
+    if (r.errorMessage.isNotEmpty()) {
+        DBG("Activation Error: " << r.errorMessage);
+    }
+
     if (r.succeeded)
     {
         const ValueTree reg = edd::decryptValueTree (data.key.fromFirstOccurrenceOf ("#", true, true), getPublicKey());
