@@ -21,7 +21,8 @@ public:
     /** Set the license key. Use this if you are using software licensing along with
         EDD JUCE
      */
-    inline void setLicenseKey (const String& licenseKey) {
+    inline void setLicenseKey (const String& licenseKey)
+    {
         edd.setProperty (licenseName, licenseKey.trim(), nullptr);
     }
     
@@ -31,17 +32,20 @@ public:
     /** Activate a license with the webserver. Note this requires you have EDD
         Software Licensing setup for your product.
      */
-    UnlockResult activateLicense (const String& license, const String& email = String(),
+    UnlockResult activateLicense (const String& license, 
+                                  const String& email = String(),
                                   const String& password = String(),
                                   const StringPairArray& params = StringPairArray());
     
     /** Deactivate a license on this machine. Note this requires you have EDD
         Software Licensing setup for your product.
      */
-    UnlockResult deactivateLicense (const String& license);
+    UnlockResult deactivateLicense (const String& license, 
+                                    const StringPairArray& params = StringPairArray());
     
     /** Checks the status of a license and updates the keyfile */
-    UnlockResult checkLicense (const String& license);
+    UnlockResult checkLicense (const String& license,
+                               const StringPairArray& params = StringPairArray());
     
     /** Reads the reply from your server and decrypts the edd ValueTree */
     String readReplyFromWebserver (const String& email, const String& password) override;

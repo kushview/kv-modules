@@ -232,15 +232,20 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const S
     return r;
 }
 
-OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::deactivateLicense (const String& license)
+OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::deactivateLicense (const String& license,
+                                                                           const StringPairArray& params)
 {
     OnlineUnlockStatus::UnlockResult r;
     r.succeeded = false;
-    const URL url (getServerAuthenticationURL()
-             .withParameter ("edd_action", "deactivate_license")
-             .withParameter ("item_id", getProductID())
-             .withParameter ("license", license)
-             .withParameter ("url", getLocalMachineIDs()[0]));
+    URL url (getServerAuthenticationURL()
+        .withParameter ("edd_action", "deactivate_license")
+        .withParameter ("item_id", getProductID())
+        .withParameter ("license", license)
+        .withParameter ("url", getLocalMachineIDs()[0]));
+
+    if (params.size() > 0)
+        url = url.withParameters (params);
+
     // DBG("connecting: " << url.toString (true));
     
     const String responseText = url.readEntireTextStream();
@@ -285,14 +290,19 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::deactivateLicense (const
     return r;
 }
 
-OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::checkLicense (const String& license)
+OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::checkLicense (const String& license,
+                                                                      const StringPairArray& params)
 {
     OnlineUnlockStatus::UnlockResult r;
-    const URL url (getServerAuthenticationURL()
-                   .withParameter ("edd_action", "check_license")
-                   .withParameter ("item_id", getProductID())
-                   .withParameter ("license", license.trim())
-                   .withParameter ("url", getLocalMachineIDs()[0]));
+    URL url (getServerAuthenticationURL()
+        .withParameter ("edd_action", "check_license")
+        .withParameter ("item_id", getProductID())
+        .withParameter ("license", license.trim())
+        .withParameter ("url", getLocalMachineIDs()[0]));
+
+    if (params.size() > 0)
+        url = url.withParameters (params);
+    
     // DBG("connecting: " << url.toString (true));
     
     var response;
