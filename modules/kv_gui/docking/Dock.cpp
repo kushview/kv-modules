@@ -151,6 +151,11 @@ void Dock::dragOperationEnded (const DragAndDropTarget::SourceDetails& details)
 //            item->setMouseCursor (MouseCursor::NormalCursor);
 }
 
+DockItem* Dock::createItem (const Identifier& panelID, DockPlacement placement)
+{
+    return createItem (panelID.toString(), placement);
+}
+
 DockItem* Dock::createItem (const String& panelType, DockPlacement placement)
 {
     auto* panel = getOrCreatePanel (panelType);

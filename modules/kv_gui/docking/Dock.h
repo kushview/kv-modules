@@ -92,7 +92,8 @@ public:
     void registerPanelType (DockPanelType* newType);
 
     /** Create an item by panel type and dock it to the given placement */
-    DockItem* createItem (const String& panelName, DockPlacement placement);
+    DockItem* createItem (const String& panelID, DockPlacement placement);
+    DockItem* createItem (const Identifier& panelID, DockPlacement placement);
     
     /** Start a drag operation on the passed in DockPanel */
     void startDragging (DockPanel* const panel);
