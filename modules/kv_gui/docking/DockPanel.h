@@ -66,17 +66,14 @@ public:
     void resized() override;
 
 protected:
-    friend class Dock;
-    friend class DockItem;
-
     /** Constructor */
-    DockPanel (const Identifier& panelTypeString);
-
-
+    DockPanel();
 
 private: 
+    friend class Dock;
+    friend class DockItem;
     int typeId = 0;
-    const Identifier identifier;
+    Identifier identifier;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockPanel)
 };
 

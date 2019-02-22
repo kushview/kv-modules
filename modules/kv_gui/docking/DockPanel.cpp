@@ -23,10 +23,8 @@ namespace kv {
  #define KV_DOCKING_NESTING 0
 #endif
 
-DockPanel::DockPanel (const Identifier& panelType) 
-    : identifier (panelType) { }
-
-DockPanel::~DockPanel() { }
+DockPanel::DockPanel() {}
+DockPanel::~DockPanel() {}
 
 void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
 {

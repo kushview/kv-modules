@@ -116,7 +116,12 @@ DockPanel* Dock::getOrCreatePanel (const String& panelType)
     }
 
     if (panel != nullptr)
+    {
+        panel->identifier = panelType;
         panels.add (panel);
+        if (onPanelAdded)
+            onPanelAdded (panel);
+    }
 
     return panel;
 }

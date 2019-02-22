@@ -44,6 +44,8 @@ public:
     Dock();
     virtual ~Dock();
     
+    std::function<void(DockPanel*)> onPanelAdded;
+
     inline static SplitType getSplitType (const DockPlacement placement)
     {
         SplitType split = NoSplit;
@@ -97,6 +99,12 @@ public:
     
     ValueTree getState() const;
     bool applyState (const ValueTree& state);
+
+    /** Returns the total number of active panels */
+    int getNumPanels() const { return panels.size(); }
+
+    /** Get a panel by index */
+    DockPanel* getPanel (const int index) const { return panels [index]; }
 
     /** @internal */
     inline virtual void paint (Graphics& g) override
