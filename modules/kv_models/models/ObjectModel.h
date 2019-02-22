@@ -59,6 +59,8 @@ public:
     ValueTree node() { return objectData; }
     ValueTree getValueTree() { return objectData; }
     
+    virtual XmlElement* createXml() const { return objectData.createXml(); }
+
     /** Replace this objects ValueTree with another
         If you need to do something special when data is set, then override
         the canAcceptData and setNodeData methods
