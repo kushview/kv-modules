@@ -117,8 +117,14 @@ DockPanel* Dock::getOrCreatePanel (const String& panelType)
 
     if (panel != nullptr)
     {
+        if (panel->getName().isEmpty())
+            panel->setName (panelInfo->name);
+        if (panel->getName().isEmpty())
+            { jassertfalse; } // you might want to give your panel and panel type a name
+
         panel->identifier = panelType;
-        panels.add (panel);
+
+        panels.add (panel);        
         if (onPanelAdded)
             onPanelAdded (panel);
     }
@@ -153,12 +159,6 @@ DockItem* Dock::createItem (const String& panelType, DockPlacement placement)
     {
         jassertfalse;
         return nullptr;
-    }
-    
-    if (panel->getName().isEmpty())
-    {
-        jassertfalse; // you might want to give your panel a name
-        panel->setName (panelType);
     }
     
     if (placement.isFloating())
