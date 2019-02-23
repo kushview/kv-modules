@@ -122,6 +122,7 @@ public:
     
     void dumpObjects();
     void dumpOrphanAreas();
+    void dumpState();
 
     enum ColourIds
     {

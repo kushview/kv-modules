@@ -54,7 +54,7 @@ DockPanel::~DockPanel() {}
 
 void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
 {
-    if (placement.isFloating())
+    if (placement.isFloating() || target == nullptr)
         return;
     
     auto* const source = findParentComponentOfClass<DockItem>();
@@ -63,6 +63,8 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
     auto* const targetItem = target;
     auto* const targetArea = targetItem->getParentArea();
     auto* const targetPanel = targetItem->getCurrentPanel();
+
+    Dock& dock (targetItem->dock);
 
     if (placement == DockPlacement::Center)
     {
@@ -95,6 +97,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
             //noop
         }
 
+        dock.dumpState();
         return;
     }
     
@@ -107,7 +110,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
         return;
     }
 
-    Dock& dock (target->dock);
+    
 
     if (placement.isVertical() == targetArea->isVertical() 
             && (sourceItem != targetItem || sourceItem->getNumPanels() > 1))
@@ -251,6 +254,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
     }
 
     dock.dumpOrphanAreas();
+    dock.dumpState();
     // dock.removeOrphanObjects();
 }
 

@@ -79,10 +79,13 @@ DockArea* Dock::getOrCreateArea (const bool isVertical, DockArea* areaToSkip)
 {
     DockArea* retArea = nullptr;
     for (auto* const area : areas)
-        if (area->getNumItems() <= 0 && area->getParentComponent() == nullptr)
+        if (area->getNumItems() <= 0 && area->getParentArea() == nullptr)
             { retArea = area; break; }
-    if (! retArea || (areaToSkip != nullptr && retArea == areaToSkip))
+    if (retArea == nullptr || retArea == container->getRootArea() || 
+        (areaToSkip != nullptr && retArea == areaToSkip))
+    {
         retArea = areas.add (new DockArea ());
+    }
 
     if (retArea)
     {
@@ -333,6 +336,11 @@ void Dock::dumpOrphanAreas()
     for (auto* area : areas)
         if (nullptr == area->getParentComponent())
             { DBG ("orphan area #" << areas.indexOf (area)); }
+}
+
+void Dock::dumpState()
+{
+    DBG(getState().toXmlString());
 }
 
 bool Dock::applyState (const ValueTree& state)
