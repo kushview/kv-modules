@@ -477,11 +477,14 @@ void DockLayout::append (Component* item)
         
         const auto prefSize = jmax (100, vertical ? item->getHeight() : item->getWidth());
         layout.setItemLayout (comps.size(), 30, -1.0, prefSize);
-        
         comps.add (item);
         items.add (item);
     }
+
+
 }
+
+
 
 void DockLayout::insert (int index, Component* const item, int splitType)
 {
@@ -593,6 +596,20 @@ void DockLayout::layoutItems()
     layoutItems (0, 0, holder.getWidth(), holder.getHeight());
 }
 
+void DockLayout::move (int sourceIdx, int targetIdx)
+{
+    jassert (isPositiveAndBelow (sourceIdx, items.size()));
+    jassert (isPositiveAndBelow (targetIdx, items.size()));
+    auto* source = items [sourceIdx];
+    auto* target = items [targetIdx];
+    if (source && target)
+    {
+        jassert (comps.contains (source) && comps.contains (target));
+        items.move (sourceIdx, targetIdx);
+        buildComponentArray();
+    }
+}
+
 void DockLayout::buildComponentArray()
 {
     bars.clearQuick (true);
@@ -601,7 +618,6 @@ void DockLayout::buildComponentArray()
     for (int i = 0; i < items.size(); ++i)
     {
         auto itemSize = vertical ? items[i]->getHeight() : items[i]->getWidth();
-        
         layout.setItemLayout (comps.size(), 30, -1.0, itemSize);
         comps.add (items [i]);
 

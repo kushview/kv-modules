@@ -19,6 +19,15 @@
 
 namespace kv {
 
+struct SortDockInfoByName
+{
+    static int compareElements (DockPanelInfo* first, DockPanelInfo* second)
+    {
+        return first->name < second->name  ? -1 :
+            first->name == second->name ?  0 : 1;
+    }
+};
+
 void Dock::dumpObjects()
 {
     for (auto* area : areas)
@@ -48,12 +57,22 @@ Dock::~Dock()
     container.reset (nullptr);
 }
 
+DockItem* Dock::getSelectedItem() const
+{
+    for (auto* const item : items)
+        if (item->selected)
+            return item;
+    return nullptr;
+}
+
 void Dock::registerPanelType (DockPanelType* newType)
 {
     jassert (newType != nullptr);
     jassert (! types.contains (newType));
     types.add (newType);
     newType->getAllTypes (available);
+    SortDockInfoByName compare;
+    available.sort (compare, false);
 }
 
 DockArea* Dock::getOrCreateArea (const bool isVertical, DockArea* areaToSkip)
@@ -151,6 +170,13 @@ void Dock::dragOperationEnded (const DragAndDropTarget::SourceDetails& details)
 //            item->setMouseCursor (MouseCursor::NormalCursor);
 }
 
+DockItem* Dock::createItem (const Identifier& panelID)
+{
+    if (auto* panel = getOrCreatePanel (panelID.toString()))
+        return getOrCreateItem (panel);
+    return nullptr;
+}
+
 DockItem* Dock::createItem (const Identifier& panelID, DockPlacement placement)
 {
     return createItem (panelID.toString(), placement);
@@ -196,21 +222,21 @@ DockItem* Dock::createItem (const String& panelType, DockPlacement placement)
 void Dock::removeOrphanObjects()
 {
     const int sizeBefore = panels.size() + items.size() + areas.size();
-   #if 0
-    for (int i = panels.size(); --i >= 0;)
-        if (panels.getUnchecked(i)->getParentComponent() == nullptr)
-            panels.remove (i);
-    for (int i = items.size(); --i >= 0;)
-        if (items.getUnchecked(i)->getNumPanels() <= 0 && items.getUnchecked(i)->getParentComponent() == nullptr)
-            items.remove (i);
+
     for (int i = areas.size(); --i >= 0;)
-        if (areas.getUnchecked(i)->getNumItems() <= 0 && items.getUnchecked(i)->getParentComponent() == nullptr)
+    {
+        auto* area = areas.getUnchecked (i);
+        if (area->getNumItems() <= 0)
+            if (auto* parent = area->findParentComponentOfClass<DockArea>())
+                parent->remove (area);
+    }
+
+    for (int i = areas.size(); --i >= 0;)
+        if (areas.getUnchecked(i)->getNumItems() <= 0 && areas.getUnchecked(i)->getParentComponent() == nullptr)
             areas.remove (i);
+
     const int sizeAfter = panels.size() + items.size() + areas.size();
     DBG("Dock: purged " << (sizeBefore - sizeAfter) << " orphan objects.");
-   #else
-    DBG("Dock: not purging orphans.");
-   #endif
 }
 
 void Dock::startDragging (DockPanel* const panel)
@@ -300,6 +326,13 @@ void Dock::loadPanel (DockPanel& panel, const ValueTree& state)
 {
     panel.setName (state.getProperty (Slugs::name, "Panel").toString());
     panel.setBounds (Dock::getBounds (state));
+}
+
+void Dock::dumpOrphanAreas()
+{
+    for (auto* area : areas)
+        if (nullptr == area->getParentComponent())
+            { DBG ("orphan area #" << areas.indexOf (area)); }
 }
 
 bool Dock::applyState (const ValueTree& state)

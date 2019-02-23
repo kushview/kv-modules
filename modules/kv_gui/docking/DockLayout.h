@@ -113,6 +113,8 @@ public:
     
     void append (Component* child);
     
+    void move (int sourceIdx, int targetIdx);
+    
     void remove (Component* const child);
     
     void clear();

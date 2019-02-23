@@ -85,16 +85,23 @@ public:
         return info.toString();
     }
     
-    inline static Rectangle<int> getBounds (const ValueTree& data) {
+    inline static Rectangle<int> getBounds (const ValueTree& data)
+    {
         return Rectangle<int>::fromString (data.getProperty ("bounds").toString());
     }
 
     void registerPanelType (DockPanelType* newType);
 
+    const OwnedArray<DockPanelType>& getPanelTypes() const { return types; }
+    const OwnedArray<DockPanelInfo>& getPanelDescriptions() const { return available; }
+    
     /** Create an item by panel type and dock it to the given placement */
+    DockItem* createItem (const Identifier& panelID);
     DockItem* createItem (const String& panelID, DockPlacement placement);
     DockItem* createItem (const Identifier& panelID, DockPlacement placement);
     
+    DockItem* getSelectedItem() const;
+
     /** Start a drag operation on the passed in DockPanel */
     void startDragging (DockPanel* const panel);
     
@@ -114,6 +121,12 @@ public:
     }
     
     void dumpObjects();
+    void dumpOrphanAreas();
+
+    enum ColourIds
+    {
+        backgroundColourId = 0x90005000        
+    };
 
     /** @internal */
     void resized() override;
@@ -164,6 +177,17 @@ public:
     /** Returns the number of items in the layout */
     inline int getNumItems() const { return layout.getNumItems(); }
     
+    void moveItem (int source, int target);
+
+    /** Get an Item */
+    Component* getItem (const int index) const;
+
+    /** Gets the sizes as a string */
+    String getSizesString() const { return layout.getSizesString(); }
+
+    /** Sets the sizes from a string */
+    void setSizes (const String& sizes) { layout.setSizes (sizes); }
+
     /** Append a DockArea to the end of the layout */
     void append (DockArea* const area);
     
@@ -171,11 +195,17 @@ public:
     void append (DockItem* const item);
     
     /** Insert a DockItem at a specific location */
+    void insert (int index, Component* const item, Dock::SplitType split = Dock::NoSplit);
+
+    /** Insert a DockItem at a specific location */
     void insert (int index, DockItem* const item, Dock::SplitType split = Dock::NoSplit);
     
     /** Insert a DockArea at a specific location */
     void insert (int index, DockArea* const area, Dock::SplitType split = Dock::NoSplit);
     
+    /** Remove an item from the area */
+    void remove (Component* const item);
+
     /** Remove a dock item from the area */
     void remove (DockItem* const item);
 
@@ -225,6 +255,12 @@ public:
     /** Returns the DockArea which contains this item */
     DockArea* getParentArea() const { return dynamic_cast<DockArea*> (getParentComponent()); }
     
+    /** Selects this Item */
+    void setSelected (bool shouldBeSelected, bool deselectOthers = true);
+
+    /** Returns true if this item is selected */
+    bool isSelected() const { return selected; }
+
     /** Returns the number of panels in this item's container */
     int getNumPanels() const { return panels.size(); }
 
@@ -236,6 +272,12 @@ public:
     
     /** Set the current panel index */
     void setCurrentPanelIndex (int panel);
+
+    enum ColourIds
+    {
+        backgroundColourId          = 0xE0005010,
+        selectedHighlightColourId   = 0xE0005011
+    };
 
     /** @internal */
     void paint (Graphics&) override;
@@ -265,7 +307,9 @@ private:
     
     Dock& dock;
     DisplayMode displayMode = Tabs;
-    bool dragging = false;
+    bool selected { false };
+    bool dragging { false };
+
     std::unique_ptr<DockItemTabs> tabs;
     Array<DockPanel*> panels;
     
@@ -277,6 +321,7 @@ private:
     void reset();
     
     class DragOverlay; std::unique_ptr<DragOverlay> overlay;
+    class ChildListener; std::unique_ptr<ChildListener> listener;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DockItem)
 };
 

@@ -54,6 +54,17 @@ void DockArea::append (DockItem* const item)
     insert (-1, item);
 }
 
+Component* DockArea::getItem (const int index) const { return layout.getItems()[index]; }
+
+void DockArea::insert (int index, Component* const item, Dock::SplitType split)
+{
+    if (auto* di = dynamic_cast<DockItem*> (item))
+        insert (index, di, split);
+    else if (auto* da = dynamic_cast<DockArea*> (item))
+        insert (index, da, split);
+    else { jassertfalse; } // this should only be used with dock areas and items
+}
+
 void DockArea::insert (int index, DockArea* const area, Dock::SplitType split)
 {
     area->setVertical (! isVertical());
@@ -68,6 +79,18 @@ void DockArea::insert (int index, DockItem* const item, Dock::SplitType split)
     addAndMakeVisible (item);
     item->repaint();
     resized();
+}
+
+void DockArea::moveItem (int source, int target)
+{
+    layout.move (source, target);
+    resized();
+}
+
+void DockArea::remove (Component* const item)
+{
+    removeChildComponent (item);
+    layout.remove (item);
 }
 
 void DockArea::remove (DockArea* const area)

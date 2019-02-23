@@ -130,6 +130,21 @@ private:
     juce::Point<float> mouse;
 };
 
+class DockItem::ChildListener : public MouseListener
+{
+public:
+    ChildListener (Dock& d, DockItem& i) : dock(d), item(i) {}
+    ~ChildListener() {}
+    void mouseDown (const MouseEvent& event) override
+    {
+        item.setSelected (true);
+    }
+
+private:
+    Dock& dock;
+    DockItem& item;
+};
+
 DockItem::DockItem (Dock& parent, DockPanel* panel)
     : dock (parent)
 {
@@ -146,14 +161,36 @@ DockItem::DockItem (Dock& parent, DockPanel* panel)
         refreshPanelContainer();
         tabs->setCurrentTabIndex (panels.indexOf (panel));
     }
+
+    listener.reset (new ChildListener (parent, *this));
+    addMouseListener (listener.get(), true);
 }
 
 DockItem::~DockItem()
 {
+    removeMouseListener (listener.get());
+    listener.reset();
+
     overlay = nullptr;
     tabs->clearTabs();
     tabs = nullptr;
     panels.clear();
+}
+
+void DockItem::setSelected (bool shouldBeSelected, bool deselectOthers)
+{
+    ignoreUnused (deselectOthers);
+    if (selected == shouldBeSelected)
+        return;
+
+    if (shouldBeSelected && deselectOthers)
+    {
+        for (auto* item : dock.items)
+            item->setSelected (false);
+    }
+
+    selected = shouldBeSelected;
+    repaint();
 }
 
 int DockItem::getCurrentPanelIndex() const { return tabs->getCurrentTabIndex(); }
@@ -210,13 +247,13 @@ void DockItem::detach()
         area->remove (this);
         area->resized();
         
-        while (area != nullptr)
-        {
-            auto* parent = area->findParentComponentOfClass<DockArea>();
-            if (parent && area->getNumItems() <= 0)
-                parent->remove (area);
-            area = parent;
-        }
+        // while (area != nullptr)
+        // {
+        //     auto* parent = area->findParentComponentOfClass<DockArea>();
+        //     if (parent && area->getNumItems() <= 0)
+        //         parent->remove (area);
+        //     area = parent;
+        // }
     }
     
     jassert (getParentComponent() == nullptr);
@@ -263,11 +300,18 @@ ValueTree DockItem::getState() const
     return state;
 }
 
-void DockItem::paint (Graphics& g) { }
+void DockItem::paint (Graphics& g)
+{
+    if (selected)
+    {
+        g.setColour (findColour (DockItem::selectedHighlightColourId));
+        g.drawRect (getLocalBounds().toFloat(), 1.4);
+    }
+}
 
 void DockItem::resized()
 {
-    const int indent = 0;
+    const int indent = 2;
     if (panels.size() > 0)
     {
         auto ir = getLocalBounds().reduced (indent);
