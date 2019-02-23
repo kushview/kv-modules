@@ -267,7 +267,7 @@ void Dock::loadArea (DockArea& area, const ValueTree& state)
 
     for (int i = 0; i < state.getNumChildren(); ++i)
     {
-        const auto child = state.getChild (i);        
+        const auto child = state.getChild (i);
         if (child.hasType (Slugs::item))
         {
             auto* item = getOrCreateItem();

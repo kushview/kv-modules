@@ -1,6 +1,6 @@
 /*
     This file is part of the Kushview Modules for JUCE
-    Copyright (C) 2014-2018  Kushview, LLC.  All rights reserved.
+    Copyright (C) 2014-2019  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +19,8 @@
 
 namespace kv {
 
+/** This will reparent the single item in a dock area contained in a parent
+    dock area */
 static void maybeFlipLastItem (DockPanel* panel, DockArea* sourceArea)
 {
     if (sourceArea != nullptr && sourceArea->getNumItems() == 1)
@@ -80,7 +82,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
             }
             
             if (sourceArea != targetArea)
-            {                
+            {
                 maybeFlipLastItem (this, sourceArea);
             }
         }
