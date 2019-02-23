@@ -24,19 +24,25 @@ static void maybeFlipLastItem (DockPanel* panel, DockArea* sourceArea)
     if (sourceArea != nullptr && sourceArea->getNumItems() == 1)
     {
         DBG(panel->getName() << ": parent area items: " << sourceArea->getNumItems());
-        if (auto* sourceParentArea = sourceArea->findParentComponentOfClass<DockArea>())
+        if (auto* parentArea = sourceArea->getParentArea())
         {
             DBG(panel->getName() << ": flip last item");
+            DBG(panel->getName() << ": source items: " << sourceArea->getNumItems());
+            DBG(panel->getName() << ": parent items: " << parentArea->getNumItems());
+            DBG(panel->getName() << ": source vert : " << (int) sourceArea->isVertical());
+            DBG(panel->getName() << ": parent vert : " << (int) parentArea->isVertical());
             auto* itemRef = sourceArea->getItem (0);
-            const auto sizes = sourceParentArea->getSizesString();
+            const auto areaIdx = parentArea->indexOf (sourceArea);
+            DBG(panel->getName() << ": area index  : " << areaIdx);
+            const auto sizes = parentArea->getSizesString();
             sourceArea->remove (itemRef);
-            sourceParentArea->remove (sourceArea);
-            sourceParentArea->insert (-1, itemRef);
-            sourceParentArea->setSizes (sizes);
+            parentArea->remove (sourceArea);
+            parentArea->insert (areaIdx, itemRef);
+            parentArea->setSizes (sizes);
         }
         else
         {
-            DBG(panel->getName() << ":source area has no parent");
+            DBG(panel->getName() << ": source area has no parent");
         }
     }
 }
@@ -74,7 +80,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
             }
             
             if (sourceArea != targetArea)
-            {
+            {                
                 maybeFlipLastItem (this, sourceArea);
             }
         }

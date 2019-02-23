@@ -182,6 +182,9 @@ public:
     /** Get an Item */
     Component* getItem (const int index) const;
 
+    /** Returns the parent area containing this DockArea */
+    DockArea* getParentArea() const { return findParentComponentOfClass<DockArea>(); }
+    
     /** Gets the sizes as a string */
     String getSizesString() const { return layout.getSizesString(); }
 
