@@ -171,6 +171,16 @@ void Dock::resized()
     container->setBounds (getLocalBounds());
 }
 
+bool Dock::keyPressed (const KeyPress& press)
+{
+    if (press.getKeyCode() == KeyPress::escapeKey)
+    {
+        // noop. JUCE doesn't have a way to cancel drag operations yet
+    }
+
+    return false;
+}
+
 void Dock::dragOperationStarted (const DragAndDropTarget::SourceDetails& details)
 {
 //    if (auto* panel = dynamic_cast<DockPanel*> (details.sourceComponent.get()))

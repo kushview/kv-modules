@@ -133,6 +133,8 @@ public:
     /** @internal */
     void resized() override;
     /** @internal */
+    bool keyPressed (const KeyPress&) override;
+    /** @internal */
     void mouseMove (const MouseEvent& ev) override { }
     /** @internal */
     void dragOperationStarted (const DragAndDropTarget::SourceDetails& details) override;

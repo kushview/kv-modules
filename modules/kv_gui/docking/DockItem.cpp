@@ -296,7 +296,7 @@ void DockItem::paint (Graphics& g)
     if (selected)
     {
         g.setColour (findColour (DockItem::selectedHighlightColourId));
-        g.drawRoundedRectangle (getLocalBounds().toFloat(), 2.f, 1.4);
+        g.drawRoundedRectangle (getLocalBounds().toFloat().reduced(1.4), 1.5f, 1.4f);
     }
 }
 
