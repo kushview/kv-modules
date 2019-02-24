@@ -75,16 +75,28 @@ void Dock::registerPanelType (DockPanelType* newType)
     available.sort (compare, false);
 }
 
+DockArea* Dock::createArea (const bool isVertical)
+{
+    if (auto* area = areas.add (new DockArea()))
+    {
+        area->setVertical (isVertical);
+        return area;
+    }
+
+    return nullptr;
+}
+
 DockArea* Dock::getOrCreateArea (const bool isVertical, DockArea* areaToSkip)
 {
     DockArea* retArea = nullptr;
     for (auto* const area : areas)
         if (area->getNumItems() <= 0 && area->getParentArea() == nullptr)
             { retArea = area; break; }
+
     if (retArea == nullptr || retArea == container->getRootArea() || 
         (areaToSkip != nullptr && retArea == areaToSkip))
     {
-        retArea = areas.add (new DockArea ());
+        retArea = createArea (isVertical);
     }
 
     if (retArea)
@@ -280,7 +292,7 @@ void Dock::loadArea (DockArea& area, const ValueTree& state)
         else if (child.hasType (Slugs::area))
         {
             jassert (area.isVertical() != (bool) child[Slugs::vertical]);
-            auto* newArea = getOrCreateArea (! area.isVertical(), &area);
+            auto* newArea = createArea (! area.isVertical());
             jassert (newArea != &area);
             loadArea (*newArea, child);
             area.append (newArea);

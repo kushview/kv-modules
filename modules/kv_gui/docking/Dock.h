@@ -138,15 +138,10 @@ public:
     /** @internal */
     void dragOperationEnded (const DragAndDropTarget::SourceDetails& details) override;
 
-protected:
-    friend class DockContainer;
-    friend class DockPanel;
-    DockArea* getOrCreateArea (const bool isVertical = true, DockArea* areaToSkip = nullptr);
-    DockItem* getOrCreateItem (DockPanel* const panel = nullptr);
-    DockPanel* getOrCreatePanel (const String&);
-
 private:
     friend class DockItem;
+    friend class DockContainer;
+    friend class DockPanel;
     OwnedArray<DockPanelType> types;
     OwnedArray<DockPanelInfo> available;
     std::unique_ptr<DockContainer> container;
@@ -154,6 +149,11 @@ private:
     OwnedArray<DockArea> areas;
     OwnedArray<DockItem> items;
     OwnedArray<DockPanel> panels;
+
+    DockArea* createArea (const bool isVertical);
+    DockArea* getOrCreateArea (const bool isVertical = true, DockArea* areaToSkip = nullptr);
+    DockItem* getOrCreateItem (DockPanel* const panel = nullptr);
+    DockPanel* getOrCreatePanel (const String&);
 
     void loadArea (DockArea&, const ValueTree&);
     void loadItem (DockItem&, const ValueTree&);
