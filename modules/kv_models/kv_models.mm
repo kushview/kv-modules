@@ -1,5 +1,5 @@
 /*
-    kv_models.cpp - This file is part of the Kushview Modules for JUCE
+    This file is part of the Kushview Modules for JUCE
     Copyright (c) 2014-2019  Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
