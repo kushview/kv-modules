@@ -250,7 +250,6 @@ void Dock::removeOrphanObjects()
                 parent->remove (area);
     }
 
-
     OwnedArray<Component> deleter;
     for (int i = areas.size(); --i >= 0;)
         if (! container->contains (areas.getUnchecked (i)))
