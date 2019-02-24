@@ -97,7 +97,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
             //noop
         }
 
-        dock.dumpState();
+        dock.triggerAsyncUpdate();
         return;
     }
     
@@ -109,8 +109,6 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
         jassertfalse; // need an area to dock to
         return;
     }
-
-    
 
     if (placement.isVertical() == targetArea->isVertical() 
             && (sourceItem != targetItem || sourceItem->getNumPanels() > 1))
@@ -253,9 +251,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
         jassertfalse;
     }
 
-    dock.dumpOrphanAreas();
-    dock.dumpState();
-    // dock.removeOrphanObjects();
+    dock.triggerAsyncUpdate();
 }
 
 void DockPanel::close()

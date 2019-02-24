@@ -39,6 +39,8 @@ public:
     /** Returns the root area */
     DockArea* getRootArea() const;
 
+    bool contains (Component* comp);
+    
     /** @internal */
     void resized() override;
     /** @internal */

@@ -250,39 +250,20 @@ void Dock::removeOrphanObjects()
                 parent->remove (area);
     }
 
-    // for (int i = items.size(); --i >= 0;)
-    // {
-    //     auto* const item = items.getUnchecked (i);
-    //     if (item->getNumPanels() <= 0)
-    //         item->detach();
-    // }
 
+    OwnedArray<Component> deleter;
     for (int i = areas.size(); --i >= 0;)
-    {
-        if (areas.getUnchecked(i)->getNumItems() <= 0 
-            && areas.getUnchecked(i)->getParentComponent() == nullptr
-            && areas.getUnchecked(i)->getParentArea() == nullptr)
-        {
-            areas.remove (i);
-        }
-    }
-
-    // for (int i = items.size(); --i >= 0;)
-    // {
-    //     auto* const item = items.getUnchecked (i);
-    //     if (item->getParentArea() == nullptr)
-    //     {
-    //         item->tabs->clearTabs();
-    //         item->panels.clear();
-    //         items.remove (i);
-    //     }
-    // }
-
-    // for (int i = panels.size(); --i >= 0;)
-    // {
-    //     if (panels.getUnchecked(i)->getParentComponent() == nullptr)
-    //         panels.remove (i);
-    // }
+        if (! container->contains (areas.getUnchecked (i)))
+            deleter.add (areas.removeAndReturn (i));
+   #if 0
+    for (int i = items.size(); --i >= 0;)
+        if (! container->contains (items.getUnchecked (i)))
+            deleter.add (items.removeAndReturn (i));
+    for (int i = panels.size(); --i >= 0;)
+        if (! container->contains (panels.getUnchecked (i)))
+            deleter.add (panels.removeAndReturn (i));
+   #endif
+    deleter.clear();
 
     const int sizeAfter = panels.size() + items.size() + areas.size();
     DBG("[KV] dock: purged " << (sizeBefore - sizeAfter) << " orphans.");
@@ -427,17 +408,15 @@ bool Dock::applyState (const ValueTree& state)
         }
     }
 
-    if (newContainer)
-    {
-        removeChildComponent (container.get());
-        container.swap (newContainer);
-        addAndMakeVisible (container.get());
-        resized();
-        removeOrphanObjects();
-        return true;
-    }
+    if (! newContainer)
+        return false;
 
-    return false;
+    removeChildComponent (container.get());
+    container.swap (newContainer);
+    addAndMakeVisible (container.get());
+    resized();
+    triggerAsyncUpdate();
+    return true;
 }
 
 }

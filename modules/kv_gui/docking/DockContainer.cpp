@@ -19,6 +19,24 @@
 
 namespace kv {
 
+namespace DockHelpers {
+
+static bool findComponentRecursive (Component* container, Component* object)
+{
+    for (int i = 0; i < container->getNumChildComponents(); ++i)
+    {
+        auto* child = container->getChildComponent (i);
+        if (object == child)
+            return true;
+        if (findComponentRecursive (child, object))
+            return true;
+    }
+
+    return false;
+}
+
+}
+
 struct DockContainer::DropZone : public Component,
                                  public DragAndDropTarget
 {
@@ -76,6 +94,13 @@ DockContainer::~DockContainer()
 }
 
 DockArea* DockContainer::getRootArea() const { jassert (root != nullptr); return root.getComponent(); }
+
+bool DockContainer::contains (Component* object)
+{
+    if (object == this || (root != nullptr && object == root))
+        return true;
+    return DockHelpers::findComponentRecursive (this, object);
+}
 
 bool DockContainer::dockItem (DockItem* const item, DockPlacement placement)
 {
