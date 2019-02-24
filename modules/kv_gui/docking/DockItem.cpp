@@ -217,8 +217,7 @@ void DockItem::setCurrentPanelIndex (int panel)
 {
     if (getCurrentPanelIndex() == panel)
         return;
-    tabs->setCurrentTabIndex (jlimit (0, panels.size() - 1, panel));
-    
+    tabs->setCurrentTabIndex (jlimit (0, panels.size() - 1, panel));   
 }
 
 void DockItem::reset()
@@ -246,14 +245,6 @@ void DockItem::detach()
     {
         area->remove (this);
         area->resized();
-        
-        // while (area != nullptr)
-        // {
-        //     auto* parent = area->findParentComponentOfClass<DockArea>();
-        //     if (parent && area->getNumItems() <= 0)
-        //         parent->remove (area);
-        //     area = parent;
-        // }
     }
     
     jassert (getParentComponent() == nullptr);
@@ -305,7 +296,7 @@ void DockItem::paint (Graphics& g)
     if (selected)
     {
         g.setColour (findColour (DockItem::selectedHighlightColourId));
-        g.drawRect (getLocalBounds().toFloat(), 1.4);
+        g.drawRoundedRectangle (getLocalBounds().toFloat(), 2.f, 1.4);
     }
 }
 

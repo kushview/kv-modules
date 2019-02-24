@@ -237,21 +237,58 @@ DockItem* Dock::createItem (const String& panelType, DockPlacement placement)
 void Dock::removeOrphanObjects()
 {
     const int sizeBefore = panels.size() + items.size() + areas.size();
+    DBG("[KV] dock: purging orphans...");
+    DBG("[KV] dock: areas  : " << areas.size());
+    DBG("[KV] dock: items  : " << items.size());
+    DBG("[KV] dock: panels : " << panels.size());
 
     for (int i = areas.size(); --i >= 0;)
     {
-        auto* area = areas.getUnchecked (i);
+        auto* const area = areas.getUnchecked (i);
         if (area->getNumItems() <= 0)
-            if (auto* parent = area->findParentComponentOfClass<DockArea>())
+            if (auto* const parent = area->getParentArea())
                 parent->remove (area);
     }
 
+    // for (int i = items.size(); --i >= 0;)
+    // {
+    //     auto* const item = items.getUnchecked (i);
+    //     if (item->getNumPanels() <= 0)
+    //         item->detach();
+    // }
+
     for (int i = areas.size(); --i >= 0;)
-        if (areas.getUnchecked(i)->getNumItems() <= 0 && areas.getUnchecked(i)->getParentComponent() == nullptr)
+    {
+        if (areas.getUnchecked(i)->getNumItems() <= 0 
+            && areas.getUnchecked(i)->getParentComponent() == nullptr
+            && areas.getUnchecked(i)->getParentArea() == nullptr)
+        {
             areas.remove (i);
+        }
+    }
+
+    // for (int i = items.size(); --i >= 0;)
+    // {
+    //     auto* const item = items.getUnchecked (i);
+    //     if (item->getParentArea() == nullptr)
+    //     {
+    //         item->tabs->clearTabs();
+    //         item->panels.clear();
+    //         items.remove (i);
+    //     }
+    // }
+
+    // for (int i = panels.size(); --i >= 0;)
+    // {
+    //     if (panels.getUnchecked(i)->getParentComponent() == nullptr)
+    //         panels.remove (i);
+    // }
 
     const int sizeAfter = panels.size() + items.size() + areas.size();
-    DBG("Dock: purged " << (sizeBefore - sizeAfter) << " orphan objects.");
+    DBG("[KV] dock: purged " << (sizeBefore - sizeAfter) << " orphans.");
+    DBG("[KV] dock: areas  : " << areas.size());
+    DBG("[KV] dock: items  : " << items.size());
+    DBG("[KV] dock: panels : " << panels.size());
 }
 
 void Dock::startDragging (DockPanel* const panel)
