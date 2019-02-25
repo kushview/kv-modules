@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_PATCH_MATRIX_COMPONENT_H
-#define EL_PATCH_MATRIX_COMPONENT_H
+#pragma once
 
 class QuadrantLayout : public Component
 {
@@ -93,5 +92,3 @@ private:
     int offsetX, offsetY, hoveredRow, lastHoveredRow, hoveredColumn, lastHoveredColumn;
     void updateHoveredCell (const int x, const int y);
 };
-
-#endif // EL_PATCH_MATRIX_COMPONENT_H
