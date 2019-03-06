@@ -27,9 +27,10 @@ class DockItem;
 class DockItemTabs;
 class DockLayout;
 class DockPanel;
-class DockPanelInfo;
 class DockPanelType;
 class DockWindow;
+
+struct DockPanelInfo;
 
 class Dock : public Component,
              public DragAndDropContainer,
