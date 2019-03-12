@@ -37,8 +37,8 @@ static String getMessageForError (const String& error)
     else if (e == "key_mismatch")           return "License key does not match for product";
     else if (e == "invalid_item_id")        return "Invalid product";
     else if (e == "item_name_mismatch")     return "Item name mismatch";
-    else if (e == "revoked")                return "License has been revoked or disabled. If you believe this is an error please contact support.";
-    
+    else if (e == "revoked")                return "License has been revoked. If you believe this is an error please contact support.";
+    else if (e == "disabled")               return "License has been disabled. If you believe this is an error please contact support.";
     return "Unknown server error";
 }
 
@@ -245,6 +245,7 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const S
     {
         const ValueTree reg = edd::decryptValueTree (data.key.fromFirstOccurrenceOf ("#", true, true), getPublicKey());
         edd = reg.getChildWithName (edd::nodeName);
+        DBG(edd.toXmlString());
     }
     
     return r;

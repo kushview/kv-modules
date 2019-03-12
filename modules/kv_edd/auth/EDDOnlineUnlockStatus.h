@@ -31,7 +31,10 @@ public:
     virtual ~EDDOnlineUnlockStatus();
     
     /** Returns a property from EDD extra data */
-    inline var getProperty (const Identifier& key) const { return edd [key]; }
+    inline var getProperty (const Identifier& key, const var& defaultValue = var()) const
+    { 
+        return edd.getProperty (key, defaultValue); 
+    }
     
     /** Returns true if a property exists on the edd node */
     inline bool hasProperty (const Identifier& key) const { return edd.hasProperty (key); }
