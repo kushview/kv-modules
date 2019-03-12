@@ -245,7 +245,6 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::activateLicense (const S
     {
         const ValueTree reg = edd::decryptValueTree (data.key.fromFirstOccurrenceOf ("#", true, true), getPublicKey());
         edd = reg.getChildWithName (edd::nodeName);
-        DBG(edd.toXmlString());
     }
     
     return r;
