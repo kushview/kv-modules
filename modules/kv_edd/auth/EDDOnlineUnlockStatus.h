@@ -19,6 +19,10 @@
 
 #pragma once
 
+namespace kv {
+
+using namespace juce;
+
 /** Base class for unlocking from a site which is using edd-juce for WordPress */
 class EDDOnlineUnlockStatus : public OnlineUnlockStatus
 {
@@ -88,3 +92,5 @@ private:
     
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(EDDOnlineUnlockStatus);
 };
+
+}

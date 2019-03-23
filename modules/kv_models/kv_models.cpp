@@ -18,7 +18,4 @@
 */
 
 #include "kv_models.h"
-
-namespace kv {
- #include "models/ObjectModel.cpp"
-}
+#include "models/ObjectModel.cpp"

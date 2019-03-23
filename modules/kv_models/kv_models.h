@@ -40,10 +40,6 @@
 #include <juce_data_structures/juce_data_structures.h>
 #include <kv_core/kv_core.h>
 
-namespace kv {
-
 #include "models/ObjectModel.h"
 
-}
-
-#endif   // KV_MODELS_H_INCLUDED
+#endif

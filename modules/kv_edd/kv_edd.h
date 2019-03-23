@@ -37,7 +37,4 @@ END_JUCE_MODULE_DECLARATION
 #include <juce_data_structures/juce_data_structures.h>
 #include <juce_product_unlocking/juce_product_unlocking.h>
 
-namespace kv {
- using namespace juce;
- #include "auth/EDDOnlineUnlockStatus.h"
-}
+#include "auth/EDDOnlineUnlockStatus.h"

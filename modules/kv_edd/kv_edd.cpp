@@ -18,7 +18,4 @@
 */
 
 #include "kv_edd.h"
-
-namespace kv {
- #include "auth/EDDOnlineUnlockStatus.cpp"
-}
+#include "auth/EDDOnlineUnlockStatus.cpp"

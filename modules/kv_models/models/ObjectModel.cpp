@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
+
 ObjectModel::ObjectModel (const ValueTree& data) : objectData (data) { }
 ObjectModel::ObjectModel (const Identifier& type) : objectData (type) { }
 
@@ -53,4 +55,6 @@ ValueTree ObjectModel::setData (const ValueTree& data)
 void ObjectModel::setNodeData (const ValueTree& data)
 {
     objectData = data;
+}
+
 }

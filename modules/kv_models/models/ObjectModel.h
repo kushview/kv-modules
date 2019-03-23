@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 /** A thin wrapper around a juce ValueTree */
 class ObjectModel
 {
@@ -108,3 +110,5 @@ protected:
             objectData.setProperty (prop, objectData.getProperty (prop, defaultValue), nullptr);
     }
 };
+
+}

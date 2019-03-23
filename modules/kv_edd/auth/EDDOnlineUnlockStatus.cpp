@@ -17,6 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
+
+using namespace juce;
+
 const char* EDDOnlineUnlockStatus::activeName   = "active";
 const char* EDDOnlineUnlockStatus::enabledName  = "enabled";
 const char* EDDOnlineUnlockStatus::licenseName  = "license";
@@ -357,4 +361,6 @@ OnlineUnlockStatus::UnlockResult EDDOnlineUnlockStatus::checkLicense (const Stri
     r.succeeded = true;
     r.errorMessage = r.informativeMessage = String();
     return r;
+}
+
 }
