@@ -257,10 +257,17 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
 void DockPanel::close()
 {
     // TODO: handle single panel panel in a floating window
-
-    if (auto* source = findParentComponentOfClass<DockItem>())
+    if (auto* parentItem = findParentComponentOfClass<DockItem>())
     {
-        source->detach (this);
+        auto* const itemArea = parentItem->getParentArea();
+        parentItem->detach (this);
+
+        if (itemArea != nullptr)
+        {
+            auto* const parentArea = itemArea->getParentArea();
+            if (parentArea && itemArea->getNumItems() <= 0)
+                parentArea->remove (itemArea);
+        }
     }
 }
 
