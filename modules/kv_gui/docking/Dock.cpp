@@ -19,6 +19,8 @@
 
 namespace kv {
 
+#define KV_DEBUG_DOCK_ORPHANS       0
+
 struct SortDockInfoByName
 {
     static int compareElements (DockPanelInfo* first, DockPanelInfo* second)
@@ -246,11 +248,13 @@ DockItem* Dock::createItem (const String& panelType, DockPlacement placement)
 
 void Dock::removeOrphanObjects()
 {
+   #if KV_DEBUG_DOCK_ORPHANS
     const int sizeBefore = panels.size() + items.size() + areas.size();
     DBG("[KV] dock: purging orphans...");
     DBG("[KV] dock: areas  : " << areas.size());
     DBG("[KV] dock: items  : " << items.size());
     DBG("[KV] dock: panels : " << panels.size());
+   #endif
 
     for (int i = areas.size(); --i >= 0;)
     {
@@ -274,11 +278,13 @@ void Dock::removeOrphanObjects()
    #endif
     deleter.clear();
 
+   #if KV_DEBUG_DOCK_ORPHANS
     const int sizeAfter = panels.size() + items.size() + areas.size();
     DBG("[KV] dock: purged " << (sizeBefore - sizeAfter) << " orphans.");
     DBG("[KV] dock: areas  : " << areas.size());
     DBG("[KV] dock: items  : " << items.size());
     DBG("[KV] dock: panels : " << panels.size());
+   #endif
 }
 
 void Dock::startDragging (DockPanel* const panel)
