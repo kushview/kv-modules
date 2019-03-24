@@ -265,18 +265,42 @@ void Dock::removeOrphanObjects()
     }
 
     OwnedArray<Component> deleter;
+    Array<DockPanel*> panelsToDelete;
     for (int i = areas.size(); --i >= 0;)
-        if (! container->contains (areas.getUnchecked (i)))
-            deleter.add (areas.removeAndReturn (i));
-   #if 0
-    for (int i = items.size(); --i >= 0;)
-        if (! container->contains (items.getUnchecked (i)))
-            deleter.add (items.removeAndReturn (i));
-    for (int i = panels.size(); --i >= 0;)
-        if (! container->contains (panels.getUnchecked (i)))
-            deleter.add (panels.removeAndReturn (i));
-   #endif
+    {
+        auto* const area = areas.getUnchecked (i);
+        if (area == container->getRootArea())
+            continue;
+        if (container->contains (area))
+            continue;
+
+        for (int j = 0; j < area->getNumItems(); ++j)
+        {
+            if (auto* const item = dynamic_cast<DockItem*> (area->getItem (j)))
+            {
+                for (int k = 0; k < item->getNumPanels(); ++k)
+                {
+                    if (auto* const panel = item->getPanel (k))
+                    {
+                        panelsToDelete.add (panel);
+                        DBG("[KV] dock: orphan panel: " << panel->getName());
+                    }
+                }
+
+                area->remove (item);
+                item->panels.clear();
+                item->tabs->clearTabs();
+                jassert (items.contains (item) && item->panels.size() <= 0 && item->tabs->getNumTabs() <= 0);
+                items.removeObject (item, true);
+            }
+        }
+
+        deleter.add (areas.removeAndReturn (i));
+    }
+
     deleter.clear();
+    for (auto* panel : panelsToDelete)
+        panels.removeObject (panel, true);
 
    #if KV_DEBUG_DOCK_ORPHANS
     const int sizeAfter = panels.size() + items.size() + areas.size();

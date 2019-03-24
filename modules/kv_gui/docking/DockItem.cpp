@@ -233,6 +233,10 @@ void DockItem::detach (DockPanel* const panel)
         return;
     
     panels.removeFirstMatchingValue (panel);
+    for (int i = tabs->getNumTabs(); --i >= 0;)
+        if (panel == dynamic_cast<DockPanel*> (tabs->getTabContentComponent (i)))
+            { tabs->removeTab (i); break; }
+
     if (panels.size() == 0)
         detach();
     else

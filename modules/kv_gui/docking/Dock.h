@@ -274,6 +274,9 @@ public:
     /** Returns the number of panels in this item's container */
     int getNumPanels() const { return panels.size(); }
 
+    /** Returns one of the dock panels or nullptr if out of range */
+    DockPanel* getPanel (int index) const { return panels [index]; }
+
     /** Returns the current panel index */
     int getCurrentPanelIndex() const;
 
