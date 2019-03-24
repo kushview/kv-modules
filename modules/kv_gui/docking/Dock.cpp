@@ -301,6 +301,29 @@ void Dock::removeOrphanObjects()
     deleter.clear();
     for (auto* panel : panelsToDelete)
         panels.removeObject (panel, true);
+    panelsToDelete.clear();
+
+    for (int i = items.size(); --i >= 0;)
+    {
+        auto* const item = items.getUnchecked (i);
+        if (! item->isShowing())
+        {
+            for (int j = 0; j < item->getNumPanels(); ++j)
+            {
+                auto* const panel = item->getPanel (j);
+                DBG("[KV] dock: hidden panel: " << panel->getName());
+                panelsToDelete.add (panel);
+            }
+            item->panels.clear();
+            item->tabs->clearTabs();
+            jassert (items.contains (item) && item->panels.size() <= 0 && item->tabs->getNumTabs() <= 0);
+            items.remove (i);
+        }
+    }
+
+    for (auto* panel : panelsToDelete)
+        panels.removeObject (panel, true);
+    panelsToDelete.clear();
 
    #if KV_DEBUG_DOCK_ORPHANS
     const int sizeAfter = panels.size() + items.size() + areas.size();
