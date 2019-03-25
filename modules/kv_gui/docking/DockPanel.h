@@ -28,6 +28,9 @@ struct DockPanelInfo
     Identifier identifier;
     String name;
     String description;
+    int  placement          = 0;
+    bool singleton          = false;
+    bool hideInMenu         = false;
 };
 
 class DockPanel : public Component

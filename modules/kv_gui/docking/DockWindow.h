@@ -30,20 +30,26 @@ class DockWindow : public DocumentWindow
 public:
     /** Destructor */
     virtual ~DockWindow();
-    
+
+    bool contains (DockArea* area) const;
+
     /** Dock the geven item to this window */
     bool dockItem (DockItem* const item, DockPlacement placement);
 
+    /** Get the owner dock */
+    Dock& getDock() { return dock; }
+    
     /** @internal */
     void closeButtonPressed() override;
     /** @internal */
     int getDesktopWindowStyleFlags() const override;
-
+    
 protected:
     DockWindow (Dock& dock, const int width = 600, const int height = 400);
     
 private:
     friend class Dock;
+    Dock& dock;
     std::unique_ptr<DockContainer> container;
 };
 

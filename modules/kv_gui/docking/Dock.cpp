@@ -246,6 +246,23 @@ DockItem* Dock::createItem (const String& panelType, DockPlacement placement)
     return item;
 }
 
+void Dock::undockPanel (DockPanel* panel)
+{
+    auto screenBounds = panel->getScreenBounds();
+    panel->close();
+
+    auto* window = windows.add (new DockWindow (*this));
+    auto* item = getOrCreateItem (panel);
+    window->setBackgroundColour (findColour (DocumentWindow::backgroundColourId).darker());
+    window->dockItem (item, DockPlacement::Top);
+    window->setContentComponentSize (screenBounds.getWidth(), screenBounds.getHeight());
+    window->setTopLeftPosition (jmax (0, screenBounds.getX() - window->getTitleBarHeight()), 
+                                screenBounds.getY());
+    window->setVisible (true);
+    window->addToDesktop();
+    window->toFront (true);
+}
+
 void Dock::removeOrphanObjects()
 {
    #if KV_DEBUG_DOCK_ORPHANS
@@ -271,7 +288,15 @@ void Dock::removeOrphanObjects()
         auto* const area = areas.getUnchecked (i);
         if (area == container->getRootArea())
             continue;
+
         if (container->contains (area))
+            continue;
+
+        bool isInDockWindow = false;
+        for (auto* const dw : windows)
+            if (dw->contains (area))
+                { isInDockWindow = true; break; }
+        if (isInDockWindow)
             continue;
 
         for (int j = 0; j < area->getNumItems(); ++j)

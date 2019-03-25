@@ -146,6 +146,8 @@ private:
     friend class DockItem;
     friend class DockContainer;
     friend class DockPanel;
+    friend class DockWindow;
+    
     OwnedArray<DockPanelType> types;
     OwnedArray<DockPanelInfo> available;
     std::unique_ptr<DockContainer> container;
@@ -158,6 +160,8 @@ private:
     DockArea* getOrCreateArea (const bool isVertical = true, DockArea* areaToSkip = nullptr);
     DockItem* getOrCreateItem (DockPanel* const panel = nullptr);
     DockPanel* getOrCreatePanel (const String&);
+
+    void undockPanel (DockPanel*);
 
     void loadArea (DockArea&, const ValueTree&);
     void loadItem (DockItem&, const ValueTree&);

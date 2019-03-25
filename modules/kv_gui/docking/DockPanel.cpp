@@ -50,7 +50,10 @@ static void maybeFlipLastItem (DockPanel* panel, DockArea* sourceArea)
 }
 
 DockPanel::DockPanel() {}
-DockPanel::~DockPanel() {}
+DockPanel::~DockPanel()
+{
+    DBG("[KV] del dock panel: " << getName());
+}
 
 void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
 {
@@ -273,7 +276,14 @@ void DockPanel::close()
 
 void DockPanel::undock()
 {
-    DBG("undocking not yet supported");
+    auto* const dock = findParentComponentOfClass<Dock>();
+    if (! dock)
+    {
+        jassertfalse; // can't undock without the Dock
+        return;
+    }
+
+    dock->undockPanel (this);
 }
 
 ValueTree DockPanel::getState() const
