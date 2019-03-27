@@ -30,7 +30,7 @@ struct DockPanelInfo
     String description;
     int  placement          = 0;
     bool singleton          = false;
-    bool hideInMenu         = false;
+    bool showInMenu         = true;
 };
 
 class DockPanel : public Component
