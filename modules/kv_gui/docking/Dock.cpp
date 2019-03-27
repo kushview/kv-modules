@@ -371,6 +371,17 @@ ValueTree Dock::getState() const
     ValueTree state (Slugs::dock);
     state.setProperty (Slugs::bounds, getLocalBounds().toString(), nullptr);
     state.addChild (container->root->getState(), -1, nullptr);
+    for (auto* const window : windows) 
+    {
+        if (window->container.get() != nullptr && 
+            window->container->root.getComponent() != nullptr)
+        {
+            ValueTree winState ("window");
+            winState.setProperty ("position", window->getWindowStateAsString(), nullptr);
+            winState.appendChild (window->container->root->getState(), nullptr);
+            state.appendChild (winState, nullptr);
+        }
+    }
     return state;
 }
 
@@ -440,6 +451,7 @@ void Dock::loadItem (DockItem& item, const ValueTree& state)
 
     item.refreshPanelContainer();
     item.setCurrentPanelIndex ((int) state.getProperty (Slugs::panel, 0));
+    item.resized();
 }
 
 void Dock::loadPanel (DockPanel& panel, const ValueTree& state)
@@ -466,6 +478,7 @@ bool Dock::applyState (const ValueTree& state)
         return false;
 
     std::unique_ptr<DockContainer> newContainer;
+    OwnedArray<DockWindow> newWindows;
     
     for (int i = 0; i < state.getNumChildren(); ++i)
     {
@@ -491,7 +504,13 @@ bool Dock::applyState (const ValueTree& state)
         }
         else if (child.hasType ("window"))
         {
-            DBG("load dock window");
+            DBG ("load dock window");
+            DBG(child.toXmlString());
+            auto* const window = newWindows.add (new DockWindow (*this));
+            ValueTree data = child.getChildWithName (Slugs::area);
+            jassert (window->container && window->container->getRootArea() != nullptr);
+            window->restoreWindowStateFromString (child.getProperty ("position").toString());
+            loadArea (*window->container->getRootArea(), data);
         }
     }
 
@@ -502,6 +521,17 @@ bool Dock::applyState (const ValueTree& state)
     container.swap (newContainer);
     addAndMakeVisible (container.get());
     resized();
+
+    windows.swapWith (newWindows);
+    newWindows.clear();
+    for (auto* window : windows)
+    {
+        window->setVisible (true);
+        window->addToDesktop();
+        window->resized();
+        window->repaint();
+    }
+
     triggerAsyncUpdate();
     return true;
 }

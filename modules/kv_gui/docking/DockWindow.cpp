@@ -51,6 +51,22 @@ bool DockWindow::dockItem (DockItem* const item, DockPlacement placement)
     return container->dockItem (item, placement);
 }
 
+bool DockWindow::empty() const
+{
+    if (container == nullptr || container->getRootArea() == nullptr)
+        return true;
+    if (auto* const root = container->getRootArea())
+    {
+        for (int i = 0; i < root->getNumItems(); ++i)
+        {
+            if (auto* const item = dynamic_cast<DockItem*> (root->getItem (i)))
+                if (item->getNumPanels() > 0)
+                    return false;
+        }
+    }
+    return true;
+}
+
 void DockWindow::closeButtonPressed()
 {
     dock.windows.removeObject (this);

@@ -19,6 +19,25 @@
 
 namespace kv {
 
+class ScopedDockWindowCloser
+{
+public:
+    ScopedDockWindowCloser (DockWindow* w)
+        : window (w)
+    {
+
+    }
+    ~ScopedDockWindowCloser()
+    {
+        if (auto* w = window.getComponent())
+            if (w->empty())
+                w->closeButtonPressed();
+    }
+
+private:
+    Component::SafePointer<DockWindow> window;
+};
+
 /** This will reparent the single item in a dock area contained in a parent
     dock area */
 static void maybeFlipLastItem (DockPanel* panel, DockArea* sourceArea)
@@ -60,6 +79,8 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
     if (placement.isFloating() || target == nullptr)
         return;
     
+    ScopedDockWindowCloser windowCloser (findParentComponentOfClass<DockWindow>());
+
     auto* const source = findParentComponentOfClass<DockItem>();
     auto* const sourceItem = source;
     auto* const sourceArea = sourceItem->getParentArea();
@@ -259,7 +280,8 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
 
 void DockPanel::close()
 {
-    // TODO: handle single panel panel in a floating window
+    ScopedDockWindowCloser windowCloser (findParentComponentOfClass<DockWindow>());
+    
     if (auto* parentItem = findParentComponentOfClass<DockItem>())
     {
         auto* const itemArea = parentItem->getParentArea();

@@ -39,6 +39,8 @@ public:
     /** Get the owner dock */
     Dock& getDock() { return dock; }
     
+    bool empty() const;
+    
     /** @internal */
     void closeButtonPressed() override;
     /** @internal */
