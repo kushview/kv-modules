@@ -54,6 +54,7 @@ bool DockWindow::dockItem (DockItem* const item, DockPlacement placement)
 void DockWindow::closeButtonPressed()
 {
     dock.windows.removeObject (this);
+    dock.triggerAsyncUpdate();
 }
 
 int DockWindow::getDesktopWindowStyleFlags() const
