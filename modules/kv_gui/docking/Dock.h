@@ -122,10 +122,6 @@ public:
         g.fillAll (findColour (DocumentWindow::backgroundColourId).darker());
     }
     
-    void dumpObjects();
-    void dumpOrphanAreas();
-    void dumpState();
-
     enum ColourIds
     {
         backgroundColourId = 0x90005000        

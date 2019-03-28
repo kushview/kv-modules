@@ -30,24 +30,6 @@ struct SortDockInfoByName
     }
 };
 
-void Dock::dumpObjects()
-{
-    for (auto* area : areas)
-    {
-        DBG("AREA: " << area->getNumChildComponents());
-    }
-    
-    for (auto* item : items)
-    {
-        DBG("ITEM: " << item->getNumPanels());
-    }
-
-    for (auto* panel : panels)
-    {
-        DBG("PANEL: " << panel->getName() << ": " << (int) (panel->getParentComponent() == nullptr));
-    }
-}
-
 Dock::Dock ()
 {
     container.reset (new DockContainer (*this));
@@ -308,7 +290,9 @@ void Dock::removeOrphanObjects()
                     if (auto* const panel = item->getPanel (k))
                     {
                         panelsToDelete.add (panel);
+                       #if KV_DEBUG_DOCK_ORPHANS
                         DBG("[KV] dock: orphan panel: " << panel->getName());
+                       #endif
                     }
                 }
 
@@ -336,7 +320,9 @@ void Dock::removeOrphanObjects()
             for (int j = 0; j < item->getNumPanels(); ++j)
             {
                 auto* const panel = item->getPanel (j);
+               #if KV_DEBUG_DOCK_ORPHANS
                 DBG("[KV] dock: hidden panel: " << panel->getName());
+               #endif
                 panelsToDelete.add (panel);
             }
             item->panels.clear();
@@ -458,18 +444,6 @@ void Dock::loadPanel (DockPanel& panel, const ValueTree& state)
 {
     panel.setName (state.getProperty (Slugs::name, "Panel").toString());
     panel.setBounds (Dock::getBounds (state));
-}
-
-void Dock::dumpOrphanAreas()
-{
-    for (auto* area : areas)
-        if (nullptr == area->getParentComponent())
-            { DBG ("orphan area #" << areas.indexOf (area)); }
-}
-
-void Dock::dumpState()
-{
-    DBG(getState().toXmlString());
 }
 
 bool Dock::applyState (const ValueTree& state)
