@@ -69,6 +69,10 @@ public:
 
     virtual void drawKeymapChangeButton (Graphics& g, int width, int height, Button& button, const String& keyDescription) override;
 
+    // Sliders
+    void drawLinearSliderBackground (Graphics& g, int x, int y, int width, int height,
+                                     float sliderPos, float minSliderPos, float maxSliderPos,
+                                     const Slider::SliderStyle style, Slider& slider) override;
     // Menus
     virtual Font getPopupMenuFont() override;
     virtual void drawPopupMenuBackground (Graphics& g, int width, int height) override;

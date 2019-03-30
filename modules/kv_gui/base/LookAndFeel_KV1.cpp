@@ -118,6 +118,42 @@ LookAndFeel_KV1::~LookAndFeel_KV1() { }
 
 bool LookAndFeel_KV1::areScrollbarButtonsVisible() { return false; }
 
+//=============================================================================
+// Sliders
+void LookAndFeel_KV1::drawLinearSliderBackground (Graphics& g, int x, int y, int width, int height,
+                                                  float /*sliderPos*/,
+                                                  float /*minSliderPos*/,
+                                                  float /*maxSliderPos*/,
+                                                  const Slider::SliderStyle /*style*/, 
+                                                  Slider& slider)
+{
+    const float sliderRadius = (float) (getSliderThumbRadius (slider) - 4);
+
+    const Colour trackColour (slider.findColour (Slider::trackColourId));
+    const Colour gradCol1 (trackColour.overlaidWith (Colour (slider.isEnabled() ? 0x13000000 : 0x09000000)));
+    const Colour gradCol2 (trackColour.overlaidWith (Colour (0x06000000)));
+    Path indent;
+    const float cornerSize = 1.f;
+
+    if (slider.isHorizontal())
+    {
+        auto iy = y + height * 0.5f - sliderRadius * 0.5f;
+        g.setGradientFill (ColourGradient::vertical (gradCol1, iy, gradCol2, iy + sliderRadius));
+        indent.addRoundedRectangle (x - sliderRadius * 0.5f, iy, width + sliderRadius, sliderRadius, cornerSize);
+    }
+    else
+    {
+        auto ix = x + width * 0.5f - sliderRadius * 0.5f;
+        g.setGradientFill (ColourGradient::horizontal (gradCol1, ix, gradCol2, ix + sliderRadius));
+        indent.addRoundedRectangle (ix, y - sliderRadius * 0.5f, sliderRadius, height + sliderRadius, cornerSize);
+    }
+
+    g.fillPath (indent);
+
+    g.setColour (trackColour.contrasting (0.5f));
+    g.strokePath (indent, PathStrokeType (0.5f));
+}
+
 Font LookAndFeel_KV1::getMenuBarFont (MenuBarComponent&, int, const String&)
 {
 	return Font (14.f);
