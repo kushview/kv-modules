@@ -108,6 +108,15 @@ LookAndFeel_KV1::LookAndFeel_KV1()
     setColour (TextEditor::outlineColourId,         Colours::black);
     setColour (TextEditor::focusedOutlineColourId,  Colors::toggleBlue.darker (0.002).withAlpha (0.6f));
 
+    // Slider
+    setColour (Slider::thumbColourId,               Colours::black);
+    setColour (Slider::textBoxTextColourId,         LookAndFeel_KV1::textColor);
+    setColour (Slider::trackColourId,               Colours::black);
+    setColour (Slider::textBoxBackgroundColourId,   findColour (TextEditor::backgroundColourId));
+    setColour (Slider::textBoxHighlightColourId,    findColour (TextEditor::highlightColourId));
+    setColour (Slider::textBoxOutlineColourId,      findColour (TextEditor::outlineColourId));
+    setColour (Slider::textBoxTextColourId,         findColour (TextEditor::textColourId));
+
     // Digital meter styling
     setColour (DigitalMeter::levelOverColourId, Colours::yellow.darker());
     setColour (DigitalMeter::level0dBColourId, Colours::yellowgreen);
