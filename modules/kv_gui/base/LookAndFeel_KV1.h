@@ -19,6 +19,15 @@
 
 #pragma once
 
+struct Colors
+{
+    static const Colour elemental;
+    static const Colour toggleBlue;
+    static const Colour toggleGreen;
+    static const Colour toggleOrange;
+    static const Colour toggleRed;
+};
+
 class JUCE_API LookAndFeel_KV1 : public LookAndFeel_V3
 {
 public:

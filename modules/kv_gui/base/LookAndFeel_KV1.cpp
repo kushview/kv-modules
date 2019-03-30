@@ -17,6 +17,12 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+const Colour Colors::elemental      = Colour (0xff4765a0);
+const Colour Colors::toggleBlue     = Colour (0xff33aaf9);
+const Colour Colors::toggleGreen    = Colour (0xff92e75e);
+const Colour Colors::toggleOrange   = Colour (0xfffaa63a);
+const Colour Colors::toggleRed      = Colour (0xffff0000);
+
 const Colour LookAndFeel_KV1::elementBlue            = Colour (0xff4765a0);
 
 const Colour LookAndFeel_KV1::backgroundColor        = Colour ((uint32) LookAndFeel_KV1::defaultBackgroundColor);
@@ -91,6 +97,16 @@ LookAndFeel_KV1::LookAndFeel_KV1()
     setColour (TreeView::linesColourId, LookAndFeel_KV1::textColor);
     setColour (TreeView::dragAndDropIndicatorColourId, Colours::orange.darker());
     setColour (TreeView::selectedItemBackgroundColourId, elementBlue.darker (0.6000006f));
+
+    // Carrot
+    setColour (CaretComponent::caretColourId, Colors::toggleOrange.brighter (0.20f));
+
+    // Text Editor
+    setColour (TextEditor::textColourId,            textColor);
+    setColour (TextEditor::highlightColourId,       Colors::elemental.brighter (0.31f));
+    setColour (TextEditor::highlightedTextColourId, Colours::black.brighter(0.22f));
+    setColour (TextEditor::outlineColourId,         Colours::black);
+    setColour (TextEditor::focusedOutlineColourId,  Colors::toggleBlue.darker (0.002).withAlpha (0.6f));
 
     // Digital meter styling
     setColour (DigitalMeter::levelOverColourId, Colours::yellow.darker());
