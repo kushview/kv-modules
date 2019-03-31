@@ -46,14 +46,15 @@
  #define KV_DOCKING_WINDOWS 0
 #endif
 
+// look and feel
+#include "base/LookAndFeel_KV1.h"
+
 namespace kv {
 
 class Screen;
 class ScreenManager;
 class ScreenDisplay;
 
-// look and feel
-#include "base/LookAndFeel_KV1.h"
 #include "base/PatchMatrixComponent.h"
 
 // screens

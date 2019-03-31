@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 struct Colors
 {
     static const Colour elemental;
@@ -116,3 +118,5 @@ private:
     Image backgroundTexture;
     Colour backgroundTextureBaseColour;
 };
+
+}
