@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
+
 const Colour Colors::elemental      = Colour (0xff4765a0);
 const Colour Colors::toggleBlue     = Colour (0xff33aaf9);
 const Colour Colors::toggleGreen    = Colour (0xff92e75e);
@@ -540,4 +542,6 @@ void LookAndFeel_KV1::drawKeymapChangeButton (Graphics& g, int width, int height
         g.setColour (textColour.withAlpha (0.4f));
         g.drawRect (0, 0, width, height);
     }
+}
+
 }

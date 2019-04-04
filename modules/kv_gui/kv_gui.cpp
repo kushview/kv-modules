@@ -29,7 +29,6 @@ namespace kv {
 
 #include "base/DecibelScaleComponent.cpp"
 #include "base/DigitalMeter.cpp"
-#include "base/LookAndFeel_KV1.cpp"
 #include "base/PatchMatrixComponent.cpp"
 
 #include "embed/NativeComponent.cpp"
@@ -43,6 +42,8 @@ namespace kv {
 #endif
 
 }
+
+#include "base/LookAndFeel_KV1.cpp"
 
 #if KV_DOCKING_WINDOWS
  #include "docking/Dock.cpp"
