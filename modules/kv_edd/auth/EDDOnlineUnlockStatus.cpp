@@ -133,7 +133,8 @@ static ApiResponseData processJSONResponse (const var& json)
 
 }
 
-EDDOnlineUnlockStatus::EDDOnlineUnlockStatus() : edd (edd::nodeName) { }
+EDDOnlineUnlockStatus::EDDOnlineUnlockStatus() 
+    : edd (edd::nodeName) { }
 EDDOnlineUnlockStatus::~EDDOnlineUnlockStatus() { }
 
 String EDDOnlineUnlockStatus::readReplyFromWebserver (const String& email, const String& password)
