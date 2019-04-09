@@ -112,7 +112,14 @@ public:
 
     static void createTabTextLayout (const TabBarButton& button, float length, float depth, Colour colour, TextLayout&);
 
-
+    // progress bar
+    //==============================================================================
+    virtual void drawLinearProgressBar (Graphics& g, ProgressBar& progressBar,
+                                        int width, int height,
+                                        double progress, const String& textToShow);
+    virtual void drawProgressBar (Graphics& g, ProgressBar& progressBar,
+                                  int width, int height, double progress, 
+                                  const String& textToShow) override;
 
 private:
     Image backgroundTexture;
