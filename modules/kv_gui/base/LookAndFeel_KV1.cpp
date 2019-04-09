@@ -39,6 +39,8 @@ const Colour LookAndFeel_KV1::highlightBackgroundColor = LookAndFeel_KV1::textCo
 
 LookAndFeel_KV1::LookAndFeel_KV1()
 {
+    setColour (ResizableWindow::backgroundColourId, widgetBackgroundColor.darker (0.3));
+
     // Text Buttons
     setColour (TextButton::buttonColourId, Colour (0xff525252));
     setColour (TextButton::buttonOnColourId, Colour (0xff525252));
