@@ -19,8 +19,11 @@
 
 #include "kv_engines.h"
 
+
+
 namespace kv {
 
+using namespace juce;
 #include "common/MidiSequencePlayer.cpp"
 #include "common/Processor.cpp"
 #include "common/Shuttle.cpp"
@@ -30,3 +33,5 @@ namespace kv {
  #include "jack/JackDevice.cpp"
 #endif
 }
+
+#include "sampler/AutoSampler.cpp"

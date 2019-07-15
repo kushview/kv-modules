@@ -26,12 +26,12 @@
     website:          https://kushview.net
     license:          GPL v2
 
-    dependencies:     juce_data_structures, juce_audio_processors, juce_audio_devices
+    dependencies:     juce_data_structures, juce_audio_processors, juce_audio_devices, juce_audio_formats
 
     END_JUCE_MODULE_DECLARATION
  */
 
-#ifndef KV_ENGINES_H_INCLUDED
+#pragma once
 #define KV_ENGINES_H_INCLUDED
 
 #include <juce_gui_extra/juce_gui_extra.h>
@@ -53,6 +53,8 @@
  #include <jack/jack.h>
 #endif
 
+#include <juce_audio_formats/juce_audio_formats.h>
+
 namespace kv {
 
 #include "common/Processor.h"
@@ -65,4 +67,6 @@ namespace kv {
 
 }
 
-#endif   // KV_MODELS_H_INCLUDED
+#if JUCE_MODULE_AVAILABLE_juce_audio_formats
+ #include "sampler/AutoSampler.h"
+#endif
