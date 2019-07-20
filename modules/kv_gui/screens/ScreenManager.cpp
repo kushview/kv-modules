@@ -25,7 +25,7 @@ void ScreenManager::clear()
     screens.clearQuick (true);
 }
 
-Screen* ScreenManager::getScreen (ScreenDisplay& d, const int screenType)
+Screen* ScreenManager::getScreen (ScreenDisplay&, const int screenType)
 {
     for (Screen* screen : screens)
         if (screenType == (int) screen->type())

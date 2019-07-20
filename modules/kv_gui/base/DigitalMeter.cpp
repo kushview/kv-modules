@@ -28,6 +28,12 @@
 // Number of cycles the peak stays on hold before fall-off.
 #define DIGITAL_METER_PEAK_FALLOFF    16
 
+#if JUCE_WINDOWS
+ #pragma warning (push)
+ #pragma warning (disable : 4244)
+#endif
+
+
 DigitalMeterValue::DigitalMeterValue (DigitalMeter* parent)
   : meter (parent),
     value (0.0f),
@@ -331,3 +337,7 @@ const Colour& DigitalMeter::color (const int index) const
 {
     return index < ColorCount ? colors[index] : Colours::greenyellow;
 }
+
+#if JUCE_WINDOWS
+ #pragma warning (pop)
+#endif

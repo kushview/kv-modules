@@ -61,9 +61,12 @@ public:
     virtual void paintMatrixCell (Graphics& g, const int width, const int height,
                                   const int row, const int column) = 0;
     virtual void matrixCellClicked (const int row, const int col, const MouseEvent& ev);
-    virtual void matrixBackgroundClicked (const MouseEvent& ev) { }
+    virtual void matrixBackgroundClicked (const MouseEvent&) {}
     virtual void matrixHoveredCellChanged (const int prevRow, const int prevCol,
-                                           const int newRow,  const int newCol) {}
+                                           const int newRow,  const int newCol)
+    {
+        ignoreUnused (prevRow, prevCol, newRow, newCol);
+    }
 
     inline bool mouseIsOverRow (const int row) const { return row >= 0 && hoveredRow >= 0 && row == hoveredRow; }
     

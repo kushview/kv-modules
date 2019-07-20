@@ -41,7 +41,7 @@ Screen::~Screen()
     removeChildComponent (&pages);
 }
 
-Screen* Screen::create (ScreenDisplay& disp, const int screenId)
+Screen* Screen::create (ScreenDisplay&, const int)
 {
     jassertfalse;
     return nullptr;

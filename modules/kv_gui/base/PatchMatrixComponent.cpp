@@ -47,6 +47,8 @@ void QuadrantLayout::paint (Graphics &g)
     g.fillRect (q3area);
     g.setColour (Colours::yellow);
     g.fillRect (q4area);
+   #else
+    ignoreUnused (g);
    #endif
 }
 
@@ -171,7 +173,7 @@ void PatchMatrixComponent::mouseMove (const MouseEvent& ev)
     updateHoveredCell (ev.x, ev.y);
 }
 
-void PatchMatrixComponent::mouseExit (const MouseEvent& ev)
+void PatchMatrixComponent::mouseExit (const MouseEvent&)
 {
     hoveredRow = hoveredColumn = lastHoveredRow = lastHoveredColumn = -1;
     repaint();
