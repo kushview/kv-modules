@@ -134,6 +134,13 @@ LookAndFeel_KV1::LookAndFeel_KV1()
     setColour (ProgressBar::foregroundColourId, Colors::elemental);
     setColour (ProgressBar::backgroundColourId, findColour (
         DocumentWindow::backgroundColourId).darker());
+
+
+   #if JUCE_MODULE_AVAILABLE_kv_engines
+    setColour (TimelineComponent::bodyBackgroundColourId, findColour (ResizableWindow::backgroundColourId));
+    setColour (TimelineComponent::bodyBackgroundColourId, findColour (ResizableWindow::backgroundColourId));
+   #endif
+
 #if 0
     setColour (ListBox::backgroundColourId, Colour (0xff222222));
 
