@@ -351,23 +351,23 @@ TimelineClip* TimelineComponent::getFirstClipOnTrack (int track) const
 }
 
 
-void
-TimelineComponent::mouseDown (const MouseEvent &ev)
+void TimelineComponent::mouseDown (const MouseEvent &ev)
 {
     dragX = ev.x; dragY = ev.y;
-
+    const auto trackIdx = heights.trackAtY (ev.y);
     if (this == getComponentAt (ev.getPosition()))
     {
         if (ev.x > mTrackWidth)
-            timelineBodyClicked (ev, heights.trackAtY (ev.y));
+            timelineBodyClicked (ev, trackIdx);
 
         if (ev.x < mTrackWidth)
-            timelineTrackHeadersClicked (ev, heights.trackAtY (ev.y));
+        {
+            timelineTrackHeadersClicked (ev, trackIdx);
+        }
     }
 }
 
-void
-TimelineComponent::mouseDrag (const MouseEvent &ev)
+void TimelineComponent::mouseDrag (const MouseEvent &ev)
 {
     //if (ev.mods.isAltDown())
     {
