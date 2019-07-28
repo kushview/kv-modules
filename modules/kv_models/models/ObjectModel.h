@@ -77,6 +77,7 @@ public:
     /** Count the number of children with a type */
     int32 countChildrenOfType (const Identifier& slug) const;
 
+    String toXmlString() const { return objectData.toXmlString(); }
 protected:
 
     /** Override this to handle special data validation This is called
