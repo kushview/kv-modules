@@ -66,9 +66,20 @@ def configure (conf):
     conf.write_config_header ('kv/version.h', 'KV_VERSION_H')
 
     conf.check_cfg (package='juce-5', uselib_store='JUCE', args=['--libs', '--cflags'], mandatory=True)
+    conf.check_cfg (package='lv2',    uselib_store='LV2',  args=['--libs', '--cflags'], mandatory=False)
+    conf.check_cfg (package='lilv-0',   uselib_store='LILV', args=['--libs', '--cflags'], mandatory=False)
+    conf.check_cfg (package='suil-0',   uselib_store='SUIL', args=['--libs', '--cflags'], mandatory=False)
     conf.write_config_header ('libkv_config.h')
 
-    for mod in library_modules:
+    conf.env.MODULES = library_modules
+
+    if conf.env.HAVE_LILV and conf.env.HAVE_SUIL:
+        conf.define ('KV_LV2_PLUGIN_HOST', 1)
+        conf.env.MODULES.append ('kv_lv2')
+    else:
+        conf.define ('KV_LV2_PLUGIN_HOST', 0)
+    
+    for mod in conf.env.MODULES:
         conf.define('JUCE_MODULE_AVAILABLE_%s' % mod, True)
     conf.write_config_header ('kv/config.h', 'KV_MODULES_CONFIG_H')
 
@@ -90,13 +101,13 @@ def install_misc_header (bld, header, subpath=''):
     bld.install_files (destination, header)
 
 def maybe_install_headers (bld):
-    install_module_headers (bld, library_modules)
+    install_module_headers (bld, bld.env.MODULES)
     for header in [ 'kv/kv.h', 'build/kv/config.h', 'build/kv/version.h' ]:
         install_misc_header (bld, header, 'kv')
 
 def generate_code (bld):
     tasks = []
-    for mod in library_modules:
+    for mod in bld.env.MODULES:
         tasks.append (bld (
             features     = 'subst',
             source       = 'module_header.h.in',
@@ -131,7 +142,7 @@ def build (bld):
     generate_code (bld)
     
     library_source = []
-    for mod in library_modules:
+    for mod in bld.env.MODULES:
         library_source.append ('build/code/include_%s.cpp' % mod)
     
     library = bld (
@@ -141,7 +152,7 @@ def build (bld):
         name        = 'KV',
         cxxflags    = [ '-std=c++14' ],
         target      = 'lib/kv-0',
-        use         = [ 'JUCE' ],
+        use         = [ 'JUCE', 'LILV', 'SUIL' ],
         vnum        = VERSION
     )
 
@@ -160,4 +171,6 @@ def build (bld):
         VERSION       = KV_VERSION
     )
 
+    if bld.env.HAVE_SUIL: pcobj.REQUIRED += ' suil-0'
+    if bld.env.HAVE_LILV: pcobj.REQUIRED += ' lilv-0'
     maybe_install_headers (bld)

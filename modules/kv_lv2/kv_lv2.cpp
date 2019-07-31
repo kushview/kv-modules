@@ -26,15 +26,7 @@
  #error "Incorrect use of JUCE cpp file"
 #endif
 
-#if KV_USE_LIBJUCE
- #include <juce/modules/config.h>
- #define JUCE_GLOBAL_MODULE_SETTINGS_INCLUDED 1
- #include "element/modules/config.h"
-#else
- #include "AppConfig.h"
-#endif
-
-#include "kv_lv2.h"
+#include "kv_lv2/kv_lv2.h"
 
 namespace kv {
 #include "common/PortBuffer.cpp"

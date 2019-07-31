@@ -30,7 +30,7 @@
 
 static ScopedPointer<URIs> uris;
 
-class LV2PluginInstance     : public Processor
+class LV2PluginInstance  : public AudioPluginInstance
 {
 public:
     LV2PluginInstance (LV2World& world, LV2Module* module_)
@@ -341,6 +341,7 @@ public:
         return String (static_cast<float> (param->getValue()));
     }
 
+    void writeControlValue (int, float) { /* TODO */}
 
     void setParameter (int index, float newValue)
     {
@@ -545,6 +546,7 @@ void LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& resul
     }
 }
 
+#if 0
 AudioPluginInstance* LV2PluginFormat::createInstanceFromDescription (const PluginDescription& desc, double sampleRate, int buffersize)
 {
     if (desc.pluginFormatName != String ("LV2"))
@@ -568,6 +570,7 @@ AudioPluginInstance* LV2PluginFormat::createInstanceFromDescription (const Plugi
     JUCE_LV2_LOG ("Failed creating LV2 plugin instance");
     return nullptr;
 }
+#endif
 
 bool LV2PluginFormat::fileMightContainThisPluginType (const String& fileOrIdentifier)
 {
@@ -596,7 +599,7 @@ String LV2PluginFormat::getNameOfPluginFromIdentifier (const String& fileOrIdent
     return fileOrIdentifier;
 }
 
-StringArray LV2PluginFormat::searchPathsForPlugins (const FileSearchPath&, bool)
+StringArray LV2PluginFormat::searchPathsForPlugins (const FileSearchPath&, bool, bool)
 {
     StringArray list;
     const LilvPlugins* plugins (priv->world->getAllPlugins());
@@ -617,6 +620,37 @@ bool LV2PluginFormat::doesPluginStillExist (const PluginDescription& desc)
 {
     StringArray plugins (searchPathsForPlugins (FileSearchPath(), true));
     return plugins.contains (desc.fileOrIdentifier);
+}
+
+void LV2PluginFormat::createPluginInstance (const PluginDescription& desc, double initialSampleRate,
+                                            int initialBufferSize, void* userData,
+                                            PluginCreationCallback callback)
+{
+    if (desc.pluginFormatName != String ("LV2"))
+    {
+        callback (userData, nullptr, "Not an LV2 plugin");
+        return;
+    }
+
+    if (LV2Module* module = priv->createModule (desc.fileOrIdentifier))
+    {
+        Result res (module->instantiate (initialSampleRate));
+        if (res.wasOk())
+        {
+            module->activate();
+            auto instance = std::unique_ptr<LV2PluginInstance> (new LV2PluginInstance (*priv->world, module));
+            callback (userData, instance.release(), {});
+        }
+        else
+        {
+            deleteAndZero (module);
+            JUCE_LV2_LOG (res.getErrorMessage());
+            callback (userData, nullptr, res.getErrorMessage());
+        }
+    }
+
+    JUCE_LV2_LOG ("Failed creating LV2 plugin instance");
+    callback (userData, nullptr, "Failed creating LV2 plugin instance");
 }
 
 

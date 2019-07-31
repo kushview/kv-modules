@@ -35,18 +35,26 @@ public:
 
     ~LV2PluginFormat();
 
-    String getName() const { return "LV2"; }
-    void findAllTypesForFile (OwnedArray <PluginDescription>& descrips, const String& identifier);
-    AudioPluginInstance* createInstanceFromDescription (const PluginDescription& desc, double sampleRate, int bufferSize);
-    bool fileMightContainThisPluginType (const String& fileOrIdentifier);
-    String getNameOfPluginFromIdentifier (const String& fileOrIdentifier);
-    StringArray searchPathsForPlugins (const FileSearchPath&, bool recursive);
-    bool doesPluginStillExist (const PluginDescription&);
-    FileSearchPath getDefaultLocationsToSearch();
-    bool canScanForPlugins() const { return true; }
-    virtual bool pluginNeedsRescanning (const PluginDescription&) { return false; }
+    String getName() const override { return "LV2"; }
 
+    void findAllTypesForFile (OwnedArray <PluginDescription>& descrips, const String& identifier) override;
+    bool fileMightContainThisPluginType (const String& fileOrIdentifier) override;
+    String getNameOfPluginFromIdentifier (const String& fileOrIdentifier) override;
+    bool pluginNeedsRescanning (const PluginDescription&) override { return false; }
+    bool doesPluginStillExist (const PluginDescription&) override;
+    bool canScanForPlugins() const override { return true; }
+    StringArray searchPathsForPlugins (const FileSearchPath&, bool recursive,
+                                       bool allowPluginsWhichRequireAsynchronousInstantiation = false) override;
+    FileSearchPath getDefaultLocationsToSearch() override;
+    
     SymbolMap& getSymbolMap();
+
+protected:
+    void createPluginInstance (const PluginDescription&, double initialSampleRate,
+                               int initialBufferSize, void* userData,
+                               PluginCreationCallback) override;
+
+    bool requiresUnblockedMessageThreadDuringCreation (const PluginDescription&) const noexcept override { return false; }
 
 private:
     class Internal;
