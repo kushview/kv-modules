@@ -20,6 +20,7 @@
 #pragma once
 
 #include <juce/juce.h>
+#include <kv/config.h>
 
 #if JUCE_MODULE_AVAILABLE_kv_core
  #include <kv_core/kv_core.h>
