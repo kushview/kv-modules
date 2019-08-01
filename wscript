@@ -183,12 +183,12 @@ def build (bld):
     if bld.env.HAVE_LILV: pcobj.REQUIRED += ' lilv-0'
 
     bld.program (
-        source = [ 'tools/lv2show.cpp' ],
-        includes  = library.includes + [ '.' ],
-        target = 'bin/lv2show',
-        cxxflags = [ '-std=c++14' ],
-        install_path = None,
-        use = [ 'KV' ]
+        source          = [ 'tools/lv2show.cpp' ],
+        includes        = library.includes + [ '.' ],
+        target          = 'bin/lv2show',
+        cxxflags        = [ '-std=c++14' ],
+        install_path    = None,
+        use             = [ 'KV' ]
     )
 
     maybe_install_headers (bld)
