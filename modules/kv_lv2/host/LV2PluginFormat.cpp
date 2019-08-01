@@ -62,7 +62,7 @@ public:
     void setValue (float newValue) override
     {
         value.set (newValue);
-        module.setControlValue (portIdx, newValue);
+        module.setControlValue (portIdx, range.convertFrom0to1 (newValue));
     }
 
     float getDefaultValue() const override      { return range.convertTo0to1 (defaultValue); }
@@ -315,7 +315,7 @@ public:
                 buf->addEvent (f, (uint32)s, midiEvent, d);
             }
         }
-
+        
         for (int32 i = getTotalNumInputChannels(); --i >= 0;)
             module->connectPort (chans.getAudioInputPort(i), audio.getWritePointer (i));
 
@@ -453,6 +453,7 @@ AudioProcessorEditor* LV2PluginInstance::createEditor()
     return nullptr;
 }
 
+//=============================================================================
 class LV2PluginFormat::Internal
 {
 public:
@@ -500,10 +501,12 @@ private:
     }
 };
 
+//=============================================================================
 LV2PluginFormat::LV2PluginFormat() : priv (new Internal()) { }
 LV2PluginFormat::LV2PluginFormat (LV2World& w) : priv (new Internal (w)) { }
 LV2PluginFormat::~LV2PluginFormat() { priv = nullptr; }
 
+//=============================================================================
 void LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& results,
                                            const String& fileOrIdentifier)
 {
@@ -530,32 +533,6 @@ void LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& resul
         JUCE_LV2_LOG("crashed: " + String(desc->name));
     }
 }
-
-#if 0
-AudioPluginInstance* LV2PluginFormat::createInstanceFromDescription (const PluginDescription& desc, double sampleRate, int buffersize)
-{
-    if (desc.pluginFormatName != String ("LV2"))
-        return nullptr;
-
-    if (LV2Module* module = priv->createModule (desc.fileOrIdentifier))
-    {
-        Result res (module->instantiate (sampleRate));
-        if (res.wasOk())
-        {
-            module->activate();
-            return new LV2PluginInstance (*priv->world, module);
-        }
-        else
-        {
-            JUCE_LV2_LOG (res.getErrorMessage());
-            return nullptr;
-        }
-    }
-
-    JUCE_LV2_LOG ("Failed creating LV2 plugin instance");
-    return nullptr;
-}
-#endif
 
 bool LV2PluginFormat::fileMightContainThisPluginType (const String& fileOrIdentifier)
 {
@@ -658,7 +635,6 @@ void LV2PluginFormat::createPluginInstance (const PluginDescription& desc, doubl
         callback (userData, nullptr, "Failed creating LV2 plugin instance");
     }
 }
-
 
 SymbolMap& LV2PluginFormat::getSymbolMap() { return priv->symbols; }
 
