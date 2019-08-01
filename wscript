@@ -16,6 +16,7 @@ import sys, os, platform
 from subprocess import call
 
 sys.path.insert (0, "tools/waf")
+import juce
 
 KV_VERSION = '0.1.0'
 KV_MAJOR_VERSION = KV_VERSION[0]
@@ -47,7 +48,7 @@ cpponly_modules = '''
 '''.split()
 
 def options (opts):
-    opts.load ('compiler_c compiler_cxx')
+    opts.load ('compiler_c compiler_cxx juce')
 
 def configure (conf):
     conf.load ('compiler_c compiler_cxx')
@@ -57,6 +58,8 @@ def configure (conf):
     conf.env.BINDIR     = conf.env.PREFIX + '/bin'
     conf.env.INCLUDEDIR = conf.env.PREFIX + '/include'
 
+    conf.env.DEBUG      = conf.options.debug
+
     # Write out the version header
     conf.define ("KV_VERSION", KV_VERSION)
     conf.define ("KV_MAJOR_VERSION", KV_MAJOR_VERSION)
@@ -65,7 +68,8 @@ def configure (conf):
     conf.define ("KV_EXTRA_VERSION", KV_EXTRA_VERSION)
     conf.write_config_header ('kv/version.h', 'KV_VERSION_H')
 
-    conf.check_cfg (package='juce-5', uselib_store='JUCE', args=['--libs', '--cflags'], mandatory=True)
+    conf.check_cfg (package='juce_debug-5' if conf.options.debug else 'juce-5', 
+                    uselib_store='JUCE', args=['--libs', '--cflags'], mandatory=True)
     conf.check_cfg (package='lv2',    uselib_store='LV2',  args=['--libs', '--cflags'], mandatory=False)
     conf.check_cfg (package='lilv-0',   uselib_store='LILV', args=['--libs', '--cflags'], mandatory=False)
     conf.check_cfg (package='suil-0',   uselib_store='SUIL', args=['--libs', '--cflags'], mandatory=False)
@@ -83,7 +87,11 @@ def configure (conf):
         conf.define('JUCE_MODULE_AVAILABLE_%s' % mod, True)
     conf.write_config_header ('kv/config.h', 'KV_MODULES_CONFIG_H')
 
+    conf.load ('juce')
     conf.define ('JUCE_APP_CONFIG_HEADER', 'kv/config.h')
+
+def library_slug (bld):
+    return 'kv_debug-0' if bld.env.DEBUG else 'kv-0'
 
 def get_include_path (bld, subpath=''):
     ip = '%s/kv-%s' % (bld.env.INCLUDEDIR, KV_MAJOR_VERSION)
@@ -151,7 +159,7 @@ def build (bld):
         includes    = [ 'build', 'modules' ],
         name        = 'KV',
         cxxflags    = [ '-std=c++14' ],
-        target      = 'lib/kv-0',
+        target      = 'lib/%s' % library_slug (bld),
         use         = [ 'JUCE', 'LILV', 'SUIL' ],
         vnum        = VERSION
     )
@@ -159,18 +167,18 @@ def build (bld):
     pcobj = bld (
         features      = 'subst',
         source        = 'kv.pc.in',
-        target        = 'kv-0.pc',
+        target        = '%s.pc' % library_slug (bld),
         install_path  = bld.env.LIBDIR + '/pkgconfig',
         MAJOR_VERSION = KV_MAJOR_VERSION,
         PREFIX        = bld.env.PREFIX,
         INCLUDEDIR    = bld.env.INCLUDEDIR,
         LIBDIR        = bld.env.LIBDIR,
-        CFLAGS        = '',
-        DEPLIBS       = '-lkv-0',
-        REQUIRED      = 'juce-5',
+        CFLAGSS       = '',
+        DEPLIBS       = '-l%s' % library_slug (bld),
+        REQUIRED      = 'juce_debug-5' if bld.env.DEBUG else 'juce-5',
         VERSION       = KV_VERSION
     )
-
+    print bld.env.DEBUG
     if bld.env.HAVE_SUIL: pcobj.REQUIRED += ' suil-0'
     if bld.env.HAVE_LILV: pcobj.REQUIRED += ' lilv-0'
     maybe_install_headers (bld)
