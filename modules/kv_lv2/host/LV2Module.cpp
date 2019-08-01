@@ -192,7 +192,6 @@ void LV2Module::activate()
 {
    if (instance && ! active)
    {
-       activatePorts();
        lilv_instance_activate (instance);
        activatePorts();
        active = true;
@@ -497,7 +496,7 @@ void LV2Module::setControlValue (uint32 port, float value)
     if (port >= numPorts)
         return;
 
-    priv->values.getData()[port] = value;
+    priv->values[port] = value;
 }
 
 }

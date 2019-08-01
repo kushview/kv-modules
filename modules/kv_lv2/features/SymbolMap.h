@@ -212,7 +212,6 @@ private:
         const LV2_Feature* getFeature() const { return &feat; }
 
     private:
-
         String         uri;
         LV2_Feature    feat;
         LV2_URI_Map_Feature  data;

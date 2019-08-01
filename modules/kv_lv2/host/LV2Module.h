@@ -162,7 +162,7 @@ private:
     void activatePorts();
     void freeInstance();
     void init();
-
+    
     class Private;
     ScopedPointer<Private>   priv;
     ScopedPointer<LV2Worker> worker;
