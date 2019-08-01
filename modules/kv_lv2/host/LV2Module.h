@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_LV2MODULE_H
-#define EL_LV2MODULE_H
+#pragma once
+
+namespace kv {
 
 /** A wrapper around LilvPlugin/LilvInstance for running LV2 plugins
     Methods that are realtime/thread safe are excplicity documented as so.
@@ -170,4 +171,4 @@ private:
     bool isLoaded() const;
 };
 
-#endif /* EL_LV2MODULE_H */
+}

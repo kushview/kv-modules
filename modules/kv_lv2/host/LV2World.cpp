@@ -17,9 +17,12 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+
 #ifndef KV_LV2_NUM_WORKERS
  #define KV_LV2_NUM_WORKERS 1
 #endif
+
+namespace kv {
 
 namespace LV2Callbacks {
 /** Function to write/send a value to a port. */
@@ -72,6 +75,17 @@ void touchFunction (SuilController controller,
 
 LV2World::LV2World()
 {
+   #if JUCE_MAC
+    StringArray path;
+    path.add (File ("/Library/Audio/Plug-Ins/LV2").getFullPathName());
+    path.add (File::getSpecialLocation (File::userHomeDirectory)
+        .getChildFile ("Library/Audio/Plug-Ins/LV2")
+        .getFullPathName());
+    path.trim();
+    setenv ("LV2_PATH", path.joinIntoString(":").toRawUTF8(), 1);
+    DBG("LV2_PATH = " << String (getenv ("LV2_PATH")));
+   #endif
+
     world = lilv_world_new();
     lilv_world_load_all (world);
 
@@ -89,9 +103,7 @@ LV2World::LV2World()
     ui_JuceUI       = lilv_new_uri (world, LV2_UI__JuceUI);
 
 
-    suil = suil_host_new (
-        LV2Callbacks::portWrite, 0, 0, 0
-    );
+    suil = suil_host_new (LV2Callbacks::portWrite, 0, 0, 0);
 
     currentThread = 0;
     numThreads    = KV_LV2_NUM_WORKERS;
@@ -124,15 +136,10 @@ LV2Module* LV2World::createModule (const String& uri)
     return nullptr;
 }
 
-LV2PluginModel* LV2World::createPluginModel (const String& uri)
-{
-    if (const LilvPlugin* plugin = getPlugin (uri))
-        return new LV2PluginModel (*this, plugin);
-    return nullptr;
-}
-
 void LV2World::fillPluginDescription (const String& uri, PluginDescription& desc) const
 {
+    jassertfalse;
+   #if 0
     if (const LilvPlugin* plugin = getPlugin (uri))
     {
         LV2PluginModel model (*const_cast<LV2World*> (this), plugin);
@@ -150,6 +157,7 @@ void LV2World::fillPluginDescription (const String& uri, PluginDescription& desc
         desc.uid = desc.fileOrIdentifier.hashCode();
         desc.version = String();
     }
+   #endif
 }
 
 const LilvPlugin* LV2World::getPlugin (const String& uri) const
@@ -226,4 +234,6 @@ bool LV2World::isPluginSupported (const LilvPlugin* plugin)
     }
 
     return true;
+}
+
 }

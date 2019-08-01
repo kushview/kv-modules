@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_LV2_WORKER_H
-#define EL_LV2_WORKER_H
+#pragma once
+
+namespace kv {
 
 class LV2Worker :  public LV2Feature,
                    public WorkerBase
@@ -47,5 +48,4 @@ private:
     LV2_Feature feat;
 };
 
-
-#endif /* EL_LV2_WORKER_H */
+}

@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_SYMBOL_MAP_H
-#define EL_SYMBOL_MAP_H
+#pragma once
+
+namespace kv {
 
 #if EL_ENABLE_CXX11
 /** A function type for mapping uris */
@@ -220,4 +221,4 @@ private:
     };
 };
 
-#endif /* EL_SYMBOL_MAP_H */
+}

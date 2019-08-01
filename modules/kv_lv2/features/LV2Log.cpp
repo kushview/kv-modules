@@ -17,6 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
 namespace LV2Callbacks {
 
     int vprintf (LV2_Log_Handle handle, LV2_URID type, const char* fmt, va_list ap)
@@ -48,4 +49,5 @@ LV2Log::LV2Log()
 LV2Log::~LV2Log()
 {
 
+}
 }

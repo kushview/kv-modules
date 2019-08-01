@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
+
 namespace LV2Callbacks
 {
     static LV2_Worker_Status scheduleWork (LV2_Worker_Schedule_Handle handle, uint32_t size, const void* data)
@@ -85,4 +87,6 @@ void LV2Worker::endRun()
     jassert (worker != nullptr && plugin != nullptr);
     if (worker->end_run)
         worker->end_run (plugin);
+}
+
 }

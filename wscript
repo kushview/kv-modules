@@ -158,7 +158,7 @@ def build (bld):
         source      = library_source,
         includes    = [ 'build', 'modules' ],
         name        = 'KV',
-        cxxflags    = [ '-std=c++14' ],
+        cxxflags    = [ '-std=c++14', '-Wno-deprecated-declarations' ],
         target      = 'lib/%s' % library_slug (bld),
         use         = [ 'JUCE', 'LILV', 'SUIL' ],
         vnum        = VERSION
@@ -178,7 +178,17 @@ def build (bld):
         REQUIRED      = 'juce_debug-5' if bld.env.DEBUG else 'juce-5',
         VERSION       = KV_VERSION
     )
-    print bld.env.DEBUG
+
     if bld.env.HAVE_SUIL: pcobj.REQUIRED += ' suil-0'
     if bld.env.HAVE_LILV: pcobj.REQUIRED += ' lilv-0'
+
+    bld.program (
+        source = [ 'tools/lv2show.cpp' ],
+        includes  = library.includes + [ '.' ],
+        target = 'bin/lv2show',
+        cxxflags = [ '-std=c++14' ],
+        install_path = None,
+        use = [ 'KV' ]
+    )
+
     maybe_install_headers (bld)

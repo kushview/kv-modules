@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_URIS_H
-#define EL_URIS_H
+#pragma once
+
+namespace kv {
 
 class URIs
 {
@@ -41,4 +42,4 @@ public:
     const LV2_URID midi_MidiEvent;
 };
 
-#endif
+}

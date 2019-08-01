@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_PORT_WRITER_H
-#define EL_PORT_WRITER_H
+#pragma once
+
+namespace kv {
 
 #if KV_USE_CXX11
 /** Function type for writing to a port buffer. Params are in order port, size, protocol, buffer
@@ -38,5 +39,4 @@ struct PortEvent
     uint32 size;        ///< The size of data
 };
 
-
-#endif  /* EL_PORT_WRITER_H */
+}

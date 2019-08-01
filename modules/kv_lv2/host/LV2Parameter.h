@@ -17,6 +17,10 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#pragma once
+
+namespace kv {
+
 /** An LV2 parameter, e.g. a Control input/output */
 class LV2Parameter :  public Parameter
 {
@@ -54,3 +58,5 @@ private:
     Array<float>      scaleVals;
     StringArray       scaleNames;
 };
+
+}

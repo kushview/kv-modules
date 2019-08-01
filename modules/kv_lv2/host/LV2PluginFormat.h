@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_LV2FORMAT_H
-#define EL_LV2FORMAT_H
+#pragma once
+
+namespace kv {
 
 class LV2World;
 class SymbolMap;
@@ -61,5 +62,4 @@ private:
     ScopedPointer<Internal> priv;
 };
 
-
-#endif   // EL_LV2FORMAT_H
+}

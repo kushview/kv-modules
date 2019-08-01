@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
+
 namespace LV2Callbacks {
     inline unsigned uiSupported (const char* hostType, const char* uiType)
     {
@@ -112,7 +114,7 @@ void LV2Module::activatePorts()
        {
            // normally this would ONLY be done during 'run'. However,
            // control ports are only connected once, here, during activation
-           connectPort (p, priv->values.getData() + p);
+           connectPort (p, &priv->values [p]);
        }
        else if (type == PortType::CV)
        {
@@ -192,6 +194,7 @@ void LV2Module::activate()
    {
        activatePorts();
        lilv_instance_activate (instance);
+       activatePorts();
        active = true;
    }
 }
@@ -494,5 +497,7 @@ void LV2Module::setControlValue (uint32 port, float value)
     if (port >= numPorts)
         return;
 
-    priv->values [port] = value;
+    priv->values.getData()[port] = value;
+}
+
 }

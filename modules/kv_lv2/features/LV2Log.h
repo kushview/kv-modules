@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_LV2LOG_H
-#define EL_LV2LOG_H
+#pragma once
+
+namespace kv {
 
 class LV2Log : public LV2Feature
 {
@@ -38,5 +39,4 @@ private:
 
 };
 
-
-#endif /* EL_LV2LOG_H */
+}

@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
+
 // Change this to enable logging of various LV2 activities
 #ifndef LV2_LOGGING
  #define LV2_LOGGING 0
@@ -29,6 +31,72 @@
 #endif
 
 static ScopedPointer<URIs> uris;
+
+class LV2AudioParameter : public AudioProcessorParameter
+{
+    LV2Module& module;
+    const uint32 portIdx;
+    const String name;
+    float defaultValue;
+    Atomic<float> value;
+
+public:
+    LV2AudioParameter (uint32 port, LV2Module& _module)
+        : module (_module), 
+          portIdx (port),
+          name (module.getPortName (port))
+    {
+        module.getPortRange (port, range.start, range.end, defaultValue);
+        value.set (getDefaultValue());
+    }
+
+    ~LV2AudioParameter() = default;
+
+    int getPort() const { return static_cast<int> (portIdx); }
+
+    float getValue() const override
+    {
+        return value.get();
+    }
+
+    void setValue (float newValue) override
+    {
+        value.set (newValue);
+        module.setControlValue (portIdx, newValue);
+    }
+
+    float getDefaultValue() const override      { return range.convertTo0to1 (defaultValue); }
+    String getName (int maxLen) const override  { return name.substring (0, maxLen); }
+
+    // Units e.g. Hz
+    String getLabel() const override { return {}; }
+
+    String getText (float normalisedValue, int /*maximumStringLength*/) const override
+    {
+        return String (range.convertFrom0to1 (normalisedValue), 2);
+    }
+
+    /** Parse a string and return the appropriate value for it. */
+    float getValueForText (const String& text) const override
+    {
+        return range.convertTo0to1 (text.getFloatValue());
+    }
+
+   #if 0
+    virtual int getNumSteps() const;
+    virtual bool isDiscrete() const;
+    virtual bool isBoolean() const;
+    virtual bool isOrientationInverted() const;
+    virtual bool isAutomatable() const;
+    virtual bool isMetaParameter() const;
+    virtual Category getCategory() const;
+    virtual String getCurrentValueAsText() const;
+    virtual StringArray getAllValueStrings() const;
+   #endif
+
+private:
+    NormalisableRange<float> range;
+};
 
 class LV2PluginInstance  : public AudioPluginInstance
 {
@@ -68,7 +136,7 @@ public:
             const LilvPort* port (module->getPort (p));
             const bool input = module->isPortInput (p);
             const PortType type = module->getPortType (p);
-
+           
             if (input)
             {
                 if (PortType::Atom == type)
@@ -80,12 +148,7 @@ public:
                 }
                 else if (PortType::Control == type)
                 {
-                    LV2Parameter* param = new LV2Parameter (plugin, port);
-                    params.add (param);
-
-                    float min = 0.0f, max = 1.0f, def = 0.0f;
-                    module->getPortRange (p, min, max, def);
-                    param->setMinMaxValue (min, max, def);
+                    addParameter (new LV2AudioParameter (p, *module));
                 }
                 else if (PortType::Event == type)
                 {
@@ -117,18 +180,18 @@ public:
                               channels.getNumAudioOutputs(), 44100.0, 1024);
     }
 
-
     ~LV2PluginInstance()
     {
         module = nullptr;
     }
 
     //=========================================================================
-    uint32 getNumPorts() const { return module->getNumPorts(); }
-    uint32 getNumPorts (PortType type, bool isInput) const { return module->getNumPorts (type, isInput); }
+    int getNumPorts() const { return static_cast<int> (module->getNumPorts()); }
+    int getNumPorts (PortType type, bool isInput) const { return module->getNumPorts (type, isInput); }
     PortType getPortType (uint32 port) const { return module->getPortType (port); }
     bool isPortInput (uint32 port)     const { return module->isPortInput (port); }
     bool isPortOutput (uint32 port)    const { return module->isPortOutput (port); }
+
     bool writeToPort (uint32 port, uint32 size, uint32 protocol, const void* data)
     {
         const PortEvent ev = { port, protocol, (double)4.0, size };
@@ -310,80 +373,8 @@ public:
 
     bool isOutputChannelStereoPair (int index) const { return false; }
 
-
     //==============================================================================
-    int getNumParameters() { return params.size(); }
-
-    const String
-    getParameterName (int index)
-    {
-        if (isPositiveAndBelow (index, params.size()))
-            return params.getUnchecked(index)->getName();
-        return String();
-    }
-
-
-    float
-    getParameter (int index)
-    {
-        if (isPositiveAndBelow (index, params.size()))
-            return static_cast<float> (params.getUnchecked(index)->getNormalValue());
-
-        return 0.0f;
-    }
-
-    const String getParameterText (int index)
-    {
-        if (! isPositiveAndBelow (index, params.size()))
-            return String (getParameter (index));
-
-        LV2Parameter* const param = params.getUnchecked (index);
-        return String (static_cast<float> (param->getValue()));
-    }
-
-    void writeControlValue (int, float) { /* TODO */}
-
-    void setParameter (int index, float newValue)
-    {
-        if (isPositiveAndBelow (index, params.size()))
-        {
-            LV2Parameter* const param = params.getUnchecked (index);
-            param->setNormalValue (newValue);
-            module->setControlValue (param->getPortIndex(), param->getValue());
-            writeControlValue (param->getPortIndex(), param->getValue());
-        }
-    }
-
-
-    int getParameterNumSteps (int index)
-    {
-        if (isPositiveAndBelow(index, params.size()))
-            return params.getUnchecked(index)->getNumSteps();
-        return AudioProcessor::getParameterNumSteps (index);
-    }
-
-
-    float getParameterDefaultValue (int index)
-    {
-        if (LV2Parameter* const param = params [index])
-        {
-            float min, max, def;
-            module->getPortRange (param->getPortIndex(), min, max, def);
-            return def;
-        }
-
-        return AudioProcessor::getParameterDefaultValue (index);
-    }
-
-    String getParameterLabel (int index) const
-    {
-        return String();
-    }
-
-    bool isParameterAutomatable (int index) const { return true; }
-
-    //==============================================================================
-    int getNumPrograms()          { return 0; }
+    int getNumPrograms()          { return 1; }
     int getCurrentProgram()       { return 0; }
     void setCurrentProgram (int /*index*/) { }
     const String getProgramName (int /*index*/)  { return String(); }
@@ -462,11 +453,9 @@ AudioProcessorEditor* LV2PluginInstance::createEditor()
     return nullptr;
 }
 
-
 class LV2PluginFormat::Internal
 {
 public:
-
     Internal()
     {
         useExternalData = false;
@@ -484,11 +473,6 @@ public:
     ~Internal()
     {
         world.clear();
-    }
-
-    LV2PluginModel* createModel (const String& uri)
-    {
-        return world->createPluginModel (uri);
     }
 
     LV2Module* createModule (const String& uri)
@@ -523,8 +507,9 @@ LV2PluginFormat::~LV2PluginFormat() { priv = nullptr; }
 void LV2PluginFormat::findAllTypesForFile (OwnedArray <PluginDescription>& results,
                                            const String& fileOrIdentifier)
 {
-    if (! fileMightContainThisPluginType (fileOrIdentifier))
+    if (! fileMightContainThisPluginType (fileOrIdentifier)) {
         return;
+    }
 
     ScopedPointer<PluginDescription> desc (new PluginDescription());
     desc->fileOrIdentifier = fileOrIdentifier;
@@ -599,8 +584,17 @@ String LV2PluginFormat::getNameOfPluginFromIdentifier (const String& fileOrIdent
     return fileOrIdentifier;
 }
 
-StringArray LV2PluginFormat::searchPathsForPlugins (const FileSearchPath&, bool, bool)
+StringArray LV2PluginFormat::searchPathsForPlugins (const FileSearchPath& paths, bool, bool)
 {
+    if (paths.getNumPaths() > 0)
+    {
+       #if JUCE_WINDOWS
+        setenv ("LV2_PATH", paths.toString().toRawUTF8(), 0);
+       #else
+        setenv ("LV2_PATH", paths.toString().replace(";",":").toRawUTF8(), 0);
+       #endif
+    }
+
     StringArray list;
     const LilvPlugins* plugins (priv->world->getAllPlugins());
     LILV_FOREACH (plugins, iter, plugins)
@@ -614,7 +608,19 @@ StringArray LV2PluginFormat::searchPathsForPlugins (const FileSearchPath&, bool,
     return list;
 }
 
-FileSearchPath LV2PluginFormat::getDefaultLocationsToSearch() { return FileSearchPath(); }
+FileSearchPath LV2PluginFormat::getDefaultLocationsToSearch()
+{
+    FileSearchPath paths;
+   #if JUCE_LINUX
+    paths.add ("/usr/lib/lv2");
+    paths.add ("/usr/local/lib/lv2");
+   #elif JUCE_MAC
+    paths.add (File ("/Library/Audio/Plug-Ins/LV2"));
+    paths.add (File::getSpecialLocation (File::userHomeDirectory)
+        .getChildFile ("Library/Audio/Plug-Ins/LV2"));
+   #endif
+    return paths;
+}
 
 bool LV2PluginFormat::doesPluginStillExist (const PluginDescription& desc)
 {
@@ -637,21 +643,23 @@ void LV2PluginFormat::createPluginInstance (const PluginDescription& desc, doubl
         Result res (module->instantiate (initialSampleRate));
         if (res.wasOk())
         {
-            module->activate();
             auto instance = std::unique_ptr<LV2PluginInstance> (new LV2PluginInstance (*priv->world, module));
             callback (userData, instance.release(), {});
         }
         else
         {
             deleteAndZero (module);
-            JUCE_LV2_LOG (res.getErrorMessage());
             callback (userData, nullptr, res.getErrorMessage());
         }
     }
-
-    JUCE_LV2_LOG ("Failed creating LV2 plugin instance");
-    callback (userData, nullptr, "Failed creating LV2 plugin instance");
+    else
+    {
+        JUCE_LV2_LOG ("Failed creating LV2 plugin instance");
+        callback (userData, nullptr, "Failed creating LV2 plugin instance");
+    }
 }
 
 
 SymbolMap& LV2PluginFormat::getSymbolMap() { return priv->symbols; }
+
+}

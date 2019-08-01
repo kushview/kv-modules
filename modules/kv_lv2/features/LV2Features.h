@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_JUCE_LV2_FEATURES_H
-#define EL_JUCE_LV2_FEATURES_H
+#pragma once
+
+namespace kv {
 
 /** A simple interface for implenting LV2 Features */
 class LV2Feature
@@ -134,4 +135,4 @@ private:
 
 };
 
-#endif /* EL_JUCE_LV2_FEATURES_H */
+}

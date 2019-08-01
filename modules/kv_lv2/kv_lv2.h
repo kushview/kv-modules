@@ -70,22 +70,20 @@
 #include <juce_audio_formats/juce_audio_formats.h>
 #include <juce_audio_processors/juce_audio_processors.h>
 
-namespace kv {
- #include "common/URIs.h"
- #include "common/PortBuffer.h"
- #include "common/PortWriter.h"
- #include "features/LV2Features.h"
- #include "features/LV2Log.h"
- #include "features/LV2Worker.h"
- #include "features/SymbolMap.h"
+
+#include "common/URIs.h"
+#include "common/PortBuffer.h"
+#include "common/PortWriter.h"
+#include "features/LV2Features.h"
+#include "features/LV2Log.h"
+#include "features/LV2Worker.h"
+#include "features/SymbolMap.h"
 
 #if KV_LV2_PLUGIN_HOST
  #include "host/LV2World.h"
  #include "host/LV2Module.h"
  #include "host/LV2Parameter.h"
  #include "host/LV2PluginFormat.h"
- #include "host/LV2PluginModel.h"
 #endif
-}
 
 #endif // KV_LV2_H_INCLUDED

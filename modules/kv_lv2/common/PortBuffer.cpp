@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
+
 static uint32 portBufferPadSize (uint32 size)
 {
     return (size + 7) & (~7);
@@ -144,4 +146,6 @@ void*
 PortBuffer::getPortData()
 {
     return block.getData();
+}
+
 }

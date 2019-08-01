@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_PORT_BUFFER_H
-#define EL_PORT_BUFFER_H
+#pragma once
+
+namespace kv {
 
 /** A multi-buffer of sorts. Capable of handling data for all LV2 Port
     types.  A PortBuffer can dynamically change types if needed. @see
@@ -59,4 +60,4 @@ private:
     } buffer;
 };
 
-#endif
+}

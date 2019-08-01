@@ -17,13 +17,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_LV2WORLD_H
-#define EL_LV2WORLD_H
+#pragma once
 
 #define LV2_UI__JuceUI LV2_UI_PREFIX "JuceUI"
 
+namespace kv {
+
 class  LV2Module;
-class  LV2PluginModel;
 
 /** Slim wrapper around LilvWorld.  Publishes commonly used LilvNodes and
     manages heavy weight features (like LV2 Worker) */
@@ -48,9 +48,6 @@ public:
 
     /** Create an LV2Module for a uri string */
     LV2Module* createModule (const String& uri);
-
-    /** Create a plugin model for a uri string */
-    LV2PluginModel* createPluginModel (const String& uri);
 
     /** Fill a PluginDescription for a plugin uri */
     void fillPluginDescription (const String& uri, PluginDescription& desc) const;
@@ -104,4 +101,4 @@ private:
     OwnedArray<WorkThread> threads;
 };
 
-#endif /* EL_LV2WORLD_H */
+}

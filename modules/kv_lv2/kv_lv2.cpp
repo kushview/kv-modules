@@ -28,7 +28,6 @@
 
 #include "kv_lv2/kv_lv2.h"
 
-namespace kv {
 #include "common/PortBuffer.cpp"
 #include "common/PortWriter.cpp"
 #include "features/LV2Log.cpp"
@@ -37,7 +36,5 @@ namespace kv {
 #if KV_LV2_PLUGIN_HOST
  #include "host/LV2Module.cpp"
  #include "host/LV2PluginFormat.cpp"
- #include "host/LV2PluginModel.cpp"
  #include "host/LV2World.cpp"
 #endif
-}
