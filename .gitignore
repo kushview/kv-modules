@@ -79,3 +79,5 @@ profile
 **/Builds/Android/lib/.externalNativeBuild
 **/doxygen/doc
 **/doxygen/build
+
+/dist/
