@@ -1,3 +1,0 @@
-[submodule "modules/kv_ffmpeg/ffmpeg"]
-	path = modules/kv_ffmpeg/ffmpeg
-	url = https://github.com/FFmpeg/ffmpeg.git
