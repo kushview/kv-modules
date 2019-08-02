@@ -34,28 +34,34 @@ experimental_modules = '''
     kv_ffmpeg
     kv_lv2
     kv_video
+    kv_edd
 '''.split()
 
 library_modules = '''
     kv_core
-    kv_edd
     kv_engines
     kv_gui
     kv_models
 '''.split()
+
+all_modules = library_modules + experimental_modules
 
 cpponly_modules = '''
 '''.split()
 
 def options (opts):
     opts.load ('compiler_c compiler_cxx juce')
+    opts.add_option ('--enable-edd', default=False, action="store_true", dest="edd",
+        help="Enable support for Easy Digital Downloads")
+    opts.add_option('--no-headers', default=True, action="store_false", \
+        dest="install_headers", help="Don't install headers")
 
 def silence_warnings (conf):
     # TODO: update LV2 module to use latest LV2 / LILV / SUIL
     conf.env.append_unique ('CXXFLAGS', ['-Wno-deprecated-declarations'])
 
 def configure (conf):
-    conf.load ('compiler_c compiler_cxx juce')
+    conf.load ('compiler_c compiler_cxx')
     silence_warnings (conf)
 
     conf.env.DATADIR    = conf.env.PREFIX + '/share'
@@ -63,6 +69,7 @@ def configure (conf):
     conf.env.BINDIR     = conf.env.PREFIX + '/bin'
     conf.env.INCLUDEDIR = conf.env.PREFIX + '/include'
 
+    conf.env.HEADERS    = conf.options.install_headers
     conf.env.DEBUG      = conf.options.debug
 
     # Write out the version header
@@ -82,6 +89,9 @@ def configure (conf):
 
     conf.env.MODULES = library_modules
 
+    if conf.options.edd:
+        conf.env.MODULES.append ('kv_edd')
+    
     if conf.env.HAVE_LILV and conf.env.HAVE_SUIL:
         conf.define ('KV_LV2_PLUGIN_HOST', 1)
         conf.env.MODULES.append ('kv_lv2')
@@ -93,11 +103,12 @@ def configure (conf):
     conf.write_config_header ('kv/config.h', 'KV_MODULES_CONFIG_H')
     conf.define ('JUCE_APP_CONFIG_HEADER', 'kv/config.h')
     
+    conf.load ('juce')
     conf.check_cxx_version ('c++14', True)
 
     print
-    juce.display_header ("KV Modules")
-    for m in library_modules + experimental_modules:
+    juce.display_header ("Modules")
+    for m in all_modules:
         juce.display_msg (conf, m, m in conf.env.MODULES)
 
     if juce.is_mac():
@@ -109,9 +120,10 @@ def configure (conf):
     
     print
     juce.display_header ('Compiler')
-    juce.display_msg (conf, 'CFLAGS', conf.env.CFLAGS)
+    juce.display_msg (conf, 'Debug',    conf.env.DEBUG)
+    juce.display_msg (conf, 'CFLAGS',   conf.env.CFLAGS)
     juce.display_msg (conf, 'CXXFLAGS', conf.env.CXXFLAGS)
-    juce.display_msg (conf, 'LDFLAGS', conf.env.LINKFLAGS)
+    juce.display_msg (conf, 'LDFLAGS',  conf.env.LINKFLAGS)
 
 def library_slug (bld):
     return 'kv_debug-0' if bld.env.DEBUG else 'kv-0'
@@ -132,19 +144,24 @@ def install_misc_header (bld, header, subpath=''):
     bld.install_files (destination, header)
 
 def maybe_install_headers (bld):
-    install_module_headers (bld, bld.env.MODULES)
+    if not bld.env.HEADERS:
+        return
+    
+    install_module_headers (bld, all_modules)
     for header in [ 'kv/kv.h', 'build/kv/config.h', 'build/kv/version.h' ]:
         install_misc_header (bld, header, 'kv')
+    for module in all_modules:
+        install_misc_header (bld, 'build/kv/%s.h' % module.replace ('kv_', ''), 'kv')
 
 def generate_code (bld):
     tasks = []
-    for mod in bld.env.MODULES:
+    for mod in all_modules:
         tasks.append (bld (
             features     = 'subst',
             source       = 'module_header.h.in',
             target       = 'kv/%s.h' % mod.replace ('kv_', ''),
             name         = mod + "_h",
-            install_path = get_include_path (bld, 'kv'),
+            install_path = None,
             MODULE       = mod
         ))
 
@@ -170,6 +187,7 @@ def generate_code (bld):
     return tasks
 
 def build (bld):
+    bld.env.HEADERS = bld.options.install_headers
     generate_code (bld)
     
     library_source = []
@@ -181,7 +199,7 @@ def build (bld):
         source      = library_source,
         includes    = [ 'build', 'modules' ],
         name        = 'KV',
-        cxxflags    = [ '-std=c++14', '-Wno-deprecated-declarations' ],
+        cxxflags    = [],
         target      = 'lib/%s' % library_slug (bld),
         use         = [ 'JUCE', 'LILV', 'SUIL' ],
         vnum        = VERSION
