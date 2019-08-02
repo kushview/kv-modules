@@ -34,7 +34,7 @@ experimental_modules = '''
     kv_ffmpeg
     kv_lv2
     kv_video
-'''
+'''.split()
 
 library_modules = '''
     kv_core
@@ -50,8 +50,13 @@ cpponly_modules = '''
 def options (opts):
     opts.load ('compiler_c compiler_cxx juce')
 
+def silence_warnings (conf):
+    # TODO: update LV2 module to use latest LV2 / LILV / SUIL
+    conf.env.append_unique ('CXXFLAGS', ['-Wno-deprecated-declarations'])
+
 def configure (conf):
-    conf.load ('compiler_c compiler_cxx')
+    conf.load ('compiler_c compiler_cxx juce')
+    silence_warnings (conf)
 
     conf.env.DATADIR    = conf.env.PREFIX + '/share'
     conf.env.LIBDIR     = conf.env.PREFIX + '/lib'
@@ -71,8 +76,8 @@ def configure (conf):
     conf.check_cfg (package='juce_debug-5' if conf.options.debug else 'juce-5', 
                     uselib_store='JUCE', args=['--libs', '--cflags'], mandatory=True)
     conf.check_cfg (package='lv2',    uselib_store='LV2',  args=['--libs', '--cflags'], mandatory=False)
-    conf.check_cfg (package='lilv-0',   uselib_store='LILV', args=['--libs', '--cflags'], mandatory=False)
-    conf.check_cfg (package='suil-0',   uselib_store='SUIL', args=['--libs', '--cflags'], mandatory=False)
+    conf.check_cfg (package='lilv-0', uselib_store='LILV', args=['--libs', '--cflags'], mandatory=False)
+    conf.check_cfg (package='suil-0', uselib_store='SUIL', args=['--libs', '--cflags'], mandatory=False)
     conf.write_config_header ('libkv_config.h')
 
     conf.env.MODULES = library_modules
@@ -86,9 +91,27 @@ def configure (conf):
     for mod in conf.env.MODULES:
         conf.define('JUCE_MODULE_AVAILABLE_%s' % mod, True)
     conf.write_config_header ('kv/config.h', 'KV_MODULES_CONFIG_H')
-
-    conf.load ('juce')
     conf.define ('JUCE_APP_CONFIG_HEADER', 'kv/config.h')
+    
+    conf.check_cxx_version ('c++14', True)
+
+    print
+    juce.display_header ("KV Modules")
+    for m in library_modules + experimental_modules:
+        juce.display_msg (conf, m, m in conf.env.MODULES)
+
+    if juce.is_mac():
+        print
+        juce.display_header ('Mac Options')
+        juce.display_msg (conf, 'OSX Arch', conf.env.ARCH)
+        juce.display_msg (conf, 'OSX Min Version', conf.options.mac_version_min if len(conf.options.mac_version_min) else 'default')
+        juce.display_msg (conf, 'OSX SDK', conf.options.mac_sdk if len(conf.options.mac_sdk) else 'default')
+    
+    print
+    juce.display_header ('Compiler')
+    juce.display_msg (conf, 'CFLAGS', conf.env.CFLAGS)
+    juce.display_msg (conf, 'CXXFLAGS', conf.env.CXXFLAGS)
+    juce.display_msg (conf, 'LDFLAGS', conf.env.LINKFLAGS)
 
 def library_slug (bld):
     return 'kv_debug-0' if bld.env.DEBUG else 'kv-0'
