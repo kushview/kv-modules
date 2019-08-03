@@ -77,11 +77,11 @@ public:
                 editor = plugin->createEditorIfNeeded();
             else
                 editor = new GenericAudioProcessorEditor (instance);
-            auto* win = new PluginWindow();
-            win->setContentOwned (editor, true);
-            win->centreWithSize (win->getWidth(), win->getHeight());
-            win->setVisible (true);
-            window.reset (win);
+            window.reset (new PluginWindow());
+            window->setName (plugin->getName());
+            window->setContentOwned (editor, true);
+            window->centreWithSize (window->getWidth(), window->getHeight());
+            window->setVisible (true);
         }
         else
         {
