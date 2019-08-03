@@ -138,7 +138,7 @@ void LV2Module::init()
         const LilvPort* port (lilv_plugin_get_port_by_index (plugin, p));
         const bool isInput (lilv_port_is_a (plugin, port, world.lv2_InputPort));
         priv->channels.addPort (getPortType (p), p, isInput);
-        priv->values [p] = priv->defaults [p];
+        priv->values[p] = priv->defaults[p];
     }
 }
 
@@ -466,6 +466,15 @@ SuilInstance* LV2Module::createEditor()
         }
 
         lilv_uis_free (uis);
+    }
+
+    if (instance != nullptr) {
+        for (uint32 i = 0; i < numPorts; ++i)
+        {
+            if (PortType::Control != getPortType (i))
+                continue;
+            suil_instance_port_event (instance, i, sizeof(float), 0, (void*) &priv->values[i]);
+        }
     }
 
     return instance;
