@@ -422,10 +422,10 @@ public:
           widget (nullptr),
           plugin (p)
     {
+        setOpaque (true);
         widget = (Component*) suil_instance_get_widget (instance);
         addAndMakeVisible (widget);
-        setSize (jmax(300, widget->getWidth()),
-                 jmax(200, widget->getHeight()));
+        setSize (widget->getWidth(), widget->getHeight());
     }
 
     ~LV2EditorJuce()
@@ -433,13 +433,21 @@ public:
         plugin->editorBeingDeleted (this);
         removeChildComponent (widget);
         if (instance)
+        {
             suil_instance_free (instance);
+            instance = nullptr;
+        }
     }
 
-    void resized() {
-        widget->setBounds (getLocalBounds());
+    void paint (Graphics& g) override {
+        g.fillAll (Colours::black);
     }
 
+    void resized() override {
+        widget->setBounds (0, 0, widget->getWidth(), widget->getHeight());
+    }
+
+private:
     SuilInstance* instance;
     Component* widget;
     LV2PluginInstance* plugin;
