@@ -64,19 +64,28 @@ public:
 
         PluginDescription desc;
         desc.pluginFormatName = "LV2";
-        desc.fileOrIdentifier = "http://lv2plug.in/plugins/eg-amp";
+        // desc.fileOrIdentifier = "http://lv2plug.in/plugins/eg-amp";
+        desc.fileOrIdentifier = "https://kushview.net/plugins/roboverb";
         if (auto* instance = lv2->createInstanceFromDescription (desc, 44100.0, 1024))
         {
             plugin.reset (instance);
             player.setProcessor (instance);
             DBG("name: " << instance->getName());
             DBG("params: " << instance->getParameters().size());
-            auto* ed = new GenericAudioProcessorEditor (instance);
+            AudioProcessorEditor* editor = nullptr;
+            if (plugin->hasEditor())
+                editor = plugin->createEditorIfNeeded();
+            else
+                editor = new GenericAudioProcessorEditor (instance);
             auto* win = new PluginWindow();
-            win->setContentOwned (ed, true);
+            win->setContentOwned (editor, true);
             win->centreWithSize (win->getWidth(), win->getHeight());
             win->setVisible (true);
             window.reset (win);
+        }
+        else
+        {
+            quit();
         }
     }
 

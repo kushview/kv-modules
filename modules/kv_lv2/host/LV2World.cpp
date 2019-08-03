@@ -99,6 +99,7 @@ LV2World::LV2World()
     midi_MidiEvent  = lilv_new_uri (world, LV2_MIDI__MidiEvent);
     work_schedule   = lilv_new_uri (world, LV2_WORKER__schedule);
     work_interface  = lilv_new_uri (world, LV2_WORKER__interface);
+    ui_CocoaUI      = lilv_new_uri (world, LV2_UI__CocoaUI);
     ui_X11UI        = lilv_new_uri (world, LV2_UI__X11UI);
     ui_JuceUI       = lilv_new_uri (world, LV2_UI__JuceUI);
 

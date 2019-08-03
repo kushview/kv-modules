@@ -422,24 +422,25 @@ bool LV2Module::isLoaded() const { return instance != nullptr; }
 bool LV2Module::hasEditor() const
 {
     bool hasJuceUI = false;
+    LilvUIs* uis = lilv_plugin_get_uis (plugin);
+    if (nullptr == uis)
+        return false;
 
-    if (LilvUIs* uis = lilv_plugin_get_uis (plugin))
+    LILV_FOREACH(uis, iter, uis)
     {
-        LILV_FOREACH(uis, iter, uis)
+        const LilvUI* ui = lilv_uis_get (uis, iter);
+        const unsigned quality = lilv_ui_is_supported (ui, &LV2Callbacks::uiSupported, world.ui_JuceUI, nullptr);
+
+        if (quality == 1)
         {
-            const LilvUI* ui = lilv_uis_get (uis, iter);
-            const unsigned quality = lilv_ui_is_supported (ui, &LV2Callbacks::uiSupported, world.ui_JuceUI, nullptr);
-
-            if (quality == 1)
-            {
-                const String uri = lilv_node_as_string (lilv_ui_get_uri (ui));
-                DBG (uri << " quality: " << (int) quality);
-                hasJuceUI = true;
-            }
+            const String uri = lilv_node_as_string (lilv_ui_get_uri (ui));
+            DBG (uri << " quality: " << (int) quality);
+            hasJuceUI = true;
         }
-
-        lilv_uis_free (uis);
     }
+
+    lilv_uis_free (uis);
+    
 
     return hasJuceUI;
 }

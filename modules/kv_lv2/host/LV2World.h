@@ -19,7 +19,8 @@
 
 #pragma once
 
-#define LV2_UI__JuceUI LV2_UI_PREFIX "JuceUI"
+#define LV2_UI__JuceUI "https://kushview.net/lv2#JuceUI"
+// #define LV2_UI__JuceUI LV2_UI_PREFIX "JuceUI"
 
 namespace kv {
 
@@ -43,6 +44,7 @@ public:
     const LilvNode*   midi_MidiEvent;
     const LilvNode*   work_schedule;
     const LilvNode*   work_interface;
+    const LilvNode*   ui_CocoaUI;
     const LilvNode*   ui_X11UI;
     const LilvNode*   ui_JuceUI;
 
