@@ -31,10 +31,6 @@ public:
 
     void initialise (const String& commandLine) override
     {
-        devices.initialiseWithDefaultDevices (2 ,2);
-        devices.addAudioCallback (&player);
-        devices.addMidiInputCallback (String(), &player);
-
         auto* lv2 = new kv::LV2PluginFormat();
         plugins.addFormat (lv2); // takes ownership
 
@@ -70,8 +66,10 @@ public:
         {
             plugin.reset (instance);
             player.setProcessor (instance);
-            DBG("name: " << instance->getName());
-            DBG("params: " << instance->getParameters().size());
+            devices.initialiseWithDefaultDevices (2 ,2);
+            devices.addAudioCallback (&player);
+            devices.addMidiInputCallback (String(), &player);
+
             AudioProcessorEditor* editor = nullptr;
             if (plugin->hasEditor())
                 editor = plugin->createEditorIfNeeded();
