@@ -17,7 +17,6 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-
 #ifndef KV_LV2_NUM_WORKERS
  #define KV_LV2_NUM_WORKERS 1
 #endif
@@ -33,8 +32,11 @@ void portWrite (
     uint32_t       protocol,
     void const*    buffer)
 {
-
-    //    ((LV2Module*) controller)->write(port, size, protocol, buffer);
+    if (protocol == 0)
+    {
+        ((LV2Module*) controller)->setControlValue (port, *((float*) buffer));
+    }
+//    ((LV2Module*) controller)->write (port, size, protocol, buffer);
 }
 
 uint32_t portIndex (
@@ -102,7 +104,6 @@ LV2World::LV2World()
     ui_CocoaUI      = lilv_new_uri (world, LV2_UI__CocoaUI);
     ui_X11UI        = lilv_new_uri (world, LV2_UI__X11UI);
     ui_JuceUI       = lilv_new_uri (world, LV2_UI__JuceUI);
-
 
     suil = suil_host_new (LV2Callbacks::portWrite, 0, 0, 0);
 
