@@ -21,11 +21,13 @@
 
 namespace kv {
 
-#if KV_USE_CXX11
-/** Function type for writing to a port buffer. Params are in order port, size, protocol, buffer
-    @note This is compatible with lvtk's port write ui method */
-typedef std::function<void(uint32_t, uint32_t, uint32_t, void const*)> PortWriteFunction;
-#endif
+/** A function which writes to a port
+    @param port         Port Index
+    @param size         Data size
+    @param protocol     Data protocol
+    @param data         The Data
+*/
+using PortWriteFunction = std::function<void(uint32_t port, uint32_t size, uint32_t protocol, void const* data)> ;
 
 /** A simple type for writing/reading port values/messages through a ringbuffer */
 struct PortEvent
