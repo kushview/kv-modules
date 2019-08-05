@@ -41,6 +41,14 @@ public:
         return read (dest, size, false);
     }
 
+    inline void advance (uint32 bytes, bool write)
+    {
+        if (write)
+            fifo.finishedWrite (static_cast<int> (bytes));
+        else
+            fifo.finishedRead (static_cast<int> (bytes));
+    }
+
     inline uint32
     read (void* dest, uint32 size, bool advance = true)
     {
@@ -60,9 +68,9 @@ public:
     }
 
     template <typename T>
-    inline uint32 read (T& dest)
+    inline uint32 read (T& dest, bool advance = true)
     {
-        return read (&dest, sizeof (T));
+        return read (&dest, sizeof (T), advance);
     }
 
     inline void advanceReadPointer (const uint32) {
@@ -88,7 +96,7 @@ public:
     template <typename T>
     inline uint32 write (const T& src)
     {
-        write (&src, sizeof (T));
+        return write (&src, sizeof (T));
     }
 
     struct Vector {
