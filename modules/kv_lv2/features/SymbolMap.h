@@ -45,12 +45,11 @@ public:
     /** Map a symbol/uri to an unsigned integer
         @param key The symbol to map
         @return A mapped URID, a return of 0 indicates failure */
-    inline LV2_URID
-    map (const char* key)
+    inline LV2_URID map (const char* key)
     {
         if (! contains (key))
         {
-            const uint32_t urid ((LV2_URID) mapped.size());
+            const uint32_t urid (1 + (LV2_URID) mapped.size());
             mapped [key] = urid;
             unmapped [urid] = std::string (key);
             return urid;
@@ -62,8 +61,7 @@ public:
     /** Containment test of a URI
         @param uri The URI to test
         @return True if found */
-    inline bool
-    contains (const char* uri)
+    inline bool contains (const char* uri)
     {
         return mapped.find (uri) != mapped.end();
     }
@@ -71,8 +69,7 @@ public:
     /** Containment test of a URID
         @param urid The URID to test
         @return True if found */
-    inline bool
-    contains (LV2_URID urid)
+    inline bool contains (LV2_URID urid)
     {
         return unmapped.find (urid) != unmapped.end();
     }
@@ -80,8 +77,7 @@ public:
     /** Unmap an already mapped id to its symbol
         @param urid The URID to unmap
         @return The previously mapped symbol or 0 if the urid isn't in the cache */
-    inline const char*
-    unmap (LV2_URID urid)
+    inline const char* unmap (LV2_URID urid)
     {
         if (contains (urid))
             return (const char*) unmapped [urid].c_str();
@@ -90,8 +86,7 @@ public:
     }
 
     /** Clear the SymbolMap */
-    inline void
-    clear()
+    inline void clear()
     {
         mapped.clear();
         unmapped.clear();
