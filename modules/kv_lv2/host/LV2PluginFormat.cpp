@@ -62,7 +62,8 @@ public:
     void setValue (float newValue) override
     {
         value.set (newValue);
-        module.setControlValue (portIdx, range.convertFrom0to1 (newValue));
+        const auto expanded = range.convertFrom0to1 (newValue);
+        module.write (portIdx, sizeof(float), 0, &expanded);
     }
 
     float getDefaultValue() const override      { return range.convertTo0to1 (defaultValue); }

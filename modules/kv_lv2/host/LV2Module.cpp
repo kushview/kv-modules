@@ -268,6 +268,11 @@ void LV2Module::activatePorts()
 
 void LV2Module::init()
 {
+    events.reset (new RingBuffer (4096));
+    evbufsize = jmax (evbufsize, static_cast<uint32> (256));
+    evbuf.realloc (evbufsize);
+    evbuf.clear (evbufsize);
+
     // create and set default port values
     priv->mins.allocate (numPorts, true);
     priv->maxes.allocate (numPorts, true);
@@ -711,6 +716,26 @@ bool LV2Module::isPortOutput (uint32 index) const
 
 void LV2Module::run (uint32 nframes)
 {
+    PortEvent ev;
+    
+    static const uint32 pesize = sizeof (PortEvent);
+    for (;;)
+    {
+        if (! events->canRead (pesize))
+            break;
+        events->read (ev, false);
+        if (ev.size > 0 && events->canRead (pesize + ev.size))
+        {
+            events->advance (pesize, false);
+            events->read (evbuf, ev.size, true);
+
+            if (ev.protocol == 0)
+            {
+                priv->values[ev.index] = *((float*) evbuf.getData());
+            }
+        }
+    }
+
     for (const auto* const port : priv->ports.getPorts())
         if (port->type == PortType::Control)
             connectPort (static_cast<uint32> (port->index), &priv->values[port->index]);
@@ -734,18 +759,23 @@ uint32 LV2Module::map (const String& uri) const
     return 0;
 }
 
-void LV2Module::setControlValue (uint32 port, float value)
-{
-    if (port >= numPorts)
-        return;
-
-    priv->values[port] = value;
-}
-
 void LV2Module::write (uint32 port, uint32 size, uint32 protocol, const void* buffer)
 {
-    if (PortType::Control == priv->ports.getType (port))
-        setControlValue (port, *((float*) buffer));
+    PortEvent event;
+    zerostruct (event);
+    event.index     = port;
+    event.size      = size;
+    event.protocol  = protocol;
+
+    if (events->canWrite (sizeof (PortEvent) + size))
+    {
+        events->write (event);
+        events->write (buffer, event.size);
+    }
+    else
+    {
+        DBG("[kv] lv2 plugin write buffer full.");
+    }
 }
 
 }

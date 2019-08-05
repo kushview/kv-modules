@@ -90,8 +90,8 @@ public:
 
     /** Create an editor for this plugin */
     LV2ModuleUI* createEditor();
-    void clearEditor();
 
+    /** Returns the port index for a given symbol */
     uint32 getPortIndex (const String& symbol) const;
 
     /** Returns true if the port is an Input */
@@ -100,19 +100,17 @@ public:
     /** Returns true if the port is an Output */
     bool isPortOutput (uint32 port) const;
 
-    /** Set a control value */
-    void setControlValue (uint32 port, float value);
-
     /** Set the sample rate for this plugin
         @param newSampleRate The new rate to use
-        @note This will re-instantiate the plugin, use it only if you
-        really need to */
+        @note This will re-instantiate the plugin
+      */
     void setSampleRate (double newSampleRate);
 
     /** Get the plugin's extension data
         @param uri The uri of the extesion
         @return A pointer to extension data or nullptr if not available
-        @note This is in the LV2 Discovery Threading class */
+        @note This is in the LV2 Discovery Threading class 
+      */
     const void* getExtensionData (const String& uri) const;
 
     /** Instantiate the Plugin
@@ -133,36 +131,51 @@ public:
     void deactivate();
 
     /** Returns true if the plugin has been activated
-        @note This should NOT be used in a realtime thread */
+        @note This should NOT be used in a realtime thread
+      */
     bool isActive() const;
 
     /** Run / process the plugin for a cycle
         @param nframes The number of samples to process
-        @note Per LV2 spec, if you need to process events only, then call
-        this method with nframes = 0.  This is in the LV2 Audio (realtime)
-        Threading class */
+        @note If you need to process events only, then call this method 
+              with nframes = 0.
+      */
     void run (uint32 nframes);
 
     /** Connect a port to a data location
         @param port The port index to connect
         @param data A pointer to the port buffer that should be used
-        @note This is in the LV2 Audio (realtime) Threading class */
+      */
     void connectPort (uint32 port, void* data);
 
-    /** Connect a channel to a data Location.  This simply converts the
-        channel number to a port index then calls LV2Module::connectPort
-        @note This is in the LV2 Audio (realtime) Threading class */
+    /** Connect a channel to a data Location.  
+        This simply converts the channel number to a port index then 
+        calls LV2Module::connectPort
+      */
     void connectChannel (const PortType type, const int32 channel, void* data, const bool isInput);
 
+    /** Returns an LV2 preset/state as a string */
     String getStateString() const;
+
+    /** Restore from state created with getStateString()
+        @see getStateString
+      */
     void setStateString (const String&);
 
+    /** Write some data to a port
+        This will send a PortEvent to the audio thread
+      */
     void write (uint32 port, uint32 size, uint32 protocol, const void* buffer);
 
+    /** Send port values to listeners now */
     void sendPortEvents();
 
+    /** Returns a mapped LV2_URID */
     uint32 map (const String& uri) const;
 
+    /** @internal LV2ModuleUI's should call this when being unloaded */
+    void clearEditor();
+    
 private:
     LilvInstance* instance;
     const LilvPlugin* plugin;
@@ -173,7 +186,12 @@ private:
     double currentSampleRate;
     uint32 numPorts;
     Array<const LV2_Feature*> features;
-    ScopedPointer<RingBuffer> events;
+
+    std::unique_ptr<RingBuffer> events;
+    HeapBlock<uint8> evbuf;
+    uint32 evbufsize;
+
+    std::unique_ptr<RingBuffer> notifications;
 
     Result allocateEventBuffers();
     void activatePorts();
@@ -203,6 +221,7 @@ public:
     void unload()
     {
         plugin.clearEditor();
+        
         if (instance)
         {
             suil_instance_free (instance);
@@ -231,9 +250,7 @@ private:
     friend class LV2World;
 
     LV2ModuleUI (LV2World& w, LV2Module& m)
-        : world (w),
-          plugin (m) 
-    { }
+        : world (w), plugin (m) { }
 
     LV2World& world;
     LV2Module& plugin;
