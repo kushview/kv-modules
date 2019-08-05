@@ -13,13 +13,122 @@ class LV2Show : public JUCEApplication,
     class PluginWindow : public DocumentWindow
     {
     public:
-        PluginWindow()
-            : DocumentWindow ("plugin", Colours::black, DocumentWindow::allButtons, true)
-        { }
+        PluginWindow (AudioProcessor& p)
+            : DocumentWindow ("plugin", Colours::black, DocumentWindow::allButtons, true),
+              processor (p)
+        {
+            menu.reset (new MenuBar (*this));
+            setMenuBar (menu.get());
+        }
 
-        void closeButtonPressed() override {
+        ~PluginWindow()
+        {
+            setMenuBar (nullptr);
+            menu.reset();
+        }
+        
+        void closeButtonPressed() override
+        {
             JUCEApplication::getInstance()->systemRequestedQuit();
         }
+
+    private:
+        AudioProcessor& processor;
+        friend class MenuBar;
+        struct MenuBar : public MenuBarModel
+        {
+            PluginWindow& window;
+            MenuBar (PluginWindow& owner) : window (owner) {}
+            
+            StringArray getMenuBarNames() override
+            {
+                return { "File", "Presets" };
+            }
+
+            PopupMenu getMenuForIndex (int, const String& name) override
+            {
+                PopupMenu menu;
+                if (name == "File")
+                {
+                    menu.addItem (1, "Save JUCE State");
+                    menu.addItem (2, "Restore JUCE state");
+                }
+                else if (name == "Presets")
+                {
+                    menu.addItem (1, "Save LV2 Preset");
+                    menu.addSeparator();
+                    // list presets here
+                }
+                return menu;
+            }
+
+            void menuItemSelected (int item, int menu) override
+            {
+                if (menu == 0)
+                {
+                    if (item == 1)
+                    {
+                        // FileChooser chooser ("Save state to file",
+                        //     File::getSpecialLocation(File::userDocumentsDirectory),
+                        //     {});
+                        
+                        // if (chooser.browseForFileToSave (true))
+                        {
+                            File file (File::getSpecialLocation(File::userDesktopDirectory)
+                                .getChildFile ("teststate.jlv2"));
+                            MemoryBlock block;
+                            window.processor.getStateInformation (block);
+                            MemoryInputStream mi (block, false);
+                            FileOutputStream stream (file);
+                            if (stream.openedOk())
+                            {
+                                stream.setPosition (0);
+                                stream.truncate();
+                                stream.writeFromInputStream (mi, -1);
+                                stream.flush();
+                            }
+                            else
+                            {
+                                DBG("couldn't write state file");
+                            }
+                            
+                        }
+                    }
+                    else if (item ==2)
+                    {
+                          // FileChooser chooser ("Load state from file",
+                        //     File::getSpecialLocation(File::userDocumentsDirectory),
+                        //     "*.jlv2");
+                        
+                        // if (chooser.browseForFileToOpen())
+                        {
+                            File file (File::getSpecialLocation(File::userDesktopDirectory)
+                                .getChildFile ("teststate.jlv2"));
+                            FileInputStream stream (file);
+                            if (stream.openedOk())
+                            {
+                                MemoryOutputStream mo;
+                                mo.writeFromInputStream (stream, -1);
+                                window.processor.setStateInformation (mo.getData(), (int) mo.getDataSize());
+                            }
+                            else
+                            {
+                                DBG("couldn't open state file");
+                            }
+                        }
+                    }
+                }
+                else if (menu == 2)
+                {
+                    if (item == 1)
+                    {
+                      
+                    }
+                }
+            }
+        };
+
+        std::unique_ptr<MenuBar> menu;
     };
 
 public:
@@ -29,39 +138,23 @@ public:
     const String getApplicationVersion() override    { return "1.0.0"; }
     bool moreThanOneInstanceAllowed() override       { return false; }
 
-    void initialise (const String& commandLine) override
+    void initialise (const String& cli) override
     {
         auto* lv2 = new kv::LV2PluginFormat();
         plugins.addFormat (lv2); // takes ownership
 
-        for (const auto& uri : lv2->searchPathsForPlugins (lv2->getDefaultLocationsToSearch(), false, false))
-            Logger::writeToLog (uri);
-
-         Logger::writeToLog (juce::newLine + "Scanning...");
-
-        KnownPluginList list;
-        PluginDirectoryScanner scanner (
-            list, *lv2, 
-            lv2->getDefaultLocationsToSearch(), 
-            true, File(), false);
-    
-        String name;
-        while (scanner.scanNextFile (false, name)) {
-            Logger::writeToLog (String ("PLUGIN: " + name));
-        }
-
-        Logger::writeToLog (juce::newLine + "Listing...");
-
-        for (int i = 0; i < list.getNumTypes(); ++i)
+        if (cli.isEmpty())
         {
-            const auto* const type = list.getType (i);
-            Logger::writeToLog (type->name);
+            for (const auto& uri : lv2->searchPathsForPlugins (lv2->getDefaultLocationsToSearch(), true, false))
+                Logger::writeToLog (uri);
+
+            quit();
+            return;
         }
 
         PluginDescription desc;
         desc.pluginFormatName = "LV2";
-        // desc.fileOrIdentifier = "http://lv2plug.in/plugins/eg-amp";
-        desc.fileOrIdentifier = "https://kushview.net/plugins/roboverb";
+        desc.fileOrIdentifier = cli;
         if (auto* instance = lv2->createInstanceFromDescription (desc, 44100.0, 1024))
         {
             plugin.reset (instance);
@@ -70,12 +163,22 @@ public:
             devices.addAudioCallback (&player);
             devices.addMidiInputCallback (String(), &player);
 
+            AudioDeviceManager::AudioDeviceSetup setup;
+            devices.getAudioDeviceSetup (setup);
+            
+            DBG(setup.inputDeviceName);
+            DBG(setup.outputDeviceName);
+            DBG(devices.getCurrentAudioDevice()->getInputChannelNames().size());
+            DBG(devices.getCurrentAudioDevice()->getOutputChannelNames().size());
+
+            DBG(plugin->getName());
+
             AudioProcessorEditor* editor = nullptr;
             if (plugin->hasEditor())
                 editor = plugin->createEditorIfNeeded();
             else
                 editor = new GenericAudioProcessorEditor (instance);
-            window.reset (new PluginWindow());
+            window.reset (new PluginWindow (*plugin));
             window->setName (plugin->getName());
             window->setContentOwned (editor, true);
             window->centreWithSize (window->getWidth(), window->getHeight());

@@ -118,12 +118,11 @@ public:
         if (uris == nullptr)
             uris = new URIs (map);
 
-        atomSequence = map->map (map->handle, LV2_ATOM__Sequence);
-        midiEvent    = map->map (map->handle, LV2_MIDI__MidiEvent);
-
-        numPorts   = module->getNumPorts();
-        midiPort   = module->getMidiPort();
-        notifyPort = module->getNotifyPort();
+        atomSequence = module->map (LV2_ATOM__Sequence);
+        midiEvent    = module->map (LV2_MIDI__MidiEvent);
+        numPorts     = module->getNumPorts();
+        midiPort     = module->getMidiPort();
+        notifyPort   = module->getNotifyPort();
 
         buffers.ensureStorageAllocated (numPorts);
         while (buffers.size() < numPorts)
@@ -183,20 +182,6 @@ public:
     ~LV2PluginInstance()
     {
         module = nullptr;
-    }
-
-    //=========================================================================
-    int getNumPorts() const { return static_cast<int> (module->getNumPorts()); }
-    int getNumPorts (PortType type, bool isInput) const { return module->getNumPorts (type, isInput); }
-    PortType getPortType (uint32 port) const { return module->getPortType (port); }
-    bool isPortInput (uint32 port)     const { return module->isPortInput (port); }
-    bool isPortOutput (uint32 port)    const { return module->isPortOutput (port); }
-
-    bool writeToPort (uint32 port, uint32 size, uint32 protocol, const void* data)
-    {
-        const PortEvent ev = { port, protocol, (double)4.0, size };
-        Logger::writeToLog ("Write: time: " + String(ev.time.decimal) + String(" frames: ") + String(ev.time.frames));
-        return true;
     }
 
     //=========================================================================
@@ -381,9 +366,20 @@ public:
     void changeProgramName (int /*index*/, const String& /*name*/) { }
 
     //==============================================================================
-    void getStateInformation (MemoryBlock& mb)                  { ; }
+    void getStateInformation (MemoryBlock& mb)
+    {
+        const auto state = module->getStateString();
+        mb.append (state.toRawUTF8(), state.length());
+    }
+
     void getCurrentProgramStateInformation (MemoryBlock& mb)    { ; }
-    void setStateInformation (const void* data, int size)               { ; }
+    
+    void setStateInformation (const void* data, int size)
+    {
+        MemoryInputStream stream (data, (size_t)size, false);
+        module->setStateString (stream.readEntireStreamAsString());
+    }
+    
     void setCurrentProgramStateInformation (const void* data, int size) { ; }
 
     //==============================================================================
@@ -416,49 +412,59 @@ private:
 class LV2EditorJuce : public AudioProcessorEditor
 {
 public:
-    LV2EditorJuce (LV2PluginInstance* p, SuilInstance* si)
+    LV2EditorJuce (LV2PluginInstance* p, LV2ModuleUI::Ptr _ui)
         : AudioProcessorEditor (p),
-          instance (si),
-          widget (nullptr),
-          plugin (p)
+          plugin (*p),
+          ui (_ui)
     {
         setOpaque (true);
-        widget = (Component*) suil_instance_get_widget (instance);
-        addAndMakeVisible (widget);
-        setSize (widget->getWidth(), widget->getHeight());
+        widget.setNonOwned ((Component*) ui->getWidget());
+        if (widget)
+        {
+            addAndMakeVisible (widget.get());
+            setSize (widget->getWidth(), widget->getHeight());
+        }
+        else
+        {
+            jassertfalse;
+            setSize (320, 180);
+        }
     }
 
     ~LV2EditorJuce()
     {
-        plugin->editorBeingDeleted (this);
-        removeChildComponent (widget);
-        if (instance)
+        removeChildComponent (widget.get());
+        widget.clear();
+        plugin.editorBeingDeleted (this);
+        if (ui)
         {
-            suil_instance_free (instance);
-            instance = nullptr;
+            ui->unload();
         }
+        ui = nullptr;
     }
 
-    void paint (Graphics& g) override {
-        g.fillAll (Colours::black);
+    void paint (Graphics& g) override
+    {
+        g.fillAll (Colours::red);
     }
 
-    void resized() override {
-        widget->setBounds (0, 0, widget->getWidth(), widget->getHeight());
+    void resized() override
+    {
+        if (widget)
+            widget->setBounds (0, 0, widget->getWidth(), widget->getHeight());
     }
 
 private:
-    SuilInstance* instance;
-    Component* widget;
-    LV2PluginInstance* plugin;
+    LV2PluginInstance& plugin;
+    LV2ModuleUI::Ptr ui = nullptr;
+    OptionalScopedPointer<Component> widget;
 };
 
 AudioProcessorEditor* LV2PluginInstance::createEditor()
 {
     jassert (module->hasEditor());
-    if (SuilInstance* i = module->createEditor())
-        return new LV2EditorJuce (this, i);
-    return nullptr;
+    LV2ModuleUI::Ptr ui = module->hasEditor() ? module->createEditor() : nullptr;
+    return ui != nullptr ? new LV2EditorJuce (this, ui) : nullptr;
 }
 
 //=============================================================================
@@ -559,14 +565,8 @@ bool LV2PluginFormat::fileMightContainThisPluginType (const String& fileOrIdenti
 
 String LV2PluginFormat::getNameOfPluginFromIdentifier (const String& fileOrIdentifier)
 {
-    if (const LilvPlugin* plugin = priv->world->getPlugin (fileOrIdentifier))
-    {
-        LilvNode* node = lilv_plugin_get_name (plugin);
-        const String name = CharPointer_UTF8 (lilv_node_as_string (node));
-        lilv_node_free (node);
-    }
-
-    return fileOrIdentifier;
+    const auto name = priv->world->getPluginName (fileOrIdentifier);
+    return name.isEmpty() ? fileOrIdentifier : name;
 }
 
 StringArray LV2PluginFormat::searchPathsForPlugins (const FileSearchPath& paths, bool, bool)
@@ -581,15 +581,7 @@ StringArray LV2PluginFormat::searchPathsForPlugins (const FileSearchPath& paths,
     }
 
     StringArray list;
-    const LilvPlugins* plugins (priv->world->getAllPlugins());
-    LILV_FOREACH (plugins, iter, plugins)
-    {
-        const LilvPlugin* plugin = lilv_plugins_get (plugins, iter);
-        const String uri = CharPointer_UTF8 (lilv_node_as_uri (lilv_plugin_get_uri (plugin)));
-        if (priv->world->isPluginSupported (uri))
-            list.add (uri);
-    }
-
+    priv->world->getSupportedPlugins (list);
     return list;
 }
 

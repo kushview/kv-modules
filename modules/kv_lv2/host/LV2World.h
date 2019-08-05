@@ -24,7 +24,8 @@
 
 namespace kv {
 
-class  LV2Module;
+class LV2Module;
+class LV2ModuleUI;
 
 /** Slim wrapper around LilvWorld.  Publishes commonly used LilvNodes and
     manages heavy weight features (like LV2 Worker) */
@@ -61,14 +62,14 @@ public:
     const LilvPlugins* getAllPlugins() const;
 
     /** Returns true if a feature is supported */
-    bool isFeatureSupported (const String& featureURI);
+    bool isFeatureSupported (const String& featureURI) const;
 
     /** Returns true if the plugin uri is availble */
     bool isPluginAvailable (const String& uri);
 
     /** Returns true if the plugin is supported on this system */
-    bool isPluginSupported (const String& uri);
-    bool isPluginSupported (const LilvPlugin* plugin);
+    bool isPluginSupported (const String& uri) const;
+    bool isPluginSupported (const LilvPlugin* plugin) const;
 
     /** Return the underlying LilvWorld* pointer */
     inline LilvWorld* getWorld() const { return world; }
@@ -90,6 +91,12 @@ public:
 
     /** Returns the total number of available worker threads */
     inline int32 getNumWorkThreads() const { return numThreads; }
+    
+    
+    /** Returns a plugin's name by URI, or empty if not found */
+    String getPluginName (const String& uri) const;
+
+    void getSupportedPlugins (StringArray&) const;
 
     inline SuilHost* getSuilHost() { return suil; }
 

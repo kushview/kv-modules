@@ -17,62 +17,208 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+#include <lv2/state/state.h>
+
 namespace kv {
 
-namespace LV2Callbacks {
-    inline unsigned uiSupported (const char* hostType, const char* uiType)
+class LV2State
+{
+public:
+    LV2State() = default;
+    ~LV2State() = default;
+
+    void insert (uint32 key, const void* value, size_t size, uint32 type)
     {
-        String host (hostType);
-        String ui (uiType);
-
-        if (host == LV2_UI__X11UI && ui == LV2_UI__X11UI)
-            return 2;
-        else if (ui == LV2_UI__JuceUI)
-            return 1;
-
-        return suil_ui_supported (hostType, uiType);
+        auto* const entry = entries.add (new Entry());
+        entry->key = key;
+        entry->data.allocate (size, true);
+        memcpy (entry->data, value, size);
+        entry->size = size;
+        entry->type = type;
     }
+
+    const void* retrieve (uint32 key, size_t* size, uint32* type) const
+    {
+        for (const auto* entry : entries)
+        {
+            if (key == entry->key)
+            {
+                *size = entry->size;
+                *type = entry->type;
+                return (const void*) entry->data.getData();
+            }
+        }
+
+        return nullptr;
+    }
+
+private:
+    struct Entry
+    {
+        uint32 key;
+        HeapBlock<uint8> data;
+        size_t size;
+        uint32 type;
+    };
+
+    OwnedArray<Entry> entries;
+};
+
+namespace LV2Callbacks {
+
+inline unsigned uiSupported (const char* hostType, const char* uiType)
+{
+    String host (hostType);
+    String ui (uiType);
+
+    if (host == LV2_UI__X11UI && ui == LV2_UI__X11UI)
+        return 2;
+    else if (ui == LV2_UI__JuceUI)
+        return 1;
+
+    return suil_ui_supported (hostType, uiType);
 }
 
-class LV2Module::Private {
+LV2_State_Status store (LV2_State_Handle handle,
+                        uint32_t         key,
+                        const void*      value,
+                        size_t           size,
+                        uint32_t         type,
+                        uint32_t         flags)
+{
+    if ((flags & LV2_STATE_IS_POD && flags & LV2_STATE_IS_PORTABLE))
+    {
+        LV2State* const state = static_cast<LV2State*> (handle);
+        state->insert (key, value, size, type);
+        return LV2_STATE_SUCCESS;
+    }
+
+    return LV2_STATE_ERR_BAD_FLAGS;
+}
+
+const void* retrieve (LV2_State_Handle handle, uint32_t key, 
+                      size_t *size, uint32_t *type, uint32_t *flags)
+{
+    LV2State* const state = static_cast<LV2State*> (handle);
+    *flags = 0;
+    return state->retrieve (key, size, type);
+}
+
+}
+
+class LV2Module::Private
+{
 public:
     Private (LV2Module& module)
         : owner (module) { }
 
     ~Private() { }
 
-    SuilInstance* instantiateUI (const LilvUI* ui,
-                                 const LilvNode* containerType,
-                                 const LilvNode* widgetType,
-                                 const LV2_Feature* const * features)
+    LV2ModuleUI* instantiateUI (const LilvUI* uiNode,
+                                const LilvNode* containerType,
+                                const LilvNode* widgetType,
+                                const LV2_Feature* const * features)
     {
+       #if 1
         suil = owner.getWorld().getSuilHost();
-        const LilvNode* uri = lilv_ui_get_uri (ui);
+        const LilvNode* uri = lilv_ui_get_uri (uiNode);
         const LilvPlugin* plugin = owner.getPlugin();
+        auto uiptr = std::unique_ptr<LV2ModuleUI> (new LV2ModuleUI (owner.getWorld(), owner));
 
-        SuilInstance* instance = suil_instance_new (suil, &owner,
-                  lilv_node_as_uri (containerType),
-                  lilv_node_as_uri (lilv_plugin_get_uri (plugin)),
-                  lilv_node_as_uri (uri),
-                  lilv_node_as_uri (widgetType),
-                  lilv_uri_to_path (lilv_node_as_uri (lilv_ui_get_bundle_uri (ui))),
-                  lilv_uri_to_path (lilv_node_as_uri (lilv_ui_get_binary_uri (ui))),
-                  features);
+        auto* instance = suil_instance_new (suil, uiptr.get(),
+                            lilv_node_as_uri (containerType),
+                            lilv_node_as_uri (lilv_plugin_get_uri (plugin)),
+                            lilv_node_as_uri (uri),
+                            lilv_node_as_uri (widgetType),
+                            lilv_uri_to_path (lilv_node_as_uri (lilv_ui_get_bundle_uri (uiNode))),
+                            lilv_uri_to_path (lilv_node_as_uri (lilv_ui_get_binary_uri (uiNode))),
+                            features);
 
         if (instance != nullptr)
         {
-            // do something here?
+            uiptr->instance = instance;
+            ui = uiptr.release();
         }
-
-        return instance;
+       #endif
+        return ui;
     }
 
     ChannelConfig channels;
     HeapBlock<float> mins, maxes, defaults, values;
+    LV2ModuleUI::Ptr ui;
 
+    void sendControlValues()
+    {
+        if (ui == nullptr)
+            return;
+        for (const auto* port : ports.getPorts())
+        {
+            if (PortType::Control != port->type)
+                continue;
+            ui->portEvent ((uint32_t)port->index, sizeof(float), 
+                            0, (void*) &values [port->index]);
+        }
+    }
+
+    static const void * getPortValue (const char *port_symbol, void *user_data, uint32_t *size, uint32_t *type)
+    {
+        LV2Module::Private* priv = static_cast<LV2Module::Private*> (user_data);
+        int portIdx = -1;
+        for (const auto* port : priv->ports.getPorts())
+        {
+            if (port->symbol == port_symbol && port->type == PortType::Control) {
+                portIdx = port->index;
+                break;
+            }
+        }
+
+        if (portIdx > 0)
+        {
+            *size = sizeof (float);
+            *type = priv->owner.map (LV2_ATOM__Float);
+            return &priv->values [portIdx];
+        }
+        else
+        {
+            *size = 0;
+            *type = 0;
+        }
+
+        return nullptr;
+    }
+
+    static void setPortValue (const char* port_symbol,
+                                      void*       user_data,
+                                      const void* value,
+                                      uint32_t    size,
+                                      uint32_t    type)
+    {
+        
+        auto* priv = (Private*) user_data;
+        if (type != priv->owner.map (LV2_ATOM__Float))
+            return;
+
+        int portIdx = -1;
+        for (const auto* port : priv->ports.getPorts())
+        {
+            if (port->symbol == port_symbol && port->type == PortType::Control) {
+                portIdx = port->index;
+                break;
+            }
+        }
+
+        if (portIdx >= 0)
+        {
+            priv->values[portIdx] = *((float*) value);
+        }
+    }
+    
 private:
+    friend class LV2Module;
     LV2Module& owner;
     SuilHost* suil;
+    SuilInstance* instanceUI = 0;
+    PortList ports;
 };
 
 LV2Module::LV2Module (LV2World& world_, const LilvPlugin* plugin_)
@@ -96,10 +242,9 @@ LV2Module::~LV2Module()
 
 void LV2Module::activatePorts()
 {
-   jassert (instance != nullptr);
    for (int32 p = 0; p < numPorts; ++p)
    {
-       //const bool isInput  = isPortInput (p);
+       const bool isInput  = isPortInput (p);
        const PortType type = getPortType (p);
 
        if (type == PortType::Atom)
@@ -112,8 +257,6 @@ void LV2Module::activatePorts()
        }
        else if (type == PortType::Control)
        {
-           // normally this would ONLY be done during 'run'. However,
-           // control ports are only connected once, here, during activation
            connectPort (p, &priv->values [p]);
        }
        else if (type == PortType::CV)
@@ -136,9 +279,61 @@ void LV2Module::init()
     for (uint32 p = 0; p < numPorts; ++p)
     {
         const LilvPort* port (lilv_plugin_get_port_by_index (plugin, p));
+        const auto type = getPortType (p);
         const bool isInput (lilv_port_is_a (plugin, port, world.lv2_InputPort));
-        priv->channels.addPort (getPortType (p), p, isInput);
+        LilvNode* nameNode = lilv_port_get_name (plugin, port);
+        const String name = lilv_node_as_string (nameNode);
+        lilv_node_free (nameNode); nameNode = nullptr;
+        const String symbol  = lilv_node_as_string (lilv_port_get_symbol (plugin, port));
+        priv->ports.add (type, p, priv->ports.size (type, isInput),
+                         symbol, name, isInput);
+        priv->channels.addPort (type, p, isInput);
         priv->values[p] = priv->defaults[p];
+    }
+}
+
+
+String LV2Module::getStateString() const
+{
+    if (instance == nullptr)
+        return String();
+    
+    auto* const map = (LV2_URID_Map*) world.getFeatureArray().getFeature (LV2_URID__map)->getFeature()->data;
+    auto* const unmap = (LV2_URID_Unmap*) world.getFeatureArray().getFeature (LV2_URID__unmap)->getFeature()->data;
+    const String descURI = "http://kushview.net/kv/state";
+
+    String result;
+    const LV2_Feature* const features[] = { nullptr };
+    
+    if (auto* state = lilv_state_new_from_instance (plugin, instance, 
+        map, 0, 0, 0, 0, 
+        Private::getPortValue, priv.get(), 
+        LV2_STATE_IS_POD, // flags
+        features))
+    {
+        char* strState = lilv_state_to_string (world.getWorld(), map, unmap, state, descURI.toRawUTF8(), 0);
+        result = String::fromUTF8 (strState);
+        std::free (strState);
+
+        lilv_state_free (state);
+    }
+
+    return result;
+}
+
+void LV2Module::setStateString (const String& stateStr)
+{
+    if (instance == nullptr)
+        return;
+    auto* const map = (LV2_URID_Map*) world.getFeatureArray().getFeature (LV2_URID__map)->getFeature()->data;
+    auto* const unmap = (LV2_URID_Unmap*) world.getFeatureArray().getFeature (LV2_URID__unmap)->getFeature()->data;
+    if (auto* state = lilv_state_new_from_string (world.getWorld(), map, stateStr.toRawUTF8()))
+    {
+        const LV2_Feature* const features[] = { nullptr };
+        lilv_state_restore (state, instance, Private::setPortValue, 
+                            priv.get(), LV2_STATE_IS_POD, features);
+        lilv_state_free (state);
+        priv->sendControlValues();
     }
 }
 
@@ -421,44 +616,66 @@ bool LV2Module::isLoaded() const { return instance != nullptr; }
 
 bool LV2Module::hasEditor() const
 {
-    bool hasJuceUI = false;
+    if (bestUI.isNotEmpty())
+        return true;
+    
     LilvUIs* uis = lilv_plugin_get_uis (plugin);
     if (nullptr == uis)
         return false;
 
-    LILV_FOREACH(uis, iter, uis)
+    LILV_FOREACH (uis, iter, uis)
     {
         const LilvUI* ui = lilv_uis_get (uis, iter);
         const unsigned quality = lilv_ui_is_supported (ui, &LV2Callbacks::uiSupported, world.ui_JuceUI, nullptr);
 
         if (quality == 1)
         {
-            const String uri = lilv_node_as_string (lilv_ui_get_uri (ui));
-            DBG (uri << " quality: " << (int) quality);
-            hasJuceUI = true;
+            bestUI = String::fromUTF8 (lilv_node_as_string (lilv_ui_get_uri (ui)));
+            break;
         }
     }
 
     lilv_uis_free (uis);
     
-
-    return hasJuceUI;
+    return bestUI.isNotEmpty();
 }
 
-SuilInstance* LV2Module::createEditor()
+void LV2Module::clearEditor()
 {
-    SuilInstance* instance = nullptr;
+    if (priv->ui)
+    {
+        auto ui = priv->ui;
+        priv->ui = nullptr;
+        ui->unload();
+        ui = nullptr;
+    }
+}
+
+uint32 LV2Module::getPortIndex (const String& symbol) const
+{
+    for (const auto* port : priv->ports.getPorts())
+        if (port->symbol == symbol)
+            return static_cast<uint32> (port->index);
+    return LV2UI_INVALID_PORT_INDEX;
+}
+
+LV2ModuleUI* LV2Module::createEditor()
+{
+    if (priv->ui)
+        return priv->ui;
+    
+    LV2ModuleUI* instance = nullptr;
+
     if (LilvUIs* uis = lilv_plugin_get_uis (plugin))
     {
         LILV_FOREACH(uis, iter, uis)
         {
-            const LilvUI* ui = lilv_uis_get (uis, iter);
-            const unsigned quality = lilv_ui_is_supported (ui, &LV2Callbacks::uiSupported, world.ui_JuceUI, nullptr);
+            const LilvUI* uiNode = lilv_uis_get (uis, iter);
+            const unsigned quality = lilv_ui_is_supported (uiNode, &LV2Callbacks::uiSupported, world.ui_JuceUI, nullptr);
 
             if (quality == 1)
             {
-                world.getFeatureArray().getFeatures();
-                instance = priv->instantiateUI (ui,
+                instance = priv->instantiateUI (uiNode,
                     world.ui_JuceUI, world.ui_JuceUI,
                     world.getFeatureArray().getFeatures());
                 break;
@@ -468,16 +685,18 @@ SuilInstance* LV2Module::createEditor()
         lilv_uis_free (uis);
     }
 
-    if (instance != nullptr) {
-        for (uint32 i = 0; i < numPorts; ++i)
-        {
-            if (PortType::Control != getPortType (i))
-                continue;
-            suil_instance_port_event (instance, i, sizeof(float), 0, (void*) &priv->values[i]);
-        }
+    if (instance != nullptr)
+    {
+        jassert (instance == priv->ui.get());
+        priv->sendControlValues();
     }
 
     return instance;
+}
+
+void LV2Module::sendPortEvents()
+{
+    priv->sendControlValues();
 }
 
 bool LV2Module::isPortInput (uint32 index) const
@@ -492,6 +711,10 @@ bool LV2Module::isPortOutput (uint32 index) const
 
 void LV2Module::run (uint32 nframes)
 {
+    for (const auto* const port : priv->ports.getPorts())
+        if (port->type == PortType::Control)
+            connectPort (static_cast<uint32> (port->index), &priv->values[port->index]);
+    
     if (worker)
         worker->processWorkResponses();
 
@@ -501,12 +724,28 @@ void LV2Module::run (uint32 nframes)
         worker->endRun();
 }
 
+uint32 LV2Module::map (const String& uri) const
+{
+    if (const auto* f = world.getFeatureArray().getFeature (LV2_URID__map))
+    {
+        auto* map = (LV2_URID_Map*) f->getFeature()->data; 
+        return map->map (map->handle, uri.toRawUTF8());
+    }
+    return 0;
+}
+
 void LV2Module::setControlValue (uint32 port, float value)
 {
     if (port >= numPorts)
         return;
 
     priv->values[port] = value;
+}
+
+void LV2Module::write (uint32 port, uint32 size, uint32 protocol, const void* buffer)
+{
+    if (PortType::Control == priv->ports.getType (port))
+        setControlValue (port, *((float*) buffer));
 }
 
 }

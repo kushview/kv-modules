@@ -223,12 +223,12 @@ def build (bld):
     if bld.env.HAVE_SUIL: pcobj.REQUIRED += ' suil-0'
     if bld.env.HAVE_LILV: pcobj.REQUIRED += ' lilv-0'
 
-    bld.program (
+    lv2show = bld.program (
         source          = [ 'tools/lv2show.cpp' ],
         includes        = library.includes + [ '.' ],
         target          = 'bin/lv2show',
         cxxflags        = [ '-std=c++14' ],
-        install_path    = None,
+        install_path    = bld.env.PREFIX + '/bin',
         use             = [ 'KV' ]
     )
 

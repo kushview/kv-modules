@@ -85,7 +85,14 @@ public:
     /** Returns true if the Plugin has one or more UIs */
     inline bool hasEditor() const;
 
-    SuilInstance* createEditor();
+    /** Returns the best quality UI by URI */
+    String getBestUI() const { return bestUI; }
+
+    /** Create an editor for this plugin */
+    LV2ModuleUI* createEditor();
+    void clearEditor();
+
+    uint32 getPortIndex (const String& symbol) const;
 
     /** Returns true if the port is an Input */
     bool isPortInput (uint32 port) const;
@@ -147,10 +154,20 @@ public:
         @note This is in the LV2 Audio (realtime) Threading class */
     void connectChannel (const PortType type, const int32 channel, void* data, const bool isInput);
 
+    String getStateString() const;
+    void setStateString (const String&);
+
+    void write (uint32 port, uint32 size, uint32 protocol, const void* buffer);
+
+    void sendPortEvents();
+
+    uint32 map (const String& uri) const;
+
 private:
     LilvInstance* instance;
     const LilvPlugin* plugin;
     LV2World&    world;
+    mutable String bestUI;
 
     bool active;
     double currentSampleRate;
@@ -169,6 +186,71 @@ private:
 
     /** @internal */
     bool isLoaded() const;
+};
+
+class LV2ModuleUI final : public ReferenceCountedObject
+{
+public:
+    using Ptr = ReferenceCountedObjectPtr<LV2ModuleUI>;
+
+    ~LV2ModuleUI ()
+    {
+        unload();
+    }
+
+    bool loaded() const { return instance != nullptr; }
+
+    void unload()
+    {
+        plugin.clearEditor();
+        if (instance)
+        {
+            suil_instance_free (instance);
+            instance = nullptr;
+        }
+    }
+
+    LV2World& getWorld() const { return world; }
+    LV2Module& getPlugin() const { return plugin; }
+
+    LV2UI_Widget getWidget() const
+    { 
+        return instance != nullptr ? suil_instance_get_widget (instance)
+                                   : nullptr;
+    }
+
+    void portEvent (uint32 port, uint32 size, uint32 format, const void* buffer)
+    {
+        if (instance == nullptr)
+            return;
+        suil_instance_port_event (instance, port, size, format, buffer);
+    }
+
+private:
+    friend class LV2Module;
+    friend class LV2World;
+
+    LV2ModuleUI (LV2World& w, LV2Module& m)
+        : world (w),
+          plugin (m) 
+    { }
+
+    LV2World& world;
+    LV2Module& plugin;
+    SuilInstance* instance = nullptr;
+
+    static void portWrite (void* controller, uint32_t port, uint32_t size,
+                           uint32_t protocol, void const* buffer)
+    {
+        auto& plugin = (static_cast<LV2ModuleUI*> (controller))->getPlugin();
+        plugin.write (port, size, protocol, buffer);
+    }
+
+    static uint32_t portIndex (void* controller, const char* symbol)
+    {
+        auto& plugin = (static_cast<LV2ModuleUI*> (controller))->getPlugin();
+        return plugin.getPortIndex (symbol);
+    }
 };
 
 }

@@ -24,27 +24,6 @@
 namespace kv {
 
 namespace LV2Callbacks {
-/** Function to write/send a value to a port. */
-void portWrite (
-    SuilController controller,
-    uint32_t       port,
-    uint32_t       size,
-    uint32_t       protocol,
-    void const*    buffer)
-{
-    if (protocol == 0)
-    {
-        ((LV2Module*) controller)->setControlValue (port, *((float*) buffer));
-    }
-//    ((LV2Module*) controller)->write (port, size, protocol, buffer);
-}
-
-uint32_t portIndex (
-    SuilController controller,
-    const char* port_symbol)
-{
-    return 0;
-}
 
 uint32_t portSubscribe (
     SuilController            controller,
@@ -105,7 +84,8 @@ LV2World::LV2World()
     ui_X11UI        = lilv_new_uri (world, LV2_UI__X11UI);
     ui_JuceUI       = lilv_new_uri (world, LV2_UI__JuceUI);
 
-    suil = suil_host_new (LV2Callbacks::portWrite, 0, 0, 0);
+    suil = suil_host_new (LV2ModuleUI::portWrite,
+                          LV2ModuleUI::portIndex, 0, 0);
 
     currentThread = 0;
     numThreads    = KV_LV2_NUM_WORKERS;
@@ -124,6 +104,9 @@ LV2World::~LV2World()
     _node_free (midi_MidiEvent);
     _node_free (work_schedule);
     _node_free (work_interface);
+    _node_free (ui_CocoaUI);
+    _node_free (ui_X11UI);
+    _node_free (ui_JuceUI);
 
     lilv_world_free (world);
     world = nullptr;
@@ -171,6 +154,37 @@ const LilvPlugin* LV2World::getPlugin (const String& uri) const
     return plugin;
 }
 
+String LV2World::getPluginName (const String& uri) const
+{
+    auto* uriNode = lilv_new_uri (world, uri.toRawUTF8());
+    const auto* plugin = lilv_plugins_get_by_uri (
+        lilv_world_get_all_plugins (world), uriNode);
+    lilv_node_free (uriNode); uriNode = nullptr;
+
+    String name;
+
+    if (plugin != nullptr)
+    {
+        auto* nameNode = lilv_plugin_get_name (plugin);
+        name = String::fromUTF8 (lilv_node_as_string (nameNode));
+        lilv_node_free (nameNode);
+    }
+
+    return name;
+}
+
+void LV2World::getSupportedPlugins (StringArray& list) const
+{
+    const LilvPlugins* plugins (lilv_world_get_all_plugins (world));
+    LILV_FOREACH (plugins, iter, plugins)
+    {
+        const LilvPlugin* plugin = lilv_plugins_get (plugins, iter);
+        const String uri = String::fromUTF8 (lilv_node_as_uri (lilv_plugin_get_uri (plugin)));
+        if (isPluginSupported (uri))
+            list.add (uri);
+    }
+}
+
 const LilvPlugins* LV2World::getAllPlugins() const
 {
     return lilv_world_get_all_plugins (world);
@@ -190,7 +204,7 @@ WorkThread& LV2World::getWorkThread()
     return *threads.getUnchecked (threadIndex);
 }
 
-bool LV2World::isFeatureSupported (const String& featureURI)
+bool LV2World::isFeatureSupported (const String& featureURI) const
 {
    if (features.contains (featureURI))
       return true;
@@ -206,14 +220,14 @@ bool LV2World::isPluginAvailable (const String& uri)
     return (getPlugin (uri) != nullptr);
 }
 
-bool LV2World::isPluginSupported (const String& uri)
+bool LV2World::isPluginSupported (const String& uri) const
 {
     if (const LilvPlugin * plugin = getPlugin (uri))
         return isPluginSupported (plugin);
     return false;
 }
 
-bool LV2World::isPluginSupported (const LilvPlugin* plugin)
+bool LV2World::isPluginSupported (const LilvPlugin* plugin) const
 {
     // Required features support
     LilvNodes* nodes = lilv_plugin_get_required_features (plugin);
