@@ -73,7 +73,7 @@ inline unsigned uiSupported (const char* hostType, const char* uiType)
 
     if (host == LV2_UI__X11UI && ui == LV2_UI__X11UI)
         return 2;
-    else if (ui == LV2_UI__JuceUI)
+    else if (ui == KV_LV2__JUCEUI)
         return 1;
 
     return suil_ui_supported (hostType, uiType);
@@ -149,14 +149,20 @@ public:
 
     void sendControlValues()
     {
-        if (ui == nullptr)
+        if (! ui && ! owner.onPortNotify)
             return;
+
         for (const auto* port : ports.getPorts())
         {
             if (PortType::Control != port->type)
                 continue;
-            ui->portEvent ((uint32_t)port->index, sizeof(float), 
-                            0, (void*) &values [port->index]);
+
+            if (ui)
+                ui->portEvent ((uint32_t)port->index, sizeof(float), 
+                               0, (void*) &values [port->index]);
+            if (owner.onPortNotify)
+                owner.onPortNotify ((uint32_t)port->index, sizeof(float), 
+                                    0, (void*) &values [port->index]);
         }
     }
 
@@ -172,7 +178,7 @@ public:
             }
         }
 
-        if (portIdx > 0)
+        if (portIdx >= 0)
         {
             *size = sizeof (float);
             *type = priv->owner.map (LV2_ATOM__Float);
@@ -193,21 +199,24 @@ public:
                                       uint32_t    size,
                                       uint32_t    type)
     {
-        
         auto* priv = (Private*) user_data;
+        auto& plugin = priv->owner;
+
         if (type != priv->owner.map (LV2_ATOM__Float))
             return;
 
         int portIdx = -1;
-        for (const auto* port : priv->ports.getPorts())
+        const PortDescription* port = nullptr;
+        for (const auto* p : priv->ports.getPorts())
         {
+            port = p;
             if (port->symbol == port_symbol && port->type == PortType::Control) {
                 portIdx = port->index;
                 break;
             }
         }
 
-        if (portIdx >= 0)
+        if (portIdx >= 0 && port)
         {
             priv->values[portIdx] = *((float*) value);
         }
@@ -273,6 +282,11 @@ void LV2Module::init()
     evbuf.realloc (evbufsize);
     evbuf.clear (evbufsize);
 
+    notifications.reset (new RingBuffer (4096));
+    ntbufsize = jmax (ntbufsize, static_cast<uint32> (256));
+    ntbuf.realloc (ntbufsize);
+    ntbuf.clear (ntbufsize);
+
     // create and set default port values
     priv->mins.allocate (numPorts, true);
     priv->maxes.allocate (numPorts, true);
@@ -295,6 +309,15 @@ void LV2Module::init()
         priv->channels.addPort (type, p, isInput);
         priv->values[p] = priv->defaults[p];
     }
+
+    // load related GUIs
+    auto* related = lilv_plugin_get_related (plugin, world.ui_UI);
+    LILV_FOREACH (nodes, iter, related)
+    {
+        const auto* res = lilv_nodes_get (related, iter);
+        lilv_world_load_resource (world.getWorld(), res);
+    }
+    lilv_nodes_free (related);
 }
 
 
@@ -385,6 +408,7 @@ Result LV2Module::instantiate (double samplerate)
         worker = nullptr;
     }
 
+    startTimerHz (60);
     return Result::ok();
 }
 
@@ -422,6 +446,7 @@ bool LV2Module::isActive() const
 
 void LV2Module::freeInstance()
 {
+    stopTimer();
     if (instance != nullptr)
     {
         deactivate();
@@ -623,7 +648,7 @@ bool LV2Module::hasEditor() const
 {
     if (bestUI.isNotEmpty())
         return true;
-    
+
     LilvUIs* uis = lilv_plugin_get_uis (plugin);
     if (nullptr == uis)
         return false;
@@ -631,11 +656,12 @@ bool LV2Module::hasEditor() const
     LILV_FOREACH (uis, iter, uis)
     {
         const LilvUI* ui = lilv_uis_get (uis, iter);
-        const unsigned quality = lilv_ui_is_supported (ui, &LV2Callbacks::uiSupported, world.ui_JuceUI, nullptr);
-
+        const unsigned quality = lilv_ui_is_supported (ui, &LV2Callbacks::uiSupported, world.ui_JUCEUI, nullptr);
+        const auto uri = String::fromUTF8 (lilv_node_as_string (lilv_ui_get_uri (ui)));
+        
         if (quality == 1)
         {
-            bestUI = String::fromUTF8 (lilv_node_as_string (lilv_ui_get_uri (ui)));
+            bestUI = uri;
             break;
         }
     }
@@ -676,12 +702,12 @@ LV2ModuleUI* LV2Module::createEditor()
         LILV_FOREACH(uis, iter, uis)
         {
             const LilvUI* uiNode = lilv_uis_get (uis, iter);
-            const unsigned quality = lilv_ui_is_supported (uiNode, &LV2Callbacks::uiSupported, world.ui_JuceUI, nullptr);
+            const unsigned quality = lilv_ui_is_supported (uiNode, &LV2Callbacks::uiSupported, world.ui_JUCEUI, nullptr);
 
             if (quality == 1)
             {
                 instance = priv->instantiateUI (uiNode,
-                    world.ui_JuceUI, world.ui_JuceUI,
+                    world.ui_JUCEUI, world.ui_JUCEUI,
                     world.getFeatureArray().getFeatures());
                 break;
             }
@@ -714,11 +740,40 @@ bool LV2Module::isPortOutput (uint32 index) const
    return lilv_port_is_a (plugin, getPort (index), world.lv2_OutputPort);
 }
 
+void LV2Module::timerCallback()
+{
+    PortEvent ev;
+    
+    static const uint32 pnsize = sizeof (PortEvent);
+
+    for (;;)
+    {
+        if (! notifications->canRead (pnsize))
+            break;
+
+        notifications->read (ev, false);
+        if (ev.size > 0 && notifications->canRead (pnsize + ev.size))
+        {
+            notifications->advance (pnsize, false);
+            notifications->read (ntbuf, ev.size, true);
+
+            if (ev.protocol == 0)
+            {
+                if (auto ui = priv->ui)
+                    ui->portEvent (ev.index, ev.size, ev.protocol, ntbuf.getData());
+                if (onPortNotify)
+                    onPortNotify (ev.index, ev.size, ev.protocol, ntbuf.getData());
+            }        
+        }
+    }
+}
+
 void LV2Module::run (uint32 nframes)
 {
     PortEvent ev;
     
     static const uint32 pesize = sizeof (PortEvent);
+
     for (;;)
     {
         if (! events->canRead (pesize))
@@ -731,7 +786,13 @@ void LV2Module::run (uint32 nframes)
 
             if (ev.protocol == 0)
             {
+                const bool changed = priv->values[ev.index] != *((float*) evbuf.getData());
                 priv->values[ev.index] = *((float*) evbuf.getData());
+                if (changed && notifications->canWrite (pesize + ev.size))
+                {
+                    notifications->write (ev);
+                    notifications->write (evbuf.getData(), ev.size);
+                }
             }
         }
     }

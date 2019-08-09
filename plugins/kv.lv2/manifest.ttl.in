@@ -1,0 +1,12 @@
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix kv:   <https://kushview.net/lv2#> .
+@prefix lv2:  <http://lv2plug.in/ns/lv2core#> .
+@prefix ui:   <http://lv2plug.in/ns/extensions/ui#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+kv:JUCEUI 
+    a rdfs:Class ,
+		owl:Class ;
+	rdfs:subClassOf ui:UI ;
+	rdfs:label "JUCE UI" ;
+	rdfs:comment """A UI where the LV2_Widget is a pointer to a JUCE compatible component. Host and Plugin should link against libjuce""" .

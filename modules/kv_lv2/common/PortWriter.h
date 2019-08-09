@@ -29,6 +29,10 @@ namespace kv {
 */
 using PortWriteFunction = std::function<void(uint32_t port, uint32_t size, uint32_t protocol, void const* data)> ;
 
+/** Same as PortWriteFunction except is indended to trigger when
+    events come from the plugin instance. */
+using PortNotificationFunction = PortWriteFunction;
+
 /** A simple type for writing/reading port values/messages through a ringbuffer */
 struct PortEvent
 {

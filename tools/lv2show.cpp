@@ -192,10 +192,11 @@ public:
 
     void shutdown() override
     {
+        player.setProcessor (nullptr);
         devices.closeAudioDevice();
         devices.removeAudioCallback (&player);
         devices.removeMidiInputCallback (String(), &player);
-        player.setProcessor (nullptr);
+        
         window.reset();
         plugin.reset();
     }

@@ -14,6 +14,7 @@ file COPYING for more details. '''
 
 import sys, os, platform
 from subprocess import call
+from os.path import expanduser
 
 sys.path.insert (0, "tools/waf")
 import juce
@@ -93,9 +94,11 @@ def configure (conf):
         conf.env.MODULES.append ('kv_edd')
     
     if conf.env.HAVE_LILV and conf.env.HAVE_SUIL:
+        conf.env.LV2 = True
         conf.define ('KV_LV2_PLUGIN_HOST', 1)
         conf.env.MODULES.append ('kv_lv2')
     else:
+        conf.env.LV2 = False
         conf.define ('KV_LV2_PLUGIN_HOST', 0)
     
     for mod in conf.env.MODULES:
@@ -152,6 +155,53 @@ def maybe_install_headers (bld):
         install_misc_header (bld, header, 'kv')
     for module in all_modules:
         install_misc_header (bld, 'build/kv/%s.h' % module.replace ('kv_', ''), 'kv')
+
+def build_lv2_meta (bld):
+    env = bld.env.derive()
+    bundle = 'plugins/%s.lv2' % 'kv'
+    instdir = os.path.join (expanduser('~'), 'Library/Audio/Plug-Ins/LV2/%s.lv2' % 'kv')
+    manifest = bld (
+        features    = 'subst',
+        source      = '%s/manifest.ttl.in' % bundle,
+        target      = 'lib/lv2/%s.lv2/manifest.ttl' % 'kv',
+        install_path = instdir
+    )
+
+def build_plugin (bld, plugin):
+    return
+    env = bld.env.derive()
+    env.cxxshlib_PATTERN = env.plugin_PATTERN
+    bundle = 'plugins/%s.lv2' % plugin
+    instdir = os.path.join (expanduser('~'), 'Library/Audio/Plug-Ins/LV2/%s.lv2' % plugin)
+
+    library = bld.shlib (
+        source          = bld.path.ant_glob ('%s/*.cpp' % bundle),
+        includes        = [ bundle ],
+        use             = [ ],
+        cxxflags        = [ '-Wno-deprecated-declarations' ],
+        name            = plugin,
+        target          = 'lib/lv2/%s.lv2/%s' % (plugin, plugin),
+        env             = env,
+        install_path    = instdir
+    )
+
+    manifest = bld (
+        features    = 'subst',
+        source      = '%s/manifest.ttl.in' % bundle,
+        target      = 'lib/lv2/%s.lv2/manifest.ttl' % plugin,
+        LIB_EXT     = env.plugin_EXT,
+        install_path = instdir
+    )
+
+    details = bld (
+        features    = 'subst',
+        source      = '%s/%s.ttl' % (bundle, plugin),
+        target      = 'lib/lv2/%s.lv2/%s.ttl' % (plugin, plugin),
+        LIB_EXT     = env.plugin_EXT,
+        install_path  = instdir
+    )
+
+    return library
 
 def generate_code (bld):
     tasks = []
@@ -231,5 +281,8 @@ def build (bld):
         install_path    = bld.env.PREFIX + '/bin',
         use             = [ 'KV' ]
     )
+
+    bld.add_group()
+    build_lv2_meta (bld)
 
     maybe_install_headers (bld)

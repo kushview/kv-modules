@@ -24,15 +24,18 @@ namespace kv {
 /** A wrapper around LilvPlugin/LilvInstance for running LV2 plugins
     Methods that are realtime/thread safe are excplicity documented as so.
     All other methods are NOT realtime safe */
-class LV2Module
+class LV2Module : private Timer
 {
 public:
-
     /** Create a new LV2Module */
     LV2Module (LV2World& world, const LilvPlugin* plugin_);
 
     /** Destructor */
     ~LV2Module();
+
+    /** If set will be called on the message thread when a notification
+        is received from the plugin. */
+    PortNotificationFunction onPortNotify;
 
     /** Get the total number of ports for this plugin */
     uint32 getNumPorts() const;
@@ -192,12 +195,16 @@ private:
     uint32 evbufsize;
 
     std::unique_ptr<RingBuffer> notifications;
+    HeapBlock<uint8> ntbuf;
+    uint32 ntbufsize;
 
     Result allocateEventBuffers();
     void activatePorts();
     void freeInstance();
     void init();
     
+    void timerCallback() override;
+
     class Private;
     ScopedPointer<Private>   priv;
     ScopedPointer<LV2Worker> worker;

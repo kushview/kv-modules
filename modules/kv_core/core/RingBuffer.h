@@ -21,7 +21,6 @@
 
 class RingBuffer
 {
-
 public:
     RingBuffer (int32 capacity);
     ~RingBuffer();
@@ -105,7 +104,6 @@ public:
     };
 
 private:
-
     struct Vec
     {
         int32 size;

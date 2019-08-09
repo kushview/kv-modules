@@ -68,7 +68,6 @@ LV2World::LV2World()
    #endif
 
     world = lilv_world_new();
-    lilv_world_load_all (world);
 
     lv2_InputPort   = lilv_new_uri (world, LV2_CORE__InputPort);
     lv2_OutputPort  = lilv_new_uri (world, LV2_CORE__OutputPort);
@@ -82,8 +81,15 @@ LV2World::LV2World()
     work_interface  = lilv_new_uri (world, LV2_WORKER__interface);
     ui_CocoaUI      = lilv_new_uri (world, LV2_UI__CocoaUI);
     ui_X11UI        = lilv_new_uri (world, LV2_UI__X11UI);
-    ui_JuceUI       = lilv_new_uri (world, LV2_UI__JuceUI);
+    ui_JUCEUI       = lilv_new_uri (world, KV_LV2__JUCEUI);
+    ui_UI           = lilv_new_uri (world, LV2_UI__UI);
 
+    trueNode        = lilv_new_bool (world, true);
+    falseNode       = lilv_new_bool (world, false);
+    
+    lilv_world_set_option (world, LILV_OPTION_DYN_MANIFEST, trueNode);
+
+    lilv_world_load_all (world);
     suil = suil_host_new (LV2ModuleUI::portWrite,
                           LV2ModuleUI::portIndex, 0, 0);
 
@@ -106,7 +112,7 @@ LV2World::~LV2World()
     _node_free (work_interface);
     _node_free (ui_CocoaUI);
     _node_free (ui_X11UI);
-    _node_free (ui_JuceUI);
+    _node_free (ui_JUCEUI);
 
     lilv_world_free (world);
     world = nullptr;

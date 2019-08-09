@@ -81,3 +81,5 @@ profile
 **/doxygen/build
 
 /dist/
+
+/legacy/

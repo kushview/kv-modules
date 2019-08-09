@@ -52,13 +52,26 @@ public:
 
     ~LV2AudioParameter() = default;
 
-    int getPort() const { return static_cast<int> (portIdx); }
+    uint32 getPort() const { return portIdx; }
 
     float getValue() const override
     {
         return value.get();
     }
 
+    // update the value, but dont write to port
+    void update (float newValue, bool notifyListeners = true)
+    {
+        newValue = range.convertTo0to1 (newValue);
+        if (newValue == value.get())
+            return;
+
+        value.set (newValue);
+        if (notifyListeners)
+            sendValueChangedMessageToListeners (value.get());
+    }
+
+    /** Will write to Port with correct min max ratio conversion */
     void setValue (float newValue) override
     {
         value.set (newValue);
@@ -178,12 +191,30 @@ public:
         const ChannelConfig& channels (module->getChannelConfig());
         setPlayConfigDetails (channels.getNumAudioInputs(),
                               channels.getNumAudioOutputs(), 44100.0, 1024);
+
+        if (! module->hasEditor())
+        {
+            jassert(module->onPortNotify == nullptr);
+            using namespace std::placeholders;
+            module->onPortNotify = std::bind (&LV2PluginInstance::portEvent, this, _1, _2, _3, _4);
+        }
     }
 
     ~LV2PluginInstance()
     {
+        module->onPortNotify = nullptr;
         module = nullptr;
     }
+
+    void portEvent (uint32 port, uint32 size, uint32 protocol, const void* data)
+    {
+        if (protocol != 0)
+            return;
+        for (int i = 0; i < getParameters().size(); ++i)
+            if (auto* const param = dynamic_cast<LV2AudioParameter*> (getParameters()[i]))
+                if (port == param->getPort() && protocol == 0)
+                    { param->update (*(float*) data, true); break; }
+    };
 
     //=========================================================================
     void fillInPluginDescription (PluginDescription& desc) const

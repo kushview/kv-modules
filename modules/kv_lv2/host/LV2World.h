@@ -19,8 +19,8 @@
 
 #pragma once
 
-#define LV2_UI__JuceUI "https://kushview.net/lv2#JuceUI"
-// #define LV2_UI__JuceUI LV2_UI_PREFIX "JuceUI"
+#define KV_LV2_PREFIX       "https://kushview.net/lv2#"
+#define KV_LV2__JUCEUI      KV_LV2_PREFIX "JUCEUI"
 
 namespace kv {
 
@@ -47,7 +47,10 @@ public:
     const LilvNode*   work_interface;
     const LilvNode*   ui_CocoaUI;
     const LilvNode*   ui_X11UI;
-    const LilvNode*   ui_JuceUI;
+    const LilvNode*   ui_JUCEUI;
+    const LilvNode*   ui_UI;
+    const LilvNode*   trueNode;
+    const LilvNode*   falseNode;
 
     /** Create an LV2Module for a uri string */
     LV2Module* createModule (const String& uri);
