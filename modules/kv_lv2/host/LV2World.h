@@ -20,7 +20,11 @@
 #pragma once
 
 #define KV_LV2_PREFIX       "https://kushview.net/lv2#"
-#define KV_LV2__JUCEUI      KV_LV2_PREFIX "JUCEUI"
+
+#ifndef LVTK_PREFIX
+ #define LVTK_PREFIX      "http://lvtoolkit.org/ns/lvtk#"
+ #define LVTK__JUCEUI      LVTK_PREFIX "JUCEUI"
+#endif
 
 namespace kv {
 

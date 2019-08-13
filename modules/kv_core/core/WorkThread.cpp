@@ -22,9 +22,9 @@
 #endif
 
 #if JUCE_DEBUG
-#define KV_WORKER_LOG(x) Logger::writeToLog(x)
+ #define KV_WORKER_LOG(x) DBG(String("[kv] worker: ") << x)
 #else
-#define KV_WORKER_LOG(x)
+ #define KV_WORKER_LOG(x)
 #endif
 
 WorkThread::WorkThread (const String& name, uint32 bufsize, int32 priority)
@@ -57,21 +57,19 @@ WorkerBase* WorkThread::getWorker (uint32 workerId) const
     return nullptr;
 }
 
-
 void WorkThread::registerWorker (WorkerBase* worker)
 {
     worker->workId = ++nextWorkId;
-    KV_WORKER_LOG (getThreadName() + " Registering worker: id = " + String (worker->workId));
+    KV_WORKER_LOG (getThreadName() + " registering worker: " + String (worker->workId));
     workers.addIfNotAlreadyThere (worker);
 }
 
 void WorkThread::removeWorker (WorkerBase* worker)
 {
-    KV_WORKER_LOG (getThreadName() + " Removing worker: id = " + String (worker->workId));
+    KV_WORKER_LOG (getThreadName() + " removing worker: " + String (worker->workId));
     workers.removeFirstMatchingValue (worker);
     worker->workId = 0;
 }
-
 
 void WorkThread::run()
 {
@@ -81,24 +79,26 @@ void WorkThread::run()
     while (true)
     {
         sem.wait();
-        if (doExit || threadShouldExit()) break;
+        if (doExit || threadShouldExit()) 
+            break;
 
         while (! validateMessage (*requests))
             Thread::sleep (6);
 
-        if (doExit || threadShouldExit()) break;
+        if (doExit || threadShouldExit()) 
+            break;
 
         uint32 size = 0;
         if (requests->read (&size, sizeof (size)) < sizeof (size))
         {
-            KV_WORKER_LOG ("WorkThread: error reading request: message size");
+            KV_WORKER_LOG ("error reading request: message size");
             continue;
         }
 
         uint32 workId;
         if (requests->read (&workId, sizeof (workId)) < sizeof (workId))
         {
-            KV_WORKER_LOG ("WorkThread: error reading request: worker id");
+            KV_WORKER_LOG ("error reading request: worker id");
             continue;
         }
 
@@ -113,11 +113,9 @@ void WorkThread::run()
 
         if (requests->read (buffer.getData(), size) < size)
         {
-            KV_WORKER_LOG (getThreadName() + ": error reading request: message body");
+            KV_WORKER_LOG ("error reading request: message body");
             continue;
         }
-
-        KV_WORKER_LOG (getThreadName() + ": Finding Worker ID " + String (workId));
 
         {
             if (WorkerBase* const worker = getWorker (workId))
@@ -131,8 +129,6 @@ void WorkThread::run()
         if (threadShouldExit() || doExit)
             break;
     }
-
-    KV_WORKER_LOG (getThreadName() + ": thread exited.");
 
     buffer.free();
 }

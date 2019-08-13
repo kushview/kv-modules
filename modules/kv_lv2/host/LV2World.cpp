@@ -81,7 +81,7 @@ LV2World::LV2World()
     work_interface  = lilv_new_uri (world, LV2_WORKER__interface);
     ui_CocoaUI      = lilv_new_uri (world, LV2_UI__CocoaUI);
     ui_X11UI        = lilv_new_uri (world, LV2_UI__X11UI);
-    ui_JUCEUI       = lilv_new_uri (world, KV_LV2__JUCEUI);
+    ui_JUCEUI       = lilv_new_uri (world, LVTK__JUCEUI);
     ui_UI           = lilv_new_uri (world, LV2_UI__UI);
 
     trueNode        = lilv_new_bool (world, true);
@@ -95,6 +95,11 @@ LV2World::LV2World()
 
     currentThread = 0;
     numThreads    = KV_LV2_NUM_WORKERS;
+    for (int i = 0; i < numThreads; ++i)
+    {
+        threads.add (new WorkThread ("lv2_worker_ " + String(i + 1), 2048));
+        threads.getLast()->setPriority (5);
+    }
 }
 
 LV2World::~LV2World()
@@ -198,8 +203,8 @@ const LilvPlugins* LV2World::getAllPlugins() const
 
 WorkThread& LV2World::getWorkThread()
 {
-    if (threads.size() <= currentThread) {
-        threads.add (new WorkThread ("LV2 Worker " + String(currentThread + 1), 2048));
+    while (threads.size() < numThreads) {
+        threads.add (new WorkThread ("LV2 Worker " + String(threads.size()), 2048));
         threads.getLast()->setPriority (5);
     }
 

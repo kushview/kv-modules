@@ -73,7 +73,7 @@ inline unsigned uiSupported (const char* hostType, const char* uiType)
 
     if (host == LV2_UI__X11UI && ui == LV2_UI__X11UI)
         return 2;
-    else if (ui == KV_LV2__JUCEUI)
+    else if (ui == LVTK__JUCEUI)
         return 1;
 
     return suil_ui_supported (hostType, uiType);

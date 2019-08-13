@@ -103,6 +103,8 @@ def configure (conf):
     
     for mod in conf.env.MODULES:
         conf.define('JUCE_MODULE_AVAILABLE_%s' % mod, True)
+    
+    conf.define ('KV_DOCKING_WINDOWS', True)
     conf.write_config_header ('kv/config.h', 'KV_MODULES_CONFIG_H')
     conf.define ('JUCE_APP_CONFIG_HEADER', 'kv/config.h')
     

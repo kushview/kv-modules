@@ -53,7 +53,7 @@ private:
     uint32 nextWorkId;
 
     Semaphore sem;
-    bool doExit;
+    bool doExit = false;
 
     ScopedPointer<RingBuffer> requests;  ///< requests to process
 
