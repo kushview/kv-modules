@@ -27,15 +27,30 @@ static uint32 portBufferPadSize (uint32 size)
 PortBuffer::PortBuffer (const URIs* ids, uint32 bufferType, uint32 bufferSize)
     : uris (ids), type (bufferType), capacity (bufferSize)
 {
-    block.calloc (capacity);
+    atom_Float      = uris->atom_Float;
+    atom_Sequence   = uris->atom_Sequence;
+    atom_Sound      = uris->atom_Sound;
+    midi_MidiEvent  = uris->midi_MidiEvent;
 
-    if (type == uris->atom_Sequence)
+    data.reset (new uint8 [std::max (sizeof (float), (size_t) capacity)]);
+
+    if (type == atom_Sequence)
     {
-        buffer.atom = (LV2_Atom*) block.getData();
+        buffer.atom = (LV2_Atom*) data.get();
     }
-    else if (type == ids->event_Event)
+    else if (type == event_Event)
     {
-        buffer.event = (LV2_Event_Buffer*) block.getData();
+        buffer.event = (LV2_Event_Buffer*) data.get();
+    }
+	else if (type == atom_Sound)
+    {
+		LV2_Atom_Vector* vec = (LV2_Atom_Vector*) buffer.atom;
+		vec->body.child_size = sizeof (float);
+		vec->body.child_type = uris->atom_Float;
+	}
+    else if (type == atom_Float)
+    {
+        buffer.control = (float*) data.get();
     }
     else
     {
@@ -43,25 +58,16 @@ PortBuffer::PortBuffer (const URIs* ids, uint32 bufferType, uint32 bufferSize)
         jassertfalse;
     }
 
-	if (type == uris->atom_Sound)
-    {
-		LV2_Atom_Vector* vec = (LV2_Atom_Vector*) buffer.atom;
-		vec->body.child_size = sizeof (float);
-		vec->body.child_type = uris->atom_Float;
-	}
-
     reset();
 }
-
 
 PortBuffer::~PortBuffer()
 {
     buffer.atom = nullptr;
-    block.free();
+    data.reset();
 }
 
-bool
-PortBuffer::addEvent (int64 frames, uint32 size, uint32 bodyType, const uint8* data)
+bool PortBuffer::addEvent (int64 frames, uint32 size, uint32 bodyType, const uint8* data)
 {
     if (isSequence())
     {
@@ -99,8 +105,7 @@ PortBuffer::addEvent (int64 frames, uint32 size, uint32 bodyType, const uint8* d
 	return false;
 }
 
-void
-PortBuffer::clear()
+void PortBuffer::clear()
 {
     if (isAudio() || isControl())
     {
@@ -119,15 +124,21 @@ PortBuffer::clear()
 
 void PortBuffer::reset (const bool forOutput)
 {
-    if (isAudio() || isControl())
+    if (isAudio())
     {
         buffer.atom->size = capacity - sizeof (LV2_Atom);
 	}
+    else if (isControl())
+    {
+        buffer.atom->size = sizeof (float);
+        buffer.atom->type = type;
+    }
     else if (isSequence())
     {
-		LV2_Atom_Sequence* seq = (LV2_Atom_Sequence*) buffer.atom;
-        buffer.atom->size = !forOutput ? sizeof (LV2_Atom_Sequence_Body) : capacity - sizeof (LV2_Atom_Sequence_Body);
+        buffer.atom->size = ! forOutput ? sizeof (LV2_Atom_Sequence_Body) 
+                                        : capacity - sizeof (LV2_Atom_Sequence_Body);
         buffer.atom->type = type;
+        LV2_Atom_Sequence* seq = (LV2_Atom_Sequence*) buffer.atom;
 		seq->body.unit    = 0;
 		seq->body.pad     = 0;
 	}
@@ -138,14 +149,10 @@ void PortBuffer::reset (const bool forOutput)
         buffer.event->stamp_type  = LV2_EVENT_AUDIO_STAMP;
         buffer.event->event_count = 0;
         buffer.event->size        = 0;
-        buffer.event->data        = block.getData() + sizeof (LV2_Event_Buffer);
+        buffer.event->data        = data.get() + sizeof (LV2_Event_Buffer);
     }
 }
 
-void*
-PortBuffer::getPortData()
-{
-    return block.getData();
-}
+void* PortBuffer::getPortData() const { return data.get(); }
 
 }

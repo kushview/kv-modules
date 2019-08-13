@@ -385,14 +385,14 @@ def build (bld):
     
     build_modules (bld)
 
-    # lv2show = bld.program (
-    #     source          = [ 'tools/lv2show.cpp' ],
-    #     includes        = library.includes + [ '.' ],
-    #     target          = 'bin/lv2show',
-    #     cxxflags        = [ '-std=c++14' ],
-    #     install_path    = bld.env.PREFIX + '/bin',
-    #     use             = [ 'KV' ]
-    # )
+    lv2show = bld.program (
+        source          = [ 'tools/lv2show.cpp' ],
+        includes        = [ '.', 'modules' ],
+        target          = 'bin/lv2show',
+        cxxflags        = [ '-std=c++14' ],
+        install_path    = bld.env.PREFIX + '/bin',
+        use             = [ 'KV_LV2', 'JUCE_AUDIO_UTILS', 'JUCE_AUDIO_DEVICES' ]
+    )
 
     bld.add_group()
     build_lv2_meta (bld)

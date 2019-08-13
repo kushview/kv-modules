@@ -368,6 +368,7 @@ void LV2Module::setStateString (const String& stateStr)
 Result LV2Module::instantiate (double samplerate)
 {
     freeInstance();
+    jassert(instance == nullptr);
     currentSampleRate = samplerate;
 
     features.clearQuick();
@@ -451,8 +452,9 @@ void LV2Module::freeInstance()
     {
         deactivate();
         worker = nullptr;
-        lilv_instance_free (instance);
+        auto* oldInstance = instance;
         instance = nullptr;
+        lilv_instance_free (oldInstance);
     }
 }
 
@@ -464,8 +466,6 @@ void LV2Module::setSampleRate (double newSampleRate)
     if (instance != nullptr)
     {
         const bool wasActive = isActive();
-        deactivate();
-
         freeInstance();
         instantiate (newSampleRate);
 

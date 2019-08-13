@@ -32,29 +32,37 @@ public:
     PortBuffer (const URIs* ids, uint32 bufferType = 0, uint32 bufferSize = 0);
     ~PortBuffer();
 
+    void clear();
+    void reset (const bool forOutput = false);
+    
     bool addEvent (int64 frames, uint32 size, uint32 type, const uint8* data);
 
-    void clear();
-
 	inline uint32 getCapacity() const { return capacity; }
-
-    void* getPortData();
-
+    void* getPortData() const;
+    
     inline uint32 getType() const { return type; }
 	inline void setType (uint32 newType) { type = newType; }
 
-	inline bool isAudio()    const { return type == uris->atom_Sound; }
-	inline bool isControl()  const { return type == uris->atom_Float; }
-    inline bool isEvent()    const { return type == uris->event_Event; }
-	inline bool isSequence() const { return type == uris->atom_Sequence; }
-
-    void reset (const bool forOutput = false);
+	inline bool isAudio()    const { return type == atom_Sound; }
+	inline bool isControl()  const { return type == atom_Float; }
+    inline bool isEvent()    const { return type == event_Event; }
+	inline bool isSequence() const { return type == atom_Sequence; }
 
 private:
-    uint32 type, capacity;
-    HeapBlock<uint8> block;
+    uint32_t type       = 0;
+    uint32_t capacity   = 0;
 
+    uint32_t atom_Float     = 0;
+    uint32_t atom_Sequence  = 0;
+    uint32_t atom_Sound     = 0;
+    uint32_t event_Event    = 0;
+    uint32_t midi_MidiEvent = 0;
+    
+    std::unique_ptr<uint8[]> data;
+    
     union {
+        float*            control;
+        float*            audio;
         LV2_Atom*         atom;
         LV2_Event_Buffer* event;
     } buffer;

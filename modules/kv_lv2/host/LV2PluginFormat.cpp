@@ -316,9 +316,11 @@ public:
 
         const ChannelConfig& chans (module->getChannelConfig());
 
+        uint32 portIdx = 0;
         for (PortBuffer* buf : buffers) {
-            if (buf)
-                buf->clear();
+            if (! buf || ! buf->isSequence())
+                continue;
+            module->connectPort (portIdx++, buf->getPortData());
         }
 
         if (wantsMidiMessages)
