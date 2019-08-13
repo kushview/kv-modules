@@ -67,6 +67,13 @@ PortBuffer::~PortBuffer()
     data.reset();
 }
 
+void PortBuffer::setTypes (std::function<uint32_t(const char*)> map)
+{
+    atom_Float      = map (LV2_ATOM__Float);
+    atom_Sequence   = map (LV2_ATOM__Sequence);
+    midi_MidiEvent  = map (LV2_MIDI__MidiEvent);
+}
+
 bool PortBuffer::addEvent (int64 frames, uint32 size, uint32 bodyType, const uint8* data)
 {
     if (isSequence())

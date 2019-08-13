@@ -48,6 +48,7 @@ public:
     inline bool isEvent()    const { return type == event_Event; }
 	inline bool isSequence() const { return type == atom_Sequence; }
 
+    void setTypes (std::function<uint32_t(const char*)> map);
 private:
     uint32_t type       = 0;
     uint32_t capacity   = 0;
