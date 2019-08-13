@@ -396,7 +396,7 @@ public:
     int getNumPrograms()          { return 1; }
     int getCurrentProgram()       { return 0; }
     void setCurrentProgram (int /*index*/) { }
-    const String getProgramName (int /*index*/)  { return String(); }
+    const String getProgramName (int /*index*/)  { return String ("Default"); }
     void changeProgramName (int /*index*/, const String& /*name*/) { }
 
     //==============================================================================
