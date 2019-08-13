@@ -31,6 +31,28 @@ VERSION = KV_VERSION
 top = '.'
 out = 'build'
 
+juce_modules = '''
+    juce_analytics
+    juce_audio_basics
+    juce_audio_devices
+    juce_audio_formats
+    juce_audio_processors
+    juce_audio_utils
+    juce_blocks_basics
+    juce_box2d
+    juce_core
+    juce_cryptography
+    juce_data_structures
+    juce_events
+    juce_opengl
+    juce_osc
+    juce_graphics
+    juce_gui_basics
+    juce_gui_extra
+    juce_product_unlocking
+    juce_video
+'''.split()
+
 experimental_modules = '''
     kv_ffmpeg
     kv_lv2
@@ -82,7 +104,13 @@ def configure (conf):
     conf.write_config_header ('kv/version.h', 'KV_VERSION_H')
 
     conf.check_cfg (package='juce_debug-5' if conf.options.debug else 'juce-5', 
-                    uselib_store='JUCE', args=['--libs', '--cflags'], mandatory=True)
+                    uselib_store='JUCE', args=['--libs', '--cflags'], mandatory=False)
+    
+    for jmod in juce_modules:
+        pkgname = '%s_debug-5' % jmod if conf.options.debug else '%s-5' % jmod
+        conf.check_cfg (package=pkgname, uselib_store=jmod.upper(), 
+                        args=['--libs', '--cflags'], mandatory=False)
+
     conf.check_cfg (package='lv2',    uselib_store='LV2',  args=['--libs', '--cflags'], mandatory=False)
     conf.check_cfg (package='lilv-0', uselib_store='LILV', args=['--libs', '--cflags'], mandatory=False)
     conf.check_cfg (package='suil-0', uselib_store='SUIL', args=['--libs', '--cflags'], mandatory=False)
@@ -106,7 +134,7 @@ def configure (conf):
     
     conf.define ('KV_DOCKING_WINDOWS', True)
     conf.write_config_header ('kv/config.h', 'KV_MODULES_CONFIG_H')
-    conf.define ('JUCE_APP_CONFIG_HEADER', 'kv/config.h')
+    # conf.define ('JUCE_APP_CONFIG_HEADER', 'kv/config.h')
     
     conf.load ('juce')
     conf.check_cxx_version ('c++14', True)
@@ -132,6 +160,9 @@ def configure (conf):
 
 def library_slug (bld):
     return 'kv_debug-0' if bld.env.DEBUG else 'kv-0'
+
+def module_slug (bld, mod):
+    return '%s_debug-0' % mod if bld.env.DEBUG else '%s-0' % mod
 
 def get_include_path (bld, subpath=''):
     ip = '%s/kv-%s' % (bld.env.INCLUDEDIR, KV_MAJOR_VERSION)
@@ -238,10 +269,7 @@ def generate_code (bld):
     bld.add_group()
     return tasks
 
-def build (bld):
-    bld.env.HEADERS = bld.options.install_headers
-    generate_code (bld)
-    
+def build_single (bld):
     library_source = []
     for mod in bld.env.MODULES:
         library_source.append ('build/code/include_%s.cpp' % mod)
@@ -275,16 +303,97 @@ def build (bld):
     if bld.env.HAVE_SUIL: pcobj.REQUIRED += ' suil-0'
     if bld.env.HAVE_LILV: pcobj.REQUIRED += ' lilv-0'
 
-    lv2show = bld.program (
-        source          = [ 'tools/lv2show.cpp' ],
-        includes        = library.includes + [ '.' ],
-        target          = 'bin/lv2show',
-        cxxflags        = [ '-std=c++14' ],
-        install_path    = bld.env.PREFIX + '/bin',
-        use             = [ 'KV' ]
+def build_modules (bld):
+    subst_env = bld.env.derive()
+    subst_env.CFLAGS = []
+
+    for m in bld.env.MODULES:
+        module = juce.ModuleInfo ('modules/%s/%s.h' % (m, m))
+        slug = module_slug (bld, m)
+        module_libname = '%s' % (module_slug (bld, m))
+        ext = 'cpp'
+
+        library = bld (
+            features    = 'cxxshlib cxx',
+            includes    = [ '.', 'modules' ],
+            source      = [ 'build/code/include_%s.%s' % (m, ext) ],
+            target      = 'local/lib/%s' % module_libname,
+            name        = m.upper(),
+            use         = [u.upper() for u in module.dependencies()],
+            vnum        = module.version()
+        )
+
+        # Pkg Config Files
+        pcobj = bld (
+            features        = 'subst',
+            source          = 'kv_module.pc.in',
+            target          = slug + '.pc',
+            install_path    = bld.env.LIBDIR + '/pkgconfig',
+            env             = subst_env,
+            MAJOR_VERSION   = '0',
+            PREFIX          = bld.env.PREFIX,
+            INCLUDEDIR      = bld.env.INCLUDEDIR,
+            LIBDIR          = bld.env.LIBDIR,
+            CFLAGS          = '',
+            DEPLIBS         = '-l%s' % module_libname,
+            REQUIRED        = ' '.join (module.requiredPackages (bool (bld.env.DEBUG))),
+            NAME            = module.name(),
+            DESCRIPTION     = module.description(),
+            VERSION         = module.version()
+        )
+        
+        if m == 'kv_lv2':
+            if bld.env.HAVE_SUIL:
+                library.use.append ('SUIL')
+                pcobj.REQUIRED += ' suil-0'
+            if bld.env.HAVE_LILV: 
+                library.use.append ('LILV')
+                pcobj.REQUIRED += ' lilv-0'
+
+        if juce.is_mac():
+            library.use += module.osxFrameworks()
+            for framework in module.osxFrameworks (False):
+                pcobj.DEPLIBS += ' -framework %s' % framework
+    
+    jpcobj = bld (
+        features        = 'subst',
+        source          = 'kv.pc.in',
+        target          = library_slug (bld) + '.pc',
+        install_path    = bld.env.LIBDIR + '/pkgconfig',
+        env             = subst_env,
+        MAJOR_VERSION   = '0',
+        PREFIX          = bld.env.PREFIX,
+        INCLUDEDIR      = bld.env.INCLUDEDIR,
+        LIBDIR          = bld.env.LIBDIR,
+        CFLAGS          = None,
+        DEPLIBS         = '',
+        REQUIRED        = '',
+        NAME            = 'KV',
+        DESCRIPTION     = 'KV Modules for JUCE',
+        VERSION         = VERSION
     )
+
+    required = []
+    for mod in bld.env.MODULES:
+        required.append (module_slug (bld, mod))
+
+    jpcobj.REQUIRED = ' '.join (required)
+
+def build (bld):
+    bld.env.HEADERS = bld.options.install_headers
+    generate_code (bld)
+    
+    build_modules (bld)
+
+    # lv2show = bld.program (
+    #     source          = [ 'tools/lv2show.cpp' ],
+    #     includes        = library.includes + [ '.' ],
+    #     target          = 'bin/lv2show',
+    #     cxxflags        = [ '-std=c++14' ],
+    #     install_path    = bld.env.PREFIX + '/bin',
+    #     use             = [ 'KV' ]
+    # )
 
     bld.add_group()
     build_lv2_meta (bld)
-
     maybe_install_headers (bld)

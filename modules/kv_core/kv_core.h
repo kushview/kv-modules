@@ -21,12 +21,12 @@
     ID:               kv_core
     vendor:           Kushview
     version:          0.0.1
-    name:             Kushview core classes
-    description:      Kushview core classes
+    name:             KV Core
+    description:      KV Core
     website:          https://kushview.net
     license:          GPL
 
-    dependencies:     juce_core, juce_cryptography
+    dependencies:     juce_core, juce_cryptography, juce_events
 
     END_JUCE_MODULE_DECLARATION
  */

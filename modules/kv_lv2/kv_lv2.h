@@ -28,7 +28,7 @@
   website:          https://kushview.net
   license:          GPL
 
-  dependencies:     kv_core
+  dependencies:     kv_core, juce_audio_processors
   OSXFrameworks:
   iOSFrameworks:
   linuxLibs:

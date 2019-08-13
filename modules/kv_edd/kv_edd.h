@@ -23,12 +23,12 @@ BEGIN_JUCE_MODULE_DECLARATION
     ID:               kv_edd
     vendor:           Kusvhiew
     version:          1.1.0
-    name:             Classes for EDD Integration
+    name:             KV EDD Integration
     description:      Essential classes for communicating with an Easy Digital Downloads store front.
-    website:          https://kushview.net/edd-copy-protection
-    license:
+    website:          https://kushview.net
+    license:          GPL
 
-    dependencies:     juce_core juce_data_structures juce_product_unlocking
+    dependencies:     juce_core, juce_data_structures, juce_product_unlocking
 
 END_JUCE_MODULE_DECLARATION
 */

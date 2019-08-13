@@ -26,7 +26,7 @@
     website:          https://kushview.net
     license:          GPL v2
 
-    dependencies:     juce_data_structures, juce_audio_processors, juce_audio_devices
+    dependencies:     kv_core, juce_data_structures, juce_audio_processors, juce_audio_devices
 
     END_JUCE_MODULE_DECLARATION
  */
