@@ -22,5 +22,5 @@
 namespace Utility {
     String hexString8Digits (int value);
     String createAlphaNumericUID();
-    String createGUID (const String& seed); // Turns a seed into a windows GUID
+    // String createGUID (const String& seed); // Turns a seed into a windows GUID
 }

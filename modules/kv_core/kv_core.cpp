@@ -41,7 +41,9 @@ namespace kv {
  #include "core/Semaphore.cpp"
  #include "core/WorkThread.cpp"
  #include "time/TimeScale.cpp"
+#if 0
  #include "util/FileHelpers.cpp"
  #include "util/UUID.cpp"
+#endif
  #include "interprocess/SlaveProcess.cpp"
 }

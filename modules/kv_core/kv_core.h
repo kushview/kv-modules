@@ -26,7 +26,7 @@
     website:          https://kushview.net
     license:          GPL
 
-    dependencies:     juce_core, juce_cryptography, juce_events
+    dependencies:     juce_core, juce_events
 
     END_JUCE_MODULE_DECLARATION
  */
@@ -95,9 +95,12 @@ using namespace juce;
 
 #include "util/Utils.h"
 #include "util/RangeTypes.h"
+
+#if 0
 #include "util/FileHelpers.h"
 #include "util/RelativePath.h"
 #include "util/UUID.h"
+#endif
 
 #include "interprocess/SlaveProcess.h"
 }
