@@ -24,22 +24,33 @@ namespace kv {
 class URIs
 {
 public:
-    inline explicit URIs (LV2_URID_Map* map)
-        : atom_Float     (map->map (map->handle, LV2_ATOM__Float)),
-          atom_Sequence  (map->map (map->handle, LV2_ATOM__Sequence)),
-          atom_Sound     (map->map (map->handle, LV2_ATOM__Sound)),
-          event_Event    (map->map (map->handle, LV2_EVENT__Event)),
-          midi_MidiEvent (map->map (map->handle, LV2_MIDI__MidiEvent))
-    { }
+    inline URIs() {}
+    inline URIs (LV2_URID_Map* map)
+    { 
+        init (map);
+    }
 
 	URIs(const URIs& o);
 	URIs& operator= (const URIs& o);
 
-    const LV2_URID atom_Float;
-    const LV2_URID atom_Sequence;
-    const LV2_URID atom_Sound;
-    const LV2_URID event_Event;
-    const LV2_URID midi_MidiEvent;
+    LV2_URID atom_Float = 0;
+    LV2_URID atom_Sequence;
+    LV2_URID atom_Sound;
+    LV2_URID event_Event;
+    LV2_URID midi_MidiEvent;
+
+    bool ready() const { return atom_Float > 0; }
+
+    void init (LV2_URID_Map* map)
+    {
+        if (ready())
+            return;
+        atom_Float     = map->map (map->handle, LV2_ATOM__Float);
+        atom_Sequence  = map->map (map->handle, LV2_ATOM__Sequence);
+        atom_Sound     = map->map (map->handle, LV2_ATOM__Sound);
+        event_Event    = map->map (map->handle, LV2_EVENT__Event);
+        midi_MidiEvent = map->map (map->handle, LV2_MIDI__MidiEvent);
+    }
 };
 
 }

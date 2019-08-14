@@ -27,13 +27,11 @@ namespace kv {
 class PortBuffer
 {
 public:
-    const URIs* uris;
-    PortBuffer (uint32 bufferType = 0, uint32 bufferSize = 0) {}
-    PortBuffer (const URIs* ids, uint32 bufferType = 0, uint32 bufferSize = 0);
+    PortBuffer (bool inputPort, uint32 portType, uint32 dataType, uint32 bufferSize);
     ~PortBuffer();
 
     void clear();
-    void reset (const bool forOutput = false);
+    void reset();
     
     bool addEvent (int64 frames, uint32 size, uint32 type, const uint8* data);
 
@@ -43,21 +41,21 @@ public:
     inline uint32 getType() const { return type; }
 	inline void setType (uint32 newType) { type = newType; }
 
-	inline bool isAudio()    const { return type == atom_Sound; }
-	inline bool isControl()  const { return type == atom_Float; }
-    inline bool isEvent()    const { return type == event_Event; }
-	inline bool isSequence() const { return type == atom_Sequence; }
+    inline bool isAtom()     const { return type == PortType::Atom; }
+	inline bool isAudio()    const { return type == PortType::Audio; }
+	inline bool isControl()  const { return type == PortType::Control; }
+    inline bool isEvent()    const { return type == PortType::Event; }
+	inline bool isSequence() const { return isAtom(); }
 
-    void setTypes (std::function<uint32_t (const char*)> map);
+    void referTo (void* location) { buffer.referred = location; referenced = true; }
+    void updateBufferType (LV2_URID_Map* map);
+
 private:
-    uint32_t type       = 0;
-    uint32_t capacity   = 0;
-    uint32_t atom_Float     = 0;
-    uint32_t atom_Sequence  = 0;
-    uint32_t atom_Sound     = 0;
-    uint32_t event_Event    = 0;
-    uint32_t midi_MidiEvent = 0;
-    
+    uint32_t type           = 0;
+    uint32_t capacity       = 0;
+    uint32_t bufferType     = 0;
+    bool input              = true;
+
     std::unique_ptr<uint8[]> data;
     bool referenced = false;
 

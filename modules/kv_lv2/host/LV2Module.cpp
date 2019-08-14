@@ -308,6 +308,39 @@ void LV2Module::init()
                          symbol, name, isInput);
         priv->channels.addPort (type, p, isInput);
         priv->values[p] = priv->defaults [p];
+
+        uint32 capacity = sizeof (float);
+        uint32 dataType = 0;
+        switch ((uint32) type.id()) 
+        {
+            case PortType::Control:
+                capacity = sizeof (float); 
+                dataType = map (LV2_ATOM__Float);
+                break;
+            case PortType::Audio:
+                capacity = sizeof (float);
+                dataType = map (LV2_ATOM__Float);
+                break;
+            case PortType::Atom:
+                capacity = 4096;
+                dataType = map (LV2_ATOM__Sequence);
+                break;
+            case PortType::Midi:    
+                capacity = sizeof (uint32); 
+                dataType = map (LV2_MIDI__MidiEvent);
+                break;
+            case PortType::Event:
+                capacity = 4096; 
+                dataType = map (LV2_EVENT__Event);
+                break;
+            case PortType::CV:      
+                capacity = sizeof(float);
+                dataType = map (LV2_ATOM__Float);
+                break;
+        }
+
+        PortBuffer* const buf = priv->buffers.add (
+            new PortBuffer (isInput, type, dataType, capacity));
     }
 
     // load related GUIs

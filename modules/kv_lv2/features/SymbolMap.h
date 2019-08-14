@@ -35,7 +35,7 @@ class SymbolMap
 {
 public:
     /** Create an empty symbol map and initialized LV2 URID features */
-    SymbolMap() { }
+    SymbolMap() = default;
 
     ~SymbolMap()
     {

@@ -138,6 +138,14 @@ public:
         midiPort     = module->getMidiPort();
         notifyPort   = module->getNotifyPort();
 
+       #if 1
+        for (uint32 p = 0; p < numPorts; ++p)
+        {
+            if (module->isPortInput (p) && PortType::Control == module->getPortType (p))
+                addParameter (new LV2AudioParameter (p, *module));    
+        }
+       #else
+       
         buffers.ensureStorageAllocated (numPorts);
         while (buffers.size() < numPorts)
             buffers.add (nullptr);
@@ -149,46 +157,23 @@ public:
             const LilvPort* port (module->getPort (p));
             const bool input = module->isPortInput (p);
             const PortType type = module->getPortType (p);
-           
-            if (input)
+            uint32 capacity = sizeof (float);
+            switch ((uint32) type.id()) 
             {
-                if (PortType::Atom == type)
-                {
-                    PortBuffer* buf = new PortBuffer (uris, uris->atom_Sequence, 4096);
-                    buffers.set (p, buf);
-                    jassert (buf->getPortData() != nullptr);
-                    module->connectPort (p, buf->getPortData());
-                }
-                else if (PortType::Control == type)
-                {
-                    buffers.set (p, new PortBuffer (uris, uris->atom_Float, sizeof (float)));
-                    addParameter (new LV2AudioParameter (p, *module));
-                }
-                else if (PortType::Event == type)
-                {
-                    buffers.set (p, new PortBuffer (uris, uris->event_Event, 4096));
-                    module->connectPort (p, buffers.getUnchecked(p)->getPortData());
-                }
+                case PortType::Control: capacity = sizeof(float); break;
+                case PortType::Audio:   capacity = sizeof(float); break;
+                case PortType::Atom:    capacity = 4096; break;
+                case PortType::Midi:    capacity = sizeof (uint32); break;
+                case PortType::Event:   capacity = 4096; break;
+                case PortType::CV:      capacity = sizeof(float); break;
             }
-            else
-            {
-                if (PortType::Atom == type)
-                {
-                    buffers.set (p, new PortBuffer (uris, uris->atom_Sequence, 4096));
-                    module->connectPort (p, buffers.getUnchecked(p)->getPortData());
-                }
-                else if (PortType::Control == type)
-                {
 
-                }
-                else if (PortType::Event == type)
-                {
-                    buffers.set (p, new PortBuffer (uris, uris->event_Event, 4096));
-                    module->connectPort (p, buffers.getUnchecked(p)->getPortData());
-                }
-            }
+            PortBuffer* const buf = buffers.add (new PortBuffer (type, capacity));
+            buf->updateBufferType (map);
+            if (input && PortType::Control == type)
+                addParameter (new LV2AudioParameter (p, *module));    
         }
-
+#endif
         const ChannelConfig& channels (module->getChannelConfig());
         setPlayConfigDetails (channels.getNumAudioInputs(),
                               channels.getNumAudioOutputs(), 44100.0, 1024);

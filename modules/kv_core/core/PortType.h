@@ -141,7 +141,7 @@ private:
             String ("http://lv2plug.in/ns/lv2core#AtomPort"),
             String ("http://lv2plug.in/ns/lv2core#EventPort"),
             String ("https://kushview.net/ns/element#MidiPort"),
-            String ("http://lvtoolkit.org/ns#null")
+            String ("http://lvtoolkit.org/ns/lvtk#null")
         };
 
         return uris [id];
