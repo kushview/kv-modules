@@ -5,7 +5,8 @@ build/
 *.pyc
 .DS_Store
 *.autosave
-.vscode
+
+/.vscode/settings.json
 
 # ffmpeg fragments
 /modules/kv_ffmpeg/include/
