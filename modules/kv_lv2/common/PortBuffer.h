@@ -21,10 +21,7 @@
 
 namespace kv {
 
-/** A multi-buffer of sorts. Capable of handling data for all LV2 Port
-    types.  A PortBuffer can dynamically change types if needed. @see
-    PortBuffer::setType */
-class PortBuffer
+class PortBuffer final
 {
 public:
     PortBuffer (bool inputPort, uint32 portType, uint32 dataType, uint32 bufferSize);
@@ -38,8 +35,7 @@ public:
 	inline uint32 getCapacity() const { return capacity; }
     void* getPortData() const;
     
-    inline uint32 getType() const { return type; }
-	inline void setType (uint32 newType) { type = newType; }
+    inline uint32 getType()  const { return type; }
 
     inline bool isAtom()     const { return type == PortType::Atom; }
 	inline bool isAudio()    const { return type == PortType::Audio; }
