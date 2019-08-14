@@ -143,10 +143,6 @@ public:
         return ui;
     }
 
-    ChannelConfig channels;
-    HeapBlock<float> mins, maxes, defaults, values;
-    LV2ModuleUI::Ptr ui;
-
     void sendControlValues()
     {
         if (! ui && ! owner.onPortNotify)
@@ -228,6 +224,10 @@ private:
     SuilHost* suil;
     SuilInstance* instanceUI = 0;
     PortList ports;
+    ChannelConfig channels;
+    HeapBlock<float> mins, maxes, defaults, values;
+    LV2ModuleUI::Ptr ui;
+    OwnedArray<PortBuffer> buffers;
 };
 
 LV2Module::LV2Module (LV2World& world_, const LilvPlugin* plugin_)
@@ -307,7 +307,7 @@ void LV2Module::init()
         priv->ports.add (type, p, priv->ports.size (type, isInput),
                          symbol, name, isInput);
         priv->channels.addPort (type, p, isInput);
-        priv->values[p] = priv->defaults[p];
+        priv->values[p] = priv->defaults [p];
     }
 
     // load related GUIs
@@ -578,8 +578,6 @@ uint32 LV2Module::getMidiPort() const
    return LV2UI_INVALID_PORT_INDEX;
 }
 
-const LilvPlugin* LV2Module::getPlugin() const { return plugin; }
-
 uint32 LV2Module::getNotifyPort() const
 {
     for (uint32 i = 0; i < numPorts; ++i)
@@ -595,6 +593,10 @@ uint32 LV2Module::getNotifyPort() const
 
     return LV2UI_INVALID_PORT_INDEX;
 }
+
+const LilvPlugin* LV2Module::getPlugin() const { return plugin; }
+
+
 
 const String LV2Module::getPortName (uint32 index) const
 {

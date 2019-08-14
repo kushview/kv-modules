@@ -161,6 +161,7 @@ public:
                 }
                 else if (PortType::Control == type)
                 {
+                    buffers.set (p, new PortBuffer (uris, uris->atom_Float, sizeof (float)));
                     addParameter (new LV2AudioParameter (p, *module));
                 }
                 else if (PortType::Event == type)

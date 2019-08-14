@@ -28,7 +28,7 @@ class PortBuffer
 {
 public:
     const URIs* uris;
-
+    PortBuffer (uint32 bufferType = 0, uint32 bufferSize = 0) {}
     PortBuffer (const URIs* ids, uint32 bufferType = 0, uint32 bufferSize = 0);
     ~PortBuffer();
 
@@ -48,11 +48,10 @@ public:
     inline bool isEvent()    const { return type == event_Event; }
 	inline bool isSequence() const { return type == atom_Sequence; }
 
-    void setTypes (std::function<uint32_t(const char*)> map);
+    void setTypes (std::function<uint32_t (const char*)> map);
 private:
     uint32_t type       = 0;
     uint32_t capacity   = 0;
-
     uint32_t atom_Float     = 0;
     uint32_t atom_Sequence  = 0;
     uint32_t atom_Sound     = 0;
@@ -60,10 +59,13 @@ private:
     uint32_t midi_MidiEvent = 0;
     
     std::unique_ptr<uint8[]> data;
-    
+    bool referenced = false;
+
     union {
+        void*             referred;
         float*            control;
         float*            audio;
+        float*            cv;
         LV2_Atom*         atom;
         LV2_Event_Buffer* event;
     } buffer;
