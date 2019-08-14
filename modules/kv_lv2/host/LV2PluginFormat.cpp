@@ -609,8 +609,8 @@ FileSearchPath LV2PluginFormat::getDefaultLocationsToSearch()
 {
     FileSearchPath paths;
    #if JUCE_LINUX
-    paths.add ("/usr/lib/lv2");
-    paths.add ("/usr/local/lib/lv2");
+    paths.add (File ("/usr/lib/lv2"));
+    paths.add (File ("/usr/local/lib/lv2"));
    #elif JUCE_MAC
     paths.add (File ("/Library/Audio/Plug-Ins/LV2"));
     paths.add (File::getSpecialLocation (File::userHomeDirectory)

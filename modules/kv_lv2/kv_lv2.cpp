@@ -26,7 +26,7 @@
  #error "Incorrect use of JUCE cpp file"
 #endif
 
-#include <lv2/state/state.h>
+#include <lv2/lv2plug.in/ns/ext/state/state.h>
 
 #include "kv_lv2/kv_lv2.h"
 

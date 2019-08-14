@@ -17,7 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#include <lv2/state/state.h>
+#include <lv2/lv2plug.in/ns/ext/state/state.h>
 
 namespace kv {
 
