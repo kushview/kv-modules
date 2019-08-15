@@ -302,55 +302,57 @@ public:
 
         const ChannelConfig& chans (module->getChannelConfig());
 
-        uint32 portIdx = 0;
-        for (PortBuffer* buf : buffers) {
-            if (! buf || ! buf->isSequence())
-                continue;
-            module->connectPort (portIdx++, buf->getPortData());
-        }
+        // uint32 portIdx = 0;
+        // for (PortBuffer* buf : buffers) {
+        //     if (! buf || ! buf->isSequence())
+        //         continue;
+        //     module->connectPort (portIdx++, buf->getPortData());
+        // }
 
         if (wantsMidiMessages)
         {
-            PortBuffer* const buf = buffers.getUnchecked (midiPort);
+            // PortBuffer* const buf = buffers.getUnchecked (midiPort);
 
-            MidiBuffer::Iterator iter (midi);
-            const uint8* d = nullptr;  int s = 0, f = 0;
+            // MidiBuffer::Iterator iter (midi);
+            // const uint8* d = nullptr;  int s = 0, f = 0;
 
-            while (iter.getNextEvent (d, s, f)) {
-                buf->addEvent (f, (uint32)s, midiEvent, d);
-            }
+            // while (iter.getNextEvent (d, s, f)) {
+            //     buf->addEvent (f, (uint32)s, midiEvent, d);
+            // }
         }
         
-        for (int32 i = getTotalNumInputChannels(); --i >= 0;)
-            module->connectPort (chans.getAudioInputPort(i), audio.getWritePointer (i));
+        // for (int32 i = getTotalNumInputChannels(); --i >= 0;)
+        //     module->connectPort (chans.getAudioInputPort(i), audio.getWritePointer (i));
 
-        for (int32 i = getTotalNumOutputChannels(); --i >= 0;)
-            module->connectPort (chans.getAudioOutputPort(i), tempBuffer.getWritePointer (i));
-
+        // for (int32 i = getTotalNumOutputChannels(); --i >= 0;)
+        //     module->connectPort (chans.getAudioOutputPort(i), tempBuffer.getWritePointer (i));
+        module->referAudioReplacing (audio);
         module->run ((uint32) numSamples);
 
-        for (int32 i = getTotalNumOutputChannels(); --i >= 0;)
-            audio.copyFrom (i, 0, tempBuffer.getWritePointer (i), numSamples);
+        midi.clear();
 
-        if (notifyPort != LV2UI_INVALID_PORT_INDEX)
-        {
-            PortBuffer* const buf = buffers.getUnchecked (notifyPort);
-            jassert (buf != nullptr);
+        // for (int32 i = getTotalNumOutputChannels(); --i >= 0;)
+        //     audio.copyFrom (i, 0, tempBuffer.getWritePointer (i), numSamples);
 
-            midi.clear();
-            LV2_ATOM_SEQUENCE_FOREACH ((LV2_Atom_Sequence*) buf->getPortData(), ev)
-            {
-                if (ev->body.type == uris->midi_MidiEvent)
-                {
-                    midi.addEvent (LV2_ATOM_BODY_CONST (&ev->body),
-                                   ev->body.size, (int32)ev->time.frames);
-                }
-            }
-        }
-        else
-        {
-            midi.clear();
-        }
+        // if (notifyPort != LV2UI_INVALID_PORT_INDEX)
+        // {
+        //     PortBuffer* const buf = buffers.getUnchecked (notifyPort);
+        //     jassert (buf != nullptr);
+
+        //     midi.clear();
+        //     LV2_ATOM_SEQUENCE_FOREACH ((LV2_Atom_Sequence*) buf->getPortData(), ev)
+        //     {
+        //         if (ev->body.type == uris->midi_MidiEvent)
+        //         {
+        //             midi.addEvent (LV2_ATOM_BODY_CONST (&ev->body),
+        //                            ev->body.size, (int32)ev->time.frames);
+        //         }
+        //     }
+        // }
+        // else
+        // {
+        //     midi.clear();
+        // }
     }
 
     bool hasEditor() const { return module->hasEditor(); }

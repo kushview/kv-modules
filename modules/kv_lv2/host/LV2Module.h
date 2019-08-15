@@ -157,6 +157,8 @@ public:
       */
     void connectChannel (const PortType type, const int32 channel, void* data, const bool isInput);
 
+    void referAudioReplacing (AudioSampleBuffer&);
+    
     /** Returns an LV2 preset/state as a string */
     String getStateString() const;
 

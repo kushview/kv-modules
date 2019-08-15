@@ -164,6 +164,9 @@ void PortBuffer::reset()
     }
 }
 
-void* PortBuffer::getPortData() const { return data.get(); }
+void* PortBuffer::getPortData() const
+{ 
+    return referenced ? buffer.referred : data.get();
+}
 
 }

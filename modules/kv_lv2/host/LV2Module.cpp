@@ -803,6 +803,24 @@ void LV2Module::timerCallback()
     }
 }
 
+void LV2Module::referAudioReplacing (AudioSampleBuffer& buffer)
+{
+    uint32 port = 0;
+    for (int c = 0; c < priv->channels.getNumAudioInputs(); ++c)
+    {
+        port = priv->channels.getPort (PortType::Audio, c, true);
+        priv->buffers.getUnchecked ((int) port)->referTo (
+            buffer.getWritePointer (c));
+    }
+
+    for (int c = 0; c < priv->channels.getNumAudioOutputs(); ++c)
+    {
+        port = priv->channels.getPort (PortType::Audio, c, false);
+        priv->buffers.getUnchecked ((int) port)->referTo (
+            buffer.getWritePointer (c));
+    }
+}
+
 void LV2Module::run (uint32 nframes)
 {
     PortEvent ev;
@@ -832,9 +850,8 @@ void LV2Module::run (uint32 nframes)
         }
     }
 
-    for (const auto* const port : priv->ports.getPorts())
-        if (port->type == PortType::Control)
-            connectPort (static_cast<uint32> (port->index), &priv->values[port->index]);
+    for (int i = priv->buffers.size(); --i >= 0;)
+        connectPort (static_cast<uint32> (i), priv->buffers.getUnchecked(i)->getPortData());
     
     if (worker)
         worker->processWorkResponses();
