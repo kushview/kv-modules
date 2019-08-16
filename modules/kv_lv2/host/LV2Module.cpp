@@ -153,12 +153,14 @@ public:
             if (PortType::Control != port->type)
                 continue;
 
+            auto* const buffer = buffers.getUnchecked (port->index);
+
             if (ui)
                 ui->portEvent ((uint32_t)port->index, sizeof(float), 
-                               0, (void*) &values [port->index]);
+                               0, buffer->getPortData());
             if (owner.onPortNotify)
-                owner.onPortNotify ((uint32_t)port->index, sizeof(float), 
-                                    0, (void*) &values [port->index]);
+                owner.onPortNotify ((uint32_t) port->index, sizeof(float), 
+                                    0, buffer->getPortData());
         }
     }
 
@@ -176,24 +178,25 @@ public:
 
         if (portIdx >= 0)
         {
-            *size = sizeof (float);
-            *type = priv->owner.map (LV2_ATOM__Float);
-            return &priv->values [portIdx];
+            if (auto* const buffer = priv->buffers [portIdx])
+            {
+                *size = sizeof (float);
+                *type = priv->owner.map (LV2_ATOM__Float);
+                return buffer->getPortData();
+            }
         }
-        else
-        {
-            *size = 0;
-            *type = 0;
-        }
+
+        *size = 0;
+        *type = 0;
 
         return nullptr;
     }
 
     static void setPortValue (const char* port_symbol,
-                                      void*       user_data,
-                                      const void* value,
-                                      uint32_t    size,
-                                      uint32_t    type)
+                              void*       user_data,
+                              const void* value,
+                              uint32_t    size,
+                              uint32_t    type)
     {
         auto* priv = (Private*) user_data;
         auto& plugin = priv->owner;
@@ -214,7 +217,8 @@ public:
 
         if (portIdx >= 0 && port)
         {
-            priv->values[portIdx] = *((float*) value);
+            if (auto* const buffer = priv->buffers [portIdx])
+                buffer->setValue (*((float*) value));
         }
     }
     
@@ -225,7 +229,7 @@ private:
     SuilInstance* instanceUI = 0;
     PortList ports;
     ChannelConfig channels;
-    HeapBlock<float> mins, maxes, defaults, values;
+    HeapBlock<float> mins, maxes, defaults;
     LV2ModuleUI::Ptr ui;
     OwnedArray<PortBuffer> buffers;
 };
@@ -251,28 +255,7 @@ LV2Module::~LV2Module()
 
 void LV2Module::activatePorts()
 {
-   for (int32 p = 0; p < numPorts; ++p)
-   {
-       const bool isInput  = isPortInput (p);
-       const PortType type = getPortType (p);
-
-       if (type == PortType::Atom)
-       {
-
-       }
-       else if (type == PortType::Audio)
-       {
-
-       }
-       else if (type == PortType::Control)
-       {
-           connectPort (p, &priv->values [p]);
-       }
-       else if (type == PortType::CV)
-       {
-
-       }
-   }
+    // noop
 }
 
 void LV2Module::init()
@@ -291,7 +274,7 @@ void LV2Module::init()
     priv->mins.allocate (numPorts, true);
     priv->maxes.allocate (numPorts, true);
     priv->defaults.allocate (numPorts, true);
-    priv->values.allocate (numPorts, true);
+
     lilv_plugin_get_port_ranges_float (plugin, priv->mins, priv->maxes, priv->defaults);
 
     // initialize each port
@@ -307,7 +290,6 @@ void LV2Module::init()
         priv->ports.add (type, p, priv->ports.size (type, isInput),
                          symbol, name, isInput);
         priv->channels.addPort (type, p, isInput);
-        priv->values[p] = priv->defaults [p];
 
         uint32 capacity = sizeof (float);
         uint32 dataType = 0;
@@ -341,6 +323,9 @@ void LV2Module::init()
 
         PortBuffer* const buf = priv->buffers.add (
             new PortBuffer (isInput, type, dataType, capacity));
+        
+        if (type == PortType::Control)
+            buf->setValue (priv->defaults [p]);
     }
 
     // load related GUIs
@@ -717,6 +702,12 @@ void LV2Module::clearEditor()
     }
 }
 
+PortBuffer* LV2Module::getPortBuffer (uint32 port) const
+{
+    jassert (port < numPorts);
+    return priv->buffers.getUnchecked (port);
+}
+
 uint32 LV2Module::getPortIndex (const String& symbol) const
 {
     for (const auto* port : priv->ports.getPorts())
@@ -798,27 +789,20 @@ void LV2Module::timerCallback()
                     ui->portEvent (ev.index, ev.size, ev.protocol, ntbuf.getData());
                 if (onPortNotify)
                     onPortNotify (ev.index, ev.size, ev.protocol, ntbuf.getData());
-            }        
+            }
         }
     }
 }
 
 void LV2Module::referAudioReplacing (AudioSampleBuffer& buffer)
 {
-    uint32 port = 0;
     for (int c = 0; c < priv->channels.getNumAudioInputs(); ++c)
-    {
-        port = priv->channels.getPort (PortType::Audio, c, true);
-        priv->buffers.getUnchecked ((int) port)->referTo (
-            buffer.getWritePointer (c));
-    }
+        priv->buffers.getUnchecked ((int) priv->channels.getPort (
+            PortType::Audio, c, true))->referTo (buffer.getWritePointer (c));
 
     for (int c = 0; c < priv->channels.getNumAudioOutputs(); ++c)
-    {
-        port = priv->channels.getPort (PortType::Audio, c, false);
-        priv->buffers.getUnchecked ((int) port)->referTo (
-            buffer.getWritePointer (c));
-    }
+        priv->buffers.getUnchecked ((int) priv->channels.getPort (
+            PortType::Audio, c, false))->referTo (buffer.getWritePointer (c));
 }
 
 void LV2Module::run (uint32 nframes)
@@ -839,12 +823,15 @@ void LV2Module::run (uint32 nframes)
 
             if (ev.protocol == 0)
             {
-                const bool changed = priv->values[ev.index] != *((float*) evbuf.getData());
-                priv->values[ev.index] = *((float*) evbuf.getData());
-                if (changed && notifications->canWrite (pesize + ev.size))
+                auto* buffer = priv->buffers.getUnchecked (ev.index);                
+                if (buffer->getValue() != *((float*) evbuf.getData()))
                 {
-                    notifications->write (ev);
-                    notifications->write (evbuf.getData(), ev.size);
+                    buffer->setValue (*((float*) evbuf.getData()));
+                    if (notifications->canWrite (pesize + ev.size)) 
+                    {
+                        notifications->write (ev);
+                        notifications->write (evbuf.getData(), ev.size);
+                    }
                 }
             }
         }

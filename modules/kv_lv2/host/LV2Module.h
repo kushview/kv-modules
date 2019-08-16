@@ -159,6 +159,8 @@ public:
 
     void referAudioReplacing (AudioSampleBuffer&);
     
+    PortBuffer* getPortBuffer (uint32) const;
+
     /** Returns an LV2 preset/state as a string */
     String getStateString() const;
 

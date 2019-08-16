@@ -44,7 +44,9 @@ public:
 	inline bool isSequence() const { return isAtom(); }
 
     void referTo (void* location) { buffer.referred = location; referenced = true; }
-    void updateBufferType (LV2_URID_Map* map);
+
+    float getValue() const;
+    void setValue (float value);
 
 private:
     uint32_t type           = 0;
@@ -54,6 +56,8 @@ private:
 
     std::unique_ptr<uint8[]> data;
     bool referenced = false;
+
+    Atomic<float> value;
 
     union {
         void*             referred;

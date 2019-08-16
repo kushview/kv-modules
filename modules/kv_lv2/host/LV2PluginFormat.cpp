@@ -138,49 +138,17 @@ public:
         midiPort     = module->getMidiPort();
         notifyPort   = module->getNotifyPort();
 
-       #if 1
         for (uint32 p = 0; p < numPorts; ++p)
-        {
             if (module->isPortInput (p) && PortType::Control == module->getPortType (p))
                 addParameter (new LV2AudioParameter (p, *module));    
-        }
-       #else
-       
-        buffers.ensureStorageAllocated (numPorts);
-        while (buffers.size() < numPorts)
-            buffers.add (nullptr);
-
-        // TODO: channel/param mapping should all go in LV2Module
-        const LilvPlugin* plugin (module->getPlugin());
-        for (uint32 p = 0; p < numPorts; ++p)
-        {
-            const LilvPort* port (module->getPort (p));
-            const bool input = module->isPortInput (p);
-            const PortType type = module->getPortType (p);
-            uint32 capacity = sizeof (float);
-            switch ((uint32) type.id()) 
-            {
-                case PortType::Control: capacity = sizeof(float); break;
-                case PortType::Audio:   capacity = sizeof(float); break;
-                case PortType::Atom:    capacity = 4096; break;
-                case PortType::Midi:    capacity = sizeof (uint32); break;
-                case PortType::Event:   capacity = 4096; break;
-                case PortType::CV:      capacity = sizeof(float); break;
-            }
-
-            PortBuffer* const buf = buffers.add (new PortBuffer (type, capacity));
-            buf->updateBufferType (map);
-            if (input && PortType::Control == type)
-                addParameter (new LV2AudioParameter (p, *module));    
-        }
-#endif
+ 
         const ChannelConfig& channels (module->getChannelConfig());
         setPlayConfigDetails (channels.getNumAudioInputs(),
                               channels.getNumAudioOutputs(), 44100.0, 1024);
 
         if (! module->hasEditor())
         {
-            jassert(module->onPortNotify == nullptr);
+            jassert (module->onPortNotify == nullptr);
             using namespace std::placeholders;
             module->onPortNotify = std::bind (&LV2PluginInstance::portEvent, this, _1, _2, _3, _4);
         }
@@ -302,37 +270,19 @@ public:
 
         const ChannelConfig& chans (module->getChannelConfig());
 
-        // uint32 portIdx = 0;
-        // for (PortBuffer* buf : buffers) {
-        //     if (! buf || ! buf->isSequence())
-        //         continue;
-        //     module->connectPort (portIdx++, buf->getPortData());
-        // }
-
         if (wantsMidiMessages)
         {
-            // PortBuffer* const buf = buffers.getUnchecked (midiPort);
-
-            // MidiBuffer::Iterator iter (midi);
-            // const uint8* d = nullptr;  int s = 0, f = 0;
-
-            // while (iter.getNextEvent (d, s, f)) {
-            //     buf->addEvent (f, (uint32)s, midiEvent, d);
-            // }
+            PortBuffer* const buf = module->getPortBuffer (midiPort);
+            buf->reset();
+            MidiBuffer::Iterator iter (midi);
+            const uint8* d = nullptr;  int s = 0, f = 0;
+            while (iter.getNextEvent (d, s, f))
+                buf->addEvent (static_cast<uint32> (f), static_cast<uint32> (s), midiEvent, d);
         }
         
-        // for (int32 i = getTotalNumInputChannels(); --i >= 0;)
-        //     module->connectPort (chans.getAudioInputPort(i), audio.getWritePointer (i));
-
-        // for (int32 i = getTotalNumOutputChannels(); --i >= 0;)
-        //     module->connectPort (chans.getAudioOutputPort(i), tempBuffer.getWritePointer (i));
         module->referAudioReplacing (audio);
         module->run ((uint32) numSamples);
-
         midi.clear();
-
-        // for (int32 i = getTotalNumOutputChannels(); --i >= 0;)
-        //     audio.copyFrom (i, 0, tempBuffer.getWritePointer (i), numSamples);
 
         // if (notifyPort != LV2UI_INVALID_PORT_INDEX)
         // {

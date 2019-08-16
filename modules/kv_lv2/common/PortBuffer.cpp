@@ -63,19 +63,18 @@ PortBuffer::~PortBuffer()
     data.reset();
 }
 
-void PortBuffer::updateBufferType (LV2_URID_Map* map)
+float PortBuffer::getValue() const
 {
-    switch (type)
-    {
-        case PortType::Control: bufferType = map->map (map->handle, LV2_ATOM__Float);     break;
-        case PortType::Audio:   bufferType = map->map (map->handle, LV2_ATOM__Sound);     break;
-        case PortType::CV:      bufferType = map->map (map->handle, LV2_ATOM__Sound);     break;
-        case PortType::Atom:    bufferType = map->map (map->handle, LV2_ATOM__Sequence);  break;
-        case PortType::Event:   bufferType = map->map (map->handle, LV2_EVENT__Event);    break;
-        case PortType::Midi:    bufferType = map->map (map->handle, LV2_MIDI__MidiEvent); break;
-    }
+    jassert (type == PortType::Control);
+    jassert (buffer.control != nullptr);
+    return *buffer.control;
+}
 
-    reset();
+void PortBuffer::setValue (float newValue)
+{
+    jassert (type == PortType::Control);
+    jassert (buffer.control != nullptr);
+    *buffer.control = newValue;
 }
 
 bool PortBuffer::addEvent (int64 frames, uint32 size, uint32 bodyType, const uint8* data)
