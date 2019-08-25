@@ -280,9 +280,9 @@ class ModuleInfo:
         pkgs = []
 
         for dep in self.dependencies():
-            pkg = dep #.replace ('_', '-')
-            mv = self.version()[:1]
-            pkg += '-debug-%s' % (mv) if debug else '-%s' % (mv)
+            pkg = dep
+            mv = '5' if 'juce_' in dep else self.version()[:1] 
+            pkg += '_debug-%s' % (mv) if debug else '-%s' % (mv)
             pkgs.append (pkg)
 
         return list (set (pkgs))
