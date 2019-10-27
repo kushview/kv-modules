@@ -88,7 +88,7 @@ public:
     template <typename T>
     inline uint32 write (const T& src)
     {
-        write (&src, sizeof (T));
+        return write (&src, sizeof (T));
     }
 
     struct Vector {
