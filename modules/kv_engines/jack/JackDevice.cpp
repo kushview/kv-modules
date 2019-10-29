@@ -70,16 +70,16 @@ public:
         return names;
     }
 
-    StringArray getOutputChannelNames()         { return getChannelNames (false); }
-    StringArray getInputChannelNames()          { return getChannelNames (true); }
-    int getNumSampleRates()                     { return 1; }
-    double getSampleRate (int /*index*/)        { return client.sampleRate(); }
-    int getNumBufferSizesAvailable()            { return 1; }
-    int getBufferSizeSamples (int /*index*/)    { return getDefaultBufferSize(); }
-    int getDefaultBufferSize() override         { return client.bufferSize(); }
+    StringArray getOutputChannelNames() override { return getChannelNames (false); }
+    StringArray getInputChannelNames()  override { return getChannelNames (true); }
+    int getNumSampleRates()                      { return 1; }
+    double getSampleRate (int /*index*/)         { return client.sampleRate(); }
+    int getNumBufferSizesAvailable()             { return 1; }
+    int getBufferSizeSamples (int /*index*/)     { return getDefaultBufferSize(); }
+    int getDefaultBufferSize() override          { return client.bufferSize(); }
 
     String open (const BigInteger& inputChannels, const BigInteger& outputChannels,
-                 double /* sampleRate */, int /* bufferSizeSamples */)
+                 double /* sampleRate */, int /* bufferSizeSamples */) override
     {
         jack_Log ("opening client");
         lastError = client.open (KV_JACK_NAME, 0);
@@ -91,7 +91,6 @@ public:
 
         DBG("num inputs: " << inputChannels.getHighestBit());
         DBG("num outputs: " << outputChannels.getHighestBit());
-
 
         jack_on_shutdown (client, JackDevice::shutdownCallback, this);
         jack_set_error_function (JackDevice::errorCallback);
@@ -106,12 +105,12 @@ public:
         return lastError;
     }
 
-    void close()
+    void close() override
     {
         lastError = client.close();
     }
 
-    void start (AudioIODeviceCallback* newCallback)
+    void start (AudioIODeviceCallback* newCallback) override
     {
         if (client.isOpen() && newCallback != callback)
         {
@@ -132,16 +131,15 @@ public:
         }
     }
 
-    void stop()
+    void stop() override
     {
         jack_Log ("jack stop \n");
         start (nullptr);
         client.deactivate();
     }
 
-    bool isOpen()                           { return client.isOpen(); }
-    bool isPlaying()                        { return callback != nullptr; }
-
+    bool isOpen()       override { return client.isOpen(); }
+    bool isPlaying()    override { return callback != nullptr; }
 
     Array<double> getAvailableSampleRates() override
     {
@@ -159,23 +157,22 @@ public:
         return sizes;
     }
 
-    int getCurrentBufferSizeSamples()       { return getBufferSizeSamples (0); }
-    double getCurrentSampleRate()           { return getSampleRate (0); }
+    int getCurrentBufferSizeSamples() override { return getBufferSizeSamples (0); }
+    double getCurrentSampleRate()     override { return getSampleRate (0); }
 
+    int getCurrentBitDepth()          override { return 32; }
+    String getLastError()             override { return lastError; }
 
-    int getCurrentBitDepth()                { return 32; }
-    String getLastError()                   { return lastError; }
+    BigInteger getActiveOutputChannels() const override { return 2; }
+    BigInteger getActiveInputChannels()  const override { return 2; }
 
-    BigInteger getActiveOutputChannels() const { return 2; }
-    BigInteger getActiveInputChannels()  const { return 2; }
-
-    int getOutputLatencyInSamples()
+    int getOutputLatencyInSamples() override
     {
         int latency = 0;
         return latency;
     }
 
-    int getInputLatencyInSamples()
+    int getInputLatencyInSamples() override
     {
         int latency = 0;
         return latency;
