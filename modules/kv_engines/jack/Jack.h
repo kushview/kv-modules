@@ -17,8 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_JACK_H
-#define EL_JACK_H
+#pragma once
 
 class JackCallback;
 class JackClient;
@@ -106,5 +105,3 @@ private:
     JackClient&  client;
     jack_port_t* port;
 };
-
-#endif /* EL_JACK_H */

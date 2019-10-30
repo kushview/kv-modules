@@ -68,8 +68,7 @@ private:
 
 JackClient::JackClient()
     : client(0), jack (new Internal())
-{
-}
+{}
 
 JackClient::~JackClient()
 {
