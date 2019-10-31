@@ -60,27 +60,20 @@ public:
         close();
     }
 
-    
     StringArray getOutputChannelNames() override { return getChannelNames (false); }
     StringArray getInputChannelNames()  override { return getChannelNames (true); }
 
     Array<double> getAvailableSampleRates() override
     {
-        Array<double> rates;
-        const double _rates[] = { 44100.0, 48000.0 };
-        rates.addArray (_rates, 2);
-        return rates;
+        return { (double) client.getSampleRate() };
     }
 
     Array<int> getAvailableBufferSizes() override
     {
-        Array<int> sizes;
-        const int _sizes[] = { 256, 512, 1024, 2048 };
-        sizes.addArray(_sizes, 4);
-        return sizes;
+        return { 16, 32, 64, 128, 256, 512, 1024, 2048, 4096 };
     }
     
-    int getDefaultBufferSize()          override { return client.getBufferSize(); }
+    int getDefaultBufferSize() override { return client.getBufferSize(); }
 
     //=========================================================================
 
@@ -94,16 +87,28 @@ public:
             return lastError;
         }
         
-        jack_on_shutdown (client, JackDevice::shutdownCallback, this);    
+        jack_on_shutdown (client, JackDevice::shutdownCallback, this);
         jack_set_error_function (JackDevice::errorCallback);
+        jack_set_latency_callback (client, JackDevice::latencyCallback, this);
         jack_set_port_connect_callback (client, JackDevice::portConnectCallback, this);
         jack_set_port_registration_callback (client, JackDevice::portRegistrationCallback, this);
         jack_set_process_callback (client, JackDevice::processCallback, this);
         jack_set_thread_init_callback (client, JackDevice::threadInitCallback, this);
         jack_set_xrun_callback (client, JackDevice::xrunCallback, this);
 
-        // client.registerPort ("audio_1", Jack::audioPort, JackPortIsOutput);
-        // client.registerPort ("audio_2", Jack::audioPort, JackPortIsOutput);
+        for (int i = 0; i < inputChannels.countNumberOfSetBits(); ++i)
+        {
+            audioIns.add (client.registerPort (
+                String("main_in_") + String(i + 1), 
+                Jack::audioPort, JackPortIsInput));
+        }
+
+        for (int i = 0; i < outputChannels.countNumberOfSetBits(); ++i)
+        {
+            audioOuts.add (client.registerPort (
+                String("main_out_") + String (i + 1), 
+                Jack::audioPort, JackPortIsOutput));
+        }
 
         return lastError;
     }
@@ -152,8 +157,21 @@ public:
     double getCurrentSampleRate()     override { return client.getSampleRate(); }
     int getCurrentBitDepth()          override { return 16; }
     
-    BigInteger getActiveOutputChannels() const override { return 2; }
-    BigInteger getActiveInputChannels()  const override { return 2; }
+    BigInteger getActiveOutputChannels() const override
+    { 
+        BigInteger chans;
+        chans.setBit (0, true);
+        chans.setBit (1, true);
+        return chans; 
+    }
+    
+    BigInteger getActiveInputChannels()  const override
+    {
+        BigInteger chans;
+        chans.setBit (0, true);
+        chans.setBit (1, true);
+        return chans; 
+    }
 
     int getOutputLatencyInSamples() override
     {
@@ -191,6 +209,15 @@ public:
 
 private:
     String inputId, outputId;
+    JackClient& client;
+    String lastError;
+    AudioIODeviceCallback* callback;
+    CriticalSection callbackLock;
+
+    Array<JackPort::Ptr> audioIns;
+    Array<JackPort::Ptr> audioOuts;
+
+    int xruns = 0;
 
     StringArray getChannelNames (bool forInput) const
     {
@@ -200,11 +227,22 @@ private:
 
     void process (jack_nframes_t nframes)
     {
+        float* in[2];
+        float* out[2];
+
+        for (int i = 0; i < 2; ++i)
+        {
+            in[i]  = (float*) audioIns.getUnchecked(i)->getBuffer (nframes);
+            out[i] = (float*) audioOuts.getUnchecked(i)->getBuffer (nframes);
+        }
+
         const ScopedLock sl (callbackLock);
         if (callback != nullptr)
         {
-            // callback->audioDeviceIOCallback (
-            //     nullptr, 0, nullptr, 0, static_cast<int> (nframes));
+            callback->audioDeviceIOCallback (
+                (const float**)in, 2, (float**)out, 2, 
+                static_cast<int> (nframes)
+            );
         }
     }
 
@@ -239,19 +277,25 @@ private:
         jack_Log ("JackIODevice::errorCallback " + String (msg));
     }
 
+    static void latencyCallback (jack_latency_callback_mode_t mode, void *arg)
+    {
+        ignoreUnused (arg);
+        switch (mode)
+        {
+            case JackCaptureLatency:
+                break;
+            case JackPlaybackLatency:
+                break;
+        }
+    }
+
     static void sendDeviceChangedCallback() {}
 
     static int xrunCallback (void* arg)
     {
-        ignoreUnused (arg);
+        ((JackDevice*)arg)->xruns++;
         return 0;
     }
-
-    JackClient& client;
-
-    String lastError;
-    AudioIODeviceCallback* callback;
-    CriticalSection callbackLock;
 };
 
 class JackDeviceType  : public AudioIODeviceType
