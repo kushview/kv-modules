@@ -93,16 +93,17 @@ public:
             jack_Log (lastError);
             return lastError;
         }
-
-        jack_set_error_function (JackDevice::errorCallback);
+        
         jack_on_shutdown (client, JackDevice::shutdownCallback, this);    
+        jack_set_error_function (JackDevice::errorCallback);
         jack_set_port_connect_callback (client, JackDevice::portConnectCallback, this);
+        jack_set_port_registration_callback (client, JackDevice::portRegistrationCallback, this);
         jack_set_process_callback (client, JackDevice::processCallback, this);
         jack_set_thread_init_callback (client, JackDevice::threadInitCallback, this);
-        jack_set_port_registration_callback (client, JackDevice::portRegistrationCallback, this);
+        jack_set_xrun_callback (client, JackDevice::xrunCallback, this);
 
-        client.registerPort ("audio_1", Jack::audioPort, JackPortIsOutput);
-        client.registerPort ("audio_2", Jack::audioPort, JackPortIsOutput);
+        // client.registerPort ("audio_1", Jack::audioPort, JackPortIsOutput);
+        // client.registerPort ("audio_2", Jack::audioPort, JackPortIsOutput);
 
         return lastError;
     }
@@ -202,8 +203,8 @@ private:
         const ScopedLock sl (callbackLock);
         if (callback != nullptr)
         {
-            callback->audioDeviceIOCallback (
-                nullptr, 0, nullptr, 0, static_cast<int> (nframes));
+            // callback->audioDeviceIOCallback (
+            //     nullptr, 0, nullptr, 0, static_cast<int> (nframes));
         }
     }
 
@@ -238,7 +239,13 @@ private:
         jack_Log ("JackIODevice::errorCallback " + String (msg));
     }
 
-    static void sendDeviceChangedCallback();
+    static void sendDeviceChangedCallback() {}
+
+    static int xrunCallback (void* arg)
+    {
+        ignoreUnused (arg);
+        return 0;
+    }
 
     JackClient& client;
 
@@ -315,8 +322,6 @@ private:
     bool clientIsManaged;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JackDeviceType)
 };
-
-void JackDevice::sendDeviceChangedCallback() { }
 
 AudioIODeviceType* Jack::createAudioIODeviceType (JackClient* client)
 {
