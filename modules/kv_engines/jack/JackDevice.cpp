@@ -43,10 +43,6 @@ void dumpJackErrorMessage (const jack_status_t status)
 #define jack_Log(...) {}
 #endif
 
-#ifndef KV_JACK_NAME
- #define KV_JACK_NAME "Element"
-#endif
-
 class JackDevice   : public AudioIODevice
 {
 public:
@@ -57,47 +53,53 @@ public:
           outputId (outId),
           callback (nullptr),
           client (client_)
-    { }
+    {}
 
     ~JackDevice()
     {
         close();
     }
 
-    StringArray getChannelNames (bool forInput) const
-    {
-        StringArray names;
-        return names;
-    }
-
+    
     StringArray getOutputChannelNames() override { return getChannelNames (false); }
     StringArray getInputChannelNames()  override { return getChannelNames (true); }
-    int getNumSampleRates()                      { return 1; }
-    double getSampleRate (int /*index*/)         { return client.sampleRate(); }
-    int getNumBufferSizesAvailable()             { return 1; }
-    int getBufferSizeSamples (int /*index*/)     { return getDefaultBufferSize(); }
-    int getDefaultBufferSize() override          { return client.bufferSize(); }
+
+    Array<double> getAvailableSampleRates() override
+    {
+        Array<double> rates;
+        const double _rates[] = { 44100.0, 48000.0 };
+        rates.addArray (_rates, 2);
+        return rates;
+    }
+
+    Array<int> getAvailableBufferSizes() override
+    {
+        Array<int> sizes;
+        const int _sizes[] = { 256, 512, 1024, 2048 };
+        sizes.addArray(_sizes, 4);
+        return sizes;
+    }
+    
+    int getDefaultBufferSize()          override { return client.getBufferSize(); }
+
+    //=========================================================================
 
     String open (const BigInteger& inputChannels, const BigInteger& outputChannels,
                  double /* sampleRate */, int /* bufferSizeSamples */) override
     {
-        jack_Log ("opening client");
-        lastError = client.open (KV_JACK_NAME, 0);
+        lastError = client.open (0);
         if (lastError.isNotEmpty())
         {
             jack_Log (lastError);
             return lastError;
         }
 
-        DBG("num inputs: " << inputChannels.getHighestBit());
-        DBG("num outputs: " << outputChannels.getHighestBit());
-
-        jack_on_shutdown (client, JackDevice::shutdownCallback, this);
         jack_set_error_function (JackDevice::errorCallback);
+        jack_on_shutdown (client, JackDevice::shutdownCallback, this);    
         jack_set_port_connect_callback (client, JackDevice::portConnectCallback, this);
         jack_set_process_callback (client, JackDevice::processCallback, this);
         jack_set_thread_init_callback (client, JackDevice::threadInitCallback, this);
-        jack_set_port_registration_callback (client, JackDevice::_portRegistration, this);
+        jack_set_port_registration_callback (client, JackDevice::portRegistrationCallback, this);
 
         client.registerPort ("audio_1", Jack::audioPort, JackPortIsOutput);
         client.registerPort ("audio_2", Jack::audioPort, JackPortIsOutput);
@@ -109,6 +111,8 @@ public:
     {
         lastError = client.close();
     }
+
+    bool isOpen() override { return client.isOpen(); }
 
     void start (AudioIODeviceCallback* newCallback) override
     {
@@ -133,36 +137,20 @@ public:
 
     void stop() override
     {
-        jack_Log ("jack stop \n");
         start (nullptr);
         client.deactivate();
     }
 
-    bool isOpen()       override { return client.isOpen(); }
-    bool isPlaying()    override { return callback != nullptr; }
+    bool isPlaying() override { return callback != nullptr; }
 
-    Array<double> getAvailableSampleRates() override
-    {
-        Array<double> rates;
-        const double _rates[] = { 44100.0, 48000.0 };
-        rates.addArray(_rates, 2);
-        return rates;
-    }
-
-    Array<int> getAvailableBufferSizes() override
-    {
-        Array<int> sizes;
-        const int _sizes[] = { 256, 512, 1024, 2048 };
-        sizes.addArray(_sizes, 4);
-        return sizes;
-    }
-
-    int getCurrentBufferSizeSamples() override { return getBufferSizeSamples (0); }
-    double getCurrentSampleRate()     override { return getSampleRate (0); }
-
-    int getCurrentBitDepth()          override { return 32; }
     String getLastError()             override { return lastError; }
 
+    //=========================================================================
+
+    int getCurrentBufferSizeSamples() override { return client.getBufferSize(); }
+    double getCurrentSampleRate()     override { return client.getSampleRate(); }
+    int getCurrentBitDepth()          override { return 16; }
+    
     BigInteger getActiveOutputChannels() const override { return 2; }
     BigInteger getActiveInputChannels()  const override { return 2; }
 
@@ -178,45 +166,50 @@ public:
         return latency;
     }
 
-    void portRegistration (jack_port_id_t port, const bool wasRegistered)
+    //=========================================================================
+
+    bool hasControlPanel() const override { return false; }
+    bool showControlPanel() override { return false; }
+    bool setAudioPreprocessingEnabled (bool) override { return true; }
+    int getXRunCount() const noexcept override { return 0; }
+
+    //=========================================================================
+    
+    void portRegistration (jack_port_id_t portId, const bool wasRegistered)
     {
-        const JackPort p (client, jack_port_by_id (client, port));
+        auto* port = jack_port_by_id (client, portId);
         if (wasRegistered)
         {
-            DBG ("port registered: " << p.getName());
+            DBG ("[KV] port registered: " << jack_port_name (port));
         }
         else
         {
-            DBG ("port deregistered: " << p.getName());
+            DBG ("[KV] port deregistered: " << jack_port_name (port));
         }
     }
-
-    String inputId, outputId;
 
 private:
-    void process (const int numSamples)
+    String inputId, outputId;
+
+    StringArray getChannelNames (bool forInput) const
     {
-        const ScopedLock sl (callbackLock);
-
-        if (callback != nullptr)
-        {
-
-        }
-        else
-        {
-
-        }
+        StringArray names;
+        return names;
     }
 
-    void updateActivePorts()
+    void process (jack_nframes_t nframes)
     {
-
+        const ScopedLock sl (callbackLock);
+        if (callback != nullptr)
+        {
+            callback->audioDeviceIOCallback (
+                nullptr, 0, nullptr, 0, static_cast<int> (nframes));
+        }
     }
 
     static int processCallback (jack_nframes_t nframes, void* arg)
     {
-        JackDevice* jack = (JackDevice*) arg;
-        jack->process (static_cast<int> (nframes));
+        (static_cast<JackDevice*>(arg))->process (nframes);
         return 0;
     }
 
@@ -225,9 +218,7 @@ private:
         jack_Log ("JackIODevice::portConnectCallback");
     }
 
-
-
-    static void _portRegistration (jack_port_id_t port, int reg, void *arg)
+    static void portRegistrationCallback (jack_port_id_t port, int reg, void *arg)
     {
         ((JackDevice*)arg)->portRegistration (port, reg > 0);
     }

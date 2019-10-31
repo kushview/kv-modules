@@ -23,85 +23,91 @@ class JackCallback;
 class JackClient;
 class JackPort;
 
-class Jack
+struct Jack
 {
-public:
     static const char* audioPort;
     static const char* midiPort;
     static AudioIODeviceType* createAudioIODeviceType (JackClient* client);
+
+    static int getClientNameSize();
+    static int getPortNameSize();
 };
 
-class JackClient
+class JackPort final : public ReferenceCountedObject
 {
 public:
-    JackClient();
+    using Ptr = ReferenceCountedObjectPtr<JackPort>;
+
+    ~JackPort();
+
+    void* getBuffer (uint32_t nframes);
+    const char* getName() const;
+    bool isInput()  const;
+    bool isOutput() const;
+    bool isAudio()  const;
+    bool isMidi()   const;
+    int connect (const JackPort& other);
+    int getFlags() const;
+
+    operator jack_port_t*() const { return port; }
+
+private:
+    friend class JackClient;
+    JackPort (JackClient& c, jack_port_t* p);
+    JackClient& client;
+    jack_port_t* port;
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(JackPort);
+};
+
+class JackClient final
+{
+public:
+    /** Make a new JACK client */
+    explicit JackClient (const String& name = String());
+
     ~JackClient();
 
-    String open (const String& name, int options);
+    /** Open the client */
+    String open (int options);
+
+    /** Close the client */
     String close();
 
+    /** Returns true if client is open */
     bool isOpen() const;
 
+    /** Activate the client */
     int activate();
+
+    /** Deactivate the client */
     int deactivate();
+
+    /** Returns true if the client is active */
     bool isActive();
 
-    JackPort registerPort (const String& name, const String& type, int flags, int bufsize = 0);
+    /** Register a new port */
+    JackPort::Ptr registerPort (const String& name, const String& type, 
+                                int flags, int bufsize = 0);
 
+    /** Returns the client's name */
     String getName();
 
-    int nameSize();
-    int sampleRate();
-    int bufferSize();
+    /** Returns the current sample rate */
+    int getSampleRate();
 
-    inline void  getPorts (StringArray& dest, String name_regex = String(),
-                           String type_regex = String(), uint64_t flags = 0)
-    {
-        dest.clear();
+    /** Returns the current buffer size */
+    int getBufferSize();
 
-        if (const char** ports = jack_get_ports (client, name_regex.toUTF8(),
-                                                 type_regex.toUTF8(), flags))
-        {
-            for (int j = 0; ports[j] != 0; ++j)
-                dest.add (ports [j]);
-            jack_free (ports);
-        }
-    }
+    /** Query for ports */
+    void getPorts (StringArray& dest, String nameRegex = String(),
+                   String typeRegex = String(), uint64_t flags = 0);
 
-    operator jack_client_t* () { return client; }
+    operator jack_client_t* () const { return client; }
 
 private:
     JackClient (const JackClient&);
     JackClient& operator= (const JackClient&);
-
     jack_client_t *client;
-
-    class Internal;
-    ScopedPointer<Internal> jack;
-    friend class Internal;
-};
-
-class JackPort
-{
-public:
-    JackPort (JackClient& c) : client (c), port (0) {  }
-    JackPort (JackClient& c, jack_port_t* p) : client (c), port (p) { }
-    ~JackPort() { port = nullptr; }
-
-    void* getBuffer (uint32_t nframes) { return jack_port_get_buffer (port, nframes); }
-    const char* getName() const { return jack_port_name (port); }
-
-    bool isInput()  const { return getFlags() & JackPortIsInput; }
-    bool isOutput() const { return getFlags() & JackPortIsOutput; }
-    bool isAudio()  const { return true; }
-    bool isMidi()   const { return false; }
-
-    int connect (const JackPort& other) { return jack_connect (client, getName(), other.getName()); }
-
-    int getFlags() const { return jack_port_flags (port); }
-    operator jack_port_t*() { return port; }
-
-private:
-    JackClient&  client;
-    jack_port_t* port;
+    String name;
+    Array<JackPort::Ptr> ports;
 };

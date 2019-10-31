@@ -60,6 +60,9 @@ namespace kv {
 #include "common/Shuttle.h"
 
 #if KV_JACK_AUDIO
+ #ifndef KV_JACK_NAME
+  #define KV_JACK_NAME "Client"
+ #endif
  #include "jack/Jack.h"
 #endif
 
