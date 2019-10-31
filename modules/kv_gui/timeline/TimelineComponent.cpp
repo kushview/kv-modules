@@ -179,7 +179,7 @@ void TimelineComponent::addTimelineClip (TimelineClip* clip, int track)
 
     freeClips.removeObject (clip, false);
     addAndMakeVisible (clip);
-    clips.addIfNotAlreadyThere (clip);
+    clips.add (clip);
     // clip->setTrackIndex (track, true);
     updateClip (clip);
 }
