@@ -320,10 +320,11 @@ public:
         if (client == nullptr)
         {
             clientIsManaged = true;
-            client = new JackClient();
+            client.reset (new JackClient());
         }
 
-        inputNames.add ("default");
+        inputNames.add ("JACK");
+        scanForDevices();
     }
 
     ~JackDeviceType()
@@ -373,7 +374,7 @@ public:
 private:
     StringArray inputNames, outputNames, inputIds, outputIds;
     bool hasScanned;
-    ScopedPointer<JackClient> client;
+    std::unique_ptr<JackClient> client;
     bool clientIsManaged;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (JackDeviceType)
 };
