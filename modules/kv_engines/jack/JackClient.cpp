@@ -55,9 +55,15 @@ int Jack::getPortNameSize()
     return jack_port_name_size();
 }
 
-JackClient::JackClient (const String& _name)
+JackClient::JackClient (const String& _name,
+                        int numMainInputs, const String& mainInputPrefix,
+                        int numMainOutputs, const String& mainOutputPrefix)
     : client (nullptr),
-      name (_name.isEmpty() ? KV_JACK_NAME : _name)
+      name (_name.isEmpty() ? KV_JACK_NAME : _name),
+      mainInPrefix (mainInputPrefix),
+      mainOutPrefix (mainOutputPrefix),
+      numMainIns (numMainInputs),
+      numMainOuts (numMainOutputs)
 { }
 
 JackClient::~JackClient()

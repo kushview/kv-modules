@@ -63,9 +63,18 @@ class JackClient final
 {
 public:
     /** Make a new JACK client */
-    explicit JackClient (const String& name = String());
+    explicit JackClient (const String& name = String(),
+                         int numMainInputs = 2,
+                         const String& mainInputPrefix = "main_in_",
+                         int numMainOutputs = 2,
+                         const String& mainOutputPrefix = "main_out_");
 
     ~JackClient();
+
+    int getNumMainInputs() const { return numMainIns; }
+    int getNumMainOutputs() const { return numMainOuts; }
+    const String& getMainOutputPrefix() const { return mainInPrefix; }
+    const String& getMainInputPrefix()  const { return mainOutPrefix; }
 
     /** Open the client */
     String open (int options);
@@ -108,6 +117,7 @@ private:
     JackClient (const JackClient&);
     JackClient& operator= (const JackClient&);
     jack_client_t *client;
-    String name;
+    String name, mainInPrefix, mainOutPrefix;
+    int numMainIns, numMainOuts;
     Array<JackPort::Ptr> ports;
 };

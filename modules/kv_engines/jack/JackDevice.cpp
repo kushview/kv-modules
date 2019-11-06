@@ -84,9 +84,9 @@ public:
                  double /* sampleRate */, int /* bufferSizeSamples */) override
     {
         activeIns = inputChannels;
-        numIns = activeIns.countNumberOfSetBits();
+        numIns = jmin (client.getNumMainInputs(), activeIns.countNumberOfSetBits());
         activeOuts = outputChannels;
-        numOuts = activeOuts.countNumberOfSetBits();
+        numOuts = jmin (client.getNumMainOutputs(), activeOuts.countNumberOfSetBits());
         lastError = client.open (0);
         if (lastError.isNotEmpty())
         {
@@ -96,7 +96,7 @@ public:
         
         for (int i = 0; i < numIns; ++i)
         {
-            auto port = client.registerPort (String("main_in_") + String(i + 1), 
+            auto port = client.registerPort (client.getMainInputPrefix() + String(i + 1), 
                 Jack::audioPort, JackPortIsInput);
             if (port != nullptr)
                 audioIns.add (port);
@@ -104,7 +104,7 @@ public:
 
         for (int i = 0; i < numOuts; ++i)
         {
-            auto port = client.registerPort (String("main_out_") + String (i + 1), 
+            auto port = client.registerPort (client.getMainOutputPrefix() + String (i + 1), 
                 Jack::audioPort, JackPortIsOutput);
             if (port != nullptr)
                 audioOuts.add (port);
@@ -201,7 +201,7 @@ public:
     bool hasControlPanel() const override { return false; }
     bool showControlPanel() override { return false; }
     bool setAudioPreprocessingEnabled (bool) override { return true; }
-    int getXRunCount() const noexcept override { return 0; }
+    int getXRunCount() const noexcept override { return xruns; }
 
     //=========================================================================
     
