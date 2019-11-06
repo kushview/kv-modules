@@ -105,17 +105,27 @@ public:
 
         for (int i = 0; i < numIns; ++i)
         {
-            audioIns.add (client.registerPort (
-                String("main_in_") + String(i + 1), 
-                Jack::audioPort, JackPortIsInput));
+            auto port = client.registerPort (String("main_in_") + String(i + 1), 
+                Jack::audioPort, JackPortIsInput);
+            if (port != nullptr)
+                audioIns.add (port);
         }
 
         for (int i = 0; i < numOuts; ++i)
         {
-            audioOuts.add (client.registerPort (
-                String("main_out_") + String (i + 1), 
-                Jack::audioPort, JackPortIsOutput));
+            auto port = client.registerPort (String("main_out_") + String (i + 1), 
+                Jack::audioPort, JackPortIsOutput);
+            if (port != nullptr)
+                audioOuts.add (port);
         }
+
+        numIns = audioIns.size();
+        activeIns.clear();   
+        activeIns.setRange (0, numIns, true);
+
+        numOuts = audioOuts.size();
+        activeOuts.clear();
+        activeOuts.setRange (0, numOuts, true);
 
         return lastError;
     }
