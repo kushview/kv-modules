@@ -231,10 +231,10 @@ private:
 
     void process (jack_nframes_t nframes)
     {
-        for (int i = 0; i < numIns; ++i)
-            inputs[i]  = (float*) audioIns.getUnchecked(i)->getBuffer (nframes);
+        for (int i = audioIns.size(); --i >= 0;)
+            inputs[i] = (float*) audioIns.getUnchecked(i)->getBuffer (nframes);
 
-        for (int i = 0; i < numOuts; ++i)
+        for (int i = audioOuts.size(); --i >= 0;)
             outputs[i] = (float*) audioOuts.getUnchecked(i)->getBuffer (nframes);
 
         const ScopedLock sl (callbackLock);
