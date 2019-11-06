@@ -132,7 +132,7 @@ JackPort::Ptr JackClient::registerPort (const String& name, const String& type,
     auto* const cport = jack_port_register (
         client, portName.toUTF8(), type.toUTF8(), flags, bufferSize);
     
-    return new JackPort (*this, cport);
+    return cport != nullptr ? new JackPort (*this, cport) : nullptr;
 }
 
 String JackClient::getName()

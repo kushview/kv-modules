@@ -94,15 +94,6 @@ public:
             return lastError;
         }
         
-        jack_on_shutdown (client, JackDevice::shutdownCallback, this);
-        jack_set_error_function (JackDevice::errorCallback);
-        jack_set_latency_callback (client, JackDevice::latencyCallback, this);
-        jack_set_port_connect_callback (client, JackDevice::portConnectCallback, this);
-        jack_set_port_registration_callback (client, JackDevice::portRegistrationCallback, this);
-        jack_set_process_callback (client, JackDevice::processCallback, this);
-        jack_set_thread_init_callback (client, JackDevice::threadInitCallback, this);
-        jack_set_xrun_callback (client, JackDevice::xrunCallback, this);
-
         for (int i = 0; i < numIns; ++i)
         {
             auto port = client.registerPort (String("main_in_") + String(i + 1), 
@@ -126,6 +117,15 @@ public:
         numOuts = audioOuts.size();
         activeOuts.clear();
         activeOuts.setRange (0, numOuts, true);
+        
+        jack_on_shutdown (client, JackDevice::shutdownCallback, this);
+        jack_set_error_function (JackDevice::errorCallback);
+        jack_set_latency_callback (client, JackDevice::latencyCallback, this);
+        jack_set_port_connect_callback (client, JackDevice::portConnectCallback, this);
+        jack_set_port_registration_callback (client, JackDevice::portRegistrationCallback, this);
+        jack_set_process_callback (client, JackDevice::processCallback, this);
+        jack_set_thread_init_callback (client, JackDevice::threadInitCallback, this);
+        jack_set_xrun_callback (client, JackDevice::xrunCallback, this);
 
         return lastError;
     }
