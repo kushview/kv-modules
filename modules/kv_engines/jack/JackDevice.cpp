@@ -83,6 +83,10 @@ public:
     String open (const BigInteger& inputChannels, const BigInteger& outputChannels,
                  double /* sampleRate */, int /* bufferSizeSamples */) override
     {
+        activeIns = inputChannels;
+        numIns = activeIns.countNumberOfSetBits();
+        activeOuts = outputChannels;
+        numOuts = activeOuts.countNumberOfSetBits();
         lastError = client.open (0);
         if (lastError.isNotEmpty())
         {
@@ -99,14 +103,14 @@ public:
         jack_set_thread_init_callback (client, JackDevice::threadInitCallback, this);
         jack_set_xrun_callback (client, JackDevice::xrunCallback, this);
 
-        for (int i = 0; i < inputChannels.countNumberOfSetBits(); ++i)
+        for (int i = 0; i < numIns; ++i)
         {
             audioIns.add (client.registerPort (
                 String("main_in_") + String(i + 1), 
                 Jack::audioPort, JackPortIsInput));
         }
 
-        for (int i = 0; i < outputChannels.countNumberOfSetBits(); ++i)
+        for (int i = 0; i < numOuts; ++i)
         {
             audioOuts.add (client.registerPort (
                 String("main_out_") + String (i + 1), 
@@ -161,19 +165,13 @@ public:
     int getCurrentBitDepth()          override { return 16; }
     
     BigInteger getActiveOutputChannels() const override
-    { 
-        BigInteger chans;
-        chans.setBit (0, true);
-        chans.setBit (1, true);
-        return chans; 
+    {
+        return activeIns;
     }
     
     BigInteger getActiveInputChannels()  const override
     {
-        BigInteger chans;
-        chans.setBit (0, true);
-        chans.setBit (1, true);
-        return chans; 
+        return activeOuts;
     }
 
     int getOutputLatencyInSamples() override
@@ -217,9 +215,12 @@ private:
     AudioIODeviceCallback* callback;
     CriticalSection callbackLock;
 
+    BigInteger activeIns, activeOuts;
     Array<JackPort::Ptr> audioIns;
     Array<JackPort::Ptr> audioOuts;
-
+    int numIns { 0 }, numOuts { 0 };
+    float* inputs [128];
+    float* outputs [128];
     int xruns = 0;
 
     StringArray getChannelNames (bool forInput) const
@@ -230,20 +231,17 @@ private:
 
     void process (jack_nframes_t nframes)
     {
-        float* in[2];
-        float* out[2];
+        for (int i = 0; i < numIns; ++i)
+            inputs[i]  = (float*) audioIns.getUnchecked(i)->getBuffer (nframes);
 
-        for (int i = 0; i < 2; ++i)
-        {
-            in[i]  = (float*) audioIns.getUnchecked(i)->getBuffer (nframes);
-            out[i] = (float*) audioOuts.getUnchecked(i)->getBuffer (nframes);
-        }
+        for (int i = 0; i < numOuts; ++i)
+            outputs[i] = (float*) audioOuts.getUnchecked(i)->getBuffer (nframes);
 
         const ScopedLock sl (callbackLock);
         if (callback != nullptr)
         {
             callback->audioDeviceIOCallback (
-                (const float**)in, 2, (float**)out, 2, 
+                (const float**)inputs, numIns, (float**)outputs, numOuts, 
                 static_cast<int> (nframes)
             );
         }
@@ -357,7 +355,7 @@ public:
                                  const String& inputDeviceName)
     {
         jassert (hasScanned); // need to call scanForDevices() before doing this
-        return new JackDevice (*client, "clientname", "input", "output");
+        return new JackDevice (*client, "JACK", "input", "output");
     }
 
     void portConnectionChange() { callDeviceChangeListeners(); }
