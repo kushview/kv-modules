@@ -322,6 +322,10 @@ public:
             clientIsManaged = true;
             client.reset (new JackClient());
         }
+        else
+        {
+            clientIsManaged = false;
+        }
 
         inputNames.add ("JACK");
         scanForDevices();
