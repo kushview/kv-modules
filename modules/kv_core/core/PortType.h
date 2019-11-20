@@ -342,6 +342,7 @@ struct PortDescription
         channel         = o.channel;
         symbol          = o.symbol;
         name            = o.name;
+        label           = o.label;
         input           = o.input;
         minValue        = o.minValue;
         maxValue        = o.maxValue;
@@ -354,6 +355,7 @@ struct PortDescription
     int32   channel         { 0 };
     String  symbol          { };
     String  name            { };
+    String  label           { };
     bool    input           { false };
     float   minValue        { 0.0 };
     float   maxValue        { 1.0 };
