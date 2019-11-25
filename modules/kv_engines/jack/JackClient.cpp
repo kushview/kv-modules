@@ -40,50 +40,45 @@ static void kv_jack_dump_error (const jack_status_t status)
       kv_jack_log("Unknown client error");
 }
 
-#define returnValueIfNull(ptr, val) if (ptr == 0) return val
+#define returnValueIfNull(ptr, val) if (ptr == nullptr) return val
 
 const char* Jack::audioPort = JACK_DEFAULT_AUDIO_TYPE;
 const char* Jack::midiPort  = JACK_DEFAULT_MIDI_TYPE;
 
-struct JackClient::Internal
+int Jack::getClientNameSize()
 {
-public:
-    Internal() { }
-    ~Internal() { }
-
-    static void shutdown(void *arg)
-    {
-
-    }
-
-    static int process (jack_nframes_t nframes, void* arg)
-    {
-        JackClient* client = (JackClient*) arg;
-        return 0;
-    }
-
-private:
-    friend class JackClient;
-};
-
-JackClient::JackClient()
-    : client(0), jack (new Internal())
-{
+    return jack_client_name_size();
 }
+
+int Jack::getPortNameSize()
+{
+    return jack_port_name_size();
+}
+
+JackClient::JackClient (const String& _name,
+                        int numMainInputs, const String& mainInputPrefix,
+                        int numMainOutputs, const String& mainOutputPrefix)
+    : client (nullptr),
+      name (_name.isEmpty() ? KV_JACK_NAME : _name),
+      mainInPrefix (mainInputPrefix),
+      mainOutPrefix (mainOutputPrefix),
+      numMainIns (numMainInputs),
+      numMainOuts (numMainOutputs)
+{ }
 
 JackClient::~JackClient()
 {
     this->close();
 }
 
-String JackClient::open (const String& name, int opts)
+String JackClient::open (int opts)
 {
     String error;
 
     jack_status_t status;
     client = jack_client_open (name.toUTF8(), (jack_options_t) opts, &status);
 
-    if (0 == client)
+    if (nullptr == client)
     {
         kv_jack_dump_error (status);
         error = "Could not open JACK client";
@@ -131,19 +126,19 @@ bool JackClient::isActive()
     return (isOpen());
 }
 
-JackPort JackClient::registerPort (const String& name, const String& type,
-                                   int flags, int bufferSize)
+JackPort::Ptr JackClient::registerPort (const String& name, const String& type,
+                                        int flags, int bufferSize)
 {
-    returnValueIfNull (client, JackPort (*this));
+    returnValueIfNull (client, nullptr);
 
-    String clientName = name;
+    String portName = name;
+    if (portName.length() >= Jack::getPortNameSize())
+        portName = portName.substring (0, Jack::getPortNameSize());
 
-    if (clientName.length() >= nameSize())
-        clientName = clientName.substring (0, nameSize());
-
-    jack_port_t* const cport = jack_port_register (client, clientName.toUTF8(), type.toUTF8(),
-                                                   flags, bufferSize);
-    return JackPort (*this, cport);
+    auto* const cport = jack_port_register (
+        client, portName.toUTF8(), type.toUTF8(), flags, bufferSize);
+    
+    return cport != nullptr ? new JackPort (*this, cport) : nullptr;
 }
 
 String JackClient::getName()
@@ -152,19 +147,46 @@ String JackClient::getName()
     return jack_get_client_name (client);
 }
 
-int JackClient::nameSize()
-{
-    return jack_client_name_size();
-}
-
-int JackClient::sampleRate()
+int JackClient::getSampleRate()
 {
     returnValueIfNull (client, 0);
     return jack_get_sample_rate (client);
 }
 
-int JackClient::bufferSize()
+int JackClient::getBufferSize()
 {
     returnValueIfNull (client, 0);
     return jack_get_buffer_size(client);
 }
+
+void JackClient::getPorts (StringArray& dest, String nameRegex,
+                           String typeRegex, uint64_t flags)
+{
+    dest.clear();
+
+    if (const char** ports = jack_get_ports (client, nameRegex.toUTF8(),
+                                             typeRegex.toUTF8(), flags))
+    {
+        for (int j = 0; ports[j] != 0; ++j)
+            dest.add (ports [j]);
+        jack_free (ports);
+    }
+}
+
+//=============================================================================
+
+JackPort::JackPort (JackClient& c, jack_port_t* p)
+    : client (c), port (p) { }
+JackPort::~JackPort() { port = nullptr; }
+
+void* JackPort::getBuffer (uint32_t nframes) { return jack_port_get_buffer (port, nframes); }
+const char* JackPort::getName() const { return jack_port_name (port); }
+
+bool JackPort::isInput()  const { return getFlags() & JackPortIsInput; }
+bool JackPort::isOutput() const { return getFlags() & JackPortIsOutput; }
+bool JackPort::isAudio()  const { return true; }
+bool JackPort::isMidi()   const { return false; }
+
+int JackPort::connect (const JackPort& other) { return jack_connect (client, getName(), other.getName()); }
+
+int JackPort::getFlags() const { return jack_port_flags (port); }

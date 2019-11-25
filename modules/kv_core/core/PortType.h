@@ -334,13 +334,32 @@ struct PortDescription
                      const bool isInput)
         : type (portType), index (portIndex), channel (portChannel),
           symbol (portSymbol), name (portName), input (isInput) { }
+    PortDescription (const PortDescription& o) { operator= (o); }
+    PortDescription& operator= (const PortDescription& o)
+    {
+        type            = o.type;
+        index           = o.index;
+        channel         = o.channel;
+        symbol          = o.symbol;
+        name            = o.name;
+        label           = o.label;
+        input           = o.input;
+        minValue        = o.minValue;
+        maxValue        = o.maxValue;
+        defaultValue    = o.defaultValue;
+        return *this;
+    }
 
-    int32   type     { 0 };
-    int32   index    { 0 };
-    int32   channel  { 0 };
-    String  symbol   { };
-    String  name     { };
-    bool    input    { false };
+    int32   type            { 0 };
+    int32   index           { 0 };
+    int32   channel         { 0 };
+    String  symbol          { };
+    String  name            { };
+    String  label           { };
+    bool    input           { false };
+    float   minValue        { 0.0 };
+    float   maxValue        { 1.0 };
+    float   defaultValue    { 1.0 };
 };
 
 struct PortIndexComparator
@@ -384,6 +403,19 @@ public:
         ports.addSorted (sorter, port);
     }
 
+    inline void addControl (int index, int channel,
+                            const String& symbol, const String& name,
+                            float minValue, float maxValue, 
+                            float defaultValue, bool input)
+    {
+        auto* const port = new PortDescription (
+            PortType::Control, index, channel, symbol, name, input);
+        port->minValue = minValue;
+        port->maxValue = maxValue;
+        port->defaultValue = defaultValue;
+        add (port);
+    }
+
     inline void add (int32 type, int32 index, int32 channel, 
                      const String& symbol, const String& name,
                      const bool input)
@@ -420,6 +452,14 @@ public:
     }
     inline bool isOutput (const int port, const bool defaultRet = true) const {
         return ! isInput (port, defaultRet);
+    }
+
+    inline PortDescription getPort (int index) const
+    {
+        jassert (isPositiveAndBelow (index, ports.size()));
+        if (isPositiveAndBelow (index, ports.size()))
+            return *ports.getUnchecked (index);
+        return {};
     }
 
     inline const OwnedArray<PortDescription>& getPorts() const { return ports; }
