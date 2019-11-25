@@ -41,16 +41,16 @@ String hexString8Digits (int value)
     return String::toHexString(value).paddedLeft ('0', 8);
 }
 
-// String createGUID (const String& seed)
-// {
-//     const String hex (MD5 ((seed + "_guidsalt").toUTF8()).toHexString().toUpperCase());
+String createGUID (const String& seed)
+{
+    const String hex (MD5 ((seed + "_guidsalt").toUTF8()).toHexString().toUpperCase());
 
-//     return "{" + hex.substring (0, 8)
-//          + "-" + hex.substring (8, 12)
-//          + "-" + hex.substring (12, 16)
-//          + "-" + hex.substring (16, 20)
-//          + "-" + hex.substring (20, 32)
-//          + "}";
-// }
+    return "{" + hex.substring (0, 8)
+         + "-" + hex.substring (8, 12)
+         + "-" + hex.substring (12, 16)
+         + "-" + hex.substring (16, 20)
+         + "-" + hex.substring (20, 32)
+         + "}";
+}
 
 }
