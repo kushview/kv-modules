@@ -96,11 +96,10 @@ using namespace juce;
 #include "util/Utils.h"
 #include "util/RangeTypes.h"
 
-#if 0
 #include "util/FileHelpers.h"
-#include "util/RelativePath.h"
 #include "util/UUID.h"
-#endif
+#include "util/RelativePath.h"
 
 #include "interprocess/SlaveProcess.h"
+
 }
