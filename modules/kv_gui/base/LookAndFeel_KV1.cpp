@@ -25,8 +25,6 @@ const Colour Colors::toggleGreen    = Colour (0xff92e75e);
 const Colour Colors::toggleOrange   = Colour (0xfffaa63a);
 const Colour Colors::toggleRed      = Colour (0xffff0000);
 
-const Colour LookAndFeel_KV1::elementBlue            = Colour (0xff4765a0);
-
 const Colour LookAndFeel_KV1::backgroundColor        = Colour ((uint32) LookAndFeel_KV1::defaultBackgroundColor);
 const Colour LookAndFeel_KV1::widgetBackgroundColor  = Colour (0xff3b3b3b);
 const Colour LookAndFeel_KV1::contentBackgroundColor =  LookAndFeel_KV1::widgetBackgroundColor.darker().darker();
@@ -51,7 +49,7 @@ LookAndFeel_KV1::LookAndFeel_KV1()
     setColour (PopupMenu::backgroundColourId, Colour (0xfff0f0f0));
     setColour (PopupMenu::textColourId, Colour (0xff1d1d1e));
     setColour (PopupMenu::headerTextColourId, Colour (0xff1d1d1e));
-    setColour (PopupMenu::highlightedBackgroundColourId, elementBlue);
+    setColour (PopupMenu::highlightedBackgroundColourId, Colors::elemental);
     setColour (PopupMenu::highlightedTextColourId, Colour (0xfff0f0f0));
 
     // ComboBox Styling
@@ -100,7 +98,7 @@ LookAndFeel_KV1::LookAndFeel_KV1()
     setColour (TreeView::backgroundColourId, Colour (0x00000000));
     setColour (TreeView::linesColourId, LookAndFeel_KV1::textColor);
     setColour (TreeView::dragAndDropIndicatorColourId, Colours::orange.darker());
-    setColour (TreeView::selectedItemBackgroundColourId, elementBlue.darker (0.6000006f));
+    setColour (TreeView::selectedItemBackgroundColourId, Colors::elemental.darker (0.6000006f));
 
     // Carrot
     setColour (CaretComponent::caretColourId, Colors::toggleOrange.brighter (0.20f));
@@ -204,7 +202,7 @@ void LookAndFeel_KV1::drawStretchableLayoutResizerBar (Graphics& g, int /*w*/, i
                                              bool isMouseOver, bool isMouseDragging)
 {
     if (isMouseOver || isMouseDragging)
-        g.fillAll (elementBlue.withAlpha (0.4f));
+        g.fillAll (Colors::elemental.withAlpha (0.4f));
 }
 
 void LookAndFeel_KV1::drawScrollbar (Graphics& g, ScrollBar& scrollbar, int x, int y, int width, int height,
