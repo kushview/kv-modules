@@ -61,13 +61,13 @@ void DecibelScaleComponent::drawLabel (Graphics& g, const int y, const String& l
     int iWidth = getWidth();
 
     int iMidHeight = (int) (font.getHeight () * 0.5f);
-
+   #if 0
     if (font.getStringWidth (label) < iWidth - 5)
     {
         g.drawLine (0, iCurrY, 2, iCurrY);
         g.drawLine (iWidth - 3, iCurrY, iWidth - 1, iCurrY);
     }
-
+   #endif
     if (iCurrY < iMidHeight || iCurrY > lastY + iMidHeight)
     {
         g.drawText (label,
