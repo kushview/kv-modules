@@ -198,6 +198,8 @@ DigitalMeter::DigitalMeter (const int numPorts, bool _horizontal)
     peakFalloff (DIGITAL_METER_PEAK_FALLOFF),
     horizontal (_horizontal)
 {
+
+#if 0
     getLookAndFeel().setColour (DigitalMeter::levelOverColourId, Colours::yellow.darker());
     getLookAndFeel().setColour (DigitalMeter::level0dBColourId, Colours::whitesmoke);
     getLookAndFeel().setColour (DigitalMeter::level3dBColourId, Colours::lightgreen);
@@ -205,6 +207,7 @@ DigitalMeter::DigitalMeter (const int numPorts, bool _horizontal)
     getLookAndFeel().setColour (DigitalMeter::level10dBColourId, Colours::darkgreen.darker());
     getLookAndFeel().setColour (DigitalMeter::backgroundColourId, Colours::transparentBlack);
     getLookAndFeel().setColour (DigitalMeter::foregroundColourId, Colours::transparentWhite);
+#endif
 
     for (int i = 0; i < LevelCount; i++)
         levels[i] = 0;
