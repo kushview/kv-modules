@@ -17,7 +17,14 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-void MatrixState::resize (int r, int c)
+void MatrixState::setFrom (const MatrixState& o)
+{
+    for (int row = jmin (getNumRows(), o.getNumRows()); --row >= 0;)
+        for (int col = jmin (getNumColumns(), o.getNumColumns()); --col >= 0;)
+            set (row, col, o.connected (row, col));
+}
+
+void MatrixState::resize (int r, int c, bool retain)
 {
     if (r < 0) r = 0;
     if (c < 0) c = 0;
@@ -26,7 +33,18 @@ void MatrixState::resize (int r, int c)
     bits.setRange (0, r * c, false);
     
     // TODO: retain set bits
-    
-    numRows = r; numColumns = c;
-    toggled.swapWith (bits);
+    if (retain)
+    {
+        const auto old = *this;
+        numRows = r; 
+        numColumns = c;
+        toggled.swapWith (bits);
+        setFrom (old);
+    }
+    else
+    {
+        numRows = r; 
+        numColumns = c;
+        toggled.swapWith (bits);
+    }
 }

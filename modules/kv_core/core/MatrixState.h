@@ -66,6 +66,8 @@ public:
         }
     }
     
+    void setFrom (const MatrixState&);
+    
     inline void disconnect (int row, int column)
     {
         if (! isValid (row, column))
@@ -112,7 +114,7 @@ public:
    #endif
     
     /** Resize the matrix to the specified rows and column sizes */
-    void resize (int newNumRows, int newNumColumns);
+    void resize (int newNumRows, int newNumColumns, bool retain = false);
     
     /** Returns true if the matrices are the same size */
     inline bool sameSizeAs (const MatrixState& o) const
