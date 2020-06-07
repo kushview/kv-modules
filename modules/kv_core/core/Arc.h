@@ -37,6 +37,15 @@ public:
     /** The destination port index */
     uint32 destPort;
 
+    inline Arc& operator= (const Arc& o)
+    {
+        this->sourceNode    = o.sourceNode;
+        this->sourcePort    = o.sourcePort;
+        this->destNode      = o.destNode;
+        this->destPort      = o.destPort;
+        return *this;
+    }
+
 private:
     JUCE_LEAK_DETECTOR (Arc)
 };
