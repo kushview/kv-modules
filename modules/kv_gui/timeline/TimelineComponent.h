@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_TIMELINE_BASE_H
-#define EL_TIMELINE_BASE_H
+#pragma once
+
+namespace kv {
 
 class TimelineComponent;
 class TimelineClip;
@@ -26,7 +27,6 @@ class TimelineClip;
 class TimelineIndicator : public Component
 {
 public:
-
    TimelineIndicator();
    virtual ~TimelineIndicator();
 
@@ -49,11 +49,9 @@ public:
    inline void setSnapState (bool snap) { shouldSnap = snap; }
 
 protected:
-
    TimelineComponent* timeline() const;
 
 private:
-
    int lastSnap;
    bool shouldSnap, isDragable;
 
@@ -70,11 +68,11 @@ struct TimelinePosition : public AudioPlayHead::CurrentPositionInfo
 { };
 
 class TimelineComponent : public AsyncUpdater,
-                     public Component,
-                     public Slider::Listener,
-                     public ScrollBar::Listener,
-                     public Value::Listener,
-                     protected Timer
+                          public Component,
+                          public Slider::Listener,
+                          public ScrollBar::Listener,
+                          public Value::Listener,
+                          protected Timer
 {
 
 public:
@@ -171,25 +169,24 @@ public:
 
     const TimeScale& timeScale() const { return scale; }
 
-    virtual void paint (Graphics& g);
-    virtual void paintOverChildren (Graphics& g);
-    virtual void resized();
+    void paint (Graphics& g) override;
+    void paintOverChildren (Graphics& g) override;
+    void resized() override;
 
-    virtual void mouseDown (const MouseEvent &event);
-    virtual void mouseDrag (const MouseEvent &event);
-    virtual void mouseUp (const MouseEvent &event);
+    void mouseDown (const MouseEvent &event) override;
+    void mouseDrag (const MouseEvent &event) override;
+    void mouseUp (const MouseEvent &event) override;
 
-    void scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRangeStart);
-    void sliderValueChanged (Slider* slider);
+    void scrollBarMoved (ScrollBar* scrollBarThatHasMoved, double newRangeStart) override;
+    void sliderValueChanged (Slider* slider) override;
 
     inline TimelineIndicator* indicator() { return playheadIndicator.get(); }
     inline void setIndicator (TimelineIndicator* indicator)
     {
-
         addAndMakeVisible (playheadIndicator = indicator);
     }
 
-    void valueChanged (Value &value);
+    void valueChanged (Value &value) override;
 
     inline double getTempo() const { return tempo.getValue(); }
     inline Value& getTempoValue() { return tempo; }
@@ -316,11 +313,9 @@ protected:
     friend class TimelineClip;
 
     friend class Timer;
-    virtual void timerCallback() { }
+    void timerCallback() override { }
 
 private:
-
-
     ScopedPointer<Component> topLeftWidget;
     ScopedPointer<TimelineIndicator> playheadIndicator;
 
@@ -343,7 +338,7 @@ private:
     friend class TimelineIndicator;
 
     friend class AsyncUpdater;
-    void handleAsyncUpdate();
+    void handleAsyncUpdate() override;
 
     void normalX (int32& x) const
     {
@@ -352,4 +347,4 @@ private:
     }
 };
 
-#endif /* EL_TIMELINE_BASE_H */
+}

@@ -7,10 +7,11 @@ class GenericDockPanel : public DockPanel
 {
 public:
     GenericDockPanel (const String& panelName) 
-        : DockPanel ("GenericDockPanel")
+        : DockPanel()
     { 
         setName (panelName);
     }
+
     ~GenericDockPanel() { }
 
     void showPopupMenu() override
@@ -39,7 +40,7 @@ class GenericPanelType : public DockPanelType
 {
 public:
     int lastPanelNo = 0;
-    const Identifier genericType { "GenericDockPanel" };
+    const Identifier genericType { String ("GenericDockPanel") };
 
     void getAllTypes (OwnedArray<DockPanelInfo>& types) override
     {
@@ -93,22 +94,22 @@ MainComponent::MainComponent()
     };
     
     int itemNo = 0;
-    auto* item1 = dock.createItem ("GenericDockPanel", DockPlacement::Top);
-    auto* item2 = dock.createItem ("GenericDockPanel", DockPlacement::Top);
+    auto* item1 = dock.createItem (String ("GenericDockPanel"), DockPlacement::Top);
+    auto* item2 = dock.createItem (String ("GenericDockPanel"), DockPlacement::Top);
     
-    auto* item3 = dock.createItem ("GenericDockPanel", DockPlacement::Top);
+    auto* item3 = dock.createItem (String ("GenericDockPanel"), DockPlacement::Top);
     item3->dockTo (item2, DockPlacement::Right);
     
-    auto* item4 = dock.createItem ("GenericDockPanel", DockPlacement::Top);
-    auto* item5 = dock.createItem ("GenericDockPanel", DockPlacement::Top);
-    auto* item6 = dock.createItem ("GenericDockPanel", DockPlacement::Top);
+    auto* item4 = dock.createItem (String ("GenericDockPanel"), DockPlacement::Top);
+    auto* item5 = dock.createItem (String ("GenericDockPanel"), DockPlacement::Top);
+    auto* item6 = dock.createItem (String ("GenericDockPanel"), DockPlacement::Top);
     item4->dockTo (item1, DockPlacement::Right);
     item5->dockTo (item1, DockPlacement::Right);
     item6->dockTo (item1, DockPlacement::Right);
     
     for (int i = 0; i < 4; ++i)
     {
-        auto* item = dock.createItem ("GenericDockPanel", DockPlacement::Top);
+        auto* item = dock.createItem (String ("GenericDockPanel"), DockPlacement::Top);
         item->dockTo (item2, DockPlacement::Center);
     }
 }
@@ -151,7 +152,7 @@ void MainComponent::addDockItem()
     static int itemNo = 1;
     String text = "Item "; text << itemNo;
     
-    if (auto* item = dock.createItem ("GenericDockPanel", placement))
+    if (auto* item = dock.createItem (String ("GenericDockPanel"), placement))
     {
         ++itemNo;
         if (auto* panel = item->getCurrentPanel())
@@ -169,11 +170,8 @@ void MainComponent::saveLayout()
     if (chooser.browseForFileToSave (true))
     {
         auto state = dock.getState();
-        if (auto* xml = state.createXml())
-        {
+        if (auto xml = state.createXml())
             xml->writeToFile (chooser.getResult(), String());
-            deleteAndZero (xml);
-        }
     }
 }
 
@@ -183,11 +181,8 @@ void MainComponent::loadLayout()
     ValueTree state;
     if (chooser.browseForFileToOpen())
     {
-        if (auto* xml = XmlDocument::parse (chooser.getResult()))
-        {
+        if (auto xml = XmlDocument::parse (chooser.getResult()))
             state = ValueTree::fromXml (*xml);
-            deleteAndZero (xml);
-        }
     }
 
     if (state.isValid())

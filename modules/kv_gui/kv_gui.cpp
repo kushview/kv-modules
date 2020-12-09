@@ -26,7 +26,6 @@
 #include "kv_gui.h"
 
 namespace kv {
-
 #include "base/DecibelScaleComponent.cpp"
 #include "base/DigitalMeter.cpp"
 #include "base/PatchMatrixComponent.cpp"
@@ -35,13 +34,12 @@ namespace kv {
 #include "screens/Screen.cpp"
 #include "screens/ScreenDisplay.cpp"
 #include "screens/ScreenManager.cpp"
+}
 
 #if JUCE_MODULE_AVAILABLE_kv_engines
  #include "timeline/TimelineComponent.cpp"
  #include "timeline/TimelineClip.cpp"
 #endif
-
-}
 
 #include "base/LookAndFeel_KV1.cpp"
 

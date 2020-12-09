@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_TIMELINE_CLIP_H
-#define EL_TIMELINE_CLIP_H
+#pragma once
+
+namespace kv {
 
 class TimelineComponent;
 
@@ -131,4 +132,4 @@ private:
 
 };
 
-#endif /* EL_TIMELINE_CLIP_H */
+}

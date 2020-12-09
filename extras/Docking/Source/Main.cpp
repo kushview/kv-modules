@@ -8,7 +8,6 @@
   ==============================================================================
 */
 
-#include "../JuceLibraryCode/JuceHeader.h"
 #include "MainComponent.h"
 
 //==============================================================================
@@ -18,8 +17,8 @@ public:
     //==============================================================================
     DockingApplication() {}
 
-    const String getApplicationName() override       { return ProjectInfo::projectName; }
-    const String getApplicationVersion() override    { return ProjectInfo::versionString; }
+    const String getApplicationName() override       { return "Docking"; }
+    const String getApplicationVersion() override    { return "1.0.0"; }
     bool moreThanOneInstanceAllowed() override       { return true; }
 
     //==============================================================================

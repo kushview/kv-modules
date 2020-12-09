@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
+
 TimelineClip::TimelineClip (TimelineComponent& timeline)
     : owner (timeline)
 {
@@ -184,4 +186,5 @@ void TimelineClip::getClipRangeInternal (ClipRange<double>& range)
 void TimelineClip::setClipRangeInternal (const ClipRange<double>& range)
 {
     setClipRange (range);
+}
 }

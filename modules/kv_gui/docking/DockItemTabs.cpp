@@ -19,7 +19,7 @@
 
 namespace kv {
 
-class DockTabBarButton : public TabBarButton
+class JUCE_API DockTabBarButton : public TabBarButton
 {
 public:
     DockTabBarButton (const String& tabName, TabbedButtonBar& bar)
@@ -28,7 +28,7 @@ public:
         setTriggeredOnMouseDown (true);
     }
     
-    ~DockTabBarButton() { }
+    ~DockTabBarButton() override { }
     
     Dock* getDock()
     {
@@ -44,6 +44,11 @@ public:
         return nullptr;
     }
     
+    void setTooltip (const String& s) override {
+        // Needed when using libjuce, not sure why but get missing symbols when linking
+        TabBarButton::setTooltip (s);
+    };
+
     void mouseDown (const MouseEvent& event) override
     {
         TabBarButton::mouseDown (event);
@@ -102,7 +107,8 @@ DockItemTabs::~DockItemTabs() { }
 TabBarButton* DockItemTabs::createTabButton (const String &tabName, int tabIndex)
 {
     ignoreUnused (tabIndex);
-    return new DockTabBarButton (tabName, *tabs);
+    // return new TabBarButton (tabName, *tabs);
+    return dynamic_cast<TabBarButton*> (new DockTabBarButton (tabName, *tabs));
 }
 
 void DockItemTabs::popupMenuClickOnTab (int tabIndex, const String& tabName)

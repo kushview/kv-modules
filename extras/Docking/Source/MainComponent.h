@@ -1,7 +1,8 @@
 
 #pragma once
 
-#include "../JuceLibraryCode/JuceHeader.h"
+#include "kv/kv.h"
+using namespace juce;
 
 class MainComponent   : public Component
 {

@@ -28,6 +28,7 @@
 
 #include <map>
 #include <juce_core/juce_core.h>
+#include <juce_events/juce_events.h>
 #include "kv_core.h"
 
 #if JUCE_WINDOWS
@@ -35,6 +36,7 @@
 #endif
 
 namespace kv {
+ using namespace juce;
  #include "core/Arc.cpp"
  #include "core/MatrixState.cpp"
  #include "core/RingBuffer.cpp"

@@ -17,8 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
-#ifndef EL_TRACK_HEIGHTS_H
-#define EL_TRACK_HEIGHTS_H
+#pragma once
+
+namespace kv {
 
 class TrackHeights
 {
@@ -216,4 +217,4 @@ private:
 
 };
 
-#endif // EL_TRACK_HEIGHTS_H
+}

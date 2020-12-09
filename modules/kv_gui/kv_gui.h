@@ -46,14 +46,18 @@
  #define KV_DOCKING_WINDOWS 0
 #endif
 
+namespace kv {
+    using namespace juce;
+    class Screen;
+    class ScreenManager;
+    class ScreenDisplay;
+}
+
 // look and feel
 #include "base/LookAndFeel_KV1.h"
 
 namespace kv {
 
-class Screen;
-class ScreenManager;
-class ScreenDisplay;
 
 #include "base/PatchMatrixComponent.h"
 
@@ -61,6 +65,7 @@ class ScreenDisplay;
 #include "screens/ScreenDisplay.h"
 #include "screens/Screen.h"
 #include "screens/ScreenManager.h"
+}
 
 #if JUCE_MODULE_AVAILABLE_kv_engines
  // timelines
@@ -69,6 +74,7 @@ class ScreenDisplay;
  #include "timeline/TimelineClip.h"
 #endif
 
+namespace kv {
 // misc widgets
 #include "base/DecibelScaleComponent.h"
 #include "base/DigitalMeter.h"

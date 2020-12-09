@@ -55,7 +55,6 @@ juce_modules = '''
 
 experimental_modules = '''
     kv_ffmpeg
-    kv_lv2
     kv_video
     kv_edd
 '''.split()
@@ -103,13 +102,13 @@ def configure (conf):
     conf.define ("KV_EXTRA_VERSION", KV_EXTRA_VERSION)
     conf.write_config_header ('kv/version.h', 'KV_VERSION_H')
 
-    conf.check_cfg (package='juce_debug-5' if conf.options.debug else 'juce-5', 
+    conf.check_cfg (package='juce_debug-6' if conf.options.debug else 'juce-6', 
                     uselib_store='JUCE', args=['--libs', '--cflags'], mandatory=False)
     
-    for jmod in juce_modules:
-        pkgname = '%s_debug-5' % jmod if conf.options.debug else '%s-5' % jmod
-        conf.check_cfg (package=pkgname, uselib_store=jmod.upper(), 
-                        args=['--libs', '--cflags'], mandatory=False)
+    # for jmod in juce_modules:
+    #     pkgname = '%s_debug-5' % jmod if conf.options.debug else '%s-5' % jmod
+    #     conf.check_cfg (package=pkgname, uselib_store=jmod.upper(), 
+    #                     args=['--libs', '--cflags'], mandatory=False)
 
     conf.check_cfg (package='lv2',    uselib_store='LV2',  args=['--libs', '--cflags'], mandatory=False)
     conf.check_cfg (package='lilv-0', uselib_store='LILV', args=['--libs', '--cflags'], mandatory=False)
@@ -121,13 +120,8 @@ def configure (conf):
     if conf.options.edd:
         conf.env.MODULES.append ('kv_edd')
     
-    if conf.env.HAVE_LILV and conf.env.HAVE_SUIL:
-        conf.env.LV2 = True
-        conf.define ('KV_LV2_PLUGIN_HOST', 1)
-        conf.env.MODULES.append ('kv_lv2')
-    else:
-        conf.env.LV2 = False
-        conf.define ('KV_LV2_PLUGIN_HOST', 0)
+    conf.env.LV2 = False
+    conf.define ('KV_LV2_PLUGIN_HOST', 0)
     
     for mod in conf.env.MODULES:
         conf.define('JUCE_MODULE_AVAILABLE_%s' % mod, True)
@@ -137,7 +131,7 @@ def configure (conf):
     # conf.define ('JUCE_APP_CONFIG_HEADER', 'kv/config.h')
     
     conf.load ('juce')
-    conf.check_cxx_version ('c++14', True)
+    conf.check_cxx_version ('c++17', True)
 
     print
     juce.display_header ("Modules")
@@ -320,7 +314,7 @@ def build_modules (bld):
             target      = 'local/lib/%s' % module_libname,
             name        = m.upper(),
             use         = [u.upper() for u in module.dependencies()],
-            vnum        = module.version()
+            vnum        = '0.1.0'
         )
 
         # Pkg Config Files
@@ -382,17 +376,25 @@ def build_modules (bld):
 def build (bld):
     bld.env.HEADERS = bld.options.install_headers
     generate_code (bld)
-    
-    build_modules (bld)
+    build_single (bld)
 
-    lv2show = bld.program (
-        source          = [ 'tools/lv2show.cpp' ],
+    docking = bld.program (
+        source          = [ 'extras/Docking/Source/Main.cpp',
+                            'extras/Docking/Source/MainComponent.cpp' ],
         includes        = [ '.', 'modules' ],
-        target          = 'bin/lv2show',
-        cxxflags        = [ '-std=c++14' ],
-        install_path    = bld.env.PREFIX + '/bin',
-        use             = [ 'KV_LV2', 'JUCE_AUDIO_UTILS', 'JUCE_AUDIO_DEVICES' ]
+        target          = 'bin/docking',
+        install_path    = None,
+        use             = [ 'KV', 'JUCE' ]
     )
+
+    # lv2show = bld.program (
+    #     source          = [ 'tools/lv2show.cpp' ],
+    #     includes        = [ '.', 'modules' ],
+    #     target          = 'bin/lv2show',
+    #     cxxflags        = [ '-std=c++14' ],
+    #     install_path    = bld.env.PREFIX + '/bin',
+    #     use             = [ 'KV_LV2', 'JUCE_AUDIO_UTILS', 'JUCE_AUDIO_DEVICES' ]
+    # )
 
     bld.add_group()
     build_lv2_meta (bld)
