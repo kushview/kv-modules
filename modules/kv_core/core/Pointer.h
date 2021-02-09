@@ -35,6 +35,11 @@
         #include <tr1/memory>
         #define Shared std::tr1::shared_ptr
         #define Weak std::tr1::weak_ptr
+    #elif _MSC_VER >= 1900
+        #include <memory>
+        template<class T> using Unique = std::unique_ptr<T>;
+        template<class T> using Shared = std::shared_ptr<T>;
+        template<class T> using Weak   = std::weak_ptr<T>;
     #elif _MSC_VER >= 1800
         #define Shared std::shared_ptr
         #define Weak std::weak_ptr
