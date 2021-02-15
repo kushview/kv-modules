@@ -25,6 +25,7 @@ const Colour Colors::toggleGreen    = Colour (0xff92e75e);
 const Colour Colors::toggleOrange   = Colour (0xfffaa63a);
 const Colour Colors::toggleRed      = Colour (0xffff0000);
 
+const Colour LookAndFeel_KV1::elementBlue            = Colors::elemental;
 const Colour LookAndFeel_KV1::backgroundColor        = Colour ((uint32) LookAndFeel_KV1::defaultBackgroundColor);
 const Colour LookAndFeel_KV1::widgetBackgroundColor  = Colour (0xff3b3b3b);
 const Colour LookAndFeel_KV1::contentBackgroundColor =  LookAndFeel_KV1::widgetBackgroundColor.darker().darker();
