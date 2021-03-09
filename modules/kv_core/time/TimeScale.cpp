@@ -449,7 +449,7 @@ static unsigned short s_snap_per_beat[] = {
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 14, 16, 21, 24, 28, 32, 48, 64, 96
 };
 
-const int c_snap_item_count = sizeof (s_snap_per_beat) / sizeof (int32);
+const int c_snap_item_count = sizeof (s_snap_per_beat) / sizeof (unsigned short);
 
 // Beat divisor (snap index) accessors.
 unsigned short TimeScale::snapFromIndex (int index)
