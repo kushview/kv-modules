@@ -256,7 +256,7 @@ protected:
         return heights.trackAtY (ev.y);
     }
 
-    inline const int trackAt (const Point<int>& point) const {
+    inline const int trackAt (const juce::Point<int>& point) const {
         return heights.trackAtY (point.getY());
     }
 
