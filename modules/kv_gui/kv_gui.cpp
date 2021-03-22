@@ -1,6 +1,6 @@
 /*
-    kv_gui.cpp - This file is part of Element
-    Copyright (C) 2016 Kushview, LLC.  All rights reserved.
+    kv_gui.cpp - This file is part of KV JUCE Modules
+    Copyright (C) 2016-2021 Kushview, LLC.  All rights reserved.
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@
 
 #include <kv_models/kv_models.h>
 #include "kv_gui.h"
+
+#include "base/FileComboBox.cpp"
 
 namespace kv {
 #include "base/DecibelScaleComponent.cpp"

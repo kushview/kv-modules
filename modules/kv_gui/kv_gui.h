@@ -58,7 +58,6 @@ namespace kv {
 
 namespace kv {
 
-
 #include "base/PatchMatrixComponent.h"
 
 // screens
@@ -73,6 +72,8 @@ namespace kv {
  #include "timeline/TimelineComponent.h"
  #include "timeline/TimelineClip.h"
 #endif
+
+#include "base/FileComboBox.h"
 
 namespace kv {
 // misc widgets
