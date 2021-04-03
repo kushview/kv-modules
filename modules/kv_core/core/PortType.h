@@ -462,6 +462,26 @@ public:
         return {};
     }
 
+    inline PortDescription** begin() noexcept
+    {
+        return ports.begin();
+    }
+
+    inline PortDescription* const* begin() const noexcept
+    {
+        return ports.begin();
+    }
+
+    inline PortDescription** end() noexcept
+    {
+        return ports.end();
+    }
+
+    inline PortDescription* const* end() const noexcept
+    {
+        return ports.end();
+    }
+
     inline const OwnedArray<PortDescription>& getPorts() const { return ports; }
     inline void swapWith (PortList& o) { ports.swapWith (o.ports); }
 
