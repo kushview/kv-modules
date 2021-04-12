@@ -376,6 +376,9 @@ class PortList
 {
 public:
     PortList() = default;
+    PortList (const PortList& o)  { operator= (o); }
+    PortList (PortList&& o) : ports (std::move (o.ports)) {}
+
     ~PortList()
     {
         ports.clear();
@@ -450,6 +453,7 @@ public:
             return desc->input;
         return defaultRet;
     }
+
     inline bool isOutput (const int port, const bool defaultRet = true) const {
         return ! isInput (port, defaultRet);
     }
@@ -484,6 +488,19 @@ public:
 
     inline const OwnedArray<PortDescription>& getPorts() const { return ports; }
     inline void swapWith (PortList& o) { ports.swapWith (o.ports); }
+
+    PortList& operator= (PortList&& o)
+    {
+        ports = std::move (o.ports);
+        return *this;
+    }
+    
+    PortList& operator= (const PortList& o)
+    {
+        ports.clearQuick (true);
+        ports.addCopiesOf (o.ports);
+        return *this;
+    }
 
 private:
     OwnedArray<PortDescription> ports;
