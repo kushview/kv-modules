@@ -22,7 +22,7 @@
 namespace kv {
 
 /** A thin wrapper around a juce ValueTree */
-class ObjectModel
+class JUCE_API ObjectModel
 {
 public:
     explicit ObjectModel (const ValueTree& data = ValueTree());
