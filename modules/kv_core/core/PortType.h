@@ -42,7 +42,8 @@ public:
         Atom    = 3,
         Event   = 4,
         Midi    = 5,
-        Unknown = 6
+        Video   = 6,
+        Unknown = 7
     };
 
     PortType (const Identifier& identifier)
@@ -100,6 +101,7 @@ public:
     inline bool isAtom()    const { return type == Atom; }
     inline bool isMidi()    const { return type == Midi; }
     inline bool isEvent()   const { return type == Event; }
+    inline bool isVideo()   const { return type == Video; }
 
     /** Return true if two port types can connect to one another */
     static inline bool canConnect (const PortType& sourceType, const PortType& destType)
@@ -350,9 +352,9 @@ struct PortDescription
         return *this;
     }
 
-    int32   type            { 0 };
-    int32   index           { 0 };
-    int32   channel         { 0 };
+    int     type            { 0 };
+    int     index           { 0 };
+    int     channel         { 0 };
     String  symbol          { };
     String  name            { };
     String  label           { };
