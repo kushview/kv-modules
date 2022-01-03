@@ -20,35 +20,34 @@
 #pragma once
 
 /** Representation of a rational number */
-struct Rational
-{
+struct Rational {
     explicit Rational (const int n = 1, const int d = 1)
-        : numerator (n), denominator (d) { }
-    
+        : num (n), den (d) {}
+
     Rational (const Rational& o) { operator= (o); }
     Rational& operator= (const Rational& o)
     {
-        numerator   = o.numerator;
-        denominator = o.denominator;
+        num = o.num;
+        den = o.den;
         return *this;
     }
-    
+
     /** The numerator */
-    int numerator;
-    
+    int num;
+
     /** The denominator */
-    int denominator;
-    
+    int den;
+
     /** Returns a floating point version (numerator / denominator) */
-    double ratio() const
-    { 
-        jassert (denominator > 0);
-        return (double)numerator / (double)denominator;
+    double ratio() const noexcept
+    {
+        jassert (den > 0);
+        return (double) num / (double) den;
     }
 
     /** Returns an Inverted rational */
-    Rational inverted() const           { return Rational (denominator, numerator);  }
+    Rational inverted() const noexcept { return Rational (den, num); }
 
-    /** Returns an inverted ratio (denominator / numerator) */
-    double invertedRatio() const        { return inverted().ratio(); }
+    /** Returns an inverted ratio (den / num) */
+    double invertedRatio() const noexcept { return inverted().ratio(); }
 };

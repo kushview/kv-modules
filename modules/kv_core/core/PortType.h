@@ -134,7 +134,7 @@ private:
     /** @internal */
     static inline const String& typeURI (unsigned id)
     {
-        jassert (id <= Midi);
+        jassert (id <= Video);
 
         static const String uris[] = {
             String ("http://lv2plug.in/ns/lv2core#ControlPort"),
@@ -143,6 +143,7 @@ private:
             String ("http://lv2plug.in/ns/lv2core#AtomPort"),
             String ("http://lv2plug.in/ns/lv2core#EventPort"),
             String ("https://kushview.net/ns/element#MidiPort"),
+            String ("https://kushview.net/ns/element#VideoPort"),
             String ("http://lvtoolkit.org/ns/lvtk#null")
         };
 
@@ -152,7 +153,7 @@ private:
     /** @internal */
     static inline const String& typeName (unsigned id)
     {
-        jassert (id <= Midi);
+        jassert (id <= Video);
         static const String uris[] = {
             String ("Control"),
             String ("Audio"),
@@ -160,6 +161,7 @@ private:
             String ("Atom"),
             String ("Event"),
             String ("MIDI"),
+            String ("Video"),
             String ("Unknown")
         };
         return uris [id];
@@ -168,7 +170,7 @@ private:
     /** @internal */
     static inline const String& slugName (unsigned id)
     {
-        jassert (id <= Midi);
+        jassert (id <= Video);
         static const String slugs[] = {
             String ("control"),
             String ("audio"),
@@ -176,6 +178,7 @@ private:
             String ("atom"),
             String ("event"),
             String ("midi"),
+            String ("video"),
             String ("unknown")
         };
         return slugs [id];
