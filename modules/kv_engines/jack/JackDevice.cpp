@@ -97,7 +97,7 @@ public:
         for (int i = 0; i < numIns; ++i)
         {
             auto port = client.registerPort (client.getMainInputPrefix() + String(i + 1), 
-                Jack::audioPort, JackPortIsInput);
+                Jack::audioPort, JackPortIsOutput);
             if (port != nullptr)
                 audioIns.add (port);
         }
@@ -105,7 +105,7 @@ public:
         for (int i = 0; i < numOuts; ++i)
         {
             auto port = client.registerPort (client.getMainOutputPrefix() + String (i + 1), 
-                Jack::audioPort, JackPortIsOutput);
+                Jack::audioPort, JackPortIsInput);
             if (port != nullptr)
                 audioOuts.add (port);
         }
