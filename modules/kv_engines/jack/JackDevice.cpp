@@ -111,7 +111,7 @@ public:
         }
 
         numIns = audioIns.size();
-        activeIns.clear();   
+        activeIns.clear();
         activeIns.setRange (0, numIns, true);
 
         numOuts = audioOuts.size();
@@ -169,7 +169,6 @@ public:
     String getLastError()             override { return lastError; }
 
     //=========================================================================
-
     int getCurrentBufferSizeSamples() override { return client.getBufferSize(); }
     double getCurrentSampleRate()     override { return client.getSampleRate(); }
     int getCurrentBitDepth()          override { return 16; }
