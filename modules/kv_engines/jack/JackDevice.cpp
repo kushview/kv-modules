@@ -236,6 +236,9 @@ private:
     StringArray getChannelNames (bool forInput) const
     {
         StringArray names;
+        auto& ports = forInput ? audioIns : audioOuts;
+        for (const auto& port : ports)
+            names.add (port->getName());
         return names;
     }
 
