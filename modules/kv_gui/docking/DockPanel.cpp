@@ -82,13 +82,18 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
     ScopedDockWindowCloser windowCloser (findParentComponentOfClass<DockWindow>());
 
     auto* const source = findParentComponentOfClass<DockItem>();
-    auto* const sourceItem = source;
-    auto* const sourceArea = sourceItem->getParentArea();
-    auto* const targetItem = target;
-    auto* const targetArea = targetItem->getParentArea();
+    auto* const sourceItem  = source;
+    auto* const sourceArea  = sourceItem->getParentArea();
+    auto* const targetItem  = target;
+    auto* const targetArea  = targetItem->getParentArea();
     auto* const targetPanel = targetItem->getCurrentPanel();
 
     Dock& dock (targetItem->dock);
+
+    if (sourceItem != nullptr && sourceItem == targetItem && targetItem->getNumPanels() == 1) {
+        // docking to self with no other panels. noop
+        return;
+    }
 
     if (placement == DockPlacement::Center)
     {
