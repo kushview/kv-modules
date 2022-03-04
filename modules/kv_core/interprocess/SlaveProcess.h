@@ -20,6 +20,8 @@
   ==============================================================================
 */
 
+namespace kv {
+
 //==============================================================================
 /**
     Acts as the slave end of a master/slave pair of connected processes.
@@ -182,3 +184,5 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChildProcessMaster)
 };
+
+}

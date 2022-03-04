@@ -35,6 +35,8 @@
  #include <windows.h>
 #endif
 
+#include "interprocess/SlaveProcess.cpp" 
+
 namespace kv {
  using namespace juce;
  #include "core/Arc.cpp"
@@ -44,6 +46,5 @@ namespace kv {
  #include "core/WorkThread.cpp"
  #include "time/TimeScale.cpp"
  #include "util/FileHelpers.cpp"
- #include "util/UUID.cpp"
- #include "interprocess/SlaveProcess.cpp"
+ #include "util/UUID.cpp" 
 }

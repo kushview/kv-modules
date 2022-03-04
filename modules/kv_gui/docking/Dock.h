@@ -32,9 +32,9 @@ class DockWindow;
 
 struct DockPanelInfo;
 
-class Dock : public Component,
-             public DragAndDropContainer,
-             private AsyncUpdater
+class JUCE_API Dock : public Component,
+                      public DragAndDropContainer,
+                      private AsyncUpdater
 {
 public:
     enum SplitType {
