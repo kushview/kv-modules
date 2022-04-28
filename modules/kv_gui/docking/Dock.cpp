@@ -245,6 +245,32 @@ void Dock::undockPanel (DockPanel* panel)
     window->toFront (true);
 }
 
+void Dock::removePanel (DockPanel* panel)
+{
+    if (panel == nullptr)
+        return;
+
+    using DeleterType = std::unique_ptr<DockPanel, std::function<void(DockPanel*)>>;
+    DeleterType deleter (panel, [this, panel](DockPanel* ptr) { 
+        panels.removeObject (panel); 
+    });
+
+    auto* const item = panel->findParentComponentOfClass<DockItem>();
+
+    if (item == nullptr)
+        return;
+
+    item->detach (panel);
+    jassert (panel->getParentComponent() == nullptr);
+
+    if (auto* const area = item->getParentArea())
+    {
+        auto* const parentArea = item->getParentArea();
+        if (parentArea && area->getNumItems() <= 0)
+            parentArea->remove (area);
+    }
+}
+
 void Dock::removeOrphanObjects()
 {
    #if KV_DEBUG_DOCK_ORPHANS

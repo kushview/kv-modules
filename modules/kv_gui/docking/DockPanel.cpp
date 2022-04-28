@@ -27,6 +27,7 @@ public:
     {
 
     }
+
     ~ScopedDockWindowCloser()
     {
         if (auto* w = window.getComponent())
@@ -69,10 +70,7 @@ static void maybeFlipLastItem (DockPanel* panel, DockArea* sourceArea)
 }
 
 DockPanel::DockPanel() {}
-DockPanel::~DockPanel()
-{
-    DBG("[KV] del dock panel: " << getName());
-}
+DockPanel::~DockPanel() {}
 
 void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
 {
@@ -286,8 +284,11 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
 void DockPanel::close()
 {
     ScopedDockWindowCloser windowCloser (findParentComponentOfClass<DockWindow>());
-    
-    if (auto* parentItem = findParentComponentOfClass<DockItem>())
+    if (auto* const dock = findParentComponentOfClass<Dock>())
+    {
+        dock->removePanel (this);
+    }
+    else if (auto* parentItem = findParentComponentOfClass<DockItem>())
     {
         auto* const itemArea = parentItem->getParentArea();
         parentItem->detach (this);
@@ -298,6 +299,10 @@ void DockPanel::close()
             if (parentArea && itemArea->getNumItems() <= 0)
                 parentArea->remove (itemArea);
         }
+    }
+    else
+    {
+        jassertfalse;
     }
 }
 

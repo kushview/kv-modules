@@ -158,6 +158,7 @@ private:
     DockPanel* getOrCreatePanel (const String&);
 
     void undockPanel (DockPanel*);
+    void removePanel (DockPanel*);
 
     void loadArea (DockArea&, const ValueTree&);
     void loadItem (DockItem&, const ValueTree&);
