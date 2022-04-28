@@ -28,7 +28,7 @@ struct DockPanelInfo
     Identifier identifier;
     String name;
     String description;
-    int  placement          = 0;
+    int  placement          = -1;
     bool singleton          = false;
     bool showInMenu         = true;
 };

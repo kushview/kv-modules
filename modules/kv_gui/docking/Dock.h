@@ -96,7 +96,8 @@ public:
 
     const OwnedArray<DockPanelType>& getPanelTypes() const { return types; }
     const OwnedArray<DockPanelInfo>& getPanelDescriptions() const { return available; }
-    
+    DockPanelInfo getPanelInfo (const String& panelID) const noexcept;
+
     /** Create an item by panel type and dock it to the given placement */
     DockItem* createItem (const Identifier& panelID);
     DockItem* createItem (const String& panelID, DockPlacement placement);

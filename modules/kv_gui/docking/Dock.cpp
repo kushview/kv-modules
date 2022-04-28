@@ -59,6 +59,14 @@ void Dock::registerPanelType (DockPanelType* newType)
     available.sort (compare, false);
 }
 
+DockPanelInfo Dock::getPanelInfo (const String& panelID) const noexcept
+{
+    for (const auto* info : available)
+        if (info->identifier.toString() == panelID)
+            return *info;
+    return {};
+}
+
 DockArea* Dock::createArea (const bool isVertical)
 {
     if (auto* area = areas.add (new DockArea()))
