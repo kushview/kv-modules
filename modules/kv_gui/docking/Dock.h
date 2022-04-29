@@ -117,6 +117,9 @@ public:
     /** Get a panel by index */
     DockPanel* getPanel (const int index) const { return panels [index]; }
 
+    /** Select a panel by object */
+    void selectPanel (DockPanel* panel);
+
     /** @internal */
     inline virtual void paint (Graphics& g) override
     {

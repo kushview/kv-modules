@@ -236,6 +236,25 @@ DockItem* Dock::createItem (const String& panelType, DockPlacement placement)
     return item;
 }
 
+void Dock::selectPanel (DockPanel* panel)
+{
+    if (panel == nullptr)
+        return;
+
+    for (auto* item : items)
+    {
+        for (int j = 0; j < item->getNumPanels(); ++j)
+        {
+            if (panel == item->getPanel (j))
+            {
+                item->setSelected (true, true);
+                item->setCurrentPanelIndex (j);
+                return;
+            }
+        }
+    }
+}
+
 void Dock::undockPanel (DockPanel* panel)
 {
     auto screenBounds = panel->getScreenBounds();
