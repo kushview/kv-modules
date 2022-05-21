@@ -258,10 +258,11 @@ void Dock::selectPanel (DockPanel* panel)
 void Dock::undockPanel (DockPanel* panel)
 {
     auto screenBounds = panel->getScreenBounds();
-    panel->close();
+    if (auto parentItem = panel->findParentComponentOfClass<DockItem>())
+        parentItem->detach (panel);
 
     auto* window = windows.add (new DockWindow (*this));
-    auto* item = getOrCreateItem (panel);
+    auto* item = items.add (new DockItem (*this, panel));
     window->setBackgroundColour (findColour (DocumentWindow::backgroundColourId).darker());
     window->dockItem (item, DockPlacement::Top);
     window->setContentComponentSize (screenBounds.getWidth(), screenBounds.getHeight());
