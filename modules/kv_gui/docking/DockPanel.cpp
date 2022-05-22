@@ -17,6 +17,9 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+// #define PANEL_DBG(msg)      DBG(msg)
+#define PANEL_DBG(msg)  
+
 namespace kv {
 
 class ScopedDockWindowCloser
@@ -45,17 +48,17 @@ static void maybeFlipLastItem (DockPanel* panel, DockArea* sourceArea)
 {
     if (sourceArea != nullptr && sourceArea->getNumItems() == 1)
     {
-        DBG(panel->getName() << ": parent area items: " << sourceArea->getNumItems());
+        PANEL_DBG(panel->getName() << ": parent area items: " << sourceArea->getNumItems());
         if (auto* parentArea = sourceArea->getParentArea())
         {
-            DBG(panel->getName() << ": flip last item");
-            DBG(panel->getName() << ": source items: " << sourceArea->getNumItems());
-            DBG(panel->getName() << ": parent items: " << parentArea->getNumItems());
-            DBG(panel->getName() << ": source vert : " << (int) sourceArea->isVertical());
-            DBG(panel->getName() << ": parent vert : " << (int) parentArea->isVertical());
+            PANEL_DBG(panel->getName() << ": flip last item");
+            PANEL_DBG(panel->getName() << ": source items: " << sourceArea->getNumItems());
+            PANEL_DBG(panel->getName() << ": parent items: " << parentArea->getNumItems());
+            PANEL_DBG(panel->getName() << ": source vert : " << (int) sourceArea->isVertical());
+            PANEL_DBG(panel->getName() << ": parent vert : " << (int) parentArea->isVertical());
             auto* itemRef = sourceArea->getItem (0);
             const auto areaIdx = parentArea->indexOf (sourceArea);
-            DBG(panel->getName() << ": area index  : " << areaIdx);
+            PANEL_DBG(panel->getName() << ": area index  : " << areaIdx);
             const auto sizes = parentArea->getSizesString();
             sourceArea->remove (itemRef);
             parentArea->remove (sourceArea);
@@ -64,7 +67,7 @@ static void maybeFlipLastItem (DockPanel* panel, DockArea* sourceArea)
         }
         else
         {
-            DBG(panel->getName() << ": source area has no parent");
+            PANEL_DBG(panel->getName() << ": source area has no parent");
         }
     }
 }
@@ -102,12 +105,12 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
 
         if (sourceItem != nullptr)
         {
-            DBG(getName() << ": detaching panel from source");
+            PANEL_DBG(getName() << ": detaching panel from source");
             sourceItem->detach (this);
 
             if (sourceItem->getNumPanels() <= 0)
             {
-                DBG(getName() << ": source now empty");
+                PANEL_DBG(getName() << ": source now empty");
             }
             
             if (sourceArea != targetArea)
@@ -128,7 +131,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
         return;
     }
     
-    DBG("Docking Panel: " << getName() << " to " << Dock::getDirectionString(placement)
+    PANEL_DBG("Docking Panel: " << getName() << " to " << Dock::getDirectionString(placement)
         << " of Item: " << targetPanel->getName());
     
     if (nullptr == targetArea)
@@ -142,12 +145,12 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
     {
         // Same direction as target parent area
         // Not same item unless source has 2 or more panels
-        DBG(getName() << ": area is same direction");
+        PANEL_DBG(getName() << ": area is same direction");
         int offsetIdx = 0;
 
         const bool inSameArea = sourceArea == targetArea;
         
-        DBG(getName() << ": same area " << (int) inSameArea);
+        PANEL_DBG(getName() << ": same area " << (int) inSameArea);
 
         int srcIdx = sourceArea->indexOf (sourceItem);
         int tgtIdx = targetArea->indexOf (targetItem);
@@ -157,7 +160,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
         
         if (sourceItem->getNumPanels() == 1)
         {
-            DBG(getName() << ": source item single panel");
+            PANEL_DBG(getName() << ": source item single panel");
             if (inSameArea)
             {
                 // same area, so just move the item
@@ -188,7 +191,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
                     }
                 }
                 
-                DBG(getName() << ": move " << srcIdx << " to " << tgtIdx);
+                PANEL_DBG(getName() << ": move " << srcIdx << " to " << tgtIdx);
                 targetArea->moveItem (srcIdx, tgtIdx + offsetIdx);
             }
             else
@@ -214,7 +217,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
         }
         else if (source->getNumPanels() > 1)
         {
-            DBG(getName() << ": source item panels: " << source->getNumPanels());
+            PANEL_DBG(getName() << ": source item panels: " << source->getNumPanels());
             sourceItem->detach (this);
             maybeFlipLastItem (this, sourceArea);
 
@@ -235,7 +238,7 @@ void DockPanel::dockTo (DockItem* const target, DockPlacement placement)
     }
     else if (placement.isVertical() != targetArea->isVertical())
     {
-        DBG(getName() << ": area is opposite direction");
+        PANEL_DBG(getName() << ": area is opposite direction");
         // opposite direction as parent
         // Create a new area, flip orientation, add target item, and insert source item.
         const int insertAreaIdx = targetArea->indexOf (target);
