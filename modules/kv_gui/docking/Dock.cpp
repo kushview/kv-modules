@@ -255,6 +255,24 @@ void Dock::selectPanel (DockPanel* panel)
     }
 }
 
+void Dock::showPanel (DockPanel* panel)
+{
+    if (panel == nullptr)
+        return;
+
+    for (auto* item : items)
+    {
+        for (int j = 0; j < item->getNumPanels(); ++j)
+        {
+            if (panel == item->getPanel (j))
+            {
+                item->setCurrentPanelIndex (j);
+                return;
+            }
+        }
+    }
+}
+
 void Dock::undockPanel (DockPanel* panel)
 {
     auto screenBounds = panel->getScreenBounds();

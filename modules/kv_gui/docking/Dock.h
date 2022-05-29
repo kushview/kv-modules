@@ -120,6 +120,9 @@ public:
     /** Select a panel by object */
     void selectPanel (DockPanel* panel);
 
+    /** Show a panel, but not select the item */
+    void showPanel (DockPanel* panel);
+    
     /** @internal */
     inline virtual void paint (Graphics& g) override
     {
@@ -281,6 +284,9 @@ public:
 
     /** Returns one of the dock panels or nullptr if out of range */
     DockPanel* getPanel (int index) const { return panels [index]; }
+
+    /** Returns the index of a panel, or -1 if not found */
+    int indexOf (DockPanel* panel) const noexcept { return panels.indexOf (panel); }
 
     /** Returns the current panel index */
     int getCurrentPanelIndex() const;
