@@ -95,7 +95,7 @@ void FileComboBox::resized()
     layoutFileComboBox (*this, &filenameBox, browseButton.get());
 }
 
-KeyboardFocusTraverser* FileComboBox::createFocusTraverser()
+std::unique_ptr<ComponentTraverser> FileComboBox::createFocusTraverser()
 {
     // This prevents the sub-components from grabbing focus if the
     // FileComboBox has been set to refuse focus.
