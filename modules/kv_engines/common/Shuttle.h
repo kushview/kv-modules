@@ -76,6 +76,7 @@ public:
     }
     
     bool getCurrentPosition (CurrentPositionInfo &result);
+    Optional<PositionInfo> getPosition() const override { return Optional<PositionInfo>(); }
 
 protected:
     kv::TimeScale ts;
