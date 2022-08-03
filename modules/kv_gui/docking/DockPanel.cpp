@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+JUCE_BEGIN_IGNORE_WARNINGS_GCC_LIKE ("-Wunused-variable")
+
 // #define PANEL_DBG(msg)      DBG(msg)
 #define PANEL_DBG(msg)  
 
@@ -342,3 +344,5 @@ void DockPanel::resized()
 }
     
 }
+
+JUCE_END_IGNORE_WARNINGS_GCC_LIKE
