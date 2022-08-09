@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
+
 #ifdef __APPLE__
 
 Semaphore::Semaphore()
@@ -138,3 +140,5 @@ bool Semaphore::tryWait()
 }
 
 #endif
+
+}

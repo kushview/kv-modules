@@ -31,6 +31,8 @@
  #define KV_INVALID_NODE KV_INVALID_PORT
 #endif
 
+namespace kv {
+
 /** The type of a port. */
 class PortType {
 public:
@@ -46,10 +48,10 @@ public:
         Unknown = 7
     };
 
-    PortType (const Identifier& identifier)
+    PortType (const juce::Identifier& identifier)
         : type (typeForString (identifier.toString())) { }
     
-    PortType (const String& identifier)
+    PortType (const juce::String& identifier)
         : type (typeForString (identifier)) { }
                 
     PortType (ID id) : type(id) { }
@@ -62,15 +64,15 @@ public:
     }
 
     /** Get a URI string for this port type */
-    inline const String& getURI()  const { return typeURI (type); }
+    inline const juce::String& getURI()  const { return typeURI (type); }
                 
     /** Get a human readable name for this port type */
-    inline const String& getName() const { return typeName (type); }
+    inline const juce::String& getName() const { return typeName (type); }
                 
     /** Get a slug version of the port type */
-    inline const String& getSlug() const { return slugName (type); }
+    inline const juce::String& getSlug() const { return slugName (type); }
     /** Get a slug version of the port type */
-    inline static const String& getSlug (const int t) { return slugName (static_cast<unsigned> (t)); }
+    inline static const juce::String& getSlug (const int t) { return slugName (static_cast<unsigned> (t)); }
 
     /** Get the port type id. This is useful in switch statements */
     inline ID               id()   const { return type; }
@@ -132,59 +134,59 @@ public:
 
 private:
     /** @internal */
-    static inline const String& typeURI (unsigned id)
+    static inline const juce::String& typeURI (unsigned id)
     {
         jassert (id <= Video);
 
-        static const String uris[] = {
-            String ("http://lv2plug.in/ns/lv2core#ControlPort"),
-            String ("http://lv2plug.in/ns/lv2core#AudioPort"),
-            String ("http://lv2plug.in/ns/lv2core#CVPort"),
-            String ("http://lv2plug.in/ns/lv2core#AtomPort"),
-            String ("http://lv2plug.in/ns/lv2core#EventPort"),
-            String ("https://kushview.net/ns/element#MidiPort"),
-            String ("https://kushview.net/ns/element#VideoPort"),
-            String ("http://lvtoolkit.org/ns/lvtk#null")
+        static const juce::String uris[] = {
+            juce::String ("http://lv2plug.in/ns/lv2core#ControlPort"),
+            juce::String ("http://lv2plug.in/ns/lv2core#AudioPort"),
+            juce::String ("http://lv2plug.in/ns/lv2core#CVPort"),
+            juce::String ("http://lv2plug.in/ns/lv2core#AtomPort"),
+            juce::String ("http://lv2plug.in/ns/lv2core#EventPort"),
+            juce::String ("https://kushview.net/ns/element#MidiPort"),
+            juce::String ("https://kushview.net/ns/element#VideoPort"),
+            juce::String ("http://lvtoolkit.org/ns/lvtk#null")
         };
 
         return uris [id];
     }
 
     /** @internal */
-    static inline const String& typeName (unsigned id)
+    static inline const juce::String& typeName (unsigned id)
     {
         jassert (id <= Video);
-        static const String uris[] = {
-            String ("Control"),
-            String ("Audio"),
-            String ("CV"),
-            String ("Atom"),
-            String ("Event"),
-            String ("MIDI"),
-            String ("Video"),
-            String ("Unknown")
+        static const juce::String uris[] = {
+            juce::String ("Control"),
+            juce::String ("Audio"),
+            juce::String ("CV"),
+            juce::String ("Atom"),
+            juce::String ("Event"),
+            juce::String ("MIDI"),
+            juce::String ("Video"),
+            juce::String ("Unknown")
         };
         return uris [id];
     }
 
     /** @internal */
-    static inline const String& slugName (unsigned id)
+    static inline const juce::String& slugName (unsigned id)
     {
         jassert (id <= Video);
-        static const String slugs[] = {
-            String ("control"),
-            String ("audio"),
-            String ("cv"),
-            String ("atom"),
-            String ("event"),
-            String ("midi"),
-            String ("video"),
-            String ("unknown")
+        static const juce::String slugs[] = {
+            juce::String ("control"),
+            juce::String ("audio"),
+            juce::String ("cv"),
+            juce::String ("atom"),
+            juce::String ("event"),
+            juce::String ("midi"),
+            juce::String ("video"),
+            juce::String ("unknown")
         };
         return slugs [id];
     }
     
-    static inline ID typeForString (const String& identifier)
+    static inline ID typeForString (const juce::String& identifier)
     {
         for (int i = 0; i <= Midi; ++i)
         {
@@ -208,7 +210,7 @@ public:
     inline ChannelMapping() { init(); }
 
     /** Maps an array of port types sorted by port index, to channels */
-    inline ChannelMapping (const Array<PortType>& types)
+    inline ChannelMapping (const juce::Array<PortType>& types)
     {
         init();
 
@@ -233,8 +235,8 @@ public:
         if (type == PortType::Unknown)
             return false;
 
-        const Array<uint32>* const a (ports.getUnchecked (type));
-        return a->size() > 0 && isPositiveAndBelow (channel, a->size());
+        const juce::Array<uint32>* const a (ports.getUnchecked (type));
+        return a->size() > 0 && juce::isPositiveAndBelow (channel, a->size());
     }
 
     int32  getNumChannels (const PortType type) const { return ports.getUnchecked(type)->size(); }
@@ -246,11 +248,11 @@ public:
         if (! containsChannel (type, channel))
             return KV_INVALID_PORT;
 
-        const Array<uint32>* const a (ports.getUnchecked (type));
+        const juce::Array<uint32>* const a (ports.getUnchecked (type));
         return a->getUnchecked (channel);
     }
 
-    const Array<uint32>& getPorts (const PortType type) const { return *ports.getUnchecked (type); }
+    const juce::Array<uint32>& getPorts (const PortType type) const { return *ports.getUnchecked (type); }
 
     inline uint32 getPort (const PortType type, const int32 channel) const
     {
@@ -266,13 +268,13 @@ public:
 
 private:
     // owned arrays of arrays....
-    OwnedArray<Array<uint32> > ports;
+    juce::OwnedArray<juce::Array<uint32> > ports;
 
     inline void init()
     {
         ports.ensureStorageAllocated (PortType::Unknown + 1);
         for (int32 p = 0; p <= PortType::Unknown; ++p)
-            ports.add (new Array<uint32> ());
+            ports.add (new juce::Array<uint32> ());
     }
 };
 
@@ -335,7 +337,7 @@ struct PortDescription
 {
     PortDescription() { }
     PortDescription (int32 portType, int32 portIndex, int32 portChannel, 
-                     const String& portSymbol, const String& portName, 
+                     const juce::String& portSymbol, const juce::String& portName, 
                      const bool isInput)
         : type (portType), index (portIndex), channel (portChannel),
           symbol (portSymbol), name (portName), input (isInput) { }
@@ -358,9 +360,9 @@ struct PortDescription
     int     type            { 0 };
     int     index           { 0 };
     int     channel         { 0 };
-    String  symbol          { };
-    String  name            { };
-    String  label           { };
+    juce::String  symbol          { };
+    juce::String  name            { };
+    juce::String  label           { };
     bool    input           { false };
     float   minValue        { 0.0 };
     float   maxValue        { 1.0 };
@@ -412,7 +414,7 @@ public:
     }
 
     inline void addControl (int index, int channel,
-                            const String& symbol, const String& name,
+                            const juce::String& symbol, const juce::String& name,
                             float minValue, float maxValue, 
                             float defaultValue, bool input)
     {
@@ -425,7 +427,7 @@ public:
     }
 
     inline void add (int32 type, int32 index, int32 channel, 
-                     const String& symbol, const String& name,
+                     const juce::String& symbol, const juce::String& name,
                      const bool input)
     {
         add (new PortDescription (type, index, channel, symbol, name, input));
@@ -465,8 +467,8 @@ public:
 
     inline PortDescription getPort (int index) const
     {
-        jassert (isPositiveAndBelow (index, ports.size()));
-        if (isPositiveAndBelow (index, ports.size()))
+        jassert (juce::isPositiveAndBelow (index, ports.size()));
+        if (juce::isPositiveAndBelow (index, ports.size()))
             return *ports.getUnchecked (index);
         return {};
     }
@@ -491,7 +493,7 @@ public:
         return ports.end();
     }
 
-    inline const OwnedArray<PortDescription>& getPorts() const { return ports; }
+    inline const juce::OwnedArray<PortDescription>& getPorts() const { return ports; }
     inline void swapWith (PortList& o) { ports.swapWith (o.ports); }
 
     PortList& operator= (PortList&& o)
@@ -508,7 +510,7 @@ public:
     }
 
 private:
-    OwnedArray<PortDescription> ports;
+    juce::OwnedArray<PortDescription> ports;
 
     inline PortDescription* findByIndexInternal (int index) const
     {
@@ -518,7 +520,7 @@ private:
         return nullptr;
     }
 
-    inline PortDescription* findBySymbolInternal (const String& symbol) const
+    inline PortDescription* findBySymbolInternal (const juce::String& symbol) const
     {
         for (auto* port : ports)
             if (port->symbol == symbol)
@@ -536,11 +538,11 @@ private:
 
 #if JUCE_MODULE_AVAILABLE_juce_data_structures
 public:
-    inline ValueTree createValueTree (const int port) const
+    inline juce::ValueTree createValueTree (const int port) const
     {
         if (const auto* desc = findByIndexInternal (port))
         {
-            ValueTree data ("port");
+            juce::ValueTree data ("port");
             data.setProperty ("index",     desc->index, nullptr)
                 .setProperty ("channel",   desc->channel, nullptr)
                 .setProperty ("type",      PortType::getSlug (desc->type), nullptr)
@@ -550,7 +552,9 @@ public:
             return data;
         }
 
-        return ValueTree();
+        return juce::ValueTree();
     }
 #endif
 };
+
+}

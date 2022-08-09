@@ -17,6 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
 DecibelScaleComponent::DecibelScaleComponent ()
   : font (7.0f, Font::plain), scale (0.0f),
     lastY (0)
@@ -104,4 +105,6 @@ int DecibelScaleComponent::iecScale (const float dB) const
 int DecibelScaleComponent::iecLevel (const int index) const
 {
     return levels [index];
+}
+
 }

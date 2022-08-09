@@ -28,6 +28,8 @@
 #define M_SQRT2 ((float) 1.41421356237309504880)
 #endif
 
+namespace kv {
+
 class DelayLockedLoop
 {
 public:
@@ -96,3 +98,5 @@ private:
         c = omega * omega;
     }
 };
+
+}

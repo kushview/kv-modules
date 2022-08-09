@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 class TimeUnit
 {
 public:
@@ -37,9 +39,11 @@ public:
     inline operator ID() const { return getType(); }
     inline bool operator== (const TimeUnit& o) const { return o.type == type; }
     inline bool operator!= (const TimeUnit& o) const { return o.type != type; }
-    inline ID getType() const { return isPositiveAndBelow (type, (int32) UserDefined) ? (ID) type : UserDefined; }
+    inline ID getType() const { return juce::isPositiveAndBelow (type, (int32) UserDefined) ? (ID) type : UserDefined; }
     inline int32 getTypeId() const { return type; }
 
 private:
     int32 type;
 };
+
+}

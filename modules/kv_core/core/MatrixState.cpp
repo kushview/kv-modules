@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
+
 void MatrixState::setFrom (const MatrixState& o)
 {
     for (int row = jmin (getNumRows(), o.getNumRows()); --row >= 0;)
@@ -47,4 +49,6 @@ void MatrixState::resize (int r, int c, bool retain)
         numColumns = c;
         toggled.swapWith (bits);
     }
+}
+
 }

@@ -16,6 +16,9 @@
     along with this program; if not, write to the Free Software
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
+
+namespace kv {
+
 RingBuffer::RingBuffer (int32 capacity)
     : fifo (1), buffer (nullptr)
 {
@@ -46,4 +49,6 @@ void RingBuffer::setCapacity (int32 newCapacity)
     }
 
     fifo.reset();
+}
+
 }

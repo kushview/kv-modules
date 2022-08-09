@@ -53,18 +53,8 @@ namespace kv {
     class ScreenDisplay;
 }
 
-// look and feel
 #include "base/LookAndFeel_KV1.h"
-
-namespace kv {
-
 #include "base/PatchMatrixComponent.h"
-
-// screens
-#include "screens/ScreenDisplay.h"
-#include "screens/Screen.h"
-#include "screens/ScreenManager.h"
-}
 
 #if JUCE_MODULE_AVAILABLE_kv_engines
  // timelines
@@ -75,16 +65,10 @@ namespace kv {
 
 #include "base/FileComboBox.h"
 
-namespace kv {
 // misc widgets
 #include "base/DecibelScaleComponent.h"
 #include "base/DigitalMeter.h"
 #include "base/SkinDial.h"
-
-// embedding
-#include "embed/NativeComponent.h"
-
-}
 
 // docking
 #if KV_DOCKING_WINDOWS

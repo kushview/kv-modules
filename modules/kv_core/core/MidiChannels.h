@@ -1,6 +1,8 @@
 
 #pragma once
 
+namespace kv {
+
 struct JUCE_API MidiChannels
 {
     inline MidiChannels()
@@ -38,7 +40,7 @@ struct JUCE_API MidiChannels
     }
 
     /** Set channels */
-    inline void setChannels (const BigInteger newChannels)
+    inline void setChannels (const juce::BigInteger newChannels)
     {
         channels = newChannels;
     }
@@ -61,9 +63,11 @@ struct JUCE_API MidiChannels
         return *this;
     }
 
-    /** Returns the underlying BigInteger */
-    const BigInteger& get() const { return channels; }
+    /** Returns the underlying juce::BigInteger */
+    const juce::BigInteger& get() const { return channels; }
 
 private:
-    BigInteger channels;
+    juce::BigInteger channels;
 };
+
+}

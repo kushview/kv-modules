@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 class RingBuffer
 {
 public:
@@ -111,7 +113,9 @@ private:
     };
 
     Vec vec1, vec2;
-    AbstractFifo fifo;
-    HeapBlock<uint8> block;
+    juce::AbstractFifo fifo;
+    juce::HeapBlock<uint8> block;
     uint8* buffer;
 };
+
+}

@@ -183,7 +183,8 @@ public:
     inline TimelineIndicator* indicator() { return playheadIndicator.get(); }
     inline void setIndicator (TimelineIndicator* indicator)
     {
-        addAndMakeVisible (playheadIndicator = indicator);
+        playheadIndicator.reset(indicator);
+        addAndMakeVisible (playheadIndicator.get());
     }
 
     void valueChanged (Value &value) override;
@@ -316,8 +317,8 @@ protected:
     void timerCallback() override { }
 
 private:
-    ScopedPointer<Component> topLeftWidget;
-    ScopedPointer<TimelineIndicator> playheadIndicator;
+    std::unique_ptr<Component> topLeftWidget;
+    std::unique_ptr<TimelineIndicator> playheadIndicator;
 
     int mTrackWidth, mMaxTrackWidth;
 

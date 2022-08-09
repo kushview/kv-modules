@@ -20,6 +20,8 @@
   ==============================================================================
 */
 
+using namespace juce;
+
 namespace kv {
 
 enum { magicMastSlaveConnectionHeader = 0x712baf04 };
@@ -168,7 +170,7 @@ bool ChildProcessMaster::launchSlaveProcess (const File& executable, const Strin
 
     if (childProcess.start (args, streamFlags))
     {
-        connection = new Connection (*this, pipeName, timeoutMs <= 0 ? defaultTimeoutMs : timeoutMs);
+        connection = std::make_unique<Connection> (*this, pipeName, timeoutMs <= 0 ? defaultTimeoutMs : timeoutMs);
 
         if (connection->isConnected())
         {
@@ -266,7 +268,7 @@ bool ChildProcessSlave::initialiseFromCommandLine (const String& commandLine,
 
         if (pipeName.isNotEmpty())
         {
-            connection = new Connection (*this, pipeName, timeoutMs <= 0 ? defaultTimeoutMs : timeoutMs);
+            connection.reset (new Connection (*this, pipeName, timeoutMs <= 0 ? defaultTimeoutMs : timeoutMs));
 
             if (! connection->isConnected())
                 connection = nullptr;

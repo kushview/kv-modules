@@ -23,8 +23,7 @@
   ==============================================================================
 */
 
-namespace kv
-{
+namespace kv {
 
 FileComboBox::FileComboBox (const String& name,
                                       const File& currentFile,

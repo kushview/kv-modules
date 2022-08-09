@@ -19,6 +19,8 @@
 
 #include "kv_engines.h"
 
+using namespace juce;
+
 namespace kv {
 
 #include "common/MidiSequencePlayer.cpp"

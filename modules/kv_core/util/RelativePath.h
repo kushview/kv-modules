@@ -19,7 +19,8 @@
 
 #pragma once
 
-/** Manipulates a cross-platform partial file path. (Needed because File is designed
+namespace kv {
+/** Manipulates a cross-platform partial file path. (Needed because juce::File is designed
     for absolute paths on the active OS)
 */
 class RelativePath
@@ -34,52 +35,52 @@ public:
 
     RelativePath() : root (unknown) {}
 
-    RelativePath (const String& relPath, const RootFolder rootType)
+    RelativePath (const juce::String& relPath, const RootFolder rootType)
         : path (FileHelpers::unixStylePath (relPath)), root (rootType) { }
 
-    RelativePath (const File& file, const File& rootFolder, const RootFolder rootType)
+    RelativePath (const juce::File& file, const juce::File& rootFolder, const RootFolder rootType)
         : path (FileHelpers::unixStylePath (FileHelpers::getRelativePathFrom (file, rootFolder))), root (rootType)
     { }
 
     RootFolder getRoot() const                              { return root; }
 
-    String toUnixStyle() const                              { return FileHelpers::unixStylePath (path); }
-    String toWindowsStyle() const                           { return FileHelpers::windowsStylePath (path); }
+    juce::String toUnixStyle() const                              { return FileHelpers::unixStylePath (path); }
+    juce::String toWindowsStyle() const                           { return FileHelpers::windowsStylePath (path); }
 
-    String getFileName() const                              { return getFakeFile().getFileName(); }
-    String getFileNameWithoutExtension() const              { return getFakeFile().getFileNameWithoutExtension(); }
+    juce::String getFileName() const                              { return getFakeFile().getFileName(); }
+    juce::String getFileNameWithoutExtension() const              { return getFakeFile().getFileNameWithoutExtension(); }
 
-    String getFileExtension() const                         { return getFakeFile().getFileExtension(); }
-    bool hasFileExtension (const String& extension) const   { return getFakeFile().hasFileExtension (extension); }
+    juce::String getFileExtension() const                         { return getFakeFile().getFileExtension(); }
+    bool hasFileExtension (const juce::String& extension) const   { return getFakeFile().hasFileExtension (extension); }
     bool isAbsolute() const                                 { return FileHelpers::isAbsolutePath (path); }
 
-    RelativePath withFileExtension (const String& extension) const
+    RelativePath withFileExtension (const juce::String& extension) const
     {
         return RelativePath (path.upToLastOccurrenceOf (".", ! extension.startsWithChar ('.'), false) + extension, root);
     }
 
     RelativePath getParentDirectory() const
     {
-        String p (path);
+        juce::String p (path);
         if (path.endsWithChar ('/'))
             p = p.dropLastCharacters (1);
 
         return RelativePath (p.upToLastOccurrenceOf ("/", false, false), root);
     }
 
-    RelativePath getChildFile (const String& subpath) const
+    RelativePath getChildFile (const juce::String& subpath) const
     {
         if (FileHelpers::isAbsolutePath (subpath))
             return RelativePath (subpath, root);
 
-        String p (toUnixStyle());
+        juce::String p (toUnixStyle());
         if (! p.endsWithChar ('/'))
             p << '/';
 
         return RelativePath (p + subpath, root);
     }
 
-    RelativePath rebased (const File& originalRoot, const File& newRoot, const RootFolder newRootType) const
+    RelativePath rebased (const juce::File& originalRoot, const juce::File& newRoot, const RootFolder newRootType) const
     {
         if (isAbsolute())
             return RelativePath (path, newRootType);
@@ -89,13 +90,14 @@ public:
 
 private:
 
-    String path;
+    juce::String path;
     RootFolder root;
 
-    File getFakeFile() const
+    juce::File getFakeFile() const
     {
         // This method gets called very often, so we'll cache this directory.
-        static const File currentWorkingDirectory (File::getCurrentWorkingDirectory());
+        static const juce::File currentWorkingDirectory (juce::File::getCurrentWorkingDirectory());
         return currentWorkingDirectory.getChildFile (path);
     }
 };
+}

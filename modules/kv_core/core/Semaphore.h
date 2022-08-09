@@ -30,6 +30,8 @@
  typedef sem_t SemType;
 #endif
 
+namespace kv {
+
 /**
    A counting semaphore.
 
@@ -77,3 +79,5 @@ private:
   SemType semaphore;
 
 };
+
+}

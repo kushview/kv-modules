@@ -19,7 +19,7 @@
 
 #pragma once
 
-class Processor :  public AudioPluginInstance
+class Processor :  public juce::AudioPluginInstance
 {
 
 public:

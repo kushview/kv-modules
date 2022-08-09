@@ -17,7 +17,13 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+using namespace juce;
+
+namespace kv {
+
 Arc::Arc (uint32 sn, uint32 sp, uint32 dn, uint32 dp) noexcept
     : sourceNode (sn), sourcePort (sp),
       destNode (dn), destPort (dp)
 { }
+
+}

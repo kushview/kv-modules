@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 /** Convenient typdef for a string vector */
 typedef std::vector<std::string> StringVec;
 
@@ -141,4 +143,6 @@ inline HashValue hashString (const std::string& str)
 {
     std::hash<std::string> hashit;
     return hashit (str);
+}
+
 }

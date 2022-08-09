@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 class QuadrantLayout : public Component
 {
 public:
@@ -92,3 +94,5 @@ private:
     int offsetX, offsetY, hoveredRow, lastHoveredRow, hoveredColumn, lastHoveredColumn;
     void updateHoveredCell (const int x, const int y);
 };
+
+}

@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 class SkinDial : public Slider
 {
 public:
@@ -117,3 +119,5 @@ private:
    }
 
 };
+
+}

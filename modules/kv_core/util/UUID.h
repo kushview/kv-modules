@@ -19,9 +19,11 @@
 
 #pragma once
 
+namespace kv {
 namespace Utility
 {
-    String hexString8Digits (int value);
-    String createAlphaNumericUID();
-    String createGUID (const String& seed); // Turns a seed into a windows GUID
+    juce::String hexString8Digits (int value);
+    juce::String createAlphaNumericUID();
+    juce::String createGUID (const juce::String& seed); // Turns a seed into a windows GUID
+}
 }

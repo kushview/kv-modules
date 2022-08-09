@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 struct BeatType
 {
     enum ID {
@@ -46,7 +48,7 @@ struct BeatType
         return QuarterNote;;
     }
     
-    inline static int fromPosition (const AudioPlayHead::CurrentPositionInfo& info) {
+    inline static int fromPosition (const juce::AudioPlayHead::CurrentPositionInfo& info) {
         return fromDivisor (info.timeSigDenominator);
     }
     
@@ -68,6 +70,8 @@ public:
     /** Returns the number of audio frames per beat */
     inline static int audioFramesPerBeat (double sampleRate, double beatsPerMinute)
     {
-        return roundToInt (sampleRate * 60.0f / beatsPerMinute);
+        return juce::roundToInt (sampleRate * 60.0f / beatsPerMinute);
     }
 };
+
+}

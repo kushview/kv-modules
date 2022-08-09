@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 class DigitalMeter;
 class DigitalMeterValue;
 
@@ -131,3 +133,5 @@ private:
     bool horizontal;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(DigitalMeter)
 };
+
+}

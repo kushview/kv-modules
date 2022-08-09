@@ -21,6 +21,8 @@
  #define KV_DEBUG_QUADS 0
 #endif
 
+namespace kv {
+
 QuadrantLayout::QuadrantLayout()
 {
     deleteQuadrants = true;
@@ -229,3 +231,4 @@ void PatchMatrixComponent::setMatrixCellSize (const int horizontal, const int ve
     resized();
 }
 
+}

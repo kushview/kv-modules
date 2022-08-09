@@ -20,7 +20,7 @@
 #pragma once
 
 /** A mini-transport for use in a processable that can loop */
-class Shuttle : public AudioPlayHead
+class Shuttle : public juce::AudioPlayHead
 {
 public:
 
@@ -30,7 +30,7 @@ public:
         a midi file that has a different ppq than the Shuttle */
     static double scaledTick (double sourceTick, const int32 srcPpq);
 
-    struct Position :  public AudioPlayHead::CurrentPositionInfo
+    struct Position :  public juce::AudioPlayHead::CurrentPositionInfo
     {
         double timeInBeats;
     };
@@ -76,7 +76,7 @@ public:
     }
     
     bool getCurrentPosition (CurrentPositionInfo &result);
-    Optional<PositionInfo> getPosition() const override { return Optional<PositionInfo>(); }
+    juce::Optional<PositionInfo> getPosition() const override { return juce::Optional<PositionInfo>(); }
 
 protected:
     kv::TimeScale ts;

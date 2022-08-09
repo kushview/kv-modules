@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 class MatrixState
 {
 public:
@@ -41,8 +43,8 @@ public:
     inline const bool isNotEmpty() const { return !isEmpty(); }
     inline const bool isValid (int row, int column)
     {
-        return isPositiveAndBelow (row, numRows) ||
-               isPositiveAndBelow (column, numColumns);
+        return juce::isPositiveAndBelow (row, numRows) ||
+               juce::isPositiveAndBelow (column, numColumns);
     }
     
     inline int getIndexForCell (int row, int column) const { return (row * numColumns) + column; }
@@ -96,16 +98,16 @@ public:
     inline bool connectedAtIndex (const int index) const { return toggled [index]; }
 
    #if JUCE_MODULE_AVAILABLE_juce_data_structures
-    inline ValueTree createValueTree (const String& type = "matrix") const
+    inline juce::ValueTree createValueTree (const juce::String& type = "matrix") const
     {
-        ValueTree tree (Identifier::isValidIdentifier(type) ? type : "matrix");
+        juce::ValueTree tree (juce::Identifier::isValidIdentifier (type) ? type : "matrix");
         tree.setProperty ("numRows", numRows, nullptr);
         tree.setProperty ("numColumns", numColumns, nullptr);
         tree.setProperty ("toggled", toggled.toString(2), nullptr);
         return tree;
     }
 
-    inline void restoreFromValueTree (const ValueTree& tree)
+    inline void restoreFromValueTree (const juce::ValueTree& tree)
     {
         numRows = tree.getProperty ("numRows", 0);
         numColumns = tree.getProperty ("numColumns", 0);
@@ -139,6 +141,8 @@ public:
     }
     
 private:
-    BigInteger toggled;
+    juce::BigInteger toggled;
     int numRows, numColumns;
 };
+
+}

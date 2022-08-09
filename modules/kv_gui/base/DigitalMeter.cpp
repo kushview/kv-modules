@@ -28,6 +28,8 @@
 // Number of cycles the peak stays on hold before fall-off.
 #define DIGITAL_METER_PEAK_FALLOFF    16
 
+namespace kv {
+
 DigitalMeterValue::DigitalMeterValue (DigitalMeter* parent)
   : meter (parent),
     value (0.0f),
@@ -330,4 +332,6 @@ void DigitalMeter::setValue (const int port, const float value)
 const Colour& DigitalMeter::color (const int index) const
 {
     return index < ColorCount ? colors[index] : Colours::greenyellow;
+}
+
 }

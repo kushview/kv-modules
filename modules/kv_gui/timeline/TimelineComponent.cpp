@@ -162,7 +162,8 @@ TimelineComponent::TimelineComponent()
     pixPerUnit = (double) scale.pixelsPerBeat();
 
     timeSpan.setLength (1.0);
-    addAndMakeVisible (playheadIndicator = new TimelineIndicator);
+    playheadIndicator = std::make_unique<TimelineIndicator>();
+    addAndMakeVisible (playheadIndicator.get());
     playheadIndicator->setAlwaysOnTop (true);
 
     tempo.addListener (this);

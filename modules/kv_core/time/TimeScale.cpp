@@ -17,6 +17,8 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
+
 void TimeScale::reset()
 {
     mNodes.setScoped (true);
@@ -625,4 +627,6 @@ void TimeScale::updateMarkers (TimeScale::Node *pNode)
             pMarker->frame  = pNode->frameFromBar (pMarker->bar);
 		pMarker = pMarker->next();
 	}
+}
+
 }

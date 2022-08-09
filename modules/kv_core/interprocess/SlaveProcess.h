@@ -68,8 +68,8 @@ public:
 
         Returns true if the command-line matches and the connection is made successfully.
     */
-    bool initialiseFromCommandLine (const String& commandLine,
-                                    const String& commandLineUniqueID,
+    bool initialiseFromCommandLine (const juce::String& commandLine,
+                                    const juce::String& commandLineUniqueID,
                                     int timeoutMs = 0);
 
     //==============================================================================
@@ -78,7 +78,7 @@ public:
         thread-safety! You may want to respond by sending back a message with
         sendMessageToMaster()
     */
-    virtual void handleMessageFromMaster (const MemoryBlock&) = 0;
+    virtual void handleMessageFromMaster (const juce::MemoryBlock&) = 0;
 
     /** This will be called when the master process finishes connecting to this slave.
         The call will probably be made on a background thread, so be careful with your thread-safety!
@@ -97,13 +97,12 @@ public:
         delivered at the other end. If successful, the data will emerge in a call to your
         ChildProcessMaster::handleMessageFromSlave().
     */
-    bool sendMessageToMaster (const MemoryBlock&);
+    bool sendMessageToMaster (const juce::MemoryBlock&);
 
 private:
     struct Connection;
     friend struct Connection;
-    friend struct ContainerDeletePolicy<Connection>;
-    ScopedPointer<Connection> connection;
+    std::unique_ptr<Connection> connection;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChildProcessSlave)
 };
@@ -152,15 +151,15 @@ public:
         If this all works, the method returns true, and you can begin sending and
         receiving messages with the slave process.
     */
-    bool launchSlaveProcess (const File& executableToLaunch,
-                             const String& commandLineUniqueID,
+    bool launchSlaveProcess (const juce::File& executableToLaunch,
+                             const juce::String& commandLineUniqueID,
                              int timeoutMs = 0,
-                             int streamFlags = ChildProcess::wantStdOut | ChildProcess::wantStdErr);
+                             int streamFlags = juce::ChildProcess::wantStdOut | juce::ChildProcess::wantStdErr);
 
     /** This will be called to deliver a message from the slave process.
         The call will probably be made on a background thread, so be careful with your thread-safety!
     */
-    virtual void handleMessageFromSlave (const MemoryBlock&) = 0;
+    virtual void handleMessageFromSlave (const juce::MemoryBlock&) = 0;
 
     /** This will be called when the slave process dies or is somehow disconnected.
         The call will probably be made on a background thread, so be careful with your thread-safety!
@@ -172,15 +171,14 @@ public:
         gets delivered at the other end. If successful, the data will emerge in a call to
         your ChildProcessSlave::handleMessageFromMaster().
     */
-    bool sendMessageToSlave (const MemoryBlock&);
+    bool sendMessageToSlave (const juce::MemoryBlock&);
 
 private:
-    ChildProcess childProcess;
+    juce::ChildProcess childProcess;
 
     struct Connection;
     friend struct Connection;
-    friend struct ContainerDeletePolicy<Connection>;
-    ScopedPointer<Connection> connection;
+    std::unique_ptr<Connection> connection;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ChildProcessMaster)
 };

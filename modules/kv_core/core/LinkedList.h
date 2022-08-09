@@ -21,6 +21,8 @@
 
 #pragma once
 
+namespace kv {
+
 /** A doubly linked list */
 template <class Node>
 class LinkedList
@@ -270,4 +272,6 @@ int LinkedList<Node>::find (Node *node) const
   }
 
   return -1;
+}
+
 }

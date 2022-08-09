@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 /** Representation of a rational number */
 struct Rational {
     explicit Rational (const int n = 1, const int d = 1)
@@ -51,3 +53,5 @@ struct Rational {
     /** Returns an inverted ratio (den / num) */
     double invertedRatio() const noexcept { return inverted().ratio(); }
 };
+
+}

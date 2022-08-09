@@ -19,44 +19,44 @@
 
 #pragma once
 
+namespace kv {
 namespace FileHelpers {
 
-    using juce::int64;
-    int64 calculateStreamHashCode (InputStream& stream);
-    int64 calculateFileHashCode (const File& file);
+int64 calculateStreamHashCode (juce::InputStream& stream);
+int64 calculateFileHashCode (const juce::File& file);
 
-    bool overwriteFileWithNewDataIfDifferent (const File& file, const void* data, size_t numBytes);
-    bool overwriteFileWithNewDataIfDifferent (const File& file, const MemoryOutputStream& newData);
-    bool overwriteFileWithNewDataIfDifferent (const File& file, const String& newData);
+bool overwriteFileWithNewDataIfDifferent (const juce::File& file, const void* data, size_t numBytes);
+bool overwriteFileWithNewDataIfDifferent (const juce::File& file, const juce::MemoryOutputStream& newData);
+bool overwriteFileWithNewDataIfDifferent (const juce::File& file, const juce::String& newData);
 
-    bool containsAnyNonHiddenFiles (const File& folder);
+bool containsAnyNonHiddenFiles (const juce::File& folder);
 
-    String unixStylePath (const String& path);
-    String windowsStylePath (const String& path);
-    String currentOSStylePath (const String& path);
+juce::String unixStylePath (const juce::String& path);
+juce::String windowsStylePath (const juce::String& path);
+juce::String currentOSStylePath (const juce::String& path);
 
-    bool shouldPathsBeRelative (String path1, String path2);
-    bool isAbsolutePath (const String& path);
+bool shouldPathsBeRelative (juce::String path1, juce::String path2);
+bool isAbsolutePath (const juce::String& path);
 
-    // A windows-aware version of File::getRelativePath()
-    String getRelativePathFrom (const File& file, const File& sourceFolder);
+// A windows-aware version of juce::File::getRelativePath()
+juce::String getRelativePathFrom (const juce::File& file, const juce::File& sourceFolder);
 
-    // removes "/../" bits from the middle of the path
-    String simplifyPath (String::CharPointerType path);
-    String simplifyPath (const String& path);
+// removes "/../" bits from the middle of the path
+juce::String simplifyPath (juce::String::CharPointerType path);
+juce::String simplifyPath (const juce::String& path);
 }
 
 
 class FileModificationDetector
 {
 public:
-    FileModificationDetector (const File& f)
+    FileModificationDetector (const juce::File& f)
         : file (f)
     {
     }
 
-    const File& getFile() const                     { return file; }
-    void fileHasBeenRenamed (const File& newFile)   { file = newFile; }
+    const juce::File& getFile() const                     { return file; }
+    void fileHasBeenRenamed (const juce::File& newFile)   { file = newFile; }
 
     bool hasBeenModified() const
     {
@@ -73,7 +73,8 @@ public:
     }
 
 private:
-    File file;
-    Time fileModificationTime;
+    juce::File file;
+    juce::Time fileModificationTime;
     juce::int64 fileHashCode, fileSize;
 };
+}

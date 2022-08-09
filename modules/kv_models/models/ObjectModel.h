@@ -21,63 +21,63 @@
 
 namespace kv {
 
-/** A thin wrapper around a juce ValueTree */
+/** A thin wrapper around a juce juce::ValueTree */
 class JUCE_API ObjectModel
 {
 public:
-    explicit ObjectModel (const ValueTree& data = ValueTree());
-    ObjectModel (const Identifier& slugId);
+    explicit ObjectModel (const juce::ValueTree& data = juce::ValueTree());
+    ObjectModel (const juce::Identifier& slugId);
     virtual ~ObjectModel() { }
 
-    /** Get a property from the underlying ValueTree */
-    inline var getProperty (const Identifier& id, const var& d = var()) const {
+    /** Get a property from the underlying juce::ValueTree */
+    inline juce::var getProperty (const juce::Identifier& id, const juce::var& d = juce::var()) const {
         return objectData.getProperty (id, d);
     }
     
-    /** Get a property as a juce Value from the ValueTree */
-    Value getPropertyAsValue (const Identifier& property, bool updateSynchronously = false);
+    /** Get a property as a juce::Value from the juce::ValueTree */
+    juce::Value getPropertyAsValue (const juce::Identifier& property, bool updateSynchronously = false);
 
     /** Set a property */
-    inline ObjectModel& setProperty (const Identifier& property, const var& val)
+    inline ObjectModel& setProperty (const juce::Identifier& property, const juce::var& val)
     {
         objectData.setProperty (property, val, nullptr);
         return *this;
     }
     
     /** Returns true if the property exists */
-    inline bool hasProperty (const Identifier& property) const { return objectData.hasProperty (property); }
+    inline bool hasProperty (const juce::Identifier& property) const { return objectData.hasProperty (property); }
 
-    /** Get the ValueTree's type */
-    inline Identifier getType() const { return objectData.getType(); }
+    /** Get the juce::ValueTree's type */
+    inline juce::Identifier getType() const { return objectData.getType(); }
 
-    /** Determine this objects ValueTree type */
-    inline bool hasType (const Identifier& type) const { return objectData.hasType (type); }
+    /** Determine this objects juce::ValueTree type */
+    inline bool hasType (const juce::Identifier& type) const { return objectData.hasType (type); }
 
-    /** Access to the underlying ValueTree (const version) */
-    inline const ValueTree& node() const { return objectData; }
-    inline const ValueTree& getValueTree() const { return objectData; }
+    /** Access to the underlying juce::ValueTree (const version) */
+    inline const juce::ValueTree& node() const { return objectData; }
+    inline const juce::ValueTree& getValueTree() const { return objectData; }
 
-    /** Access to the underlying ValueTree */
-    ValueTree node() { return objectData; }
-    ValueTree getValueTree() { return objectData; }
+    /** Access to the underlying juce::ValueTree */
+    juce::ValueTree node() { return objectData; }
+    juce::ValueTree getValueTree() { return objectData; }
     
-    virtual std::unique_ptr<XmlElement> createXml() const { return objectData.createXml(); }
+    virtual std::unique_ptr<juce::XmlElement> createXml() const { return objectData.createXml(); }
 
-    /** Replace this objects ValueTree with another
+    /** Replace this objects juce::ValueTree with another
         If you need to do something special when data is set, then override
         the canAcceptData and setNodeData methods
 
         @param The new data to use
     */
-    ValueTree setData (const ValueTree& data);
+    juce::ValueTree setData (const juce::ValueTree& data);
 
-    /** Returns the number of children the underlying ValueTree has */
+    /** Returns the number of children the underlying juce::ValueTree has */
     int32 getNumChildren() const { return objectData.getNumChildren(); }
 
     /** Count the number of children with a type */
-    int32 countChildrenOfType (const Identifier& slug) const;
+    int32 countChildrenOfType (const juce::Identifier& slug) const;
 
-    String toXmlString() const { return objectData.toXmlString(); }
+    juce::String toXmlString() const { return objectData.toXmlString(); }
 protected:
 
     /** Override this to handle special data validation This is called
@@ -85,28 +85,28 @@ protected:
 
         @param data The new data to set
     */
-    virtual bool canAcceptData (const ValueTree& data);
+    virtual bool canAcceptData (const juce::ValueTree& data);
 
     /** Override this to handle special data setting. This is called during
         setData and only if canAcceptData returns true
 
         @param data The data being setData
     */
-    virtual void setNodeData (const ValueTree& data);
-    ValueTree objectData;
+    virtual void setNodeData (const juce::ValueTree& data);
+    juce::ValueTree objectData;
 
     template<typename POD>
-    inline void stabilizePropertyPOD (const Identifier& prop, const POD& defaultValue = var()) {
+    inline void stabilizePropertyPOD (const juce::Identifier& prop, const POD& defaultValue = juce::var()) {
         if (objectData.isValid())
             objectData.setProperty (prop, (POD) objectData.getProperty (prop, defaultValue), nullptr);
     }
 
-    inline void stabilizePropertyString (const Identifier& prop, const String& defaultValue = String()) {
+    inline void stabilizePropertyString (const juce::Identifier& prop, const juce::String& defaultValue = juce::String()) {
         if (objectData.isValid())
             objectData.setProperty (prop, objectData.getProperty (prop, defaultValue).toString(), nullptr);
     }
 
-    inline void stabilizeProperty (const Identifier& prop, const var& defaultValue) {
+    inline void stabilizeProperty (const juce::Identifier& prop, const juce::var& defaultValue) {
         if (objectData.isValid())
             objectData.setProperty (prop, objectData.getProperty (prop, defaultValue), nullptr);
     }

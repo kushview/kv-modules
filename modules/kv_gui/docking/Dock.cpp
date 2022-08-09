@@ -421,7 +421,7 @@ void Dock::startDragging (DockPanel* const panel)
 {
     jassert (panel != nullptr);
     Image image (Image::ARGB, 1, 1, true);
-    DragAndDropContainer::startDragging ("DockPanel", panel, image, true);
+    DragAndDropContainer::startDragging ("DockPanel", panel, juce::ScaledImage(image), true);
 }
 
 ValueTree Dock::getState() const

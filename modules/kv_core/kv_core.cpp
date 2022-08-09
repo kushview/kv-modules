@@ -36,15 +36,11 @@
 #endif
 
 #include "interprocess/SlaveProcess.cpp" 
-
-namespace kv {
- using namespace juce;
- #include "core/Arc.cpp"
- #include "core/MatrixState.cpp"
- #include "core/RingBuffer.cpp"
- #include "core/Semaphore.cpp"
- #include "core/WorkThread.cpp"
- #include "time/TimeScale.cpp"
- #include "util/FileHelpers.cpp"
- #include "util/UUID.cpp" 
-}
+#include "core/Arc.cpp"
+#include "core/MatrixState.cpp"
+#include "core/RingBuffer.cpp"
+#include "core/Semaphore.cpp"
+#include "core/WorkThread.cpp"
+#include "time/TimeScale.cpp"
+#include "util/FileHelpers.cpp"
+#include "util/UUID.cpp" 

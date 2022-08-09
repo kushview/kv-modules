@@ -18,4 +18,6 @@
 */
 
 #include "kv_models.h"
+
+using namespace juce;
 #include "models/ObjectModel.cpp"

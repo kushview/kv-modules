@@ -19,6 +19,7 @@
 
 #pragma once
 
+namespace kv {
 //==============================================================================
 /**
     Creates a decibel scale using iec lin 2 db scale
@@ -61,3 +62,5 @@ private:
     int lastY;
     int levels [LevelCount];
 };
+
+}

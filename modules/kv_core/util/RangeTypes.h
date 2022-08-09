@@ -19,10 +19,11 @@
 
 #pragma once
 
-class FrameSpan : public Range<int64>
+namespace kv {
+class FrameSpan : public juce::Range<int64>
 {
 public:
-    inline FrameSpan (int64 i, int64 o) : Range<int64> (i, o) { }
+    inline FrameSpan (int64 i, int64 o) : juce::Range<int64> (i, o) { }
     inline ~FrameSpan() { }
     inline int64 inPoint()  const { return getStart(); }
     inline int64 outPoint() const { return getEnd(); }
@@ -31,3 +32,4 @@ public:
     inline void setInPoint (const int64 in) { setStart (in); }
     inline void setOutPoint (const int64 out) { setEnd (out); }
 };
+}

@@ -26,17 +26,9 @@
 #include "kv_gui.h"
 
 #include "base/FileComboBox.cpp"
-
-namespace kv {
 #include "base/DecibelScaleComponent.cpp"
 #include "base/DigitalMeter.cpp"
 #include "base/PatchMatrixComponent.cpp"
-
-#include "embed/NativeComponent.cpp"
-#include "screens/Screen.cpp"
-#include "screens/ScreenDisplay.cpp"
-#include "screens/ScreenManager.cpp"
-}
 
 #if JUCE_MODULE_AVAILABLE_kv_engines
  #include "timeline/TimelineComponent.cpp"

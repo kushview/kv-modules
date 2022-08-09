@@ -71,11 +71,11 @@ struct DockPlacement
     inline bool operator== (const DockPlacement& o) const           { return this->type == o.type; }
     inline bool operator== (const DockPlacement::Type& t)           { return this->type == t; }
     inline bool operator== (const int& t)                           { return this->type == t; }
-    inline bool operator== (const uint32& t)                        { return this->type == t; }
+    inline bool operator== (const uint32& t)                        { return this->type == static_cast<int> (t); }
     inline bool operator!= (const DockPlacement& o) const           { return this->type != o.type; }
     inline bool operator!= (const DockPlacement::Type& t)           { return this->type != t; }
     inline bool operator!= (const int& t)                           { return this->type != t; }
-    inline bool operator!= (const uint32& t)                        { return this->type != t; }
+    inline bool operator!= (const uint32& t)                        { return this->type != static_cast<int> (t); }
 
     inline DockPlacement& operator= (const DockPlacement::Type& t)  { this->type = t; return *this; }
     inline DockPlacement& operator= (const DockPlacement& o)        { this->type = o.type; return *this; }

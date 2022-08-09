@@ -19,55 +19,56 @@
 
 #pragma once
 
+namespace kv {
 /** Commonly used Identifiers, these might represent different things depending
     on the context of use */
 namespace Slugs {
-
-    static const Identifier asset    = "asset";
-    static const Identifier assetId  = "assetId";
-    static const Identifier attack   = "attack";
-    static const Identifier block    = "block";
-    static const Identifier bpm      = "bpm";
-    static const Identifier category = "category";
-    static const Identifier channel  = "channel";
-    static const Identifier clip     = "clip";
-    static const Identifier decay    = "decay";
-    static const Identifier file     = "file";
-    static const Identifier fsid     = "fsid";
-    static const Identifier events   = "events";
-    static const Identifier graph    = "graph";
-    static const Identifier group    = "group";
-    static const Identifier id       = "id";
-    static const Identifier index    = "index";
-    static const Identifier keyId    = "keyId";
-    static const Identifier length   = "length";
-    static const Identifier media    = "media";
-    static const Identifier name     = "name";
-    static const Identifier nodeId   = "nodeId";
-    static const Identifier note     = "note";
-    static const Identifier offset   = "offset";
-    static const Identifier path     = "path";
-    static const Identifier pattern  = "pattern";
-    static const Identifier parent   = "parent";
-    static const Identifier pitch    = "pitch";
-    static const Identifier ppq      = "ppq";
-    static const Identifier release  = "release";
-    static const Identifier sampler  = "sampler";
-    static const Identifier sequence = "sequence";
-    static const Identifier start    = "start";
-    static const Identifier sustain  = "sustain";
-    static const Identifier tempo    = "tempo";
-    static const Identifier track    = "track";
-    static const Identifier type     = "type";
-    static const Identifier velocity = "velocity";
-    static const Identifier version  = "version";
-    static const Identifier volume   = "volume";
-    static const Identifier dock     = "dock";
-    static const Identifier panel    = "panel";
-    static const Identifier item     = "item";
-    static const Identifier area     = "area";
-    static const Identifier vertical = "vertical";
-    static const Identifier bounds   = "bounds";
-    static const Identifier barSize  = "barSize";
-    static const Identifier sizes    = "sizes";
+static const juce::Identifier asset    = "asset";
+static const juce::Identifier assetId  = "assetId";
+static const juce::Identifier attack   = "attack";
+static const juce::Identifier block    = "block";
+static const juce::Identifier bpm      = "bpm";
+static const juce::Identifier category = "category";
+static const juce::Identifier channel  = "channel";
+static const juce::Identifier clip     = "clip";
+static const juce::Identifier decay    = "decay";
+static const juce::Identifier file     = "file";
+static const juce::Identifier fsid     = "fsid";
+static const juce::Identifier events   = "events";
+static const juce::Identifier graph    = "graph";
+static const juce::Identifier group    = "group";
+static const juce::Identifier id       = "id";
+static const juce::Identifier index    = "index";
+static const juce::Identifier keyId    = "keyId";
+static const juce::Identifier length   = "length";
+static const juce::Identifier media    = "media";
+static const juce::Identifier name     = "name";
+static const juce::Identifier nodeId   = "nodeId";
+static const juce::Identifier note     = "note";
+static const juce::Identifier offset   = "offset";
+static const juce::Identifier path     = "path";
+static const juce::Identifier pattern  = "pattern";
+static const juce::Identifier parent   = "parent";
+static const juce::Identifier pitch    = "pitch";
+static const juce::Identifier ppq      = "ppq";
+static const juce::Identifier release  = "release";
+static const juce::Identifier sampler  = "sampler";
+static const juce::Identifier sequence = "sequence";
+static const juce::Identifier start    = "start";
+static const juce::Identifier sustain  = "sustain";
+static const juce::Identifier tempo    = "tempo";
+static const juce::Identifier track    = "track";
+static const juce::Identifier type     = "type";
+static const juce::Identifier velocity = "velocity";
+static const juce::Identifier version  = "version";
+static const juce::Identifier volume   = "volume";
+static const juce::Identifier dock     = "dock";
+static const juce::Identifier panel    = "panel";
+static const juce::Identifier item     = "item";
+static const juce::Identifier area     = "area";
+static const juce::Identifier vertical = "vertical";
+static const juce::Identifier bounds   = "bounds";
+static const juce::Identifier barSize  = "barSize";
+static const juce::Identifier sizes    = "sizes";
+}
 }

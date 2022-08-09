@@ -19,17 +19,19 @@
 
 #pragma once
 
+namespace kv {
+
 class Monitor
 {
 public:
 
-    Monitor (const Array<int>& p, const int pt)
+    Monitor (const juce::Array<int>& p, const int pt)
         : path (p), port (pt), value (0.0f)
     { }
 
     ~Monitor() { }
 
-    const Array<int> path;
+    const juce::Array<int> path;
     const int port;
 
     const int procNode() const { return *path.end(); }
@@ -50,3 +52,5 @@ private:
     AtomicValue<float> value;
 
 };
+
+}

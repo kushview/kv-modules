@@ -25,6 +25,8 @@
 
 #define beatToFrame (beat, bpm, rate)
 
+namespace kv {
+
 /** Time scaling helper class */
 class TimeScale
 {
@@ -532,3 +534,5 @@ private:
 	// Internal node cursor.
     MarkerCursor mMarkerCursor;
 };
+
+}

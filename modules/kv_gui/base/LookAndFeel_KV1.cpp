@@ -458,8 +458,8 @@ void LookAndFeel_KV1::drawTabButton (TabBarButton& button, Graphics& g, bool isM
 
     switch (o)
     {
-        case TabbedButtonBar::TabsAtLeft:   t = t.rotated (float_Pi * -0.5f).translated (area.getX(), area.getBottom()); break;
-        case TabbedButtonBar::TabsAtRight:  t = t.rotated (float_Pi *  0.5f).translated (area.getRight(), area.getY()); break;
+        case TabbedButtonBar::TabsAtLeft:   t = t.rotated (juce::MathConstants<float>::pi * -0.5f).translated (area.getX(), area.getBottom()); break;
+        case TabbedButtonBar::TabsAtRight:  t = t.rotated (juce::MathConstants<float>::pi *  0.5f).translated (area.getRight(), area.getY()); break;
         case TabbedButtonBar::TabsAtTop:
         case TabbedButtonBar::TabsAtBottom: t = t.translated (area.getX(), area.getY()); break;
         default:                            jassertfalse; break;

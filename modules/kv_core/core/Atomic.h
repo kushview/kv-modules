@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 template<typename ValueType>
 class AtomicValue
 {
@@ -136,3 +138,5 @@ private:
     std::atomic_flag    a_mutex;
     AtomicValue<int>    a_locks;
 };
+
+}

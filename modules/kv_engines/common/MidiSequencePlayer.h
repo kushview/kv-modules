@@ -24,7 +24,7 @@ class Shuttle;
 class TimeScale;
 
 namespace Midi {
-    void renderSequence (MidiBuffer& target, const MidiMessageSequence& seq, const TimeScale& ts, int32 startFrame, int32 numSamples);
+    void renderSequence (juce::MidiBuffer& target, const juce::MidiMessageSequence& seq, const TimeScale& ts, int32 startFrame, int32 numSamples);
 }
 
 /** A single track midi sequencer with record functionality */
@@ -32,13 +32,13 @@ class MidiSequencePlayer
 {
 public:
 
-    typedef MidiMessageSequence::MidiEventHolder EventHolder;
+    typedef juce::MidiMessageSequence::MidiEventHolder EventHolder;
 
     MidiSequencePlayer();
     ~MidiSequencePlayer();
 
-    void renderSequence (int numSamples, MidiBuffer& midiMessages);
-    void renderSequence (MidiBuffer& target, const MidiMessageSequence& seq, int32 startFrame, int32 numSamples);
+    void renderSequence (int numSamples, juce::MidiBuffer& midiMessages);
+    void renderSequence (juce::MidiBuffer& target, const juce::MidiMessageSequence& seq, int32 startFrame, int32 numSamples);
 
     void prepareToPlay (double sampleRate, int blockSize);
     void releaseResources();
@@ -66,12 +66,12 @@ public:
     inline void setFrameOffset (int32 offset) { frameOffset = offset; }
 
 protected:
-    MidiMessageSequence noteOffs;
-    ScopedPointer<MidiMessageSequence> midiSequence;
-    MidiMessage allNotesOff;
+    juce::MidiMessageSequence noteOffs;
+    std::unique_ptr<juce::MidiMessageSequence> midiSequence;
+    juce::MidiMessage allNotesOff;
 
 private:
-    OptionalScopedPointer<Shuttle> shuttle;
+    juce::OptionalScopedPointer<Shuttle> shuttle;
     int32 frameOffset;
     double lastEventTime;
     int32 numBars;

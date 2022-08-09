@@ -19,14 +19,16 @@
 
 #pragma once
 
+namespace kv {
+
 class WorkerBase;
 
 /** A worker thread
     Capable of scheduling non-realtime work from a realtime context. */
-class WorkThread :  public Thread
+class WorkThread :  public juce::Thread
 {
 public:
-    WorkThread (const String& name, uint32 bufsize, int32 priority = 5);
+    WorkThread (const juce::String& name, uint32 bufsize, int32 priority = 5);
     ~WorkThread();
 
     inline static uint32 requiredSpace (uint32 msgSize) { return msgSize + (2 * sizeof (uint32)); }
@@ -48,14 +50,14 @@ private:
     uint32 bufferSize;
 
     WorkerBase* getWorker (uint32 workerId) const;
-    Array<WorkerBase*, CriticalSection> workers;
+    juce::Array<WorkerBase*, juce::CriticalSection> workers;
 
     uint32 nextWorkId;
 
     Semaphore sem;
     bool doExit = false;
 
-    ScopedPointer<RingBuffer> requests;  ///< requests to process
+    std::unique_ptr<RingBuffer> requests;  ///< requests to process
 
     /** @internal Validate a ringbuffer for message completeness */
     bool validateMessage (RingBuffer& ring);
@@ -72,7 +74,7 @@ public:
     inline bool isWorking() const { return flag.get() != 0; }
 
 private:
-    Atomic<int32> flag;
+    juce::Atomic<int> flag;
     inline bool setWorking (bool status) { return flag.compareAndSetBool (status ? 1 : 0, status ? 0 : 1); }
     friend class WorkThread;
 };
@@ -119,11 +121,13 @@ private:
     uint32 workId;                       ///< The thread assigned id for this worker
     WorkFlag flag;                       ///< A flag for when work is being processed
 
-    ScopedPointer<RingBuffer> responses; ///< responses from work
-    HeapBlock<uint8>          response;  ///< buffer to write a response
+    std::unique_ptr<RingBuffer> responses; ///< responses from work
+    juce::HeapBlock<uint8>          response;  ///< buffer to write a response
 
     bool validateMessage (RingBuffer& ring);
 
     friend class WorkThread;
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WorkerBase);
 };
+
+}

@@ -17,6 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
 namespace Utility {
 
 String createAlphaNumericUID()
@@ -53,4 +54,5 @@ String createGUID (const String& seed)
          + "}";
 }
 
+}
 }

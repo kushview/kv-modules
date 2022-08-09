@@ -19,6 +19,8 @@
 
 #pragma once
 
+namespace kv {
+
 struct JUCE_API Arc
 {
 public:
@@ -71,7 +73,7 @@ struct ArcSorter
 template<class ArcType> class ArcTable
 {
 public:
-    explicit ArcTable (const OwnedArray<ArcType>& arcs)
+    explicit ArcTable (const juce::OwnedArray<ArcType>& arcs)
     {
         for (int i = 0; i < arcs.size(); ++i)
         {
@@ -102,12 +104,12 @@ private:
         explicit Entry (const uint32 destNode_) noexcept : destNode (destNode_) {}
 
         const uint32 destNode;
-        SortedSet<uint32> srcNodes;
+        juce::SortedSet<uint32> srcNodes;
 
         JUCE_DECLARE_NON_COPYABLE (Entry)
     };
 
-    OwnedArray<Entry> entries;
+    juce::OwnedArray<Entry> entries;
 
     bool isAnInputToRecursive (const uint32 possibleInputId,
                                const uint32 possibleDestinationId,
@@ -117,7 +119,7 @@ private:
 
         if (const Entry* const entry = findEntry (possibleDestinationId, index))
         {
-            const SortedSet<uint32>& srcNodes = entry->srcNodes;
+            const juce::SortedSet<uint32>& srcNodes = entry->srcNodes;
 
             if (srcNodes.contains (possibleInputId))
                 return true;
@@ -175,3 +177,5 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE (ArcTable)
 };
+
+}

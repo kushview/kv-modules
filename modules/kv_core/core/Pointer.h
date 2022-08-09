@@ -54,14 +54,9 @@
     #include <boost/weak_ptr.hpp>
     #define Shared boost::shared_ptr
     #define Weak boost::weak_ptr
-
 #endif
 
-#define Scoped ScopedPointer
-#define OptionalPtr OptionalScopedPointer
-#define ScopedXml ScopedPointer<XmlElement>
-
-
+namespace kv {
 
 /* Shared Pointer wrapper helpers.
    This is done so other code doesn't have to worry about which API we're
@@ -163,3 +158,4 @@ inline Shared<T> makeShared (A0& a0, A1& a1, A2& a2, A3& a3)
 }
 
 #endif
+}

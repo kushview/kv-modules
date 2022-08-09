@@ -17,6 +17,7 @@
     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 */
 
+namespace kv {
 namespace FileHelpers {
 
 static int64 calculateMemoryHashCode (const void* data, const size_t numBytes)
@@ -59,7 +60,7 @@ int64 calculateFileHashCode (const File& file)
 
 bool overwriteFileWithNewDataIfDifferent (const File& file, const void* data, size_t numBytes)
 {
-    if (file.getSize() == numBytes
+    if (file.getSize() == static_cast<juce::int64> (numBytes)
           && calculateMemoryHashCode (data, numBytes) == calculateFileHashCode (file))
         return true;
 
@@ -203,4 +204,5 @@ String simplifyPath (const String& path)
     return path;
 }
 
+}
 }

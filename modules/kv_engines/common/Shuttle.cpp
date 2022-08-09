@@ -94,7 +94,7 @@ void Shuttle::resetRecording()
 }
 
 void Shuttle::setLengthBeats   (const float beats) { setLengthFrames (framesPerBeat * beats); }
-void Shuttle::setLengthSeconds (const double seconds) { setLengthFrames (roundToInt (getSampleRate() * seconds)); }
+void Shuttle::setLengthSeconds (const double seconds) { setLengthFrames (juce::roundToInt (getSampleRate() * seconds)); }
 void Shuttle::setLengthFrames  (const uint32 df) { duration = df; }
 
 void Shuttle::setTempo (float bpm)

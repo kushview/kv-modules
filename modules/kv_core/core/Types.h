@@ -19,7 +19,9 @@
 
 #pragma once
 
+namespace kv {
 typedef float  Sample;
 typedef uint32 SampleCount;
 typedef uint32 FrameTime;
 typedef uint16 Channel;
+}

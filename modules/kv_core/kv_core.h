@@ -69,15 +69,21 @@
 #endif
 
 namespace kv {
-using namespace juce;
-#include "core/AudioRingBuffer.h"
+    using int32  = juce::int32;
+    using int64  = juce::int64;
+    using uint8  = juce::uint8;
+    using uint16 = juce::uint16;
+    using uint32 = juce::uint32;
+    using uint64 = juce::uint64;
+}
+
 #include "core/Arc.h"
 #include "core/Atomic.h"
 #include "core/LinkedList.h"
 #include "core/MatrixState.h"
 #include "core/MidiChannels.h"
+
 #include "core/Monitor.h"
-#include "core/Parameter.h"
 #include "core/Pointer.h"
 #include "core/PortType.h"
 #include "core/RingBuffer.h"
@@ -99,6 +105,5 @@ using namespace juce;
 #include "util/FileHelpers.h"
 #include "util/UUID.h"
 #include "util/RelativePath.h"
-}
 
 #include "interprocess/SlaveProcess.h"

@@ -27,12 +27,14 @@
  #define KV_WORKER_LOG(x)
 #endif
 
+namespace kv {
+
 WorkThread::WorkThread (const String& name, uint32 bufsize, int32 priority)
     : Thread (name)
 {
     nextWorkId = 0;
     bufferSize = (uint32) nextPowerOfTwo (bufsize);
-    requests   = new RingBuffer (bufferSize);
+    requests   = std::make_unique<RingBuffer> (bufferSize);
     startThread (priority);
 }
 
@@ -163,7 +165,7 @@ bool WorkThread::validateMessage (RingBuffer& ring)
 WorkerBase::WorkerBase (WorkThread& thread, uint32 bufsize)
     : owner (thread)
 {
-    responses = new RingBuffer (bufsize);
+    responses = std::make_unique<RingBuffer> (bufsize);
     response.calloc (bufsize);
     thread.registerWorker (this);
 }
@@ -226,6 +228,8 @@ bool WorkerBase::validateMessage (RingBuffer& ring)
 
 void WorkerBase::setSize (uint32 newSize)
 {
-    responses = new RingBuffer (newSize);
+    responses.reset (new RingBuffer (newSize));
     response.realloc (newSize);
+}
+
 }
