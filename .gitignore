@@ -8,11 +8,6 @@ build/
 
 /.vscode/settings.json
 
-# ffmpeg fragments
-/modules/kv_ffmpeg/include/
-/modules/kv_ffmpeg/libs/
-/modules/kv_ffmpeg/local/
-
 # Ignore vendor build files and packages
 vendor/build/
 vendor/dist/
@@ -82,5 +77,3 @@ profile
 **/doxygen/build
 
 /dist/
-
-/legacy/

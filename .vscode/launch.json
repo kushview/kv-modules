@@ -3,33 +3,5 @@
     // Hover to view descriptions of existing attributes.
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
-    "configurations": [
-
-        {
-            "name": "lv2show",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/bin/lv2show",
-            "args": [ "https://kushview.net/plugins/roboverb" ],
-            // "args": [ "http://lvtoolkit.org/plugins/workhorse" ],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [ { "name": "DYLD_LIBRARY_PATH", "value": "${workspaceFolder}/build/local/lib" } ],
-            "externalConsole": false,
-            "MIMode": "lldb"
-        },
-        {
-            "name": "lv2show (linux)",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/bin/lv2show",
-            // "args": [ "https://kushview.net/plugins/roboverb" ],
-            "args": [ "http://lvtoolkit.org/plugins/workhorse" ],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/build",
-            "environment": [ { "name": "LD_LIBRARY_PATH", "value": "${workspaceFolder}/build/local/lib" } ],
-            "externalConsole": false,
-            "MIMode": "gdb"
-        }
-    ]
+    "configurations": []
 }

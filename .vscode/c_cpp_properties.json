@@ -49,9 +49,7 @@
             "includePath": [
                 "/usr/include",
                 "/usr/local/include",
-                "/usr/local/include/juce-6",
-                "${workspaceRoot}",
-                "${workspaceRoot}/modules"
+                "${workspaceFolder}/modules/*"
             ],
             "defines": [],
             "intelliSenseMode": "clang-x64",
@@ -59,14 +57,12 @@
                 "path": [
                     "/usr/include",
                     "/usr/local/include",
-                    "/usr/local/include/juce-6",
-                    "${workspaceRoot}",
-                    "${workspaceRoot}/modules"
+                    "${workspaceRoot}/modules/*"
                 ],
                 "limitSymbolsToIncludedHeaders": true,
                 "databaseFilename": ""
             },
-            "compilerPath": "/usr/local/bin/gcc-6",
+            "compilerPath": "/usr/bin/g++",
             "cStandard": "c11",
             "cppStandard": "c++17"
         },
