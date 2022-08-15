@@ -426,8 +426,8 @@ void Dock::startDragging (DockPanel* const panel)
 
 ValueTree Dock::getState() const
 {
-    ValueTree state (Slugs::dock);
-    state.setProperty (Slugs::bounds, getLocalBounds().toString(), nullptr);
+    ValueTree state ("dock");
+    state.setProperty ("bounds", getLocalBounds().toString(), nullptr);
     state.addChild (container->root->getState(), -1, nullptr);
     for (auto* const window : windows) 
     {
@@ -445,8 +445,8 @@ ValueTree Dock::getState() const
 
 void Dock::loadArea (DockArea& area, const ValueTree& state)
 {
-    const auto sizes = state.getProperty (Slugs::sizes).toString();
-    const auto barSize = (int) state.getProperty (Slugs::barSize, 4);
+    const auto sizes = state.getProperty ("sizes").toString();
+    const auto barSize = (int) state.getProperty ("barSize", 4);
     area.setBounds (Dock::getBounds (state));
     area.layout.clear();
     area.layout.setBarSize (barSize);
@@ -457,15 +457,15 @@ void Dock::loadArea (DockArea& area, const ValueTree& state)
     for (int i = 0; i < state.getNumChildren(); ++i)
     {
         const auto child = state.getChild (i);
-        if (child.hasType (Slugs::item))
+        if (child.hasType ("item"))
         {
             auto* item = getOrCreateItem();
             loadItem (*item, child);
             area.append (item);
         }
-        else if (child.hasType (Slugs::area))
+        else if (child.hasType ("area"))
         {
-            jassert (area.isVertical() != (bool) child[Slugs::vertical]);
+            jassert (area.isVertical() != (bool) child["vertical"]);
             auto* newArea = createArea (! area.isVertical());
             jassert (newArea != &area);
             loadArea (*newArea, child);
@@ -487,7 +487,7 @@ void Dock::loadItem (DockItem& item, const ValueTree& state)
     {
         const auto child = state.getChild (i);
         
-        if (child.hasType (Slugs::panel))
+        if (child.hasType ("panel"))
         {
             if (auto* panel = getOrCreatePanel (child["type"].toString()))
             {
@@ -508,19 +508,19 @@ void Dock::loadItem (DockItem& item, const ValueTree& state)
     }
 
     item.refreshPanelContainer();
-    item.setCurrentPanelIndex ((int) state.getProperty (Slugs::panel, 0));
+    item.setCurrentPanelIndex ((int) state.getProperty ("panel", 0));
     item.resized();
 }
 
 void Dock::loadPanel (DockPanel& panel, const ValueTree& state)
 {
-    panel.setName (state.getProperty (Slugs::name, "Panel").toString());
+    panel.setName (state.getProperty ("name", "Panel").toString());
     panel.setBounds (Dock::getBounds (state));
 }
 
 bool Dock::applyState (const ValueTree& state)
 {
-    if (! state.hasType (Slugs::dock))
+    if (! state.hasType ("dock"))
         return false;
 
     std::unique_ptr<DockContainer> newContainer;
@@ -529,7 +529,7 @@ bool Dock::applyState (const ValueTree& state)
     for (int i = 0; i < state.getNumChildren(); ++i)
     {
         const auto child = state.getChild (i);
-        if (child.hasType (Slugs::area))
+        if (child.hasType ("area"))
         {
             if (newContainer == nullptr)
             {
@@ -538,7 +538,7 @@ bool Dock::applyState (const ValueTree& state)
                 newContainer->resized();
                 auto* area (newContainer->getRootArea());
                 jassert(area);
-                area->setVertical ((bool) child.getProperty (Slugs::vertical, true));
+                area->setVertical ((bool) child.getProperty ("vertical", true));
                 area->setBounds (Dock::getBounds (child));
                 loadArea (*area, child);
             }
@@ -553,7 +553,7 @@ bool Dock::applyState (const ValueTree& state)
             DBG ("load dock window");
             DBG(child.toXmlString());
             auto* const window = newWindows.add (new DockWindow (*this));
-            ValueTree data = child.getChildWithName (Slugs::area);
+            ValueTree data = child.getChildWithName ("area");
             jassert (window->container && window->container->getRootArea() != nullptr);
             window->restoreWindowStateFromString (child.getProperty ("position").toString());
             loadArea (*window->container->getRootArea(), data);

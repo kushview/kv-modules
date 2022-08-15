@@ -88,7 +88,6 @@ namespace kv {
 #include "core/PortType.h"
 #include "core/RingBuffer.h"
 #include "core/Semaphore.h"
-#include "core/Slugs.h"
 #include "core/Types.h"
 #include "core/WorkThread.h"
 

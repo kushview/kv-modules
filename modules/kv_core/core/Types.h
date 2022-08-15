@@ -18,7 +18,6 @@
 */
 
 #pragma once
-
 namespace kv {
 typedef float  Sample;
 typedef uint32 SampleCount;

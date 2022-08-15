@@ -325,10 +325,10 @@ void DockPanel::undock()
 
 ValueTree DockPanel::getState() const
 {
-    ValueTree state (Slugs::panel);
-    state.setProperty (Slugs::name, getName(), nullptr)
-         .setProperty (Slugs::type, getTypeString(), nullptr)
-         .setProperty (Slugs::bounds, getLocalBounds().toString(), nullptr);
+    ValueTree state ("panel");
+    state.setProperty ("name", getName(), nullptr)
+         .setProperty ("type", getTypeString(), nullptr)
+         .setProperty ("bounds", getLocalBounds().toString(), nullptr);
     return state;
 }
 

@@ -117,11 +117,11 @@ void DockArea::resized()
 
 ValueTree DockArea::getState() const
 {
-    ValueTree state (Slugs::area);
-    state.setProperty (Slugs::bounds,   getLocalBounds().toString(), nullptr)
-         .setProperty (Slugs::vertical, isVertical(), nullptr)
-         .setProperty (Slugs::barSize,  layout.getBarSize(), nullptr)
-         .setProperty (Slugs::sizes,    layout.getSizesString(), nullptr);
+    ValueTree state ("area");
+    state.setProperty ("bounds",   getLocalBounds().toString(), nullptr)
+         .setProperty ("vertical", isVertical(), nullptr)
+         .setProperty ("barSize",  layout.getBarSize(), nullptr)
+         .setProperty ("sizes",    layout.getSizesString(), nullptr);
     
     for (auto* const child : layout.getItems())
     {
