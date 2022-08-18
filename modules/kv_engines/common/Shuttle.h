@@ -45,7 +45,6 @@ public:
     double getFramesPerBeat() const;
     double getBeatsPerFrame() const;
 
-    
     void setLengthBeats (const float beats);
     void setLengthFrames (const uint32 df);
     void setLengthSeconds (const double seconds);
@@ -76,7 +75,7 @@ public:
     }
     
     bool getCurrentPosition (CurrentPositionInfo &result);
-    juce::Optional<PositionInfo> getPosition() const override { return juce::Optional<PositionInfo>(); }
+    juce::Optional<PositionInfo> getPosition() const override;
 
 protected:
     kv::TimeScale ts;

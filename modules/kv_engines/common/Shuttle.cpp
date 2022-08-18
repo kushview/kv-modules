@@ -71,6 +71,33 @@ bool Shuttle::getCurrentPosition (CurrentPositionInfo &result)
     return true;
 }
 
+juce::Optional<juce::AudioPlayHead::PositionInfo> Shuttle::getPosition() const 
+{
+    juce::AudioPlayHead::PositionInfo info;
+    info.setBpm ((double) ts.getTempo());
+    info.setFrameRate (AudioPlayHead::fps24);
+
+    info.setIsLooping (isLooping());
+    info.setIsPlaying (isPlaying());
+    info.setIsRecording (isRecording());
+
+    // juce::AudioPlayHead::LoopPoints loops;
+    // info.setLoopPoints ()
+    // info.ppqLoopEnd   = 0.0f; // ppqLoopEnd;
+    info.setPpqPosition (getPositionBeats());
+    info.setPpqPositionOfLastBarStart (0.0f);
+
+    info.setEditOriginTime (0.0f);
+    
+    juce::AudioPlayHead::TimeSignature timesig;
+    info.setTimeInSamples (getPositionFrames());
+    info.setTimeInSeconds (getPositionSeconds());
+    timesig.numerator = ts.beatsPerBar();
+    timesig.denominator = (1 << ts.beatDivisor());
+    info.setTimeSignature (timesig);   
+    return info;
+}
+
 const double Shuttle::getLengthBeats()      const { return getLengthSeconds() * (getTempo() / 60.0f); }
 const int64  Shuttle::getLengthFrames()     const { return duration; }
 const double Shuttle::getLengthSeconds()    const { return (double) duration / (double) ts.getSampleRate(); }
